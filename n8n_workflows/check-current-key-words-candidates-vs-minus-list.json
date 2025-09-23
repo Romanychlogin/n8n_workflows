@@ -1,0 +1,470 @@
+{
+  "createdAt": "2025-09-11T08:15:15.514Z",
+  "updatedAt": "2025-09-11T13:48:27.739Z",
+  "id": "a4eEivuuY05VnIG1",
+  "name": "check current  key words candidates vs minus list",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -3232,
+        352
+      ],
+      "id": "99151b2f-0b65-466f-8d75-810c85c693cd",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "543a65b2-a6be-4d52-9130-a4714b59f4ae",
+              "name": "threshold",
+              "value": 0.8,
+              "type": "number"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -2352,
+        288
+      ],
+      "id": "109377bd-ec19-469a-b2b4-ed9c6e2d25a8",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "operation": "select",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "current_list",
+          "mode": "list",
+          "cachedResultName": "current_list"
+        },
+        "returnAll": true,
+        "where": {
+          "values": [
+            {
+              "column": "company_id",
+              "value": "={{ $json.company_id }}"
+            },
+            {
+              "column": "resolution",
+              "condition": "LIKE",
+              "value": "%found%"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -2816,
+        352
+      ],
+      "id": "f8583bfc-e505-413f-9858-82361a561e50",
+      "name": "Select rows from a table",
+      "credentials": {
+        "postgres": {
+          "id": "Hx2VFmUi5WO2K4QX",
+          "name": "Postgres account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        -2608,
+        352
+      ],
+      "id": "b3e62525-84d8-4b2e-b879-2b488667fc41",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "current_list",
+          "mode": "list",
+          "cachedResultName": "current_list"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "list_id": "={{ $json.list_id }}",
+            "resolution": "={{$json.resolution}}"
+          },
+          "matchingColumns": [
+            "list_id"
+          ],
+          "schema": [
+            {
+              "id": "list_id",
+              "displayName": "list_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "key_word",
+              "displayName": "key_word",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "campaign_id",
+              "displayName": "campaign_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "used_keyword",
+              "displayName": "used_keyword",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "group_id",
+              "displayName": "group_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "condition_type",
+              "displayName": "condition_type",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "category",
+              "displayName": "category",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "ads_header",
+              "displayName": "ads_header",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "date",
+              "displayName": "date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "resolution",
+              "displayName": "resolution",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "count_views",
+              "displayName": "count_views",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "count_clics",
+              "displayName": "count_clics",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "count_convetions",
+              "displayName": "count_convetions",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "ai_response_tokens",
+              "displayName": "ai_response_tokens",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "company_id",
+              "displayName": "company_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -1680,
+        304
+      ],
+      "id": "4ddda1ed-5c4e-48d7-a71a-6bb7b18eef5f",
+      "name": "Update rows in a table",
+      "credentials": {
+        "postgres": {
+          "id": "Hx2VFmUi5WO2K4QX",
+          "name": "Postgres account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "8a679d23-f5a1-4bda-955e-f03cb1fd40fc",
+              "name": "company_id",
+              "value": 1,
+              "type": "number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -3024,
+        352
+      ],
+      "id": "671409c1-31b7-45b2-8581-eea885165955",
+      "name": "set company_id"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "rmq06a0YRFizRgV1",
+          "mode": "list",
+          "cachedResultName": "chech phrase VS minus words"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        -2144,
+        288
+      ],
+      "id": "82e0aae7-da9c-48c8-a027-e714b5b090b9",
+      "name": "Call 'chech phrase VS minus words'"
+    },
+    {
+      "parameters": {
+        "jsCode": "const first = $input.first();\nconst matches = Array.isArray(first?.json?.matches) ? first.json.matches : [];\n\nlet resolution;\nif (matches.length === 0) {\n  resolution = 'to add';\n} else {\n  resolution = 'minus words found: ' + matches.join(', ');\n}\n\nconst list_id = $('Edit Fields').first().json.list_id;\n\nreturn { resolution, list_id };"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1936,
+        288
+      ],
+      "id": "470e4d7f-5a01-4361-b3d4-2ec87e4fd26a",
+      "name": "Code in JavaScript"
+    }
+  ],
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "set company_id",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Call 'chech phrase VS minus words'",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Select rows from a table": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update rows in a table": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "set company_id": {
+      "main": [
+        [
+          {
+            "node": "Select rows from a table",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Call 'chech phrase VS minus words'": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Update rows in a table",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": {},
+  "versionId": "e37d84b7-570b-43cd-9add-7a454bc28070",
+  "triggerCount": 0,
+  "shared": [
+    {
+      "createdAt": "2025-09-11T08:15:15.514Z",
+      "updatedAt": "2025-09-11T08:15:15.514Z",
+      "role": "workflow:owner",
+      "workflowId": "a4eEivuuY05VnIG1",
+      "projectId": "spKmbJLU4mvACXIB"
+    }
+  ],
+  "tags": []
+}
