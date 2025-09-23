@@ -1,0 +1,610 @@
+{
+  "createdAt": "2025-08-29T16:01:03.627Z",
+  "updatedAt": "2025-09-11T11:30:44.202Z",
+  "id": "9RKaX6cWUbDT3PGY",
+  "name": "Check_minus_words",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "db7b1ef4-4af6-4322-8cb3-2a489cbeaf32",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "id": "24293e07-426e-4682-9f65-70b9f747d771",
+      "name": "Webhook In",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        1040,
+        -368
+      ],
+      "webhookId": "db7b1ef4-4af6-4322-8cb3-2a489cbeaf32",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "jsCode": "// Input JSON: { company_name, text, threshold? }\nconst body = $json;\nconst prepositions = [\n  \"в\",\"без\",\"до\",\"из\",\"к\",\"и\",\"на\",\"по\",\"о\",\"от\",\"перед\",\"при\",\n  \"через\",\"с\",\"у\",\"за\",\"над\",\"об\",\"под\",\"про\",\"для\",\"между\"\n];\n\n// Нормализуем регистр\nlet text = String(body.minus_word ?? \"\").toLowerCase();\n\n// Экранируем спецсимволы\nconst escape = s => s.replace(/[.*+?^${}()|[\\]\\\\]/g, \"\\\\$&\");\nconst alts = prepositions.map(escape).join(\"|\");\n\n// Разрешаем буквы, цифры, подчёркивание, а также - + #\nconst re = new RegExp(\n  `(^|[^\\\\p{L}\\\\p{N}_\\\\-+#])(?:${alts})(?=$|[^\\\\p{L}\\\\p{N}_\\\\-+#])`,\n  \"giu\"\n);\n\n// Удаляем предлоги, сохраняя левый разделитель\ntext = text.replace(re, \"$1\");\n\n// Чистим пробелы\ntext = text.replace(/\\s+/g, \" \").trim();\n//const company = body.company_name;\nconst threshold = (typeof body.threshold === 'number') ? body.threshold : 0.88;\n\n\nconst set = new Set();\n\n    set.add(text);\n\nlet candidates = Array.from(set);\n// если пусто — добавляем пустую строку\nif (candidates.length === 0) {\n  candidates = [\"\"];\n}\n\nreturn [{ json: { threshold, candidates } }];\n"
+      },
+      "id": "1f7ce1f3-537b-463e-8156-180e6477ae4f",
+      "name": "Code: extract_ngrams",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1936,
+        -368
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const { threshold, candidates } = $json;\nconst out = candidates.map(c => ({ json: { candidate: c,  threshold } }));\nreturn out;"
+      },
+      "id": "9d896f86-0d7a-476c-9b4e-c8487a60a11e",
+      "name": "Code: explode_candidates",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2400,
+        -368
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.openai.com/v1/embeddings",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "openAiApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\"model\":\"text-embedding-3-small\",\"input\":\"{{$json.candidate}}\"}",
+        "options": {}
+      },
+      "id": "7ffbbf67-4a0d-479e-8efc-438436231421",
+      "name": "HTTP: OpenAI Embeddings",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        2656,
+        -368
+      ],
+      "retryOnFail": true,
+      "credentials": {
+        "openAiApi": {
+          "id": "V8R8KiZKXscJQ1sL",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const emb = ($json.body?.data?.[0]?.embedding) ?? ($json.data?.[0]?.embedding);\nif (!Array.isArray(emb) || emb.length === 0) {\n  throw new Error('Embedding not found');\n}\n\n\nconst out = $input.all().map(c => ({ json: { \n  vector:'[' + c.json.data[0].embedding.map(Number).join(',') + ']',    \n  threshold: $('Code: explode_candidates').all()[c.json.data[0].index].json.threshold, \n  candidate: $('Code: explode_candidates').all()[c.json.data[0].index].json.candidate } }));\nreturn out;\n"
+      },
+      "id": "97310bf5-4ec5-48b0-a4c0-ccc7c45c13d8",
+      "name": "Code: build_vector_literal",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3072,
+        -352
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT v.phrase,  0 - (v.phrase_embedding <#> $1::vector) AS similarity FROM company_content v \n  ORDER BY v.phrase_embedding <#> $1::vector LIMIT 1;",
+        "options": {
+          "queryReplacement": "={{$json.vector}}"
+        }
+      },
+      "id": "32a0e4e8-4d2a-4756-a794-79d5e809b13a",
+      "name": "Postgres: vector search",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2,
+      "position": [
+        3376,
+        -352
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "4YkdFJcdTgzo9hkz",
+          "name": "PGvector"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "\nconst ctx = $('Code: extract_ngrams').first().json\n  //$items(\"Code: build_vector_literal\", 0, $itemIndex).json;\n\nconst out = $input.all().map((c, idx) => ({ json: { \n  ok: c.json.similarity>=ctx.threshold,\n  candidate: $('Code: explode_candidates').all()[idx].json.candidate, \n  matched: c.json.phrase,\n    similarity:c.json.similarity\n   } }));\nreturn out;"
+      },
+      "id": "129a15e0-698c-4553-b6d9-5a75e55f7f64",
+      "name": "Code: pass_threshold",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3616,
+        -352
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Collect ok=true, dedupe by canonical, keep highest similarity and longest phrase on tie\nconst items = $input.all().map(i => i.json).filter(j => j.ok);\nconst best = new Map();\nfor (const h of items) {\n  const key = h.matched || 'unknown';\n  const prev = best.get(key);\n  if (!prev || h.similarity > prev.similarity || (h.similarity === prev.similarity && (h.candidate?.length||0) > (prev.candidate?.length||0))) {\n    best.set(key, h);\n  }\n}\n// Сборка единой текстовой строки: canonical<TAB>candidate<TAB>similarity\nconst lines = Array.from(best.values()).map(x => {\n  const canonical = String(x.matched ?? 'unknown').trim();\n  const candidate = String(x.candidate ?? '').trim();\n  const similarity = (x.similarity != null) ? Number(x.similarity).toFixed(6) : '';\n  return `${canonical}\\t${candidate}\\t${similarity}`;\n});\n\nconst result = lines.join('\\n');\n\n// В n8n Code node корректно отдаём одну строку в поле result\nreturn [{ json: { result } }];"
+      },
+      "id": "b7888356-91d9-409a-b148-e90fde2a2ba7",
+      "name": "Code: aggregate_hits",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3936,
+        -256
+      ]
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        1008,
+        -160
+      ],
+      "id": "73e4b897-14f7-4dd6-b4d3-4f7508f59d90",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "543a65b2-a6be-4d52-9130-a4714b59f4ae",
+              "name": "threshold",
+              "value": 0.8,
+              "type": "number"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1680,
+        -224
+      ],
+      "id": "770c8b4d-8f8b-43f9-8e8d-00bac73d59b2",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "operation": "select",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "minus_words",
+          "mode": "list",
+          "cachedResultName": "minus_words"
+        },
+        "returnAll": true,
+        "sort": {
+          "values": [
+            {
+              "column": "id"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        1216,
+        -160
+      ],
+      "id": "f323391a-e231-404d-bb24-74c84745d725",
+      "name": "Select rows from a table",
+      "credentials": {
+        "postgres": {
+          "id": "Hx2VFmUi5WO2K4QX",
+          "name": "Postgres account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        1424,
+        -160
+      ],
+      "id": "7009ccea-738f-4457-a6bf-7114a7e5c9e3",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "minus_words",
+          "mode": "list",
+          "cachedResultName": "minus_words"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "comment": "={{$json.result}}",
+            "id": "={{$json.id}}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "minus_word",
+              "displayName": "minus_word",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "source_key",
+              "displayName": "source_key",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "comment",
+              "displayName": "comment",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        4400,
+        -192
+      ],
+      "id": "8d9ae299-e12d-46f4-a181-d186492c28fe",
+      "name": "Update rows in a table",
+      "credentials": {
+        "postgres": {
+          "id": "Hx2VFmUi5WO2K4QX",
+          "name": "Postgres account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        4160,
+        -208
+      ],
+      "id": "0b1c799d-36ba-478a-9ce6-bf718dd7a53d",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "57e28de0-dd46-4d98-b06b-54e3ce8087f0",
+              "leftValue": "={{ $json.candidates[0] }}",
+              "rightValue": "\"\"",
+              "operator": {
+                "type": "string",
+                "operation": "empty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        2144,
+        -368
+      ],
+      "id": "447c2c3d-72ca-4b31-b5a8-7c98a294a158",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "a3f56c1b-d7bf-4397-8702-58405823f5f5",
+              "name": "result",
+              "value": "предлог или служебный символ",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        3280,
+        -608
+      ],
+      "id": "eba29e0e-afff-43e6-8aea-3679e8184793",
+      "name": "Set the empty phrase wording"
+    },
+    {
+      "parameters": {
+        "content": "Массив тут из 1 элемента, фразы проверяем целиком - не режем"
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        2336,
+        -544
+      ],
+      "id": "a105d58c-9479-419e-8206-1f4cccfc65b7",
+      "name": "Sticky Note"
+    }
+  ],
+  "connections": {
+    "Webhook In": {
+      "main": [
+        [
+          {
+            "node": "Code: extract_ngrams",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code: extract_ngrams": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code: explode_candidates": {
+      "main": [
+        [
+          {
+            "node": "HTTP: OpenAI Embeddings",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP: OpenAI Embeddings": {
+      "main": [
+        [
+          {
+            "node": "Code: build_vector_literal",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code: build_vector_literal": {
+      "main": [
+        [
+          {
+            "node": "Postgres: vector search",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Postgres: vector search": {
+      "main": [
+        [
+          {
+            "node": "Code: pass_threshold",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code: pass_threshold": {
+      "main": [
+        [
+          {
+            "node": "Code: aggregate_hits",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Select rows from a table",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Code: extract_ngrams",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Select rows from a table": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Code: aggregate_hits": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update rows in a table": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Update rows in a table",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Set the empty phrase wording",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Code: explode_candidates",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set the empty phrase wording": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "bb9b7fa0-97be-4fc2-b4cd-f40cbd348675",
+  "triggerCount": 0,
+  "shared": [
+    {
+      "createdAt": "2025-08-29T16:01:03.627Z",
+      "updatedAt": "2025-08-29T16:01:03.627Z",
+      "role": "workflow:owner",
+      "workflowId": "9RKaX6cWUbDT3PGY",
+      "projectId": "spKmbJLU4mvACXIB"
+    }
+  ],
+  "tags": []
+}
