@@ -1,0 +1,204 @@
+{
+  "createdAt": "2025-09-15T16:12:00.035Z",
+  "updatedAt": "2025-09-15T16:27:50.533Z",
+  "id": "o5L3i8eq9JK9oLwL",
+  "name": "company_minus_words_from_base",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -1104,
+        -96
+      ],
+      "id": "6ef8aec4-0dc6-41d2-9179-24378560f244",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "operation": "select",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "minus_words_base",
+          "mode": "list",
+          "cachedResultName": "minus_words_base"
+        },
+        "returnAll": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -896,
+        -96
+      ],
+      "id": "b0f27d76-135e-46c9-a195-247f906505d1",
+      "name": "Select rows from a table",
+      "credentials": {
+        "postgres": {
+          "id": "4YkdFJcdTgzo9hkz",
+          "name": "PGvector"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        -480,
+        -96
+      ],
+      "id": "a7cee990-ca1e-4f06-9a8c-7eee5568a802",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "8a679d23-f5a1-4bda-955e-f03cb1fd40fc",
+              "name": "company_id",
+              "value": 2,
+              "type": "number"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -720,
+        -96
+      ],
+      "id": "08c83230-67a3-489c-aebc-eee593e5068c",
+      "name": "set company_id"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO minus_words (minus_word_embedding, company_id, minus_word, source_key)\nVALUES ($1::vector, $2, $3, $4);",
+        "options": {
+          "queryReplacement": "=[\n  { \"value\": \"={{'[' + JSON.parse($json.minus_word_embedding).map(e => Number(e)).join(',') + ']'}}\" },\n  { \"value\": \"={{$json.company_id}}\" },\n  { \"value\": \"={{$json.minus_word}}\" },\n  { \"value\": \"={{$json.source_key}}\" }\n]"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -80,
+        -80
+      ],
+      "id": "eec0d635-e445-4ba3-8b46-8a637fa8e478",
+      "name": "Execute a SQL query",
+      "credentials": {
+        "postgres": {
+          "id": "4YkdFJcdTgzo9hkz",
+          "name": "PGvector"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "тех долг - автоматическая обработка и удаление своих регионов"
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -48,
+        -400
+      ],
+      "id": "5cd1b29c-7c8e-491d-9202-7121e81a5c02",
+      "name": "Sticky Note"
+    }
+  ],
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Select rows from a table",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Select rows from a table": {
+      "main": [
+        [
+          {
+            "node": "set company_id",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Execute a SQL query",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "set company_id": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute a SQL query": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "f85223e5-dadf-4e29-8a71-91ce541038c0",
+  "triggerCount": 0,
+  "shared": [
+    {
+      "createdAt": "2025-09-15T16:12:00.035Z",
+      "updatedAt": "2025-09-15T16:12:00.035Z",
+      "role": "workflow:owner",
+      "workflowId": "o5L3i8eq9JK9oLwL",
+      "projectId": "spKmbJLU4mvACXIB"
+    }
+  ],
+  "tags": []
+}
