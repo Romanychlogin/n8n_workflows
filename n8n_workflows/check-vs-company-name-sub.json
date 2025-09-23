@@ -1,0 +1,240 @@
+{
+  "createdAt": "2025-09-01T16:15:28.703Z",
+  "updatedAt": "2025-09-15T11:26:03.123Z",
+  "id": "xKP6S9XsCeVSgebo",
+  "name": "Check VS company name SUB",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "jsCode": "// Input JSON: { company_name, text, threshold? }\nconst body = $json;\nconst text = String(body.key_word || '').toLowerCase();\nconst company = body.company_id;\nconst threshold = (typeof body.threshold === 'number') ? body.threshold : 0.88;\n\nconst tokens = (text.match(/[A-Za-zА-Яа-яЁё0-9][A-Za-zА-Яа-яЁё0-9&.\\-]{0,}/g) || [])\n  .map(s => s.trim())\n  .filter(Boolean);\n\nconst MAX_N = 5;\nconst set = new Set();\nfor (let i = 0; i < tokens.length; i++) {\n  for (let n = 1; n <= MAX_N && i + n <= tokens.length; n++) {\n    const phrase = tokens.slice(i, i+n).join(' ');\n    set.add(phrase);\n  }\n}\nreturn [{ json: { company_id: company, threshold, candidates: Array.from(set) } }];\n"
+      },
+      "id": "059cf317-3720-4666-9ab2-fbf185569503",
+      "name": "Code: extract_ngrams",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1520,
+        -368
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const { company_id, threshold, candidates } = $json;\nconst out = candidates.map(c => ({ json: { candidate: c, company_id, threshold } }));\nreturn out;"
+      },
+      "id": "993fbeff-a907-4172-bb4b-10bd73cce573",
+      "name": "Code: explode_candidates",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1776,
+        -368
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.openai.com/v1/embeddings",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "openAiApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\"model\":\"text-embedding-3-small\",\"input\":\"{{$json.candidate}}\"}",
+        "options": {}
+      },
+      "id": "0dc7834a-d2dc-4937-b352-3b543b78b6b6",
+      "name": "HTTP: OpenAI Embeddings",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        2032,
+        -368
+      ],
+      "retryOnFail": true,
+      "waitBetweenTries": 5000,
+      "credentials": {
+        "openAiApi": {
+          "id": "V8R8KiZKXscJQ1sL",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const emb = ($json.body?.data?.[0]?.embedding) ?? ($json.data?.[0]?.embedding);\nif (!Array.isArray(emb) || emb.length === 0) {\n  throw new Error('Embedding not found');\n}\n\n\nconst out = $input.all().map(c => ({ json: { \n  vector:'[' + c.json.data[0].embedding.map(Number).join(',') + ']',   company_name: $('Code: explode_candidates').all()[c.json.data[0].index].json.company_id, \n  threshold: $('Code: explode_candidates').all()[c.json.data[0].index].json.threshold, \n  candidate: $('Code: explode_candidates').all()[c.json.data[0].index].json.candidate } }));\nreturn out;\n"
+      },
+      "id": "5b34a748-5ad7-4c9f-91b0-e57cf1352fbb",
+      "name": "Code: build_vector_literal",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2448,
+        -352
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT v.name_text, e.canonical_name, 0 - (v.embedding <#> $1::vector) AS similarity FROM competitor_name_variants v JOIN competitor_entities e USING (competitor_id) WHERE e.company_id = $2 ORDER BY v.embedding <#> $1::vector LIMIT 1;",
+        "options": {
+          "queryReplacement": "=[ { value: {{$json.vector}} }, { value: {{$json.company_id}} } ]"
+        }
+      },
+      "id": "45b849ef-f31c-4f3f-b9b4-0aa4b413f5a5",
+      "name": "Postgres: vector search",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2,
+      "position": [
+        2752,
+        -352
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "4YkdFJcdTgzo9hkz",
+          "name": "PGvector"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "\nconst ctx = $('Code: extract_ngrams').first().json\n  //$items(\"Code: build_vector_literal\", 0, $itemIndex).json;\n\nconst out = $input.all().map((c, idx) => ({ json: { \n  ok: c.json.similarity>=ctx.threshold,\n  candidate: $('Code: explode_candidates').all()[idx].json.candidate, \n  matched: c.json.name_text,\n  canonical: c.json.canonical_name,\n    similarity:c.json.similarity\n   } }));\nreturn out;"
+      },
+      "id": "2ab8357a-5212-42b9-a57e-b5158f3cd79f",
+      "name": "Code: pass_threshold",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2992,
+        -352
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Collect ok=true, dedupe by canonical, keep highest similarity and longest phrase on tie\nconst items = $input.all().map(i => i.json).filter(j => j.ok);\nconst best = new Map();\nfor (const h of items) {\n  const key = h.canonical || h.matched || 'unknown';\n  const prev = best.get(key);\n  if (!prev || h.similarity > prev.similarity || (h.similarity === prev.similarity && (h.candidate?.length||0) > (prev.candidate?.length||0))) {\n    best.set(key, h);\n  }\n}\nreturn [{ json: { hits: Array.from(best.values()) } }];"
+      },
+      "id": "e223720a-8d2f-4836-a511-05ce0c06d19f",
+      "name": "Code: aggregate_hits",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3280,
+        -352
+      ]
+    },
+    {
+      "parameters": {
+        "inputSource": "passthrough"
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        1184,
+        -368
+      ],
+      "id": "70105d16-555b-4703-9280-9bfd8a8f3a53",
+      "name": "When Executed by Another Workflow"
+    }
+  ],
+  "connections": {
+    "Code: extract_ngrams": {
+      "main": [
+        [
+          {
+            "node": "Code: explode_candidates",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code: explode_candidates": {
+      "main": [
+        [
+          {
+            "node": "HTTP: OpenAI Embeddings",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP: OpenAI Embeddings": {
+      "main": [
+        [
+          {
+            "node": "Code: build_vector_literal",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code: build_vector_literal": {
+      "main": [
+        [
+          {
+            "node": "Postgres: vector search",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Postgres: vector search": {
+      "main": [
+        [
+          {
+            "node": "Code: pass_threshold",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code: pass_threshold": {
+      "main": [
+        [
+          {
+            "node": "Code: aggregate_hits",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "Code: extract_ngrams",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "saveDataSuccessExecution": "none",
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "e5a6963d-b71e-4f68-82f2-066561eb89b8",
+  "triggerCount": 1,
+  "shared": [
+    {
+      "createdAt": "2025-09-01T16:15:28.703Z",
+      "updatedAt": "2025-09-01T16:15:28.703Z",
+      "role": "workflow:owner",
+      "workflowId": "xKP6S9XsCeVSgebo",
+      "projectId": "spKmbJLU4mvACXIB"
+    }
+  ],
+  "tags": []
+}
