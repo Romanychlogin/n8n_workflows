@@ -1,0 +1,410 @@
+{
+  "createdAt": "2025-08-26T10:03:01.554Z",
+  "updatedAt": "2025-09-10T19:46:49.515Z",
+  "id": "qZMv5r8jBaqoTTaR",
+  "name": "Fill competitors",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -544,
+        0
+      ],
+      "id": "c5e13d06-1358-4efc-b4e4-bf265e6c152e",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "resource": "file",
+        "operation": "get",
+        "owner": {
+          "__rl": true,
+          "value": "Romanychlogin",
+          "mode": "name"
+        },
+        "repository": {
+          "__rl": true,
+          "value": "n8n_prompts",
+          "mode": "list",
+          "cachedResultName": "n8n_prompts",
+          "cachedResultUrl": "https://github.com/Romanychlogin/n8n_prompts"
+        },
+        "filePath": "competitors with services.txt",
+        "additionalParameters": {}
+      },
+      "type": "n8n-nodes-base.github",
+      "typeVersion": 1.1,
+      "position": [
+        -304,
+        0
+      ],
+      "id": "a5bc2b1e-d0a0-4b53-a924-74b116b0abbe",
+      "name": "Get a file1",
+      "webhookId": "77e7d794-90e5-4e94-94bd-1b637cecf31b",
+      "credentials": {
+        "githubApi": {
+          "id": "JQAFAcMNS9Ylyb0V",
+          "name": "GitHub account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "text",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        -96,
+        0
+      ],
+      "id": "cdc9a104-c9ba-4f57-9d60-b58b7959a9af",
+      "name": "Extract from File2"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Function-Node (Run Once)\nconst workflowData = $getWorkflowStaticData('global');\nworkflowData.competitors_prompt = items[0].json;\nreturn items;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        112,
+        0
+      ],
+      "id": "6dee907e-13bd-4e8e-b6e8-8b568c432d62",
+      "name": "Code3",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.openai.com/v1/responses",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "openAiApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{$json}}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        816,
+        0
+      ],
+      "id": "4a86373c-c9a9-4cc0-9bc5-bcaab6062513",
+      "name": "HTTP Request",
+      "retryOnFail": true,
+      "credentials": {
+        "openAiApi": {
+          "id": "V8R8KiZKXscJQ1sL",
+          "name": "OpenAi account"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "competitor_entities",
+          "mode": "list",
+          "cachedResultName": "competitor_entities"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "company_name": "=KIBERone Саратов Октябрьский",
+            "canonical_name": "={{$json.competitor_name}}",
+            "competitor_url": "={{$json.competitor_url}}",
+            "competitor_type": "={{$json.competitor_type}}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "company_name",
+              "displayName": "company_name",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "competitor_id",
+              "displayName": "competitor_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "canonical_name",
+              "displayName": "canonical_name",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "competitor_url",
+              "displayName": "competitor_url",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "competitor_type",
+              "displayName": "competitor_type",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        1744,
+        0
+      ],
+      "id": "6bee0adc-a284-4fc0-a3aa-1ab11b471a22",
+      "name": "Insert rows in a table",
+      "credentials": {
+        "postgres": {
+          "id": "4YkdFJcdTgzo9hkz",
+          "name": "PGvector"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "return [{\n  json: {\n  \"model\": \"gpt-5\",\n  \"input\": [\n    {\n      \"role\": \"developer\",\n      \"content\": [\n        {\n          \"type\": \"input_text\",\n          \"text\": $json.data\n        }\n      ]\n    },\n    {\n      \"role\": \"user\",\n      \"content\": [\n        {\n          \"type\": \"input_text\",\n          \"text\": \"Составь максимально широкий и полный список конкурентов (Название, тип:\\\"local,global,franchise\\\", ссылка на вэб-сайт) компании \\\"KIBERone Саратов Октябрьский\\\" включая локальных конкурентов, локальные представительства франшиз и онлайн конкурентов. Для франшиз укажи сайт локального представительства. Если есть сомнения в релевантности конкурента, лучше оставить такие варианты в списке, важен наиболее широкий список\"\n        }\n      ]\n    }\n  ],\n  \"text\": {\n    \"format\": {\n      \"type\": \"json_schema\",\n      \"name\": \"competitor_list\",\n      \"strict\": true,\n      \"schema\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"competitors\": {\n            \"type\": \"array\",\n            \"description\": \"Strictly formatted list of competitors, each as a name, type and URL row.\",\n            \"items\": {\n              \"type\": \"object\",\n              \"properties\": {\n                \"competitor_name\": {\n                  \"type\": \"string\",\n                  \"description\": \"The name of the competitor.\",\n                  \"minLength\": 1\n                },\n                \"competitor_type\": {\n                  \"type\": \"string\",\n                  \"description\": \"The type of the competitor. May consist of 3 values:local,global,franchise\",\n                  \"minLength\": 1\n                },\n                \"competitor_url\": {\n                  \"type\": \"string\",\n                  \"description\": \"The website URL of the competitor.\",\n                  \"minLength\": 1\n                }\n              },\n              \"required\": [\n                \"competitor_name\",\n                \"competitor_type\",\n                \"competitor_url\"\n              ],\n              \"additionalProperties\": false\n            }\n          }\n        },\n        \"required\": [\n          \"competitors\"\n        ],\n        \"additionalProperties\": false\n      }\n    },\n    \"verbosity\": \"low\"\n  },\n  \"reasoning\": {\n    \"effort\": \"high\",\n    \"summary\": null\n  },\n  \"tools\": [],\n  \"store\": false\n\n}\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        544,
+        0
+      ],
+      "id": "6c478ffd-6368-4c95-8801-d82ef4186a9d",
+      "name": "Set API JSON",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "jsCode": "// Берём первый item из входных данных\nconst input = items[0].json;\n\n// Достаём массив competitors\nconst competitors = input.arr.competitors;\n\n// Разворачиваем каждый объект в отдельный item\nreturn competitors.map((c, index) => ({\n  json: {\n    index,\n    competitor_name: c.competitor_name,\n    competitor_type: c.competitor_type,\n    competitor_url: c.competitor_url\n  }\n}));"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1536,
+        0
+      ],
+      "id": "cf6cd4f0-6ab0-448d-b144-a72c96ddb3be",
+      "name": "Parse JSON"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "11ac8bb1-a8b3-4857-81b9-3b42917b89b6",
+              "name": "output",
+              "value": "{\"competitors\":[{\"competitor_name\":\"Алгоритмика (Algorithmics)\",\"competitor_type\":\"franchise\",\"competitor_url\":\"https://algoritmika.org\"},{\"competitor_name\":\"CODDY\",\"competitor_type\":\"franchise\",\"competitor_url\":\"https://coddyschool.com\"},{\"competitor_name\":\"ROBBO Club\",\"competitor_type\":\"franchise\",\"competitor_url\":\"https://robboclub.ru\"},{\"competitor_name\":\"Logiscool\",\"competitor_type\":\"franchise\",\"competitor_url\":\"https://www.logiscool.com\"},{\"competitor_name\":\"IT Step Academy (ШАГ)\",\"competitor_type\":\"franchise\",\"competitor_url\":\"https://itstep.org\"},{\"competitor_name\":\"Code Ninjas\",\"competitor_type\":\"franchise\",\"competitor_url\":\"https://www.codeninjas.com\"},{\"competitor_name\":\"iCode School\",\"competitor_type\":\"franchise\",\"competitor_url\":\"https://icodeschool.com\"},{\"competitor_name\":\"Engineering For Kids\",\"competitor_type\":\"franchise\",\"competitor_url\":\"https://www.engineeringforkids.com\"},{\"competitor_name\":\"IT-Куб (центры цифрового образования)\",\"competitor_type\":\"local\",\"competitor_url\":\"https://it-cube.su\"},{\"competitor_name\":\"Кванториум (детский технопарк)\",\"competitor_type\":\"local\",\"competitor_url\":\"https://kvantorium.ru\"},{\"competitor_name\":\"Яндекс Лицей\",\"competitor_type\":\"global\",\"competitor_url\":\"https://lyceum.yandex.ru\"},{\"competitor_name\":\"IT Школа Samsung\",\"competitor_type\":\"global\",\"competitor_url\":\"https://itschool.samsung.ru\"},{\"competitor_name\":\"Академия Иннополис (для школьников)\",\"competitor_type\":\"global\",\"competitor_url\":\"https://academy.innopolis.ru\"},{\"competitor_name\":\"Сириус (курсы и смены по информатике)\",\"competitor_type\":\"global\",\"competitor_url\":\"https://sochisirius.ru\"},{\"competitor_name\":\"Kodland (Кодланд)\",\"competitor_type\":\"global\",\"competitor_url\":\"https://kodland.org\"},{\"competitor_name\":\"itgenio\",\"competitor_type\":\"global\",\"competitor_url\":\"https://itgen.io\"},{\"competitor_name\":\"Фоксфорд (программирование для школьников)\",\"competitor_type\":\"global\",\"competitor_url\":\"https://foxford.ru\"},{\"competitor_name\":\"Skysmart (курсы программирования)\",\"competitor_type\":\"global\",\"competitor_url\":\"https://skysmart.ru\"},{\"competitor_name\":\"Тетрика (программирование для школьников)\",\"competitor_type\":\"global\",\"competitor_url\":\"https://tetrika-school.ru\"},{\"competitor_name\":\"GeekBrains (курсы для школьников)\",\"competitor_type\":\"global\",\"competitor_url\":\"https://geekbrains.ru\"},{\"competitor_name\":\"Нетология\",\"competitor_type\":\"global\",\"competitor_url\":\"https://netology.ru\"},{\"competitor_name\":\"Skillbox\",\"competitor_type\":\"global\",\"competitor_url\":\"https://skillbox.ru\"},{\"competitor_name\":\"SkillFactory\",\"competitor_type\":\"global\",\"competitor_url\":\"https://skillfactory.ru\"},{\"competitor_name\":\"Яндекс Практикум\",\"competitor_type\":\"global\",\"competitor_url\":\"https://practicum.yandex.ru\"},{\"competitor_name\":\"Uchi.ru (информатика/программирование)\",\"competitor_type\":\"global\",\"competitor_url\":\"https://uchi.ru\"},{\"competitor_name\":\"Stepik\",\"competitor_type\":\"global\",\"competitor_url\":\"https://stepik.org\"},{\"competitor_name\":\"Coursera\",\"competitor_type\":\"global\",\"competitor_url\":\"https://coursera.org\"},{\"competitor_name\":\"edX\",\"competitor_type\":\"global\",\"competitor_url\":\"https://edx.org\"},{\"competitor_name\":\"Udemy\",\"competitor_type\":\"global\",\"competitor_url\":\"https://udemy.com\"},{\"competitor_name\":\"Codecademy\",\"competitor_type\":\"global\",\"competitor_url\":\"https://codecademy.com\"},{\"competitor_name\":\"Khan Academy (программирование)\",\"competitor_type\":\"global\",\"competitor_url\":\"https://ru.khanacademy.org\"},{\"competitor_name\":\"Code.org\",\"competitor_type\":\"global\",\"competitor_url\":\"https://code.org\"},{\"competitor_name\":\"Hour of Code\",\"competitor_type\":\"global\",\"competitor_url\":\"https://hourofcode.com\"},{\"competitor_name\":\"freeCodeCamp\",\"competitor_type\":\"global\",\"competitor_url\":\"https://freecodecamp.org\"},{\"competitor_name\":\"iD Tech\",\"competitor_type\":\"global\",\"competitor_url\":\"https://www.idtech.com\"},{\"competitor_name\":\"Tynker\",\"competitor_type\":\"global\",\"competitor_url\":\"https://www.tynker.com\"},{\"competitor_name\":\"CodeMonkey\",\"competitor_type\":\"global\",\"competitor_url\":\"https://www.codemonkey.com\"},{\"competitor_name\":\"Kodable\",\"competitor_type\":\"global\",\"competitor_url\":\"https://www.kodable.com\"},{\"competitor_name\":\"Scratch (онлайн-платформа)\",\"competitor_type\":\"global\",\"competitor_url\":\"https://scratch.mit.edu\"},{\"competitor_name\":\"CodeCombat\",\"competitor_type\":\"global\",\"competitor_url\":\"https://codecombat.com\"},{\"competitor_name\":\"CodeHS\",\"competitor_type\":\"global\",\"competitor_url\":\"https://codehs.com\"},{\"competitor_name\":\"Google CS First\",\"competitor_type\":\"global\",\"competitor_url\":\"https://csfirst.withgoogle.com\"},{\"competitor_name\":\"Microsoft MakeCode\",\"competitor_type\":\"global\",\"competitor_url\":\"https://makecode.com\"},{\"competitor_name\":\"Blockly Games\",\"competitor_type\":\"global\",\"competitor_url\":\"https://blockly.games\"},{\"competitor_name\":\"Lightbot\",\"competitor_type\":\"global\",\"competitor_url\":\"https://lightbot.com\"},{\"competitor_name\":\"Roblox Education\",\"competitor_type\":\"global\",\"competitor_url\":\"https://education.roblox.com\"},{\"competitor_name\":\"Unity Learn\",\"competitor_type\":\"global\",\"competitor_url\":\"https://learn.unity.com\"},{\"competitor_name\":\"Unreal Online Learning\",\"competitor_type\":\"global\",\"competitor_url\":\"https://www.unrealengine.com/onlinelearning\"},{\"competitor_name\":\"JetBrains Academy (Hyperskill)\",\"competitor_type\":\"global\",\"competitor_url\":\"https://hyperskill.org\"},{\"competitor_name\":\"CodeGym\",\"competitor_type\":\"global\",\"competitor_url\":\"https://codegym.cc\"},{\"competitor_name\":\"SoloLearn\",\"competitor_type\":\"global\",\"competitor_url\":\"https://www.sololearn.com\"},{\"competitor_name\":\"e-olymp\",\"competitor_type\":\"global\",\"competitor_url\":\"https://www.e-olymp.com\"},{\"competitor_name\":\"Timus Online Judge\",\"competitor_type\":\"global\",\"competitor_url\":\"https://acm.timus.ru\"},{\"competitor_name\":\"Codeforces\",\"competitor_type\":\"global\",\"competitor_url\":\"https://codeforces.com\"},{\"competitor_name\":\"AtCoder\",\"competitor_type\":\"global\",\"competitor_url\":\"https://atcoder.jp\"},{\"competitor_name\":\"OpenEdu (Открытое образование)\",\"competitor_type\":\"global\",\"competitor_url\":\"https://openedu.ru\"},{\"competitor_name\":\"Pluralsight\",\"competitor_type\":\"global\",\"competitor_url\":\"https://www.pluralsight.com\"},{\"competitor_name\":\"Udacity\",\"competitor_type\":\"global\",\"competitor_url\":\"https://www.udacity.com\"},{\"competitor_name\":\"DataCamp\",\"competitor_type\":\"global\",\"competitor_url\":\"https://www.datacamp.com\"},{\"competitor_name\":\"СГУ (доп. курсы по программированию для школьников)\",\"competitor_type\":\"local\",\"competitor_url\":\"https://www.sgu.ru\"},{\"competitor_name\":\"СГТУ им. Гагарина (подготовительные/IT-курсы для школьников)\",\"competitor_type\":\"local\",\"competitor_url\":\"https://www.sstu.ru\"}]}",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1024,
+        0
+      ],
+      "id": "d5ab1ed9-c2cb-4e5b-8dd2-c12cb74bf4e0",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "e6d5f740-801a-406e-bbc1-04830ee734db",
+              "name": "arr",
+              "value": "={{ JSON.parse($json.output) }}",
+              "type": "object"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1232,
+        0
+      ],
+      "id": "e61fc3de-9ad1-44e0-9219-61f31cd72828",
+      "name": "Edit Fields1"
+    },
+    {
+      "parameters": {
+        "content": "Вернуть обработку запроса!!!!"
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        480,
+        -240
+      ],
+      "id": "0a0e3cba-6a41-453c-82e5-ddf4bc514a8a",
+      "name": "Sticky Note"
+    }
+  ],
+  "connections": {
+    "Get a file1": {
+      "main": [
+        [
+          {
+            "node": "Extract from File2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File2": {
+      "main": [
+        [
+          {
+            "node": "Code3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Get a file1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code3": {
+      "main": [
+        [
+          {
+            "node": "Set API JSON",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set API JSON": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse JSON": {
+      "main": [
+        [
+          {
+            "node": "Insert rows in a table",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "Parse JSON",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "537ef7ee-2460-433d-bcba-cdf94ef04523",
+  "triggerCount": 0,
+  "shared": [
+    {
+      "createdAt": "2025-08-26T10:03:01.554Z",
+      "updatedAt": "2025-08-26T10:03:01.554Z",
+      "role": "workflow:owner",
+      "workflowId": "qZMv5r8jBaqoTTaR",
+      "projectId": "spKmbJLU4mvACXIB"
+    }
+  ],
+  "tags": []
+}
