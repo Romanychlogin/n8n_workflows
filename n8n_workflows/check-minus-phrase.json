@@ -1,0 +1,444 @@
+{
+  "createdAt": "2025-08-02T09:46:56.868Z",
+  "updatedAt": "2025-09-11T07:52:22.220Z",
+  "id": "LxEfuLzRCXUYFneg",
+  "name": "Check minus phrase",
+  "active": false,
+  "isArchived": true,
+  "nodes": [
+    {
+      "parameters": {
+        "inputSource": "passthrough"
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "52683f40-1fc8-4251-95c6-a0a443928265",
+      "name": "When Executed by Another Workflow"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-5",
+          "mode": "list",
+          "cachedResultName": "GPT-5"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "={{ $json.prompt }}"
+            }
+          ]
+        },
+        "simplify": false,
+        "options": {
+          "maxToolsIterations": 15
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        576,
+        128
+      ],
+      "id": "9729cbaa-a01a-470e-80c6-03a274f13dba",
+      "name": "Message a model",
+      "retryOnFail": true,
+      "waitBetweenTries": 5000,
+      "credentials": {
+        "openAiApi": {
+          "id": "V8R8KiZKXscJQ1sL",
+          "name": "OpenAi account"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        1232,
+        0
+      ],
+      "id": "ff256063-438b-470a-83c6-1272d843e2b9",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "3a2986b7-fe2d-4cd7-b72f-473d05165f2a",
+              "name": "prompt",
+              "value": "={{$json.data + $json.minus_word +$json.second_part}}",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        352,
+        0
+      ],
+      "id": "38b0de84-882e-459f-a228-1424c94c370c",
+      "name": "Combine text"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "50d50dfa-06ce-4861-aa51-7e142501a6de",
+              "name": "choices[0].message.content",
+              "value": "яблоко, огурец, банан",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        928,
+        240
+      ],
+      "id": "f93209f8-540d-4bab-9e9d-a8dcdac6bf96",
+      "name": "Dedug",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "abfe2072-729a-4b5c-a9b0-d0dbb87d0ed4",
+              "name": "ai_responce_minus",
+              "value": "={{ $json.choices[0].message.content }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1088,
+        224
+      ],
+      "id": "882c7704-f5c6-4507-8e2d-0f6a48d31aec",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "d10ca5d0-72f0-42be-ad01-fea30d7af736",
+              "name": "keep_minus",
+              "value": true,
+              "type": "boolean"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1760,
+        -336
+      ],
+      "id": "8f6f253e-d577-4de0-b386-0d9173c3dd01",
+      "name": "Edit Fields1"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "b86126c5-1378-4317-b063-2cd908dd8b3b",
+              "name": "keep_minus",
+              "value": false,
+              "type": "boolean"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1760,
+        -144
+      ],
+      "id": "65942e0e-952e-4e3a-98e1-3a04cba1dc14",
+      "name": "Edit Fields2"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "ba486f3b-f6d8-4d2d-9e19-3f83f0c18092",
+              "name": "Second_part",
+              "value": "** think step by step**",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        192,
+        0
+      ],
+      "id": "c866c18c-9521-49af-bb2a-6c529f551d00",
+      "name": "Set fixed text"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.ai_responce_minus }}",
+                    "rightValue": "true_phrase",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "0fb56691-c139-4c1c-9e86-3c61680ab658"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "true_phrase"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "f404176a-b85b-4b90-a03f-834e214c37b9",
+                    "leftValue": "={{ $json.ai_responce_minus }}",
+                    "rightValue": "rejected",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "rejected"
+            }
+          ]
+        },
+        "options": {
+          "fallbackOutput": "extra"
+        }
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        1440,
+        0
+      ],
+      "id": "7463a797-f9fe-4d77-80f5-d54841dfb7c2",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "a6a503d4-cca9-4834-871b-7f1e982b7707",
+              "name": "minus_word_v2",
+              "value": "={{ $json.ai_responce_minus }}",
+              "type": "string"
+            },
+            {
+              "id": "a86d243d-6d27-45bf-a619-acdcc51cbcfb",
+              "name": "keep_minus",
+              "value": true,
+              "type": "boolean"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1648,
+        112
+      ],
+      "id": "f48a4e9b-a386-4013-b449-83e841fe3b05",
+      "name": "Edit Fields3"
+    }
+  ],
+  "connections": {
+    "Message a model": {
+      "main": [
+        [
+          {
+            "node": "Dedug",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Combine text": {
+      "main": [
+        [
+          {
+            "node": "Message a model",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Dedug": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "Set fixed text",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set fixed text": {
+      "main": [
+        [
+          {
+            "node": "Combine text",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Edit Fields2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Edit Fields3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": {},
+  "versionId": "25a32790-08fd-46dc-bda7-8e396c28fcfa",
+  "triggerCount": 0,
+  "shared": [
+    {
+      "createdAt": "2025-08-02T09:46:56.868Z",
+      "updatedAt": "2025-08-02T09:46:56.868Z",
+      "role": "workflow:owner",
+      "workflowId": "LxEfuLzRCXUYFneg",
+      "projectId": "spKmbJLU4mvACXIB"
+    }
+  ],
+  "tags": []
+}
