@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-23T20:32:53.458Z",
-  "updatedAt": "2025-09-24T07:27:15.361Z",
+  "updatedAt": "2025-09-24T07:34:06.051Z",
   "id": "buEFTEMfZEENQOel",
   "name": "github_repo_workflows_sync",
   "active": false,
@@ -321,8 +321,8 @@
       "name": "Update workflow in n8n",
       "type": "n8n-nodes-base.n8n",
       "position": [
-        64,
-        384
+        272,
+        368
       ],
       "typeVersion": 1
     },
@@ -335,8 +335,8 @@
       "name": "Code - InputB",
       "type": "n8n-nodes-base.code",
       "position": [
-        -160,
-        384
+        48,
+        368
       ],
       "typeVersion": 2
     },
@@ -643,19 +643,6 @@
     },
     {
       "parameters": {
-        "options": {}
-      },
-      "type": "n8n-nodes-base.set",
-      "typeVersion": 3.4,
-      "position": [
-        800,
-        128
-      ],
-      "id": "69c9631b-4ce4-4b71-b78e-a25204b3cc6b",
-      "name": "Edit Fields1"
-    },
-    {
-      "parameters": {
         "conditions": {
           "options": {
             "caseSensitive": true,
@@ -686,6 +673,60 @@
       ],
       "id": "0067de16-31a9-4597-a5cd-16b5890b27ca",
       "name": "if is not archived"
+    },
+    {
+      "parameters": {
+        "chatId": "-1003052639964",
+        "text": "={{ $json.text }}",
+        "additionalFields": {
+          "appendAttribution": true,
+          "parse_mode": "MarkdownV2"
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1184,
+        64
+      ],
+      "id": "4e432949-7630-409d-8954-e89772a17251",
+      "name": "Send a incident message",
+      "webhookId": "a18d9a87-250a-437a-9193-952ef1cc833c",
+      "credentials": {
+        "telegramApi": {
+          "id": "ttGHKrzQMaymkKXW",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "Ветка для обратной загрузки в n8n - отключена\n",
+        "height": 304,
+        "width": 656
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -128,
+        240
+      ],
+      "id": "4fdaf104-7a92-466c-b53c-b9febb1b2cd5",
+      "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
+        "jsCode": "let incident_text = '*Ошибка экспорта в gitHub*\\n';\nincident_text =incident_text+'*'+now.toLocaleTimeString('ru-RU', { timeZone:'Europe/Moscow', hour: '2-digit', minute: '2-digit' })+' MSK*';\n\nreturn [{ json: { text: incident_text } }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        896,
+        64
+      ],
+      "id": "217a8101-9a54-4799-87c3-d8122620ad1f",
+      "name": "Set error message",
+      "executeOnce": false
     }
   ],
   "connections": {
@@ -930,7 +971,7 @@
         [],
         [
           {
-            "node": "Edit Fields1",
+            "node": "Set error message",
             "type": "main",
             "index": 0
           }
@@ -945,6 +986,24 @@
             "type": "main",
             "index": 0
           }
+        ],
+        [
+          {
+            "node": "n8n vs GitHub",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set error message": {
+      "main": [
+        [
+          {
+            "node": "Send a incident message",
+            "type": "main",
+            "index": 0
+          }
         ]
       ]
     }
@@ -955,7 +1014,7 @@
   "staticData": null,
   "meta": null,
   "pinData": {},
-  "versionId": "29e06b0b-e27e-4d23-a213-1ea4b71855ca",
+  "versionId": "fec74aae-3597-4f3f-ba74-5f2795304e4e",
   "triggerCount": 0,
   "shared": [
     {
