@@ -1,9 +1,9 @@
 {
   "createdAt": "2025-09-23T20:32:53.458Z",
-  "updatedAt": "2025-09-24T08:30:39.816Z",
+  "updatedAt": "2025-09-24T08:31:49.267Z",
   "id": "buEFTEMfZEENQOel",
   "name": "github_repo_workflows_sync",
-  "active": false,
+  "active": true,
   "isArchived": false,
   "nodes": [
     {
@@ -324,7 +324,13 @@
         272,
         368
       ],
-      "typeVersion": 1
+      "typeVersion": 1,
+      "credentials": {
+        "n8nApi": {
+          "id": "WLaJZQv44MOJEghD",
+          "name": "n8n account"
+        }
+      }
     },
     {
       "parameters": {
@@ -746,7 +752,7 @@
     },
     {
       "parameters": {
-        "jsCode": "let incident_text = '*Экспорт а gitHub выполнен*\\n';\nconst items = $input.all();\nconst now = new Date();\n// Экранирование под Telegram MarkdownV2\nfunction escapeMarkdownV2(s) {\n  // список из оф. доки Telegram для MarkdownV2:\n  // _ * [ ] ( ) ~ ` > # + - = | { } . !\n  return String(s).replace(/([_*\\[\\]()~`>#+\\-=|{}.!])/g, '\\\\$1');\n}\n$json.content.name\nincident_text =incident_text+'*'+now.toLocaleTimeString('ru-RU', { timeZone:'Europe/Moscow', hour: '2-digit', minute: '2-digit' })+' MSK*\\n';\n// Строка для каждого входного объекта\nfor (const it of items) {\n  const mode = String(it.json?.mode ?? '').toLowerCase();\n  const name = escapeMarkdownV2(it.json?.content?.name ?? '(без имени)');\n  if (mode === 'created') {\n    incident_text += 'Добавлен процесс: ' + name + '\\\\n';\n  } else if (mode === 'modified') {\n    incident_text += 'Обновлен процесс: ' + name + '\\\\n';\n  }\n}\n\nreturn [{ json: { text: incident_text } }];"
+        "jsCode": "let incident_text = '*Экспорт а gitHub выполнен*\\n';\nconst items = $input.all();\nconst now = new Date();\n// Экранирование под Telegram MarkdownV2\nfunction escapeMarkdownV2(s) {\n  // список из оф. доки Telegram для MarkdownV2:\n  // _ * [ ] ( ) ~ ` > # + - = | { } . !\n  return String(s).replace(/([_*\\[\\]()~`>#+\\-=|{}.!])/g, '\\\\$1');\n}\n$json.content.name\nincident_text =incident_text+'*'+now.toLocaleTimeString('ru-RU', { timeZone:'Europe/Moscow', hour: '2-digit', minute: '2-digit' })+' MSK*\\n';\n// Строка для каждого входного объекта\nfor (const it of items) {\n  const mode = String(it.json?.mode ?? '').toLowerCase();\n  const name = escapeMarkdownV2(it.json?.content?.name ?? '(без имени)');\n  if (mode === 'created') {\n    incident_text += 'Добавлен процесс: ' + name + '\\n';\n  } else if (mode === 'modified') {\n    incident_text += 'Обновлен процесс: ' + name + '\\n';\n  }\n}\n\nreturn [{ json: { text: incident_text } }];"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -1308,11 +1314,17 @@
   "settings": {
     "executionOrder": "v1"
   },
-  "staticData": null,
-  "meta": null,
+  "staticData": {
+    "node:Schedule Trigger": {
+      "recurrenceRules": []
+    }
+  },
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
   "pinData": {},
-  "versionId": "6643e96d-6867-44da-9744-f6a7c242d83e",
-  "triggerCount": 0,
+  "versionId": "7a5ab71a-a077-4d3e-9dfc-9ba1f8594445",
+  "triggerCount": 1,
   "shared": [
     {
       "createdAt": "2025-09-23T20:32:53.458Z",
