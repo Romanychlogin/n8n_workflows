@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-23T20:32:53.458Z",
-  "updatedAt": "2025-09-24T08:13:53.496Z",
+  "updatedAt": "2025-09-24T08:16:10.279Z",
   "id": "buEFTEMfZEENQOel",
   "name": "github_repo_workflows_sync",
   "active": false,
@@ -746,13 +746,13 @@
     },
     {
       "parameters": {
-        "jsCode": "let incident_text = '*Успешный экспорт а gitHub*\\n';\nconst now = new Date();\n// Экранирование под Telegram MarkdownV2\nfunction escapeMarkdownV2(s) {\n  // список из оф. доки Telegram для MarkdownV2:\n  // _ * [ ] ( ) ~ ` > # + - = | { } . !\n  return String(s).replace(/([_*\\[\\]()~`>#+\\-=|{}.!])/g, '\\\\$1');\n}\n\nincident_text =incident_text+'*'+now.toLocaleTimeString('ru-RU', { timeZone:'Europe/Moscow', hour: '2-digit', minute: '2-digit' })+' MSK*\\n';\n\n\nreturn [{ json: { text: incident_text } }];"
+        "jsCode": "let incident_text = '*Экспорт а gitHub выполнен*\\n';\nconst now = new Date();\n// Экранирование под Telegram MarkdownV2\nfunction escapeMarkdownV2(s) {\n  // список из оф. доки Telegram для MarkdownV2:\n  // _ * [ ] ( ) ~ ` > # + - = | { } . !\n  return String(s).replace(/([_*\\[\\]()~`>#+\\-=|{}.!])/g, '\\\\$1');\n}\n\nincident_text =incident_text+'*'+now.toLocaleTimeString('ru-RU', { timeZone:'Europe/Moscow', hour: '2-digit', minute: '2-digit' })+' MSK*\\n';\n\n\nreturn [{ json: { text: incident_text } }];"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        2576,
-        160
+        2464,
+        192
       ],
       "id": "3ad1c32d-2079-443c-a4c1-b50d7563f8f3",
       "name": "Set success message",
@@ -770,8 +770,8 @@
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
       "position": [
-        2832,
-        160
+        2688,
+        192
       ],
       "id": "8e9140e0-834f-4520-aaeb-7ef1e0952743",
       "name": "Send a success",
@@ -874,17 +874,6 @@
       "typeVersion": 2.3
     },
     {
-      "parameters": {},
-      "type": "n8n-nodes-base.merge",
-      "typeVersion": 3.2,
-      "position": [
-        2144,
-        176
-      ],
-      "id": "ed2ec075-495f-4e2c-977d-022dfc2d58e9",
-      "name": "Merge1"
-    },
-    {
       "parameters": {
         "conditions": {
           "options": {
@@ -912,8 +901,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        2352,
-        176
+        2176,
+        224
       ],
       "id": "160e23c5-6f79-4cf5-a18a-d038675f6990",
       "name": "If"
@@ -1183,13 +1172,7 @@
             "index": 0
           }
         ],
-        [
-          {
-            "node": "n8n vs GitHub",
-            "type": "main",
-            "index": 0
-          }
-        ]
+        []
       ]
     },
     "Set error message": {
@@ -1229,7 +1212,7 @@
       "main": [
         [
           {
-            "node": "Merge1",
+            "node": "If",
             "type": "main",
             "index": 0
           }
@@ -1280,26 +1263,9 @@
         ]
       ]
     },
-    "Merge1": {
-      "main": [
-        [
-          {
-            "node": "If",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Send a incident message": {
       "main": [
-        [
-          {
-            "node": "Merge1",
-            "type": "main",
-            "index": 1
-          }
-        ]
+        []
       ]
     },
     "If": {
@@ -1320,7 +1286,7 @@
   "staticData": null,
   "meta": null,
   "pinData": {},
-  "versionId": "f2f01749-cd2c-4366-801e-7b5c36edee5f",
+  "versionId": "fe5510a6-ddbd-402b-ad60-dabfc7b321b8",
   "triggerCount": 0,
   "shared": [
     {
