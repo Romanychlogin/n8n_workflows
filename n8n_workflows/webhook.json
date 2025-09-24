@@ -1,0 +1,83 @@
+{
+  "createdAt": "2025-07-24T18:32:03.955Z",
+  "updatedAt": "2025-09-11T07:52:37.727Z",
+  "id": "jNai7OTrzCdVwATd",
+  "name": "Webhook",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "32103faa-eddc-4b70-ae88-6f65a9a11f52",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "d47b453d-cdfa-47c9-877b-e7e0e474963b",
+      "name": "Webhook",
+      "webhookId": "32103faa-eddc-4b70-ae88-6f65a9a11f52"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        220,
+        0
+      ],
+      "id": "948ddf16-62de-4517-bf1a-116b7c968800",
+      "name": "No Operation, do nothing"
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "No Operation, do nothing",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": {
+    "Webhook": [
+      {
+        "json": {
+          "name": "First item",
+          "code": 1
+        }
+      },
+      {
+        "json": {
+          "name": "Second item",
+          "code": 2
+        }
+      }
+    ]
+  },
+  "versionId": "8a4eaf67-fbd0-497d-8600-283d857b05e5",
+  "triggerCount": 1,
+  "shared": [
+    {
+      "createdAt": "2025-07-24T18:32:03.955Z",
+      "updatedAt": "2025-07-24T18:32:03.955Z",
+      "role": "workflow:owner",
+      "workflowId": "jNai7OTrzCdVwATd",
+      "projectId": "spKmbJLU4mvACXIB"
+    }
+  ],
+  "tags": []
+}
