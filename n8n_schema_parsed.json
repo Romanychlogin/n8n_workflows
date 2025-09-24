@@ -1,0 +1,552 @@
+{
+  "tables": [
+    {
+      "name": "ads_list",
+      "columns": [
+        {
+          "name": "ad_id",
+          "type": "bigint NOT NULL"
+        },
+        {
+          "name": "group_name",
+          "type": "text"
+        },
+        {
+          "name": "key_words",
+          "type": "text"
+        },
+        {
+          "name": "ad_header",
+          "type": "text"
+        },
+        {
+          "name": "ad_text",
+          "type": "text"
+        },
+        {
+          "name": "group_id",
+          "type": "bigint DEFAULT 0"
+        },
+        {
+          "name": "ad_url",
+          "type": "text"
+        },
+        {
+          "name": "company_id",
+          "type": "bigint"
+        }
+      ],
+      "primary_key": null,
+      "foreign_keys": []
+    },
+    {
+      "name": "companies",
+      "columns": [
+        {
+          "name": "company_id",
+          "type": "bigint NOT NULL"
+        },
+        {
+          "name": "company_name",
+          "type": "text NOT NULL"
+        },
+        {
+          "name": "company_url",
+          "type": "text"
+        },
+        {
+          "name": "created_at",
+          "type": "timestamp with time zone DEFAULT now() NOT NULL"
+        },
+        {
+          "name": "updated_at",
+          "type": "timestamp with time zone DEFAULT now() NOT NULL"
+        },
+        {
+          "name": "description",
+          "type": "text"
+        },
+        {
+          "name": "description_with_url",
+          "type": "text"
+        },
+        {
+          "name": "yandex_id",
+          "type": "bigint"
+        },
+        {
+          "name": "yandex_region",
+          "type": "text"
+        }
+      ],
+      "primary_key": null,
+      "foreign_keys": []
+    },
+    {
+      "name": "company_content_from_user",
+      "columns": [
+        {
+          "name": "content_id",
+          "type": "bigint NOT NULL"
+        },
+        {
+          "name": "content",
+          "type": "text NOT NULL"
+        },
+        {
+          "name": "company_id",
+          "type": "bigint NOT NULL"
+        },
+        {
+          "name": "service_id",
+          "type": "bigint"
+        },
+        {
+          "name": "created_at",
+          "type": "timestamp with time zone DEFAULT now() NOT NULL"
+        },
+        {
+          "name": "updated_at",
+          "type": "timestamp with time zone DEFAULT now() NOT NULL"
+        },
+        {
+          "name": "CONSTRAINT",
+          "type": "chk_ccfu_content_not_blank CHECK ((length(btrim(content)) > 0))"
+        }
+      ],
+      "primary_key": null,
+      "foreign_keys": []
+    },
+    {
+      "name": "company_services",
+      "columns": [
+        {
+          "name": "service_id",
+          "type": "bigint NOT NULL"
+        },
+        {
+          "name": "service_name",
+          "type": "text NOT NULL"
+        },
+        {
+          "name": "service_url",
+          "type": "text"
+        },
+        {
+          "name": "service_description",
+          "type": "text"
+        },
+        {
+          "name": "company_id",
+          "type": "bigint NOT NULL"
+        },
+        {
+          "name": "created_at",
+          "type": "timestamp with time zone DEFAULT now() NOT NULL"
+        },
+        {
+          "name": "updated_at",
+          "type": "timestamp with time zone DEFAULT now() NOT NULL"
+        },
+        {
+          "name": "service_bid",
+          "type": "integer"
+        }
+      ],
+      "primary_key": null,
+      "foreign_keys": []
+    },
+    {
+      "name": "current_ads_list",
+      "columns": [
+        {
+          "name": "CREATE",
+          "type": "TABLE public.current_ads_list ("
+        }
+      ],
+      "primary_key": null,
+      "foreign_keys": []
+    },
+    {
+      "name": "current_list",
+      "columns": [
+        {
+          "name": "list_id",
+          "type": "bigint NOT NULL"
+        },
+        {
+          "name": "key_word",
+          "type": "text"
+        },
+        {
+          "name": "campaign_id",
+          "type": "bigint"
+        },
+        {
+          "name": "used_keyword",
+          "type": "text"
+        },
+        {
+          "name": "group_id",
+          "type": "bigint"
+        },
+        {
+          "name": "condition_type",
+          "type": "text"
+        },
+        {
+          "name": "category",
+          "type": "text"
+        },
+        {
+          "name": "ads_header",
+          "type": "text"
+        },
+        {
+          "name": "date",
+          "type": "date"
+        },
+        {
+          "name": "resolution",
+          "type": "text"
+        },
+        {
+          "name": "count_views",
+          "type": "integer"
+        },
+        {
+          "name": "count_clics",
+          "type": "integer"
+        },
+        {
+          "name": "count_convetions",
+          "type": "integer"
+        },
+        {
+          "name": "ai_response_tokens",
+          "type": "integer"
+        },
+        {
+          "name": "company_id",
+          "type": "bigint"
+        }
+      ],
+      "primary_key": null,
+      "foreign_keys": []
+    },
+    {
+      "name": "current_minus_words",
+      "columns": [
+        {
+          "name": "minus_id",
+          "type": "bigint NOT NULL"
+        },
+        {
+          "name": "minus_word",
+          "type": "text"
+        },
+        {
+          "name": "current_record_id",
+          "type": "bigint"
+        },
+        {
+          "name": "keep_minus",
+          "type": "boolean"
+        },
+        {
+          "name": "minus_word_v2",
+          "type": "text"
+        },
+        {
+          "name": "keep_minus_v2",
+          "type": "boolean"
+        },
+        {
+          "name": "comment",
+          "type": "text"
+        }
+      ],
+      "primary_key": null,
+      "foreign_keys": []
+    },
+    {
+      "name": "errors",
+      "columns": [
+        {
+          "name": "id",
+          "type": "bigint NOT NULL"
+        },
+        {
+          "name": "responce",
+          "type": "\" text"
+        },
+        {
+          "name": "comment",
+          "type": "text"
+        },
+        {
+          "name": "list_num",
+          "type": "integer"
+        }
+      ],
+      "primary_key": null,
+      "foreign_keys": []
+    },
+    {
+      "name": "key_words",
+      "columns": [
+        {
+          "name": "key_word_id",
+          "type": "bigint NOT NULL"
+        },
+        {
+          "name": "company_id",
+          "type": "bigint"
+        },
+        {
+          "name": "key_word",
+          "type": "text NOT NULL"
+        },
+        {
+          "name": "wordstat_count",
+          "type": "integer"
+        },
+        {
+          "name": "service_id",
+          "type": "bigint"
+        },
+        {
+          "name": "wordstat_parsed",
+          "type": "boolean DEFAULT false"
+        },
+        {
+          "name": "from_wordstat",
+          "type": "boolean DEFAULT false"
+        },
+        {
+          "name": "is_relevant",
+          "type": "boolean"
+        },
+        {
+          "name": "ai_response_tokens",
+          "type": "bigint"
+        },
+        {
+          "name": "minus_words_processed",
+          "type": "boolean DEFAULT false NOT NULL"
+        },
+        {
+          "name": "is_adv_processed",
+          "type": "boolean DEFAULT false NOT NULL"
+        }
+      ],
+      "primary_key": null,
+      "foreign_keys": []
+    },
+    {
+      "name": "minus_words",
+      "columns": [
+        {
+          "name": "id",
+          "type": "bigint NOT NULL"
+        },
+        {
+          "name": "minus_word",
+          "type": "text"
+        },
+        {
+          "name": "comment",
+          "type": "text"
+        },
+        {
+          "name": "company_id",
+          "type": "bigint"
+        },
+        {
+          "name": "key_word_id",
+          "type": "bigint"
+        }
+      ],
+      "primary_key": null,
+      "foreign_keys": []
+    },
+    {
+      "name": "minus_words_global",
+      "columns": [
+        {
+          "name": "id",
+          "type": "bigint NOT NULL"
+        },
+        {
+          "name": "minus_word",
+          "type": "text"
+        },
+        {
+          "name": "date",
+          "type": "date"
+        }
+      ],
+      "primary_key": null,
+      "foreign_keys": []
+    },
+    {
+      "name": "my_list",
+      "columns": [
+        {
+          "name": "id",
+          "type": "bigint NOT NULL"
+        },
+        {
+          "name": "name",
+          "type": "text"
+        },
+        {
+          "name": "count",
+          "type": "integer"
+        },
+        {
+          "name": "keep_it",
+          "type": "boolean DEFAULT true"
+        },
+        {
+          "name": "ai_responce",
+          "type": "text"
+        }
+      ],
+      "primary_key": null,
+      "foreign_keys": []
+    },
+    {
+      "name": "raw_list",
+      "columns": [
+        {
+          "name": "id",
+          "type": "bigint NOT NULL"
+        },
+        {
+          "name": "name",
+          "type": "text"
+        },
+        {
+          "name": "count",
+          "type": "integer"
+        },
+        {
+          "name": "keep_it",
+          "type": "boolean"
+        }
+      ],
+      "primary_key": null,
+      "foreign_keys": []
+    }
+  ],
+  "raw_tables": [
+    "CREATE TABLE public.ads_list (\n    ad_id bigint NOT NULL,\n    group_name text,\n    key_words text,\n    ad_header text,\n    ad_text text,\n    group_id bigint DEFAULT 0,\n    ad_url text,\n    company_id bigint\n);",
+    "CREATE TABLE public.companies (\n    company_id bigint NOT NULL,\n    company_name text NOT NULL,\n    company_url text,\n    created_at timestamp with time zone DEFAULT now() NOT NULL,\n    updated_at timestamp with time zone DEFAULT now() NOT NULL,\n    description text,\n    description_with_url text,\n    yandex_id bigint,\n    yandex_region text\n);",
+    "CREATE TABLE public.company_content_from_user (\n    content_id bigint NOT NULL,\n    content text NOT NULL,\n    company_id bigint NOT NULL,\n    service_id bigint,\n    created_at timestamp with time zone DEFAULT now() NOT NULL,\n    updated_at timestamp with time zone DEFAULT now() NOT NULL,\n    CONSTRAINT chk_ccfu_content_not_blank CHECK ((length(btrim(content)) > 0))\n);",
+    "CREATE TABLE public.company_services (\n    service_id bigint NOT NULL,\n    service_name text NOT NULL,\n    service_url text,\n    service_description text,\n    company_id bigint NOT NULL,\n    created_at timestamp with time zone DEFAULT now() NOT NULL,\n    updated_at timestamp with time zone DEFAULT now() NOT NULL,\n    service_bid integer\n);",
+    "CREATE TABLE public.current_ads_list (\n)\nINHERITS (public.ads_list);",
+    "CREATE TABLE public.current_list (\n    list_id bigint NOT NULL,\n    key_word text,\n    campaign_id bigint,\n    used_keyword text,\n    group_id bigint,\n    condition_type text,\n    category text,\n    ads_header text,\n    date date,\n    resolution text,\n    count_views integer,\n    count_clics integer,\n    count_convetions integer,\n    ai_response_tokens integer,\n    company_id bigint\n);",
+    "CREATE TABLE public.current_minus_words (\n    minus_id bigint NOT NULL,\n    minus_word text,\n    current_record_id bigint,\n    keep_minus boolean,\n    minus_word_v2 text,\n    keep_minus_v2 boolean,\n    comment text\n);",
+    "CREATE TABLE public.errors (\n    id bigint NOT NULL,\n    \"responce \" text,\n    comment text,\n    list_num integer\n);",
+    "CREATE TABLE public.key_words (\n    key_word_id bigint NOT NULL,\n    company_id bigint,\n    key_word text NOT NULL,\n    wordstat_count integer,\n    service_id bigint,\n    wordstat_parsed boolean DEFAULT false,\n    from_wordstat boolean DEFAULT false,\n    is_relevant boolean,\n    ai_response_tokens bigint,\n    minus_words_processed boolean DEFAULT false NOT NULL,\n    is_adv_processed boolean DEFAULT false NOT NULL\n);",
+    "CREATE TABLE public.minus_words (\n    id bigint NOT NULL,\n    minus_word text,\n    comment text,\n    company_id bigint,\n    key_word_id bigint\n);",
+    "CREATE TABLE public.minus_words_global (\n    id bigint NOT NULL,\n    minus_word text,\n    date date\n);",
+    "CREATE TABLE public.my_list (\n    id bigint NOT NULL,\n    name text,\n    count integer,\n    keep_it boolean DEFAULT true,\n    ai_responce text\n);",
+    "CREATE TABLE public.raw_list (\n    id bigint NOT NULL,\n    name text,\n    count integer,\n    keep_it boolean\n);"
+  ],
+  "functions": [
+    "CREATE FUNCTION public.companies_set_updated_at() RETURNS trigger\n    LANGUAGE plpgsql\n    AS $$\nBEGIN\n  NEW.updated_at := now();"
+  ],
+  "sequences": [
+    "CREATE SEQUENCE public.ads_list_id_seq\n    AS integer\n    START WITH 1\n    INCREMENT BY 1\n    NO MINVALUE\n    NO MAXVALUE\n    CACHE 1;",
+    "CREATE SEQUENCE public.companies_company_id_seq\n    START WITH 1\n    INCREMENT BY 1\n    NO MINVALUE\n    NO MAXVALUE\n    CACHE 1;",
+    "CREATE SEQUENCE public.company_content_from_user_content_id_seq\n    START WITH 1\n    INCREMENT BY 1\n    NO MINVALUE\n    NO MAXVALUE\n    CACHE 1;",
+    "CREATE SEQUENCE public.company_services_service_id_seq\n    START WITH 1\n    INCREMENT BY 1\n    NO MINVALUE\n    NO MAXVALUE\n    CACHE 1;",
+    "CREATE SEQUENCE public.current_list_id_seq\n    AS integer\n    START WITH 1\n    INCREMENT BY 1\n    NO MINVALUE\n    NO MAXVALUE\n    CACHE 1;",
+    "CREATE SEQUENCE public.current_minus_words_id_seq\n    AS integer\n    START WITH 1\n    INCREMENT BY 1\n    NO MINVALUE\n    NO MAXVALUE\n    CACHE 1;",
+    "CREATE SEQUENCE public.errors_id_seq\n    AS integer\n    START WITH 1\n    INCREMENT BY 1\n    NO MINVALUE\n    NO MAXVALUE\n    CACHE 1;",
+    "CREATE SEQUENCE public.key_words_key_word_id_seq\n    START WITH 1\n    INCREMENT BY 1\n    NO MINVALUE\n    NO MAXVALUE\n    CACHE 1;",
+    "CREATE SEQUENCE public.minus_words_global_id_seq\n    AS integer\n    START WITH 1\n    INCREMENT BY 1\n    NO MINVALUE\n    NO MAXVALUE\n    CACHE 1;",
+    "CREATE SEQUENCE public.minus_words_id_seq\n    AS integer\n    START WITH 1\n    INCREMENT BY 1\n    NO MINVALUE\n    NO MAXVALUE\n    CACHE 1;",
+    "CREATE SEQUENCE public.my_list_id_seq\n    AS integer\n    START WITH 1\n    INCREMENT BY 1\n    NO MINVALUE\n    NO MAXVALUE\n    CACHE 1;",
+    "CREATE SEQUENCE public.raw_list_id_seq\n    AS integer\n    START WITH 1\n    INCREMENT BY 1\n    NO MINVALUE\n    NO MAXVALUE\n    CACHE 1;"
+  ],
+  "indexes": [
+    "CREATE INDEX ads_list_company_id_idx ON public.ads_list USING btree (company_id);",
+    "CREATE INDEX idx_key_words_company_id ON public.key_words USING btree (company_id);",
+    "CREATE INDEX idx_key_words_key_word ON public.key_words USING btree (key_word);",
+    "CREATE INDEX idx_key_words_minus_words_processed ON public.key_words USING btree (minus_words_processed);",
+    "CREATE INDEX idx_key_words_service_id ON public.key_words USING btree (service_id) WITH (fillfactor='100', deduplicate_items='true');",
+    "CREATE INDEX idx_key_words_unprocessed ON public.key_words USING btree (company_id) WHERE (minus_words_processed = false);",
+    "CREATE INDEX idx_key_words_wordstat_count ON public.key_words USING btree (wordstat_count);",
+    "CREATE INDEX idx_minus_words_company_id ON public.minus_words USING btree (company_id);",
+    "CREATE INDEX idx_minus_words_key_word_id ON public.minus_words USING btree (key_word_id);",
+    "CREATE INDEX ix_ccfu_company_created_at ON public.company_content_from_user USING btree (company_id, created_at DESC) WITH (fillfactor='100', deduplicate_items='true');",
+    "CREATE INDEX ix_ccfu_service ON public.company_content_from_user USING btree (service_id) WITH (fillfactor='100', deduplicate_items='true');",
+    "CREATE INDEX ix_companies_name_lower ON public.companies USING btree (lower(company_name)) WITH (fillfactor='100', deduplicate_items='true');",
+    "CREATE INDEX key_words_is_adv_processed_idx ON public.key_words USING btree (is_adv_processed);"
+  ],
+  "alters": [
+    "ALTER TABLE ONLY public.ads_list ALTER COLUMN ad_id SET DEFAULT nextval('public.ads_list_id_seq'::regclass);",
+    "ALTER TABLE public.ads_list ALTER COLUMN ad_id DROP DEFAULT;",
+    "ALTER TABLE ONLY public.companies ALTER COLUMN company_id SET DEFAULT nextval('public.companies_company_id_seq'::regclass);",
+    "ALTER TABLE public.companies ALTER COLUMN company_id DROP DEFAULT;",
+    "ALTER TABLE ONLY public.company_content_from_user ALTER COLUMN content_id SET DEFAULT nextval('public.company_content_from_user_content_id_seq'::regclass);",
+    "ALTER TABLE public.company_content_from_user ALTER COLUMN content_id DROP DEFAULT;",
+    "ALTER TABLE ONLY public.company_services ALTER COLUMN service_id SET DEFAULT nextval('public.company_services_service_id_seq'::regclass);",
+    "ALTER TABLE public.company_services ALTER COLUMN service_id DROP DEFAULT;",
+    "ALTER TABLE ONLY public.current_ads_list ALTER COLUMN ad_id SET DEFAULT nextval('public.ads_list_id_seq'::regclass);",
+    "ALTER TABLE public.current_ads_list ALTER COLUMN ad_id DROP DEFAULT;",
+    "ALTER TABLE ONLY public.current_ads_list ALTER COLUMN group_id SET DEFAULT 0;",
+    "ALTER TABLE public.current_ads_list ALTER COLUMN group_id DROP DEFAULT;",
+    "ALTER TABLE ONLY public.current_list ALTER COLUMN list_id SET DEFAULT nextval('public.current_list_id_seq'::regclass);",
+    "ALTER TABLE public.current_list ALTER COLUMN list_id DROP DEFAULT;",
+    "ALTER TABLE ONLY public.current_minus_words ALTER COLUMN minus_id SET DEFAULT nextval('public.current_minus_words_id_seq'::regclass);",
+    "ALTER TABLE public.current_minus_words ALTER COLUMN minus_id DROP DEFAULT;",
+    "ALTER TABLE ONLY public.errors ALTER COLUMN id SET DEFAULT nextval('public.errors_id_seq'::regclass);",
+    "ALTER TABLE public.errors ALTER COLUMN id DROP DEFAULT;",
+    "ALTER TABLE ONLY public.key_words ALTER COLUMN key_word_id SET DEFAULT nextval('public.key_words_key_word_id_seq'::regclass);",
+    "ALTER TABLE public.key_words ALTER COLUMN key_word_id DROP DEFAULT;",
+    "ALTER TABLE ONLY public.minus_words ALTER COLUMN id SET DEFAULT nextval('public.minus_words_id_seq'::regclass);",
+    "ALTER TABLE public.minus_words ALTER COLUMN id DROP DEFAULT;",
+    "ALTER TABLE ONLY public.minus_words_global ALTER COLUMN id SET DEFAULT nextval('public.minus_words_global_id_seq'::regclass);",
+    "ALTER TABLE public.minus_words_global ALTER COLUMN id DROP DEFAULT;",
+    "ALTER TABLE ONLY public.my_list ALTER COLUMN id SET DEFAULT nextval('public.my_list_id_seq'::regclass);",
+    "ALTER TABLE public.my_list ALTER COLUMN id DROP DEFAULT;",
+    "ALTER TABLE ONLY public.raw_list ALTER COLUMN id SET DEFAULT nextval('public.raw_list_id_seq'::regclass);",
+    "ALTER TABLE public.raw_list ALTER COLUMN id DROP DEFAULT;",
+    "ALTER TABLE ONLY public.ads_list\n    ADD CONSTRAINT ads_list_pkey PRIMARY KEY (ad_id);",
+    "ALTER TABLE ONLY public.ads_list DROP CONSTRAINT ads_list_pkey;",
+    "ALTER TABLE ONLY public.companies\n    ADD CONSTRAINT companies_pkey PRIMARY KEY (company_id);",
+    "ALTER TABLE ONLY public.companies DROP CONSTRAINT companies_pkey;",
+    "ALTER TABLE ONLY public.company_content_from_user\n    ADD CONSTRAINT company_content_from_user_pkey PRIMARY KEY (content_id);",
+    "ALTER TABLE ONLY public.company_content_from_user DROP CONSTRAINT company_content_from_user_pkey;",
+    "ALTER TABLE ONLY public.company_services\n    ADD CONSTRAINT company_services_pkey PRIMARY KEY (service_id);",
+    "ALTER TABLE ONLY public.company_services DROP CONSTRAINT company_services_pkey;",
+    "ALTER TABLE ONLY public.current_ads_list\n    ADD CONSTRAINT current_ads_list_pkey PRIMARY KEY (ad_id);",
+    "ALTER TABLE ONLY public.current_ads_list DROP CONSTRAINT current_ads_list_pkey;",
+    "ALTER TABLE ONLY public.current_list\n    ADD CONSTRAINT current_list_pkey PRIMARY KEY (list_id);",
+    "ALTER TABLE ONLY public.current_list DROP CONSTRAINT current_list_pkey;",
+    "ALTER TABLE ONLY public.current_minus_words\n    ADD CONSTRAINT current_minus_words_pkey PRIMARY KEY (minus_id);",
+    "ALTER TABLE ONLY public.current_minus_words DROP CONSTRAINT current_minus_words_pkey;",
+    "ALTER TABLE ONLY public.errors\n    ADD CONSTRAINT errors_pkey PRIMARY KEY (id);",
+    "ALTER TABLE ONLY public.errors DROP CONSTRAINT errors_pkey;",
+    "ALTER TABLE ONLY public.key_words\n    ADD CONSTRAINT key_words_pkey PRIMARY KEY (key_word_id);",
+    "ALTER TABLE ONLY public.key_words DROP CONSTRAINT key_words_pkey;",
+    "ALTER TABLE ONLY public.minus_words_global\n    ADD CONSTRAINT minus_words_global_pkey PRIMARY KEY (id);",
+    "ALTER TABLE ONLY public.minus_words_global DROP CONSTRAINT minus_words_global_pkey;",
+    "ALTER TABLE ONLY public.minus_words\n    ADD CONSTRAINT minus_words_pkey PRIMARY KEY (id);",
+    "ALTER TABLE ONLY public.minus_words DROP CONSTRAINT minus_words_pkey;",
+    "ALTER TABLE ONLY public.my_list\n    ADD CONSTRAINT my_list_pkey PRIMARY KEY (id);",
+    "ALTER TABLE ONLY public.my_list DROP CONSTRAINT my_list_pkey;",
+    "ALTER TABLE ONLY public.raw_list\n    ADD CONSTRAINT raw_list_pkey PRIMARY KEY (id);",
+    "ALTER TABLE ONLY public.raw_list DROP CONSTRAINT raw_list_pkey;",
+    "ALTER TABLE ONLY public.company_content_from_user\n    ADD CONSTRAINT fk_ccfu_company FOREIGN KEY (company_id) REFERENCES public.companies(company_id) ON DELETE CASCADE;",
+    "ALTER TABLE ONLY public.company_content_from_user DROP CONSTRAINT fk_ccfu_company;",
+    "ALTER TABLE ONLY public.company_content_from_user\n    ADD CONSTRAINT fk_ccfu_service FOREIGN KEY (service_id) REFERENCES public.company_services(service_id) ON DELETE SET NULL;",
+    "ALTER TABLE ONLY public.company_content_from_user DROP CONSTRAINT fk_ccfu_service;",
+    "ALTER TABLE ONLY public.company_services\n    ADD CONSTRAINT fk_company_services_company FOREIGN KEY (company_id) REFERENCES public.companies(company_id) ON DELETE CASCADE;",
+    "ALTER TABLE ONLY public.company_services DROP CONSTRAINT fk_company_services_company;"
+  ]
+}
