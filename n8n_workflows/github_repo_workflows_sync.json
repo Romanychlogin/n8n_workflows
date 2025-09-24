@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-23T20:32:53.458Z",
-  "updatedAt": "2025-09-24T07:02:52.657Z",
+  "updatedAt": "2025-09-24T07:18:53.364Z",
   "id": "buEFTEMfZEENQOel",
   "name": "github_repo_workflows_sync",
   "active": false,
@@ -116,9 +116,7 @@
     },
     {
       "parameters": {
-        "filters": {
-          "activeWorkflows": true
-        },
+        "filters": {},
         "requestOptions": {}
       },
       "id": "033ef7c8-35f9-4f8a-b241-15d8ab61e631",
@@ -162,7 +160,7 @@
       "name": "Upload file",
       "type": "n8n-nodes-base.github",
       "position": [
-        336,
+        544,
         -16
       ],
       "webhookId": "ce4b561b-acb9-4cd8-b76f-4928dada9674",
@@ -172,7 +170,8 @@
           "id": "JQAFAcMNS9Ylyb0V",
           "name": "GitHub account"
         }
-      }
+      },
+      "onError": "continueErrorOutput"
     },
     {
       "parameters": {
@@ -186,7 +185,7 @@
       "name": "Json file",
       "type": "n8n-nodes-base.convertToFile",
       "position": [
-        -336,
+        -128,
         -16
       ],
       "typeVersion": 1.1
@@ -200,7 +199,7 @@
       "name": "To base64",
       "type": "n8n-nodes-base.extractFromFile",
       "position": [
-        -112,
+        96,
         -16
       ],
       "typeVersion": 1
@@ -243,7 +242,7 @@
       "name": "Update file",
       "type": "n8n-nodes-base.github",
       "position": [
-        1152,
+        1360,
         640
       ],
       "webhookId": "27218087-8df7-474d-a39f-70cfa9c34ec8",
@@ -267,7 +266,7 @@
       "name": "Json file1",
       "type": "n8n-nodes-base.convertToFile",
       "position": [
-        496,
+        704,
         640
       ],
       "typeVersion": 1.1
@@ -281,7 +280,7 @@
       "name": "To base",
       "type": "n8n-nodes-base.extractFromFile",
       "position": [
-        720,
+        928,
         640
       ],
       "typeVersion": 1
@@ -302,7 +301,7 @@
       "name": "n8n vs GitHub",
       "type": "n8n-nodes-base.compareDatasets",
       "position": [
-        -1024,
+        -816,
         352
       ],
       "typeVersion": 2.3
@@ -350,7 +349,7 @@
       "name": "Code - InputA",
       "type": "n8n-nodes-base.code",
       "position": [
-        48,
+        256,
         640
       ],
       "typeVersion": 2
@@ -365,7 +364,7 @@
       "name": "Edit Fields",
       "type": "n8n-nodes-base.set",
       "position": [
-        272,
+        480,
         640
       ],
       "typeVersion": 3.4
@@ -394,7 +393,7 @@
       "name": "Edit for Upload",
       "type": "n8n-nodes-base.set",
       "position": [
-        112,
+        320,
         -16
       ],
       "typeVersion": 3.4
@@ -423,7 +422,7 @@
       "name": "Edit for Update",
       "type": "n8n-nodes-base.set",
       "position": [
-        944,
+        1152,
         640
       ],
       "typeVersion": 3.4
@@ -487,7 +486,7 @@
       "name": "If n8n before GitHub",
       "type": "n8n-nodes-base.if",
       "position": [
-        -528,
+        -320,
         480
       ],
       "typeVersion": 2.2
@@ -603,7 +602,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        -896,
+        -688,
         656
       ],
       "id": "da7f893d-6bfb-4853-8c46-bac86cb56409",
@@ -641,6 +640,52 @@
       ],
       "id": "1804ab63-6675-428b-87a2-abbefaf37584",
       "name": "if json in file name"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        800,
+        128
+      ],
+      "id": "69c9631b-4ce4-4b71-b78e-a25204b3cc6b",
+      "name": "Edit Fields1"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "4f26142d-7646-4988-87d4-36b191d270df",
+              "leftValue": "={{ $json.isArchived }}",
+              "rightValue": false,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -1488,
+        272
+      ],
+      "id": "0067de16-31a9-4597-a5cd-16b5890b27ca",
+      "name": "if is not archived"
     }
   ],
   "connections": {
@@ -648,7 +693,7 @@
       "main": [
         [
           {
-            "node": "n8n vs GitHub",
+            "node": "if is not archived",
             "type": "main",
             "index": 0
           }
@@ -879,6 +924,29 @@
           }
         ]
       ]
+    },
+    "Upload file": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "if is not archived": {
+      "main": [
+        [
+          {
+            "node": "n8n vs GitHub",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
@@ -887,7 +955,7 @@
   "staticData": null,
   "meta": null,
   "pinData": {},
-  "versionId": "3a2f170b-88cc-400c-83cc-4e7c45fc51b4",
+  "versionId": "afff05ad-762c-4800-8cb4-08fc4854854d",
   "triggerCount": 0,
   "shared": [
     {
