@@ -1,0 +1,219 @@
+{
+  "createdAt": "2025-06-30T16:42:48.754Z",
+  "updatedAt": "2025-07-01T11:32:06.223Z",
+  "id": "NyZABPnR6ccaQrcp",
+  "name": "My workflow",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "68fd5ab5-152d-4533-8c42-108f055f5641",
+      "name": "Start",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -1340,
+        -300
+      ]
+    },
+    {
+      "parameters": {
+        "values": {
+          "string": [
+            {
+              "name": "url",
+              "value": "https://www.dropbox.com/scl/fi/p7jxtw6san1qb9ok4fqxa/From-wordstat2.csv?rlkey=6c8ivto3drjynywe0ka3f14pu&dl=1"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "9b2f677b-1b6f-4455-b926-9f446eef5d33",
+      "name": "Enter URL",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 2,
+      "position": [
+        -1140,
+        -300
+      ]
+    },
+    {
+      "parameters": {
+        "url": "={{$json[\"url\"]}}",
+        "responseFormat": "file",
+        "options": {}
+      },
+      "id": "8ef526b0-5188-422e-b0a6-47fcb96cb82d",
+      "name": "Download File",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 2,
+      "position": [
+        -940,
+        -300
+      ]
+    },
+    {
+      "parameters": {
+        "options": {
+          "delimiter": ";"
+        }
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        -720,
+        -300
+      ],
+      "id": "4e059495-e081-4fee-acae-e6a4e7f30b9b",
+      "name": "Extract from File"
+    },
+    {
+      "parameters": {
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "my_list",
+          "mode": "list",
+          "cachedResultName": "my_list"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "keep_it": true,
+            "name": "={{ $json[\"﻿Name\"]}}",
+            "count": "={{ parseInt($json[\"Count\"], 10) }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "name",
+              "displayName": "name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "count",
+              "displayName": "count",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "keep_it",
+              "displayName": "keep_it",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "boolean",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -440,
+        -300
+      ],
+      "id": "40a68176-77cf-435a-8131-8b3240dd3d59",
+      "name": "Insert rows in a table",
+      "credentials": {
+        "postgres": {
+          "id": "Hx2VFmUi5WO2K4QX",
+          "name": "Postgres account 2"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Start": {
+      "main": [
+        [
+          {
+            "node": "Enter URL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Enter URL": {
+      "main": [
+        [
+          {
+            "node": "Download File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download File": {
+      "main": [
+        [
+          {
+            "node": "Extract from File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File": {
+      "main": [
+        [
+          {
+            "node": "Insert rows in a table",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "88e77fcb-9135-4b51-b366-40ec62dadc49",
+  "triggerCount": 0,
+  "shared": [
+    {
+      "createdAt": "2025-06-30T16:42:48.754Z",
+      "updatedAt": "2025-06-30T16:42:48.754Z",
+      "role": "workflow:owner",
+      "workflowId": "NyZABPnR6ccaQrcp",
+      "projectId": "spKmbJLU4mvACXIB"
+    }
+  ],
+  "tags": []
+}
