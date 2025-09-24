@@ -1,0 +1,465 @@
+{
+  "createdAt": "2025-08-05T07:16:48.419Z",
+  "updatedAt": "2025-08-05T07:53:27.968Z",
+  "id": "n9X0wR1OFrt0C0yP",
+  "name": "current_minus_test",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "83da61b1-886e-48e4-8c1f-7b566c8f7889",
+      "name": "Start",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -640,
+        -80
+      ]
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        1456,
+        -96
+      ],
+      "id": "16cdc2fc-5691-403a-83e5-87c995453c87",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "name": "Replace Me",
+      "typeVersion": 1,
+      "position": [
+        3936,
+        -32
+      ],
+      "id": "98de88bb-d4af-4fca-8e06-6e9f937b8247"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "LxEfuLzRCXUYFneg",
+          "mode": "list",
+          "cachedResultName": "Check minus phrase"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "mode": "each",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        2608,
+        32
+      ],
+      "id": "194e06af-5f3e-4312-ae29-c2feddda84e1",
+      "name": "Execute Workflow"
+    },
+    {
+      "parameters": {
+        "resource": "file",
+        "operation": "get",
+        "owner": {
+          "__rl": true,
+          "value": "Romanychlogin",
+          "mode": "name"
+        },
+        "repository": {
+          "__rl": true,
+          "value": "n8n_prompts",
+          "mode": "list",
+          "cachedResultName": "n8n_prompts",
+          "cachedResultUrl": "https://github.com/Romanychlogin/n8n_prompts"
+        },
+        "filePath": "minus_analysis.txt",
+        "additionalParameters": {}
+      },
+      "type": "n8n-nodes-base.github",
+      "typeVersion": 1.1,
+      "position": [
+        -240,
+        -80
+      ],
+      "id": "4ead0b12-2a84-4e62-9983-369342b4bf0b",
+      "name": "Get a file1",
+      "webhookId": "f687d2d1-3e03-4818-915f-e4dd5c5a78f5",
+      "credentials": {
+        "githubApi": {
+          "id": "JQAFAcMNS9Ylyb0V",
+          "name": "GitHub account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "text",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        -16,
+        -80
+      ],
+      "id": "d6b19426-83d7-44a8-af36-10dbdba4ab33",
+      "name": "Extract from File2"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Function-Node (Run Once)\nconst workflowData = $getWorkflowStaticData('global');\nworkflowData.minus_prompt = items[0].json;\nreturn items;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        240,
+        -96
+      ],
+      "id": "0ae725e6-4cbd-40cf-8476-de61909554d7",
+      "name": "Code3"
+    },
+    {
+      "parameters": {
+        "operation": "select",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "current_minus_words",
+          "mode": "list",
+          "cachedResultName": "current_minus_words"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        576,
+        -112
+      ],
+      "id": "4a4ef217-e688-4d1b-af3b-bd4c976d9220",
+      "name": "select",
+      "credentials": {
+        "postgres": {
+          "id": "Hx2VFmUi5WO2K4QX",
+          "name": "Postgres account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "d7e440e7-2afb-4e97-8edf-988d3e863222",
+              "name": "list_id",
+              "value": "={{ $json.current_record_id }}",
+              "type": "string"
+            },
+            {
+              "id": "91440a11-7423-470f-9f3c-fac5884e44c4",
+              "name": "prompt",
+              "value": "={{ $json.firstItem.data }}",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2288,
+        -32
+      ],
+      "id": "28a5c8cc-d570-4d09-b71b-57deb981b2b6",
+      "name": "Edit Fields3"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "current_minus_words",
+          "mode": "list",
+          "cachedResultName": "current_minus_words"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "minus_id": "={{ $json.minus_id }}",
+            "minus_word_v2": "={{ $json.minus_word_v2 }}",
+            "keep_minus_v2": "={{ $json.keep_minus }}"
+          },
+          "matchingColumns": [
+            "minus_id"
+          ],
+          "schema": [
+            {
+              "id": "minus_id",
+              "displayName": "minus_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "minus_word",
+              "displayName": "minus_word",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "current_record_id",
+              "displayName": "current_record_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "keep_minus",
+              "displayName": "keep_minus",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "boolean",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "minus_word_v2",
+              "displayName": "minus_word_v2",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "keep_minus_v2",
+              "displayName": "keep_minus_v2",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "boolean",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        3344,
+        16
+      ],
+      "id": "d3effacf-d6ed-47a5-a900-cf7ec3ab32eb",
+      "name": "update minus words",
+      "credentials": {
+        "postgres": {
+          "id": "Hx2VFmUi5WO2K4QX",
+          "name": "Postgres account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Function-Node (Run for Each Item)\nconst workflowData = $getWorkflowStaticData('global');\nconst firstItem = workflowData.minus_prompt;\nreturn items.map(item => ({\n  json: { ...firstItem, ...item.json }\n}));"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2016,
+        -64
+      ],
+      "id": "e58ca124-2d19-4232-bbb7-369338fd2bcc",
+      "name": "Code2"
+    }
+  ],
+  "connections": {
+    "Start": {
+      "main": [
+        [
+          {
+            "node": "Get a file1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Code2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Replace Me": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute Workflow": {
+      "main": [
+        [
+          {
+            "node": "update minus words",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get a file1": {
+      "main": [
+        [
+          {
+            "node": "Extract from File2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File2": {
+      "main": [
+        [
+          {
+            "node": "Code3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "select": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields3": {
+      "main": [
+        [
+          {
+            "node": "Execute Workflow",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "update minus words": {
+      "main": [
+        [
+          {
+            "node": "Replace Me",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code3": {
+      "main": [
+        [
+          {
+            "node": "select",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code2": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {
+    "Start": [
+      {
+        "json": {}
+      }
+    ]
+  },
+  "versionId": "96f34db5-f196-447b-acc9-2ea43afb7975",
+  "triggerCount": 0,
+  "shared": [
+    {
+      "createdAt": "2025-08-05T07:16:48.419Z",
+      "updatedAt": "2025-08-05T07:16:48.419Z",
+      "role": "workflow:owner",
+      "workflowId": "n9X0wR1OFrt0C0yP",
+      "projectId": "spKmbJLU4mvACXIB"
+    }
+  ],
+  "tags": []
+}
