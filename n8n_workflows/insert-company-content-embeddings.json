@@ -1,0 +1,286 @@
+{
+  "createdAt": "2025-08-29T11:10:45.340Z",
+  "updatedAt": "2025-09-15T12:26:55.957Z",
+  "id": "qK1aUJ372WTNrZNg",
+  "name": "insert company content embeddings",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -544,
+        0
+      ],
+      "id": "9a0a3dce-ab08-40e2-b732-7e3e0e6992c0",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.openai.com/v1/embeddings",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "openAiApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{$json}}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        912,
+        32
+      ],
+      "id": "59633a9b-5d6d-470e-ab66-3f605165f83e",
+      "name": "HTTP Request",
+      "retryOnFail": true,
+      "credentials": {
+        "openAiApi": {
+          "id": "V8R8KiZKXscJQ1sL",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "return [{\n  json: {\n  \"model\": \"text-embedding-3-small\",\n  \"input\": $json.phrase\n}\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        704,
+        48
+      ],
+      "id": "6b46e3d3-73c7-40a0-aac0-0679c6667a7a",
+      "name": "Set API JSON"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        224,
+        0
+      ],
+      "id": "b2eccad3-7764-415c-b702-f2df4cb2427d",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        1072,
+        -64
+      ],
+      "id": "6e0c0a83-5966-41eb-8b84-b8e7561ada56",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "select DISTINCT(ct.phrase) , $1 AS company_id from company_content_raw ct \n",
+        "options": {
+          "queryReplacement": "={{$json.company_id}}"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -64,
+        0
+      ],
+      "id": "ecbd3134-ec4f-4e02-9bc3-586a5274ed45",
+      "name": "Execute a SQL query",
+      "credentials": {
+        "postgres": {
+          "id": "4YkdFJcdTgzo9hkz",
+          "name": "PGvector"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO company_content (phrase_embedding, company_id, phrase)\nVALUES ($1::vector, $2, $3);",
+        "options": {
+          "queryReplacement": "=[\n  { \"value\": \"={{'[' + $json.data[0].embedding.map(e => Number(e)).join(',') + ']'}}\" },\n  { \"value\": \"={{$json.company_id}}\" },\n  { \"value\": \"={{$json.phrase}}\" }\n]"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        1440,
+        0
+      ],
+      "id": "ad0171af-9f25-4bb4-9550-85548720c3f9",
+      "name": "Execute a SQL query1",
+      "credentials": {
+        "postgres": {
+          "id": "4YkdFJcdTgzo9hkz",
+          "name": "PGvector"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "5b3485a2-cb50-486a-932c-fc27de0a25da",
+              "name": "company_name",
+              "value": "Первый визовый центр Курган",
+              "type": "string"
+            },
+            {
+              "id": "f74ac992-90a4-4403-a75e-17656de76902",
+              "name": "company_id",
+              "value": 2,
+              "type": "number"
+            },
+            {
+              "id": "172a851e-fdc7-4f3c-b095-88687e8a392a",
+              "name": "threshhold",
+              "value": 0.88,
+              "type": "number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -320,
+        0
+      ],
+      "id": "33b6cb49-65cc-4ff5-abf4-576846152ff3",
+      "name": "set variables"
+    }
+  ],
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "set variables",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Set API JSON": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Set API JSON",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Execute a SQL query1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute a SQL query": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute a SQL query1": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "set variables": {
+      "main": [
+        [
+          {
+            "node": "Execute a SQL query",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "a8fe4e13-7863-4304-a4c6-4b951bc12cde",
+  "triggerCount": 0,
+  "shared": [
+    {
+      "createdAt": "2025-08-29T11:10:45.340Z",
+      "updatedAt": "2025-08-29T11:10:45.340Z",
+      "role": "workflow:owner",
+      "workflowId": "qK1aUJ372WTNrZNg",
+      "projectId": "spKmbJLU4mvACXIB"
+    }
+  ],
+  "tags": []
+}
