@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-23T20:32:53.458Z",
-  "updatedAt": "2025-09-24T08:09:26.298Z",
+  "updatedAt": "2025-09-24T08:11:24.410Z",
   "id": "buEFTEMfZEENQOel",
   "name": "github_repo_workflows_sync",
   "active": false,
@@ -839,28 +839,6 @@
     },
     {
       "parameters": {
-        "mergeByFields": {
-          "values": [
-            {
-              "field1": "name",
-              "field2": "name"
-            }
-          ]
-        },
-        "options": {}
-      },
-      "id": "6f51c695-4f7a-4ba9-98a6-2190640d64be",
-      "name": "n8n vs GitHub1",
-      "type": "n8n-nodes-base.compareDatasets",
-      "position": [
-        -544,
-        736
-      ],
-      "typeVersion": 2.3,
-      "disabled": true
-    },
-    {
-      "parameters": {
         "content": "если процесс архивный то не создаем новый",
         "height": 336,
         "width": 800
@@ -873,6 +851,27 @@
       ],
       "id": "c727e495-f6ee-40b3-a633-4cfa795bda09",
       "name": "Sticky Note4"
+    },
+    {
+      "parameters": {
+        "mergeByFields": {
+          "values": [
+            {
+              "field1": "name",
+              "field2": "name"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "6f51c695-4f7a-4ba9-98a6-2190640d64be",
+      "name": "n8n archived vs GitHub new",
+      "type": "n8n-nodes-base.compareDatasets",
+      "position": [
+        -544,
+        736
+      ],
+      "typeVersion": 2.3
     }
   ],
   "connections": {
@@ -1010,7 +1009,7 @@
             "index": 0
           },
           {
-            "node": "n8n vs GitHub1",
+            "node": "n8n archived vs GitHub new",
             "type": "main",
             "index": 0
           }
@@ -1218,14 +1217,14 @@
       "main": [
         [
           {
-            "node": "n8n vs GitHub1",
+            "node": "n8n archived vs GitHub new",
             "type": "main",
             "index": 1
           }
         ]
       ]
     },
-    "n8n vs GitHub1": {
+    "n8n archived vs GitHub new": {
       "main": [
         [
           {
@@ -1243,7 +1242,7 @@
   "staticData": null,
   "meta": null,
   "pinData": {},
-  "versionId": "63e779dd-4e02-4622-9a89-f97f83771fed",
+  "versionId": "afa296eb-e3b0-4c0a-9d35-7a62a7e14cff",
   "triggerCount": 0,
   "shared": [
     {
