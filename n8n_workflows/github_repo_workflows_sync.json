@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-23T20:32:53.458Z",
-  "updatedAt": "2025-09-24T07:56:16.304Z",
+  "updatedAt": "2025-09-24T07:57:03.539Z",
   "id": "buEFTEMfZEENQOel",
   "name": "github_repo_workflows_sync",
   "active": false,
@@ -721,7 +721,7 @@
     },
     {
       "parameters": {
-        "jsCode": "// Собираем все входные элементы\nconst items = $input.all();\n\n// Экранирование под Telegram MarkdownV2\nfunction escapeMarkdownV2(s) {\n  // _ * [ ] ( ) ~ ` > # + - = | { } . !\n  return String(s).replace(/([_*\\[\\]()~`>#+\\-=|{}.!])/g, '\\\\$1');\n}\n\n// Заголовок + дата/время — один раз\nconst now = new Date();\nlet incident_text = '*Внимание, в GitHub найдены новые workflow*\\\\n';\nincident_text += '*' \n \n  + escapeMarkdownV2(now.toLocaleTimeString('ru-RU', { timeZone: 'Europe/Moscow', hour: '2-digit', minute: '2-digit' })) \n  + ' MSK*\\\\n';\n\n// Добавляем строки для каждого входного элемента\nfor (const it of items) {\n  const fileName = it.json.fileName ?? '(без имени)';\n  incident_text += '• workflow: ' + escapeMarkdownV2(name) + '\\\\n';\n}\n\n// Возвращаем одним сообщением\nreturn [{ json: { text: incident_text } }];"
+        "jsCode": "// Собираем все входные элементы\nconst items = $input.all();\n\n// Экранирование под Telegram MarkdownV2\nfunction escapeMarkdownV2(s) {\n  // _ * [ ] ( ) ~ ` > # + - = | { } . !\n  return String(s).replace(/([_*\\[\\]()~`>#+\\-=|{}.!])/g, '\\\\$1');\n}\n\n// Заголовок + дата/время — один раз\nconst now = new Date();\nlet incident_text = '*Внимание, в GitHub найдены новые workflow*\\\\n';\nincident_text += '*' \n \n  + escapeMarkdownV2(now.toLocaleTimeString('ru-RU', { timeZone: 'Europe/Moscow', hour: '2-digit', minute: '2-digit' })) \n  + ' MSK*\\\\n';\n\n// Добавляем строки для каждого входного элемента\nfor (const it of items) {\n  const fileName = it.json.fileName ?? '(без имени)';\n  incident_text += '• workflow: ' + escapeMarkdownV2($json.name) + '\\\\n';\n}\n\n// Возвращаем одним сообщением\nreturn [{ json: { text: incident_text } }];"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -1114,7 +1114,7 @@
   "staticData": null,
   "meta": null,
   "pinData": {},
-  "versionId": "13a3dccc-3f9d-4cd5-981a-4108d3f6664b",
+  "versionId": "6a17adc0-4d4a-480a-8850-d61c149cd753",
   "triggerCount": 0,
   "shared": [
     {
