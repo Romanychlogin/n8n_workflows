@@ -1,0 +1,1220 @@
+{
+  "createdAt": "2025-09-15T12:29:02.719Z",
+  "updatedAt": "2025-09-19T05:05:06.651Z",
+  "id": "hb9ZkB3YX07kkFCd",
+  "name": "minus_words_with_services",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "b029127e-5037-449c-9b0d-cd4626adcb22",
+      "name": "Start",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -1056,
+        -48
+      ]
+    },
+    {
+      "parameters": {
+        "options": {
+          "reset": "={{ $json.is_first }}"
+        }
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        944,
+        -64
+      ],
+      "id": "ee091828-6f45-478e-b865-e4449dced15a",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {
+        "resource": "file",
+        "operation": "get",
+        "owner": {
+          "__rl": true,
+          "value": "Romanychlogin",
+          "mode": "name"
+        },
+        "repository": {
+          "__rl": true,
+          "value": "n8n_prompts",
+          "mode": "list",
+          "cachedResultName": "n8n_prompts",
+          "cachedResultUrl": "https://github.com/Romanychlogin/n8n_prompts"
+        },
+        "filePath": "minus_words_with_services.txt",
+        "additionalParameters": {}
+      },
+      "type": "n8n-nodes-base.github",
+      "typeVersion": 1.1,
+      "position": [
+        48,
+        -320
+      ],
+      "id": "2f78aac9-351f-456b-b70a-63e35550a14b",
+      "name": "Get a file",
+      "webhookId": "7c0b6e8e-c02d-4ee3-a98e-c49a28aee002",
+      "credentials": {
+        "githubApi": {
+          "id": "JQAFAcMNS9Ylyb0V",
+          "name": "GitHub account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "text",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        256,
+        -320
+      ],
+      "id": "5328a2b1-6c4d-48d3-bc8a-3030224d04df",
+      "name": "Extract from File1"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Function-Node (Run Once)\nconst workflowData = $getWorkflowStaticData('global');\nworkflowData.my_prompt = items[0].json;\nreturn items;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        464,
+        -320
+      ],
+      "id": "3eceea96-c7f8-4921-ab2e-28428eb19fd3",
+      "name": "Code1"
+    },
+    {
+      "parameters": {
+        "content": "",
+        "height": 272,
+        "width": 512
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1280,
+        -384
+      ],
+      "id": "7d139e50-f6d0-4cdc-8d79-dab4ad109c5d",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "jsCode": "\n\nreturn [{\n  json: \n {\n  \"model\": \"gpt-5\",\n  \"input\": [\n    {\n      \"role\": \"developer\",\n      \"content\": [\n        {\n          \"type\": \"input_text\",\n          \"text\": \"# Role and Objective\\n- You are a search query analysis assistant. Your role is to  detect any negative keywords (“minus words”) indicating a non-target audience. Analise each input phrase and respond with a structured JSON object that  lists all detected minus words.\\n\\n# Instructions\\n\\n- The `minus_words` array must only contain unique string values, or be an empty array (`[]`) if there are no minus words. Do not include duplicate entries. Item order is not important.\\n\"\n        }\n      ]\n    },\n    {\n      \"role\": \"user\",\n      \"content\": [\n        {\n          \"type\": \"input_text\",\n          \"text\": $json.my_prompt\n        }\n      ]\n    }\n  ],\n  \"text\": {\n    \"format\": {\n      \"type\": \"json_schema\",\n      \"name\": \"minus_words\",\n      \"strict\": true,\n      \"schema\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"minus_words\": {\n            \"type\": \"array\",\n            \"description\": \"A list of minus words. Can be empty.\",\n            \"items\": {\n              \"type\": \"string\",\n              \"description\": \"A minus word.\"\n            }\n          }\n        },\n        \"required\": [\n          \"minus_words\"\n        ],\n        \"additionalProperties\": false\n      }\n    },\n    \"verbosity\": \"low\"\n  },\n  \"reasoning\": {\n    \"effort\": \"minimal\",\n    \"summary\": null\n  },\n  \"tools\": [\n    {\n      \"type\": \"function\",\n      \"description\": \"Return allowed 1–3 word combinations for negative keywords (minus words).\",\n      \"name\": \"get_non_matching_ngrams\",\n      \"parameters\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"phrase\": {\n            \"type\": \"string\",\n            \"description\": \"User phrase to analyze\"\n          },\n          \"threshold\": {\n            \"type\": \"number\",\n            \"description\": \"Match threshold, default 0.88\"\n          }\n        },\n        \"required\": [\n          \"phrase\"\n        ]\n      },\n      \"strict\": false\n    }\n  ],\n  \"store\": false,\n  \"include\": [\n    \"reasoning.encrypted_content\",\n    \"web_search_call.action.sources\"\n  ]\n}\n\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1584,
+        -64
+      ],
+      "id": "c2c885c7-c915-4c1a-a505-3c3f8df5bc82",
+      "name": "Set API JSON"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.openai.com/v1/responses",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "openAiApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{$json}}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1856,
+        -80
+      ],
+      "id": "84d9f825-d1c0-4e8f-8b11-5b83fd735649",
+      "name": "HTTP Request",
+      "retryOnFail": true,
+      "credentials": {
+        "openAiApi": {
+          "id": "V8R8KiZKXscJQ1sL",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "select",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "key_words",
+          "mode": "list",
+          "cachedResultName": "key_words"
+        },
+        "returnAll": true,
+        "where": {
+          "values": [
+            {
+              "column": "is_relevant",
+              "value": "false"
+            },
+            {
+              "column": "company_id",
+              "value": "={{$('set variables').item.json.company_id}}"
+            },
+            {
+              "column": "service_id",
+              "value": "={{ $json.service_id }}"
+            },
+            {
+              "column": "minus_words_processed",
+              "value": "false"
+            }
+          ]
+        },
+        "sort": {
+          "values": [
+            {
+              "column": "key_word_id"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        608,
+        -32
+      ],
+      "id": "cc33b81a-ec93-4d35-8c0e-6425784abfd9",
+      "name": "Select rows from a table",
+      "credentials": {
+        "postgres": {
+          "id": "Hx2VFmUi5WO2K4QX",
+          "name": "Postgres account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "select cs.service_name,cs.service_description,cs.service_id from companies c, company_services cs where c.company_id=cs.company_id and c.company_id=$1",
+        "options": {
+          "queryReplacement": "{{$('set variables').item.json.company_id}}"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        256,
+        -48
+      ],
+      "id": "cdb6def1-4e21-4f32-ac88-9080b4eb25e4",
+      "name": "Services list",
+      "credentials": {
+        "postgres": {
+          "id": "Hx2VFmUi5WO2K4QX",
+          "name": "Postgres account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        432,
+        -48
+      ],
+      "id": "086e2a35-85d8-4a4d-a5ef-9221d6a3a1f0",
+      "name": "Loop Over services"
+    },
+    {
+      "parameters": {
+        "jsCode": "const workflowData = $getWorkflowStaticData('global');\nlet my_prompt = workflowData.my_prompt.data;\n\n\n $json.my_prompt = my_prompt.replaceAll(\"{company_name}\", $('set variables').first().json.company_name).replaceAll(\"{service_description}\", $('Loop Over services').first().json.service_name +' ' + $('Loop Over services').first().json.service_description).replaceAll(\"{key_word}\",$input.first().json.key_word);\n\n\nreturn $input.all();"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1376,
+        -48
+      ],
+      "id": "62df5abd-d761-488c-9823-859b7e9e75f0",
+      "name": "create prompt"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "5b3485a2-cb50-486a-932c-fc27de0a25da",
+              "name": "company_name",
+              "value": "Первый визовый центр Курган",
+              "type": "string"
+            },
+            {
+              "id": "f74ac992-90a4-4403-a75e-17656de76902",
+              "name": "company_id",
+              "value": 2,
+              "type": "number"
+            },
+            {
+              "id": "172a851e-fdc7-4f3c-b095-88687e8a392a",
+              "name": "threshhold",
+              "value": 0.88,
+              "type": "number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -720,
+        -16
+      ],
+      "id": "cba6ad7e-26b7-442f-9760-120c8ebbd0e4",
+      "name": "set variables"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "bhBscYglbFhVyIcL",
+          "mode": "list",
+          "cachedResultName": "Check minuses API tool"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        2400,
+        -112
+      ],
+      "id": "77d4bd57-f57f-49ab-bf49-963f05143363",
+      "name": "Execute Workflow"
+    },
+    {
+      "parameters": {
+        "jsCode": "// INPUT: JSON ответа из responses.create\n// OUTPUT: массив элементов { response_id, tool_call_id, name, args }\n\nconst res = $json;\nconst out = [];\n\nfunction pushCall(obj, responseId,out_index) {\n  const id = responseId;\n  const call_id = obj.call_id;\n  const name = obj.name ;\n  const rawArgs = obj.arguments;\n  let args = {};\n  try {\n    args = typeof rawArgs === 'string' ? JSON.parse(rawArgs) : rawArgs;\n    args.company_id=$('set variables').first().json.company_id;\n  } catch (e) { args = {}; }\n  out.push({ json: { response_id: id, call_id: call_id, name, args,out_index } });\n}\n\nif (Array.isArray(res.output)) {\n  res.output.forEach((item, index) => {\n    if (item.type === 'function_call') {\n      pushCall(item, res.id, index);\n    }\n  });\n}\n\n// Если модель не запросила tool — вернем маркер\nif (!out.length) return [{ json: { response_id: res.id, no_tool_call: true, raw: res} }];\nreturn out;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2064,
+        -80
+      ],
+      "id": "6d370122-5cdf-49ef-8b0b-862fbb970911",
+      "name": "parse_tool_call"
+    },
+    {
+      "parameters": {
+        "jsCode": "// INPUT: JSON из вашего вебхука (предыдущая HTTP-нода)\n// OUTPUT: { response_id, tool_call_id, output_string }\n\nlet prev = $('Set API JSON').first().json; // берем первый tool-call\n\nconst toolResult = $json; // весь JSON от вебхука\nprev.input.push($('HTTP Request').first().json.output[$('parse_tool_call').first().json.out_index-1]);\nprev.input.push($('HTTP Request').first().json.output[$('parse_tool_call').first().json.out_index]);\nprev.input.push({ \n    type: \"function_call_output\",\n    call_id: $('parse_tool_call').first().json.call_id,\n    output: JSON.stringify(JSON.stringify(toolResult))});\n\nreturn [{ json: prev }];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3152,
+        -256
+      ],
+      "id": "5b07ccae-7158-42af-8548-ebd2d84999d3",
+      "name": "package_tool_output"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://api.openai.com/v1/responses",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "openAiApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{$json}}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        3424,
+        -240
+      ],
+      "id": "20e507ff-237c-4322-a9cf-f10806878868",
+      "name": "HTTP Request1",
+      "retryOnFail": true,
+      "credentials": {
+        "openAiApi": {
+          "id": "V8R8KiZKXscJQ1sL",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO public.minus_words\n  (minus_word_embedding, minus_word, key_word_id, company_id, comment)\nVALUES\n  ($1::vector, $2, $3, $4, $5)\nON CONFLICT (company_id,minus_word) DO UPDATE\nSET minus_word = EXCLUDED.minus_word          -- no-op для возврата существующей строки\nRETURNING id;",
+        "options": {
+          "queryReplacement": "=[\n  { \"value\": \"={{'[' + $json.data[0].embedding.map(e => Number(e)).join(',') + ']'}}\" },\n  { \"value\": \"={{ $('Code').last().json.minus_word }}\" },\n  { \"value\": \"={{$('create prompt').last().json.key_word_id}}\" },\n  { \"value\": \"={{ $('create prompt').last().json.company_id }}\" },\n  { \"value\": \"={{'tokens used:'+ ($('HTTP Request').last().json.usage.total_tokens + $('HTTP Request1').last().json.usage.total_tokens) }}\" }\n]"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        4176,
+        -192
+      ],
+      "id": "2c682e8b-2be5-4c58-bfca-97a6195d6f47",
+      "name": "Insert minus words",
+      "credentials": {
+        "postgres": {
+          "id": "4YkdFJcdTgzo9hkz",
+          "name": "PGvector"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Достаём массив competitors\nconst variants = JSON.parse($json.output[1].content[0].text).minus_words;\n\n// Разворачиваем каждый объект в отдельный item\nreturn variants.map((c, index) => ({\n  json: {\n    index,\n    minus_word: c.toLowerCase(),\n    list_id:$json.list_id    \n  }\n}));"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3648,
+        -240
+      ],
+      "id": "74d8d469-087a-4ceb-900e-6031c47593b5",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "jsCode": "return [{\n  json: {\n  \"model\": \"text-embedding-3-small\",\n  \"input\": $json.minus_word\n}\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3824,
+        -240
+      ],
+      "id": "76091f80-71cb-49eb-8a0c-d10817cdae07",
+      "name": "Set API JSON1"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.openai.com/v1/embeddings",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "openAiApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{$json}}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        4000,
+        -256
+      ],
+      "id": "5a99a19f-635b-4034-9de2-79e45bde975e",
+      "name": "Get embedding",
+      "retryOnFail": true,
+      "credentials": {
+        "openAiApi": {
+          "id": "V8R8KiZKXscJQ1sL",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO business_processes_states (business_process_id, company_id,n8n_workflow_execution_id, started)\nSELECT MAX(business_process_id), $2,$3, NOW()\nFROM public.business_processes\nWHERE n8n_process_name = $1;",
+        "options": {
+          "queryReplacement": "=[{{$workflow.name}},{{$json.company_id}},{{$execution.id}}]"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -496,
+        -16
+      ],
+      "id": "61f689ae-825b-422e-974f-878063cd7070",
+      "name": "Mark_workwlow_started",
+      "credentials": {
+        "postgres": {
+          "id": "4YkdFJcdTgzo9hkz",
+          "name": "PGvector"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "update business_processes_states set finished=NOW() where business_process_id=(select MAX(business_process_id) from business_processes where n8n_process_name=$1) and n8n_workflow_execution_id=$2",
+        "options": {
+          "queryReplacement": "=[{{$workflow.name}},{{$execution.id}}]"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        1056,
+        -320
+      ],
+      "id": "23b3756e-ac3f-4adc-bda2-57cecf726915",
+      "name": "Mark_workflow_completed",
+      "executeOnce": true,
+      "credentials": {
+        "postgres": {
+          "id": "4YkdFJcdTgzo9hkz",
+          "name": "PGvector"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "select count(key_word_id) AS total from key_words where is_relevant=true and minus_words_processed=false and company_id=$1",
+        "options": {
+          "queryReplacement": "={{$('set variables').item.json.company_id}}"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -240,
+        -16
+      ],
+      "id": "20778be7-9f6f-41a5-8789-03bccbee012c",
+      "name": "Execute a SQL query",
+      "credentials": {
+        "postgres": {
+          "id": "Hx2VFmUi5WO2K4QX",
+          "name": "Postgres account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "update business_processes_states set steps_total=$3 where business_process_id=(select MAX(business_process_id) from business_processes where n8n_process_name=$1) and n8n_workflow_execution_id=$2",
+        "options": {
+          "queryReplacement": "=[{{$workflow.name}},{{$execution.id}},{{ $json.total }}]"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -64,
+        -16
+      ],
+      "id": "15bbe6b9-f024-4c89-9f35-05e0972b5a1e",
+      "name": "Mark_workflow_total_steps",
+      "executeOnce": true,
+      "credentials": {
+        "postgres": {
+          "id": "4YkdFJcdTgzo9hkz",
+          "name": "PGvector"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Function-Node (Run Once)\nconst workflowData = $getWorkflowStaticData('global');\nworkflowData.steps_passed = 0;\nreturn items;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        112,
+        -16
+      ],
+      "id": "f5b23cd7-bbe0-4ce0-9e8b-3941ec7d85c9",
+      "name": "Init total counter"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "update business_processes_states set steps_passed=$3 where business_process_id=(select MAX(business_process_id) from business_processes where n8n_process_name=$1) and n8n_workflow_execution_id=$2",
+        "options": {
+          "queryReplacement": "=[{{$workflow.name}},{{$execution.id}},{{$json.steps_passed}}]"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        4784,
+        -32
+      ],
+      "id": "10bd6205-db2e-4942-87f8-75406e2f0ab9",
+      "name": "Mark_workflow_passed_steps",
+      "executeOnce": true,
+      "credentials": {
+        "postgres": {
+          "id": "4YkdFJcdTgzo9hkz",
+          "name": "PGvector"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "d9f00da2-f51a-496a-a0e1-65c119d4776b",
+              "leftValue": "={{ $json.non_matches }}",
+              "rightValue": "",
+              "operator": {
+                "type": "array",
+                "operation": "empty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        2656,
+        -128
+      ],
+      "id": "2d2f0eae-1a27-4578-8343-d9f87cd58b9b",
+      "name": "If no options"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        2608,
+        -400
+      ],
+      "id": "fbf89119-9e83-4b49-bff1-86e21dc431c9",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nconst workflowData = $getWorkflowStaticData('global');\nworkflowData.steps_passed = workflowData.steps_passed+1; // update steps counter\nfor (const item of $input.all()) {\n  item.json.steps_passed =workflowData.steps_passed;\n}\n\nreturn $input.all();"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        4592,
+        -80
+      ],
+      "id": "aee9209a-245b-4e81-be2b-c45460997a6f",
+      "name": "Get current step saved"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "ebafa31d-edf7-41c0-a06e-e884ad9595ea",
+              "name": "is_first",
+              "value": "=true",
+              "type": "boolean"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        768,
+        -64
+      ],
+      "id": "d7fc355e-dd28-4d81-b9a5-95f8a54a8f04",
+      "name": "set first_item"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "ebafa31d-edf7-41c0-a06e-e884ad9595ea",
+              "name": "is_first",
+              "value": "=false",
+              "type": "boolean"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1152,
+        -48
+      ],
+      "id": "106fc0ce-9dec-4a77-b0ff-5ded4e3e53d1",
+      "name": "reset first_item1"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "key_words",
+          "mode": "list",
+          "cachedResultName": "key_words"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "minus_words_processed": "={{ true }}",
+            "key_word_id": "={{$('create prompt').last().json.key_word_id}}"
+          },
+          "matchingColumns": [
+            "key_word_id"
+          ],
+          "schema": [
+            {
+              "id": "key_word_id",
+              "displayName": "key_word_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "company_id",
+              "displayName": "company_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "key_word",
+              "displayName": "key_word",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "wordstat_count",
+              "displayName": "wordstat_count",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "service_id",
+              "displayName": "service_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "wordstat_parsed",
+              "displayName": "wordstat_parsed",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "boolean",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "from_wordstat",
+              "displayName": "from_wordstat",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "boolean",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "is_relevant",
+              "displayName": "is_relevant",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "boolean",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "ai_response_tokens",
+              "displayName": "ai_response_tokens",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "minus_words_processed",
+              "displayName": "minus_words_processed",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "boolean",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        4384,
+        -80
+      ],
+      "id": "30a3f92d-a824-4003-b019-109952d8630a",
+      "name": "Mark key_word processed",
+      "credentials": {
+        "postgres": {
+          "id": "Hx2VFmUi5WO2K4QX",
+          "name": "Postgres account 2"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Start": {
+      "main": [
+        [
+          {
+            "node": "Get a file",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "set variables",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [
+          {
+            "node": "Loop Over services",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "reset first_item1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get a file": {
+      "main": [
+        [
+          {
+            "node": "Extract from File1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File1": {
+      "main": [
+        [
+          {
+            "node": "Code1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code1": {
+      "main": [
+        []
+      ]
+    },
+    "Set API JSON": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "parse_tool_call",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Select rows from a table": {
+      "main": [
+        [
+          {
+            "node": "set first_item",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Services list": {
+      "main": [
+        [
+          {
+            "node": "Loop Over services",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over services": {
+      "main": [
+        [
+          {
+            "node": "Mark_workflow_completed",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Select rows from a table",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "create prompt": {
+      "main": [
+        [
+          {
+            "node": "Set API JSON",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "set variables": {
+      "main": [
+        [
+          {
+            "node": "Mark_workwlow_started",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute Workflow": {
+      "main": [
+        [
+          {
+            "node": "If no options",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "parse_tool_call": {
+      "main": [
+        [
+          {
+            "node": "Execute Workflow",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "package_tool_output": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "Set API JSON1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request1": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Insert minus words": {
+      "main": [
+        [
+          {
+            "node": "Mark key_word processed",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set API JSON1": {
+      "main": [
+        [
+          {
+            "node": "Get embedding",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get embedding": {
+      "main": [
+        [
+          {
+            "node": "Insert minus words",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mark_workwlow_started": {
+      "main": [
+        [
+          {
+            "node": "Execute a SQL query",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute a SQL query": {
+      "main": [
+        [
+          {
+            "node": "Mark_workflow_total_steps",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mark_workflow_total_steps": {
+      "main": [
+        [
+          {
+            "node": "Init total counter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Init total counter": {
+      "main": [
+        [
+          {
+            "node": "Services list",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mark_workflow_passed_steps": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If no options": {
+      "main": [
+        [
+          {
+            "node": "Mark key_word processed",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "package_tool_output",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get current step saved": {
+      "main": [
+        [
+          {
+            "node": "Mark_workflow_passed_steps",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "reset first_item1": {
+      "main": [
+        [
+          {
+            "node": "create prompt",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "set first_item": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mark key_word processed": {
+      "main": [
+        [
+          {
+            "node": "Get current step saved",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "saveDataErrorExecution": "all",
+    "saveDataSuccessExecution": "none",
+    "saveExecutionProgress": false,
+    "callerPolicy": "workflowsFromSameOwner",
+    "errorWorkflow": "v2Z32ISEUzsFYnZw"
+  },
+  "staticData": {
+    "node:Schedule Trigger": {
+      "recurrenceRules": []
+    }
+  },
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {
+    "Start": [
+      {
+        "json": {}
+      }
+    ]
+  },
+  "versionId": "02fe7e4f-9c05-446a-8b51-dfac17122903",
+  "triggerCount": 1,
+  "shared": [
+    {
+      "createdAt": "2025-09-15T12:29:02.719Z",
+      "updatedAt": "2025-09-15T12:29:02.719Z",
+      "role": "workflow:owner",
+      "workflowId": "hb9ZkB3YX07kkFCd",
+      "projectId": "spKmbJLU4mvACXIB"
+    }
+  ],
+  "tags": []
+}
