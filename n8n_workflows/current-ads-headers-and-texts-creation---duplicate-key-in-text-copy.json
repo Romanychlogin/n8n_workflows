@@ -1,0 +1,457 @@
+{
+  "createdAt": "2025-08-04T08:38:09.530Z",
+  "updatedAt": "2025-08-04T09:05:27.969Z",
+  "id": "79xVxSnjOGwvwmIb",
+  "name": "current ADS headers and texts creation - duplicate key in text copy",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4o",
+          "mode": "list",
+          "cachedResultName": "GPT-4O"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "={{ $json.prompt }}"
+            }
+          ]
+        },
+        "simplify": false,
+        "options": {
+          "maxToolsIterations": 15
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        1168,
+        -176
+      ],
+      "id": "70874ddb-4ed7-41ce-897d-50a62ed66f92",
+      "name": "Message a model",
+      "retryOnFail": true,
+      "waitBetweenTries": 5000,
+      "credentials": {
+        "openAiApi": {
+          "id": "V8R8KiZKXscJQ1sL",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        432,
+        -80
+      ],
+      "id": "fe43f48f-bd87-4d06-8ce9-10c82236f797",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "name": "Replace Me",
+      "typeVersion": 1,
+      "position": [
+        2848,
+        32
+      ],
+      "id": "7093b2ce-af4e-4683-986b-5e47be9922d4"
+    },
+    {
+      "parameters": {
+        "amount": 0
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        2864,
+        -448
+      ],
+      "id": "2045847d-81ef-444a-bb37-a66027371684",
+      "name": "Wait",
+      "webhookId": "b2b0ec1d-2c2c-427c-8b3b-26888a21bb09"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        1424,
+        -400
+      ],
+      "id": "888790c6-2b9e-47ad-ba6c-dcfee4722b5f",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "0e10b6a7-d524-4fce-8288-527e596dba23",
+              "name": "First_part",
+              "value": "Есть следующая фраза, заданная пользователем при поиске: \"",
+              "type": "string"
+            },
+            {
+              "id": "ba486f3b-f6d8-4d2d-9e19-3f83f0c18092",
+              "name": "Second_part",
+              "value": "\" и следующий заголовок объявления к ней \"",
+              "type": "string"
+            },
+            {
+              "id": "e1fc0dc6-c7da-4093-9221-70f8d7164f71",
+              "name": "Third_part",
+              "value": "\". Пожалуйста подбери к ним Текст рекламного объявления. Ответ долже содержать только текст без рассуждений. кавычки добавлять не надо . Учитывая то что во фразе пользователя удалены все дополнительные символы, такие как #,- и пр. Требования к тексту объявления. 1)не более 81 символа. 2)Должен начинаться с запроса пользователя, но доработанного по следующим требованиям: при наличии жаргонизмов или некорректного\\неграмотного написания в исходной фразе необходимо корректное написание а также порядок слов. Обязательное требование - сохранение всех слов из ключевой фразы. А также содержать призыв к коммерческому действию (записи на пробный урок, попробовать самому и р.) Пример текста объявления: \"Учим детей создавать игры, сайты и ботов. Запишись на пробный урок бесплатно!\" В ответе необходимо вернуть только запрошенную информацию, запрещено добавлять уточнения типа текст и пр. Описание компании:  KIBERone – международная КиберШкола программирования и цифровых технологий для детей от 6 до 14 лет.|Официальный сайт филиала в Саратове (Октябрьский район): https://saratov-okt.kiber-one.com/Позиционирование бренда: KIBERone — первая международная КиберШкола будущего для IT-поколения 6–14 лет, признана ЮНЕСКО лучшей детской образовательной IT-школой в мире. Бренд является партнером Microsoft, Roblox и Samsung. Бесплатные пробные урокиОсновные услуги и программы:Полный перечень модулей (https://saratov-okt.kiber-one.com/moduli/):- Вводный модуль (основы цифровой грамотности) — https://saratov-okt.kiber-one.com/moduli/vvodnyy-modul/- Основы программирования Scratch Jr — https://saratov-okt.kiber-one.com/moduli/osnovy-programmirovaniya-scratch-jr/- Создание игр на Scratch — https://saratov-okt.kiber-one.com/moduli/modul-2-znakomstvo-so-scratch-sozdanie-igr-na-scratch-osnovy/- ПиктоМир (алгоритмическое мышление) — https://saratov-okt.kiber-one.com/moduli/piktomir/- CodeMonkey (логика и программирование) — https://saratov-okt.kiber-one.com/moduli/codemonkey-razvivaem-logiku-programmirovaniya-igr/- Устройство компьютера — https://saratov-okt.kiber-one.com/moduli/ustroystvo-kompyutera-my-na-ty/- Эффектные презентации (PowerPoint, Desygner) — https://saratov-okt.kiber-one.com/moduli/magiya-effektnyh-prezentaciy-powerpoint-i-desygner/- QR‑коды — https://saratov-okt.kiber-one.com/moduli/qr-kod-kak-instrument/- Деловые люди (предпринимательство) — https://saratov-okt.kiber-one.com/moduli/delovye-lyudi-osnovy-predprinimatelstva-i-proektnoy-deyatelnosti-dlya-detej/- Google Blockly (визуальное программирование) — https://saratov-okt.kiber-one.com/moduli/google-blockly-apofeoz-vizualnogo-programmirovaniya/- Roblox Studio (создание игр) — https://saratov-okt.kiber-one.com/moduli/roblox-studio-sdelat-vse-chto-vy-mozhete-sebe-predstavit/- Kodu Game Lab (3D‑программирование) — https://saratov-okt.kiber-one.com/moduli/kodu-game-lab-vizualnoe-programmirovanie-v-3d/- Разработка мобильных приложений в Thunkable — https://saratov-okt.kiber-one.com/moduli/razrabotka-mobilnyh-prilozhenij-v-thunkable-nachalo/- Blender (3D‑моделирование) — https://saratov-okt.kiber-one.com/moduli/blender-osnovy-3d-modelirovaniya/- Компьютерная грамотность — https://saratov-okt.kiber-one.com/moduli/kompyuternaya-gramotnost/- Minecraft Education — https://saratov-okt.kiber-one.com/moduli/minecraft-education/- Нейросети (основы ИИ) — https://saratov-okt.kiber-one.com/moduli/neyroseti-znakomstvo-s-osnovami-ii/- Alice 3D (3D‑программирование) — https://saratov-okt.kiber-one.com/moduli/alice-3d-izuchenie-3d-programmirovaniya/- Run Marco (основы алгоритмов) — https://saratov-okt.kiber-one.com/moduli/run-marco-igra-kvest-dlya-obucheniya-osnovam-algoritmov/- Исполнители: Чертёжник и Черепашка — https://saratov-okt.kiber-one.com/moduli/ispolniteli-cherteznik-i-cherepashka/- GIF‑анимация — https://saratov-okt.kiber-one.com/moduli/gif-animaciya-sozdanie-prostyh-animacij/- Tinkercad (3D‑проектирование) — https://saratov-okt.kiber-one.com/moduli/tinkercad-3d-proektirovanie/- Кибербезопасность — https://saratov-okt.kiber-one.com/moduli/kiberbezopasnost-osnovy-informatsionnoj-bezopasnosti/- Construct 2 (создание 2D‑игр) — https://saratov-okt.kiber-one.com/moduli/construct-2-sozdai-svoj-pervyj-platformer/- Компас‑3D (САПР) — https://saratov-okt.kiber-one.com/moduli/kompas-3d-3d-modelirovanie-sap/- Основы HTML (веб‑разработка) — https://saratov-okt.kiber-one.com/moduli/osnovy-html-web-razrabotka/- Голосовой помощник Алиса — https://saratov-okt.kiber-one.com/moduli/golosovoj-pomoshhnik-alisa-programmirovanie-navykov-dlya-alisa/- Создание лендинга (Tilda) — https://saratov-okt.kiber-one.com/moduli/sozdanie-lendinga-tilda-razrabotka-sajta-na-konstruktor/- Python (создание игр) — https://saratov-okt.kiber-one.com/moduli/programmirovanie-v-python-sozdaj-svoju-pervuju-igru/- Чат‑бот на Python — https://saratov-okt.kiber-one.com/moduli/umnyj-chat-bot-na-python/- Web‑дизайн (Figma) — https://saratov-okt.kiber-one.com/moduli/web-dizayn-figma/- Web‑мастер (HTML+CSS) — https://saratov-okt.kiber-one.com/moduli/web-master-html-css/- Motion Design — https://saratov-okt.kiber-one.com/moduli/motion-design-animacionnaya-grafika/- Unreal Engine 4 (игровой движок) — https://saratov-okt.kiber-one.com/moduli/unreal-engine-4-igrovoj-dvizhok/- JavaScript (игры) — https://saratov-okt.kiber-one.com/moduli/programmirovanie-na-javascript-uchimsya-sozdavat-igry/- C# (создание 2D‑игр) — https://saratov-okt.kiber-one.com/moduli/programmirovanie-na-csharp-udivitelnyj-mir-2d-igr/- C++ — https://saratov-okt.kiber-one.com/moduli/programmirovanie-na-cpp-smozhet-kazhdyj/- Java (создание приложений) — https://saratov-okt.kiber-one.com/moduli/programmirovanie-na-java-tvoe-pervoe-prilozhenie/- Unity 3D (игры) — https://saratov-okt.kiber-one.com/moduli/mir-trehmernuh-igr-na-unity-3d/- Олимпиадное программирование — https://saratov-okt.kiber-one.com/moduli/olimpiadnoe-programmirovanie-podgotovka-k-olimpiadam-po-informatike/- Облачные технологии, Блокчейн, Data Science — https://saratov-okt.kiber-one.com/moduli/oblachnye-tehnologii-blokchejn-data-science/- PHP+SQL — https://saratov-okt.kiber-one.com/moduli/php-sql-sozdanie-veb-prilozhenij-s-bazami-dannyh/- Photoshop — https://saratov-okt.kiber-one.com/moduli/volshebnij-photoshop-graficheskij-dizajn-i-obrabotka-izobrazhenij/- Подготовка к олимпиадам — https://saratov-okt.kiber-one.com/moduli/podgotovka-k-olimpiadam-razvitie-navykov-resheniya-slozhnyh-zadach/- Приложения Google — https://saratov-okt.kiber-one.com/moduli/prilozheniya-google-35-prilozhenij-ot-google-o-kotoryh-vy-mogli-ne-znat/Летние программы:- Летние IT-интенсивы (краткосрочные программы по направлениям Roblox, Minecraft, Python и др.) — https://saratov-okt.kiber-one.com/vybirayte-format-svoego-leta-s-kiberone/letnie-moduli-kiberone/- Летние КИБЕРканикулы (городской лагерь с IT-обучением и развлекательной программой) — https://saratov-okt.kiber-one.com/vybirayte-format-svoego-leta-s-kiberone/kiber-kanikuly/Дополнительные механики:- Кибервалюта («кибероны») для мотивации учеников, обмен на мерч на КиберМаркете — https://saratov-okt.kiber-one.com/o-kibershkole/kibervaluta/Тьюторы и преподаватели:- Опытные специалисты с практическим опытом и педагогической подготовкой — https://saratov-okt.kiber-one.com/o-kibershkole/prepodavateli/Другие важные разделы:- Новости (новости школы и сети) — https://saratov-okt.kiber-one.com/o-kibershkole/news/- СМИ о нас (публикации о школе) — https://saratov-okt.kiber-one.com/o-kibershkole/smi-o-nas/- Фотогалерея (фото с мероприятий и уроков) — https://saratov-okt.kiber-one.com/o-kibershkole/fotogalereya/- Видео (видеоматериалы о школе) — https://saratov-okt.kiber-one.com/o-kibershkole/video/- Расписание занятий (время занятий для групп и пробных уроков) — https://saratov-okt.kiber-one.com/o-kibershkole/raspisanie/- Локации (адрес школы в Октябрьском районе Саратова, ул. Тараса Шевченко, 8) — https://saratov-okt.kiber-one.com/o-kibershkole/lokacii/- Оплата (способы оплаты и договор-оферта) — https://saratov-okt.kiber-one.com/oplata/- Сертификаты (активация промокодов партнеров) — https://saratov-okt.kiber-one.com/sertifikaty/- Контакты (email saratov@kiber-one.com) — https://saratov-okt.kiber-one.com/feedback/",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        624,
+        -256
+      ],
+      "id": "a8a4be4e-c664-4236-a9b8-1ec441dd515f",
+      "name": "Set fixed text"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "3a2986b7-fe2d-4cd7-b72f-473d05165f2a",
+              "name": "prompt",
+              "value": "={{$json.First_part + $json.key_words + $json.Second_part +$json.ad_header +$json.Third_part }}",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        848,
+        -256
+      ],
+      "id": "82cf81f8-16b5-4131-8ba3-b508f933ab95",
+      "name": "Combine text"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "current_ads_list",
+          "mode": "list",
+          "cachedResultName": "current_ads_list"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "ad_text": "={{$json.choices[0].message.content}}",
+            "ad_id": "={{ $json.ad_id }}"
+          },
+          "matchingColumns": [
+            "ad_id"
+          ],
+          "schema": [
+            {
+              "id": "ad_id",
+              "displayName": "ad_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "group_name",
+              "displayName": "group_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "key_words",
+              "displayName": "key_words",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "ad_header",
+              "displayName": "ad_header",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "ad_text",
+              "displayName": "ad_text",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "group_id",
+              "displayName": "group_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "ad_url",
+              "displayName": "ad_url",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        2672,
+        -464
+      ],
+      "id": "6a045d53-5845-4406-b727-869b8c257f96",
+      "name": "Insert all data",
+      "credentials": {
+        "postgres": {
+          "id": "Hx2VFmUi5WO2K4QX",
+          "name": "Postgres account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "select",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "current_ads_list",
+          "mode": "list",
+          "cachedResultName": "current_ads_list"
+        },
+        "returnAll": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        64,
+        -80
+      ],
+      "id": "2e77a404-7be5-4214-ac42-077733e3cf0d",
+      "name": "Select rows from a table",
+      "credentials": {
+        "postgres": {
+          "id": "Hx2VFmUi5WO2K4QX",
+          "name": "Postgres account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "inputSource": "passthrough"
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -416,
+        -192
+      ],
+      "id": "2c12a21f-c3e2-43c5-bbc3-fd6fa124cb80",
+      "name": "When Executed by Another Workflow"
+    }
+  ],
+  "connections": {
+    "Message a model": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Set fixed text",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Replace Me": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "Replace Me",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Insert all data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set fixed text": {
+      "main": [
+        [
+          {
+            "node": "Combine text",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Combine text": {
+      "main": [
+        [
+          {
+            "node": "Message a model",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Insert all data": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Select rows from a table": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "Select rows from a table",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "64840c4b-79ba-45b7-923d-9fa4185d32ad",
+  "triggerCount": 0,
+  "shared": [
+    {
+      "createdAt": "2025-08-04T08:38:09.530Z",
+      "updatedAt": "2025-08-04T08:38:09.530Z",
+      "role": "workflow:owner",
+      "workflowId": "79xVxSnjOGwvwmIb",
+      "projectId": "spKmbJLU4mvACXIB"
+    }
+  ],
+  "tags": []
+}
