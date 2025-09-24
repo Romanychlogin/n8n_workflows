@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-23T20:32:53.458Z",
-  "updatedAt": "2025-09-24T07:37:50.052Z",
+  "updatedAt": "2025-09-24T07:53:31.785Z",
   "id": "buEFTEMfZEENQOel",
   "name": "github_repo_workflows_sync",
   "active": false,
@@ -16,8 +16,8 @@
       "name": "Create new workflow in n8n",
       "type": "n8n-nodes-base.n8n",
       "position": [
-        -560,
-        864
+        -208,
+        896
       ],
       "typeVersion": 1,
       "credentials": {
@@ -226,15 +226,15 @@
         "operation": "edit",
         "owner": {
           "__rl": true,
-          "mode": "name",
-          "value": "={{ $('Set GitHub Details').item.json.github_account_name }}"
+          "value": "={{ $('Set GitHub Details').first().json.github_account_name }}",
+          "mode": "name"
         },
         "repository": {
           "__rl": true,
-          "mode": "name",
-          "value": "={{ $('Set GitHub Details').item.json.github_repo_name }}"
+          "value": "={{ $('Set GitHub Details').first().json.github_repo_name }}",
+          "mode": "name"
         },
-        "filePath": "={{ $('Set GitHub Details').item.json.repo_workflows_path }}/{{ $node['Edit for Update'].json.fileName }}",
+        "filePath": "={{ $('Set GitHub Details').first().json.repo_workflows_path }}/{{ $node['Edit for Update'].json.fileName }}",
         "fileContent": "={{ $('To base').item.json.data }}",
         "commitMessage": "=n8n_backup_sync-{{ $('Edit for Update').item.json.commitDate }}"
       },
@@ -453,8 +453,8 @@
       "name": "Sticky Note2",
       "type": "n8n-nodes-base.stickyNote",
       "position": [
-        -656,
-        720
+        -304,
+        752
       ],
       "typeVersion": 1
     },
@@ -586,40 +586,6 @@
           "conditions": [
             {
               "id": "5a702dad-e85f-40f4-8261-3f3e6a573fe0",
-              "leftValue": "={{$json}}",
-              "rightValue": "",
-              "operator": {
-                "type": "object",
-                "operation": "empty",
-                "singleValue": true
-              }
-            }
-          ],
-          "combinator": "and"
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.if",
-      "typeVersion": 2.2,
-      "position": [
-        -880,
-        800
-      ],
-      "id": "da7f893d-6bfb-4853-8c46-bac86cb56409",
-      "name": "If"
-    },
-    {
-      "parameters": {
-        "conditions": {
-          "options": {
-            "caseSensitive": true,
-            "leftValue": "",
-            "typeValidation": "strict",
-            "version": 2
-          },
-          "conditions": [
-            {
-              "id": "5a702dad-e85f-40f4-8261-3f3e6a573fe0",
               "leftValue": "={{ $json.name }}",
               "rightValue": ".json",
               "operator": {
@@ -716,7 +682,7 @@
     },
     {
       "parameters": {
-        "jsCode": "let incident_text = '*Ошибка экспорта в gitHub*\\n';\nconst now = new Date();\n// Экранирование под Telegram MarkdownV2\nfunction escapeMarkdownV2(s) {\n  // список из оф. доки Telegram для MarkdownV2:\n  // _ * [ ] ( ) ~ ` > # + - = | { } . !\n  return String(s).replace(/([_*\\[\\]()~`>#+\\-=|{}.!])/g, '\\\\$1');\n}\n\nincident_text =incident_text+'*'+now.toLocaleTimeString('ru-RU', { timeZone:'Europe/Moscow', hour: '2-digit', minute: '2-digit' })+' MSK*\\n';\nincident_text =incident_text+' Error processing workflow:' + escapeMarkdownV2($input.first().json.fileName);\n\nreturn [{ json: { text: incident_text } }];"
+        "jsCode": "let incident_text = '*Ошибка экспорта в gitHub*\\n';\nconst now = new Date();\n// Экранирование под Telegram MarkdownV2\nfunction escapeMarkdownV2(s) {\n  // список из оф. доки Telegram для MarkdownV2:\n  // _ * [ ] ( ) ~ ` > # + - = | { } . !\n  return String(s).replace(/([_*\\[\\]()~`>#+\\-=|{}.!])/g, '\\\\$1');\n}\n\nincident_text =incident_text+'*'+now.toLocaleTimeString('ru-RU', { timeZone:'Europe/Moscow', hour: '2-digit', minute: '2-digit' })+' MSK*\\n';\nincident_text =incident_text+' Error processing workflow: ' + escapeMarkdownV2($input.first().json.fileName);\n\nreturn [{ json: { text: incident_text } }];"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -727,6 +693,95 @@
       "id": "217a8101-9a54-4799-87c3-d8122620ad1f",
       "name": "Set error message",
       "executeOnce": false
+    },
+    {
+      "parameters": {
+        "chatId": "-1003052639964",
+        "text": "={{ $json.text }}",
+        "additionalFields": {
+          "appendAttribution": true,
+          "parse_mode": "MarkdownV2"
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -464,
+        960
+      ],
+      "id": "a0fa0144-5daf-45fa-be21-364caa8ef115",
+      "name": "Send a incident message1",
+      "webhookId": "a18d9a87-250a-437a-9193-952ef1cc833c",
+      "credentials": {
+        "telegramApi": {
+          "id": "ttGHKrzQMaymkKXW",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Собираем все входные элементы\nconst items = $input.all();\n\n// Экранирование под Telegram MarkdownV2\nfunction escapeMarkdownV2(s) {\n  // _ * [ ] ( ) ~ ` > # + - = | { } . !\n  return String(s).replace(/([_*\\[\\]()~`>#+\\-=|{}.!])/g, '\\\\$1');\n}\n\n// Заголовок + дата/время — один раз\nconst now = new Date();\nlet incident_text = '*Внимание, в GitHub найдены новые workflow*\\\\n';\nincident_text += '*' \n  + now.toLocaleDateString('ru-RU', { timeZone: 'Europe/Moscow' }) \n  + ' ' \n  + now.toLocaleTimeString('ru-RU', { timeZone: 'Europe/Moscow', hour: '2-digit', minute: '2-digit' }) \n  + ' MSK*\\\\n';\n\n// Добавляем строки для каждого входного элемента\nfor (const it of items) {\n  const fileName = it.json.fileName ?? '(без имени)';\n  incident_text += '• workflow: ' + escapeMarkdownV2(fileName) + '\\\\n';\n}\n\n// Возвращаем одним сообщением\nreturn [{ json: { text: incident_text } }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -752,
+        960
+      ],
+      "id": "b8abefcc-cd74-4d9d-b305-6d730ae4f00b",
+      "name": "Set error message1",
+      "executeOnce": false
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        1680,
+        176
+      ],
+      "id": "b0aea046-eab9-432e-ba6d-8aaa159de65e",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "jsCode": "let incident_text = '*Успешный экспорт а gitHub*\\n';\nconst now = new Date();\n// Экранирование под Telegram MarkdownV2\nfunction escapeMarkdownV2(s) {\n  // список из оф. доки Telegram для MarkdownV2:\n  // _ * [ ] ( ) ~ ` > # + - = | { } . !\n  return String(s).replace(/([_*\\[\\]()~`>#+\\-=|{}.!])/g, '\\\\$1');\n}\n\nincident_text =incident_text+'*'+now.toLocaleTimeString('ru-RU', { timeZone:'Europe/Moscow', hour: '2-digit', minute: '2-digit' })+' MSK*\\n';\n\n\nreturn [{ json: { text: incident_text } }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1920,
+        176
+      ],
+      "id": "3ad1c32d-2079-443c-a4c1-b50d7563f8f3",
+      "name": "Set success message",
+      "executeOnce": false
+    },
+    {
+      "parameters": {
+        "chatId": "-1003120484933",
+        "text": "={{ $json.text }}",
+        "additionalFields": {
+          "appendAttribution": true,
+          "parse_mode": "MarkdownV2"
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        2144,
+        176
+      ],
+      "id": "8e9140e0-834f-4520-aaeb-7ef1e0952743",
+      "name": "Send a success",
+      "webhookId": "a18d9a87-250a-437a-9193-952ef1cc833c",
+      "credentials": {
+        "telegramApi": {
+          "id": "ttGHKrzQMaymkKXW",
+          "name": "Telegram account"
+        }
+      }
     }
   ],
   "connections": {
@@ -859,7 +914,7 @@
         ],
         [
           {
-            "node": "If",
+            "node": "Set error message1",
             "type": "main",
             "index": 0
           }
@@ -950,11 +1005,6 @@
         ]
       ]
     },
-    "If": {
-      "main": [
-        []
-      ]
-    },
     "if json in file name": {
       "main": [
         [
@@ -968,7 +1018,13 @@
     },
     "Upload file": {
       "main": [
-        [],
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ],
         [
           {
             "node": "Set error message",
@@ -1006,6 +1062,50 @@
           }
         ]
       ]
+    },
+    "Set error message1": {
+      "main": [
+        [
+          {
+            "node": "Send a incident message1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update file": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Set success message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set success message": {
+      "main": [
+        [
+          {
+            "node": "Send a success",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
@@ -1014,7 +1114,7 @@
   "staticData": null,
   "meta": null,
   "pinData": {},
-  "versionId": "06d88eec-6c60-4e0e-9b23-acadadc4a806",
+  "versionId": "e2089a2f-0da7-4118-9874-c5cd116d6bb8",
   "triggerCount": 0,
   "shared": [
     {
