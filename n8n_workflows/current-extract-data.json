@@ -1,0 +1,321 @@
+{
+  "createdAt": "2025-08-04T09:19:59.208Z",
+  "updatedAt": "2025-08-05T07:03:14.266Z",
+  "id": "hU01QJEP5T9MYX0K",
+  "name": "current extract data",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "868b5dff-5727-44a5-9399-b9f5b5812829",
+      "name": "Start",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -640,
+        -80
+      ]
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "name": "Replace Me",
+      "typeVersion": 1,
+      "position": [
+        4912,
+        0
+      ],
+      "id": "7182e46f-f8e6-4f75-998e-f73cd877600c"
+    },
+    {
+      "parameters": {
+        "operation": "select",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "current_ads_list",
+          "mode": "list",
+          "cachedResultName": "current_ads_list"
+        },
+        "returnAll": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        64,
+        -80
+      ],
+      "id": "2aa1acb6-23d7-4c75-9ebe-c1a6d33767fb",
+      "name": "Select rows from a table",
+      "credentials": {
+        "postgres": {
+          "id": "Hx2VFmUi5WO2K4QX",
+          "name": "Postgres account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "xlsx",
+        "options": {
+          "fileName": "output.xlsx",
+          "headerRow": true
+        }
+      },
+      "type": "n8n-nodes-base.convertToFile",
+      "typeVersion": 1.1,
+      "position": [
+        624,
+        -80
+      ],
+      "id": "95cd0d5c-e91b-4e32-b6aa-99da0155d951",
+      "name": "Convert to File"
+    },
+    {
+      "parameters": {
+        "path": "/ADS_startup/upload.xlsx",
+        "binaryData": true
+      },
+      "type": "n8n-nodes-base.dropbox",
+      "typeVersion": 1,
+      "position": [
+        1120,
+        -80
+      ],
+      "id": "46f84644-0d20-4d13-853d-7e18886d7079",
+      "name": "Upload a file",
+      "credentials": {
+        "dropboxApi": {
+          "id": "KgtvFdGsueqNuB0Z",
+          "name": "Dropbox account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "e22ad154-2123-49fe-9e5a-c7fe836825f8",
+              "name": "add_adv",
+              "value": "-",
+              "type": "string"
+            },
+            {
+              "id": "4262c0ff-c141-4fde-aebe-187481d9d0df",
+              "name": "ADV_type",
+              "value": "Текстово-графическое",
+              "type": "string"
+            },
+            {
+              "id": "a11661b9-dc1c-4750-b93f-ba5b74836562",
+              "name": "mob",
+              "value": "-",
+              "type": "string"
+            },
+            {
+              "id": "e1100e5c-4c72-456e-b2ec-55f0f536bff1",
+              "name": "group_uid",
+              "value": "",
+              "type": "string"
+            },
+            {
+              "id": "d9b1b21a-f230-41db-af85-b9bbcb554ee4",
+              "name": "group_name",
+              "value": "={{ $json.group_name }}",
+              "type": "string"
+            },
+            {
+              "id": "c0cb504d-2b55-4c1f-a628-80b7a369a078",
+              "name": "group_id",
+              "value": "={{ $json.group_id }}",
+              "type": "number"
+            },
+            {
+              "id": "5c643aae-d54d-4ad8-aee2-f5114f35f078",
+              "name": "id_phrase",
+              "value": " ",
+              "type": "string"
+            },
+            {
+              "id": "1df69495-ac3c-4f36-ac5d-5a014914feb0",
+              "name": "key_words",
+              "value": "={{ $json.key_words }}",
+              "type": "string"
+            },
+            {
+              "id": "4455b796-76dd-4789-b04d-51f793ae70f1",
+              "name": "id_adv",
+              "value": "",
+              "type": "string"
+            },
+            {
+              "id": "b308d9ca-9676-4837-a7b0-3512c73bf481",
+              "name": "ad_header",
+              "value": "={{ $json.ad_header }}",
+              "type": "string"
+            },
+            {
+              "id": "559ee132-e1dd-444b-9f9e-d87e5e8b1974",
+              "name": "ad_header2",
+              "value": "IT школа будущего KIBERone",
+              "type": "string"
+            },
+            {
+              "id": "04f85c2c-a0b8-4ff8-9715-8ca7c329976e",
+              "name": "ad_text",
+              "value": "={{ $json.ad_text }}",
+              "type": "string"
+            },
+            {
+              "id": "4219b151-e444-4094-81c0-519c5352de8e",
+              "name": "empty_1",
+              "value": "",
+              "type": "string"
+            },
+            {
+              "id": "f18d9f2a-05a4-4294-be69-17504b51bacc",
+              "name": "empty_2",
+              "value": "",
+              "type": "string"
+            },
+            {
+              "id": "a312e417-8674-4cc4-84c2-efc3b997c5cc",
+              "name": "empty_3",
+              "value": "",
+              "type": "string"
+            },
+            {
+              "id": "61c57fa1-7755-4bf4-b39f-3369363114f6",
+              "name": "ad_url",
+              "value": "={{ $json.ad_url }}",
+              "type": "string"
+            },
+            {
+              "id": "e3a249d0-8ec2-4d1e-91c6-32affb8b0734",
+              "name": " display_url",
+              "value": "",
+              "type": "string"
+            },
+            {
+              "id": "c060b10e-692d-4334-8efa-6f7caf10a9f7",
+              "name": "company_id",
+              "value": "95772319245",
+              "type": "string"
+            },
+            {
+              "id": "8fe20bbd-a870-40f5-9798-4546e9ad1d5e",
+              "name": "empty_4",
+              "value": "",
+              "type": "string"
+            },
+            {
+              "id": "886783a2-ee5e-43c6-93ff-2e5c4f96fb8f",
+              "name": "region",
+              "value": "Саратов, Энгельс",
+              "type": "string"
+            },
+            {
+              "id": "c62dd54c-0098-4a3b-8d48-69e150b13099",
+              "name": "auto_bid",
+              "value": "200",
+              "type": "string"
+            },
+            {
+              "id": "e7a8750e-09ea-46b6-8d5a-c38e3e4e46ca",
+              "name": "bid",
+              "value": "200",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        288,
+        -80
+      ],
+      "id": "8f537566-79c1-407a-8cbc-be4fa74fe213",
+      "name": "Edit Fields"
+    }
+  ],
+  "connections": {
+    "Start": {
+      "main": [
+        [
+          {
+            "node": "Select rows from a table",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Replace Me": {
+      "main": [
+        []
+      ]
+    },
+    "Select rows from a table": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Convert to File": {
+      "main": [
+        [
+          {
+            "node": "Upload a file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Convert to File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "3f86eb51-7e32-4108-b35d-987c89ec40c4",
+  "triggerCount": 0,
+  "shared": [
+    {
+      "createdAt": "2025-08-04T09:19:59.208Z",
+      "updatedAt": "2025-08-04T09:19:59.208Z",
+      "role": "workflow:owner",
+      "workflowId": "hU01QJEP5T9MYX0K",
+      "projectId": "spKmbJLU4mvACXIB"
+    }
+  ],
+  "tags": []
+}
