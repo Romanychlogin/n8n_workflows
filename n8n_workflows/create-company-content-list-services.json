@@ -1,0 +1,1126 @@
+{
+  "createdAt": "2025-09-15T11:29:10.702Z",
+  "updatedAt": "2025-09-16T12:02:09.248Z",
+  "id": "avhoVMJOe8hsJ2Zl",
+  "name": "Create Company content list services",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "jsCode": "// Input JSON: { company_name, text, threshold? }\nconst body = $json;\nconst prepositions = [\n  \"в\",\"без\",\"до\",\"из\",\"к\",\"и\",\"на\",\"по\",\"о\",\"от\",\"перед\",\"при\",\n  \"через\",\"с\",\"у\",\"за\",\"над\",\"об\",\"под\",\"про\",\"для\",\"между\"\n];\n\n// Нормализуем регистр\nlet text = String(body.service_description ?? \"\").toLowerCase();\n\n// Экранируем спецсимволы\nconst escape = s => s.replace(/[.*+?^${}()|[\\]\\\\]/g, \"\\\\$&\");\nconst alts = prepositions.map(escape).join(\"|\");\n\n// Разрешаем буквы, цифры, подчёркивание, а также - + #\nconst re = new RegExp(\n  `(^|[^\\\\p{L}\\\\p{N}_\\\\-+#])(?:${alts})(?=$|[^\\\\p{L}\\\\p{N}_\\\\-+#])`,\n  \"giu\"\n);\n\n// Удаляем предлоги, сохраняя левый разделитель\ntext = text.replace(re, \"$1\");\n\n// Чистим пробелы\ntext = text.replace(/\\s+/g, \" \").trim();\n\n//const company = body.company_name;\n\n\nconst tokens = (text.match(/[A-Za-zА-Яа-яЁё0-9][A-Za-zА-Яа-яЁё0-9&.\\-]{0,}/g) || [])\n  .map(s => s.trim())\n  .filter(Boolean);\n\nconst MAX_N = 3;\nconst set = new Set();\nfor (let i = 0; i < tokens.length; i++) {\n  for (let n = 1; n <= MAX_N && i + n <= tokens.length; n++) {\n    const phrase = tokens.slice(i, i+n).join(' ');\n    set.add(phrase);\n  }\n}\nreturn [{ json: {  candidates: Array.from(set) } }];\n"
+      },
+      "id": "25328e5a-6d69-4eaf-aea3-966c7127fd4d",
+      "name": "Code: extract_ngrams",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1472,
+        -224
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const { candidates } = $json;\nconst out = candidates.map((c, index) => ({ json: { candidate: c,\n    is_first:index==0 // костыль для сброса цикла\n      } }));\nreturn out;"
+      },
+      "id": "070e6ff6-cdb2-453b-8f0f-3473fdae332a",
+      "name": "Code: explode_candidates",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1696,
+        -224
+      ]
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        64,
+        -224
+      ],
+      "id": "9a1042af-28a3-4e82-8629-6d473072a235",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "content": "1)Описание\n2)Варианции названия\n3)Список ключевых фраз\n4)подумать над транслитерацией и пр.\n5)обрезка предлогов(?)"
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        160,
+        -656
+      ],
+      "id": "074d5a70-0160-45bf-ae94-a2fe8661c922",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "company_content_raw",
+          "mode": "list",
+          "cachedResultName": "company_content_raw"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "phrase": "={{ $json.candidate }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "phrase_id",
+              "displayName": "phrase_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "phrase",
+              "displayName": "phrase",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        2304,
+        -160
+      ],
+      "id": "f9c93a03-93b2-4156-8809-9facaeba70b6",
+      "name": "Insert rows in a table",
+      "credentials": {
+        "postgres": {
+          "id": "4YkdFJcdTgzo9hkz",
+          "name": "PGvector"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        2512,
+        -560
+      ],
+      "id": "bd0e8b25-067a-4d8c-9972-e0b3e47419f9",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {
+        "jsCode": "const { candidates } = $json;\nconst out = candidates.map(c => ({ json: { candidate: c} }));\nreturn out;"
+      },
+      "id": "d3b4fdbc-e820-4108-9cd7-65273a85708e",
+      "name": "Code: explode_candidates1",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2976,
+        -544
+      ]
+    },
+    {
+      "parameters": {
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "company_content_raw",
+          "mode": "list",
+          "cachedResultName": "company_content_raw"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "phrase": "={{ $json.candidate }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "phrase_id",
+              "displayName": "phrase_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "phrase",
+              "displayName": "phrase",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        3168,
+        -544
+      ],
+      "id": "bc63b57c-ac0d-4761-b175-7aaeba15dde0",
+      "name": "Insert rows in a table1",
+      "credentials": {
+        "postgres": {
+          "id": "4YkdFJcdTgzo9hkz",
+          "name": "PGvector"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Input JSON: { company_name, text, threshold? }\nconst body = $json;\nconst prepositions = [\n  \"в\",\"без\",\"до\",\"из\",\"к\",\"и\",\"на\",\"по\",\"о\",\"от\",\"перед\",\"при\",\n  \"через\",\"с\",\"у\",\"за\",\"над\",\"об\",\"под\",\"про\",\"для\",\"между\"\n];\n\n// Нормализуем регистр\nlet text = String(body.key_word ?? \"\").toLowerCase();\n\n// Экранируем спецсимволы\nconst escape = s => s.replace(/[.*+?^${}()|[\\]\\\\]/g, \"\\\\$&\");\nconst alts = prepositions.map(escape).join(\"|\");\n\n// Разрешаем буквы, цифры, подчёркивание, а также - + #\nconst re = new RegExp(\n  `(^|[^\\\\p{L}\\\\p{N}_\\\\-+#])(?:${alts})(?=$|[^\\\\p{L}\\\\p{N}_\\\\-+#])`,\n  \"giu\"\n);\n\n// Удаляем предлоги, сохраняя левый разделитель\ntext = text.replace(re, \"$1\");\n\n// Чистим пробелы\ntext = text.replace(/\\s+/g, \" \").trim();\n//const company = $('set variables').first().json.company_name;\n\n\nconst tokens = (text.match(/[A-Za-zА-Яа-яЁё0-9][A-Za-zА-Яа-яЁё0-9&.\\-]{0,}/g) || [])\n  .map(s => s.trim())\n  .filter(Boolean);\n\nconst MAX_N = 3;\nconst set = new Set();\nfor (let i = 0; i < tokens.length; i++) {\n  for (let n = 1; n <= MAX_N && i + n <= tokens.length; n++) {\n    const phrase = tokens.slice(i, i+n).join(' ');\n    set.add(phrase);\n  }\n}\nreturn [{ json: {  candidates: Array.from(set) } }];\n"
+      },
+      "id": "2ab01379-9ce0-40b6-a4a6-f217981d013e",
+      "name": "Code: extract_ngrams1",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2736,
+        -544
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "file",
+        "operation": "get",
+        "owner": {
+          "__rl": true,
+          "value": "Romanychlogin",
+          "mode": "name"
+        },
+        "repository": {
+          "__rl": true,
+          "value": "n8n_prompts",
+          "mode": "list",
+          "cachedResultName": "n8n_prompts",
+          "cachedResultUrl": "https://github.com/Romanychlogin/n8n_prompts"
+        },
+        "filePath": "competitor_variants.txt",
+        "additionalParameters": {}
+      },
+      "type": "n8n-nodes-base.github",
+      "typeVersion": 1.1,
+      "position": [
+        2624,
+        -864
+      ],
+      "id": "ca9b28d9-4004-4065-96fb-00dc28249e3e",
+      "name": "Get a file1",
+      "webhookId": "11365e13-2248-40e1-8b93-654b49b1c18f",
+      "executeOnce": true,
+      "credentials": {
+        "githubApi": {
+          "id": "JQAFAcMNS9Ylyb0V",
+          "name": "GitHub account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "text",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        2800,
+        -864
+      ],
+      "id": "aef0296e-7778-4b73-b31c-79183d88ffd4",
+      "name": "Extract from File2"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.openai.com/v1/responses",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "openAiApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{$json}}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        3936,
+        -816
+      ],
+      "id": "2dcd4ccc-5204-46ad-b828-1bddc7beba9d",
+      "name": "HTTP Request",
+      "retryOnFail": true,
+      "credentials": {
+        "openAiApi": {
+          "id": "JGsu9qziUKemWUFJ",
+          "name": "OpenAi account test"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const workflowData = $getWorkflowStaticData('global');\nconst firstItem = workflowData.competitors_prompt;\nreturn [{\n  json: {\n  \"model\": \"gpt-5\",\n  \"input\": [\n    {\n      \"role\": \"developer\",\n      \"content\": [\n        {\n          \"type\": \"input_text\",\n          \"text\": \"Отвечай только валидным JSON-массивом объектов в формате: [{\\\"competitor_name_variant\\\": string}]. Не добавляй комментариев или форматирования вне JSON.\"\n        }\n      ]\n    },\n    {\n      \"role\": \"user\",\n      \"content\": [\n        {\n          \"type\": \"input_text\",\n          \"text\": \"Для компании \" + $input.first().json.canonical_name + \" \" + firstItem.data\n        }\n      ]\n    }\n  ],\n  \"text\": {\n    \"format\": {\n      \"type\": \"json_schema\",\n      \"name\": \"company_name_variants\",\n      \"strict\": true,\n      \"schema\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"variants\": {\n            \"type\": \"array\",\n            \"description\": \"An array containing all company name variants, each as a non-empty string.\",\n            \"items\": {\n              \"type\": \"string\",\n              \"minLength\": 1\n            }\n          }\n        },\n        \"required\": [\n          \"variants\"\n        ],\n        \"additionalProperties\": false\n      }\n    },\n    \"verbosity\": \"high\"\n  },\n  \"reasoning\": {\n    \"effort\": \"high\",\n    \"summary\": null\n  },\n  \"tools\": [],\n  \"store\": false,\n  \"include\": [\n    \"reasoning.encrypted_content\",\n    \"web_search_call.action.sources\"\n  ]\n}\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3648,
+        -816
+      ],
+      "id": "53d91f9d-c8f1-4aee-98d0-11636b5a9e6f",
+      "name": "Set API JSON"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Берём первый item из входных данных\nconst input = JSON.parse($json.output[1].content[0].text);\nconst comp_id=$json.competitor_id\n// Достаём массив competitors\nconst variants = input.variants;\n\n// Разворачиваем каждый объект в отдельный item\nreturn variants.map((c, index) => ({\n  json: {\n    index,\n    name_variant: c.toLowerCase(),\n    competitor_id:comp_id,\n    is_first:index==0 // костыль для сброса цикла\n    \n  }\n}));"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        4448,
+        -880
+      ],
+      "id": "d255d219-0e17-4a94-b682-a72e82db2d91",
+      "name": "Parse JSON"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Function-Node (Run Once)\nconst workflowData = $getWorkflowStaticData('global');\nworkflowData.competitors_prompt = items[0].json;\nreturn items;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2976,
+        -880
+      ],
+      "id": "fbd2de61-739f-46b7-8be2-117d2b91a66d",
+      "name": "Save prompt"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        4160,
+        -880
+      ],
+      "id": "79949e6d-d27a-4653-9cd9-95c07ecd76b7",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "options": {
+          "reset": "={{ $json.is_first }}"
+        }
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        4912,
+        -1168
+      ],
+      "id": "9bc6ca0f-a7b0-4cd2-a173-7a9f44f52ba6",
+      "name": "Loop Over Items1"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "ebafa31d-edf7-41c0-a06e-e884ad9595ea",
+              "name": "is_first",
+              "value": "=false",
+              "type": "boolean"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        5120,
+        -1072
+      ],
+      "id": "77caf1d8-364c-4777-9ee9-61c90da2c252",
+      "name": "reset first_item"
+    },
+    {
+      "parameters": {
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "errors",
+          "mode": "list",
+          "cachedResultName": "errors"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "error_text": "={{ $json.error.description }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "error_id",
+              "displayName": "error_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "error_text",
+              "displayName": "error_text",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        5648,
+        -864
+      ],
+      "id": "02a48532-b506-4a03-83ab-de1d7b7393bc",
+      "name": "Error",
+      "credentials": {
+        "postgres": {
+          "id": "4YkdFJcdTgzo9hkz",
+          "name": "PGvector"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "company_content_raw",
+          "mode": "list",
+          "cachedResultName": "company_content_raw"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "phrase": "={{$json.name_variant}}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "phrase_id",
+              "displayName": "phrase_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "phrase",
+              "displayName": "phrase",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        5392,
+        -1024
+      ],
+      "id": "96f458a7-9b48-4bf5-9575-10eb1ac314b0",
+      "name": "Insert rows in a table2",
+      "credentials": {
+        "postgres": {
+          "id": "4YkdFJcdTgzo9hkz",
+          "name": "PGvector"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "930cd684-28d9-45ab-bbc2-0817608c007c",
+              "name": "canonical_name",
+              "value": "={{$('set variables').first().json.company_name}}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        3216,
+        -880
+      ],
+      "id": "8430892b-0faa-4603-8862-7846eee41645",
+      "name": "Edit Fields1"
+    },
+    {
+      "parameters": {
+        "content": "From dscription\nn - gramms (3)",
+        "height": 144
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        2672,
+        -208
+      ],
+      "id": "6c60359d-e930-45dd-b51b-70214fa69767",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "From key_words: key_words\nn - gramms (3)",
+        "height": 144
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        3456,
+        -544
+      ],
+      "id": "190a2898-c5c5-4c36-ae4e-f938abf4928f",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "content": "From company name. ",
+        "height": 144
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1504,
+        -1056
+      ],
+      "id": "1bfda53f-8c87-4322-ab98-c50ff1217f97",
+      "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
+        "content": "To do - need more variations. now missing кибер оне кибер ван кибер уан",
+        "height": 144
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1856,
+        -1072
+      ],
+      "id": "656db1eb-c7e3-4680-9a56-c97e13a4caba",
+      "name": "Sticky Note4"
+    },
+    {
+      "parameters": {
+        "operation": "deleteTable",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "company_content_raw",
+          "mode": "list",
+          "cachedResultName": "company_content_raw"
+        },
+        "restartSequences": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        384,
+        -208
+      ],
+      "id": "9afc3896-f5a9-47d8-b01b-6392075708fc",
+      "name": "clear company_content_raw",
+      "credentials": {
+        "postgres": {
+          "id": "4YkdFJcdTgzo9hkz",
+          "name": "PGvector"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "select cs.service_name,cs.service_description,cs.service_id from companies c, company_services cs where c.company_id=cs.company_id and c.company_name=$1",
+        "options": {
+          "queryReplacement": "{{$json.company_name}}"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        912,
+        -192
+      ],
+      "id": "c62cd5f5-95f9-4ac5-a34b-c51ccbda3b3d",
+      "name": "Services list",
+      "credentials": {
+        "postgres": {
+          "id": "Hx2VFmUi5WO2K4QX",
+          "name": "Postgres account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "5b3485a2-cb50-486a-932c-fc27de0a25da",
+              "name": "company_name",
+              "value": "Первый визовый центр Курган",
+              "type": "string"
+            },
+            {
+              "id": "f74ac992-90a4-4403-a75e-17656de76902",
+              "name": "company_id",
+              "value": 2,
+              "type": "number"
+            },
+            {
+              "id": "172a851e-fdc7-4f3c-b095-88687e8a392a",
+              "name": "threshhold",
+              "value": 0.88,
+              "type": "number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        672,
+        -192
+      ],
+      "id": "79122791-b03e-4a34-adb5-c4ccf488babc",
+      "name": "set variables"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        1120,
+        -240
+      ],
+      "id": "82b48a92-0b30-43cf-8eac-a9607ca4b7de",
+      "name": "Loop Over Items3"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "select key_word,key_word_id from key_words where is_relevant=true and company_id=$1",
+        "options": {
+          "queryReplacement": "={{ $('set variables').item.json.company_id }}"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        1680,
+        -432
+      ],
+      "id": "4cef8734-9b51-46ba-a7e4-a8c51db61f73",
+      "name": "Execute a SQL query1",
+      "executeOnce": true,
+      "credentials": {
+        "postgres": {
+          "id": "Hx2VFmUi5WO2K4QX",
+          "name": "Postgres account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "ebafa31d-edf7-41c0-a06e-e884ad9595ea",
+              "name": "is_first",
+              "value": "=false",
+              "type": "boolean"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2064,
+        -176
+      ],
+      "id": "08a3ee27-859b-4ac3-93e8-1c9c204c9e45",
+      "name": "reset first_item1"
+    },
+    {
+      "parameters": {
+        "batchSize": 100,
+        "options": {
+          "reset": "={{ $json.is_first }}"
+        }
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        1872,
+        -224
+      ],
+      "id": "7fd112b0-9e62-494c-924c-501fc79078d2",
+      "name": "Loop Over Items2"
+    },
+    {
+      "parameters": {
+        "content": "Тех. долг - вариации имени компании без города"
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        3040,
+        -1120
+      ],
+      "id": "bb5d5daf-96eb-4aa9-b4d5-a9433b16fe51",
+      "name": "Sticky Note5"
+    }
+  ],
+  "connections": {
+    "Code: extract_ngrams": {
+      "main": [
+        [
+          {
+            "node": "Code: explode_candidates",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code: explode_candidates": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "clear company_content_raw",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [
+          {
+            "node": "Get a file1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Code: extract_ngrams1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code: explode_candidates1": {
+      "main": [
+        [
+          {
+            "node": "Insert rows in a table1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Insert rows in a table1": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code: extract_ngrams1": {
+      "main": [
+        [
+          {
+            "node": "Code: explode_candidates1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get a file1": {
+      "main": [
+        [
+          {
+            "node": "Extract from File2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File2": {
+      "main": [
+        [
+          {
+            "node": "Save prompt",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Set API JSON": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse JSON": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Save prompt": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Parse JSON",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items1": {
+      "main": [
+        [],
+        [
+          {
+            "node": "reset first_item",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "reset first_item": {
+      "main": [
+        [
+          {
+            "node": "Insert rows in a table2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Error": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Insert rows in a table2": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "Set API JSON",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "clear company_content_raw": {
+      "main": [
+        [
+          {
+            "node": "set variables",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "set variables": {
+      "main": [
+        [
+          {
+            "node": "Services list",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Services list": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items3": {
+      "main": [
+        [
+          {
+            "node": "Execute a SQL query1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Code: extract_ngrams",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Insert rows in a table": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute a SQL query1": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items2": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items3",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "reset first_item1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "reset first_item1": {
+      "main": [
+        [
+          {
+            "node": "Insert rows in a table",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "saveDataSuccessExecution": "none",
+    "saveManualExecutions": true,
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "8a28e389-1a7a-4bef-be6f-478d020aa5ce",
+  "triggerCount": 0,
+  "shared": [
+    {
+      "createdAt": "2025-09-15T11:29:10.702Z",
+      "updatedAt": "2025-09-15T11:29:10.702Z",
+      "role": "workflow:owner",
+      "workflowId": "avhoVMJOe8hsJ2Zl",
+      "projectId": "spKmbJLU4mvACXIB"
+    }
+  ],
+  "tags": []
+}
