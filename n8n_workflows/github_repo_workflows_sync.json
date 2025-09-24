@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-23T20:32:53.458Z",
-  "updatedAt": "2025-09-24T08:01:04.853Z",
+  "updatedAt": "2025-09-24T08:09:26.298Z",
   "id": "buEFTEMfZEENQOel",
   "name": "github_repo_workflows_sync",
   "active": false,
@@ -16,8 +16,8 @@
       "name": "Create new workflow in n8n",
       "type": "n8n-nodes-base.n8n",
       "position": [
-        -16,
-        944
+        352,
+        1008
       ],
       "typeVersion": 1,
       "credentials": {
@@ -160,7 +160,7 @@
       "name": "Upload file",
       "type": "n8n-nodes-base.github",
       "position": [
-        544,
+        752,
         -16
       ],
       "webhookId": "ce4b561b-acb9-4cd8-b76f-4928dada9674",
@@ -185,7 +185,7 @@
       "name": "Json file",
       "type": "n8n-nodes-base.convertToFile",
       "position": [
-        -128,
+        80,
         -16
       ],
       "typeVersion": 1.1
@@ -199,7 +199,7 @@
       "name": "To base64",
       "type": "n8n-nodes-base.extractFromFile",
       "position": [
-        96,
+        304,
         -16
       ],
       "typeVersion": 1
@@ -242,7 +242,7 @@
       "name": "Update file",
       "type": "n8n-nodes-base.github",
       "position": [
-        1360,
+        1568,
         640
       ],
       "webhookId": "27218087-8df7-474d-a39f-70cfa9c34ec8",
@@ -266,7 +266,7 @@
       "name": "Json file1",
       "type": "n8n-nodes-base.convertToFile",
       "position": [
-        704,
+        912,
         640
       ],
       "typeVersion": 1.1
@@ -280,7 +280,7 @@
       "name": "To base",
       "type": "n8n-nodes-base.extractFromFile",
       "position": [
-        928,
+        1136,
         640
       ],
       "typeVersion": 1
@@ -349,7 +349,7 @@
       "name": "Code - InputA",
       "type": "n8n-nodes-base.code",
       "position": [
-        256,
+        464,
         640
       ],
       "typeVersion": 2
@@ -364,7 +364,7 @@
       "name": "Edit Fields",
       "type": "n8n-nodes-base.set",
       "position": [
-        480,
+        688,
         640
       ],
       "typeVersion": 3.4
@@ -393,7 +393,7 @@
       "name": "Edit for Upload",
       "type": "n8n-nodes-base.set",
       "position": [
-        320,
+        528,
         -16
       ],
       "typeVersion": 3.4
@@ -422,7 +422,7 @@
       "name": "Edit for Update",
       "type": "n8n-nodes-base.set",
       "position": [
-        1152,
+        1360,
         640
       ],
       "typeVersion": 3.4
@@ -453,8 +453,8 @@
       "name": "Sticky Note2",
       "type": "n8n-nodes-base.stickyNote",
       "position": [
-        -112,
-        800
+        304,
+        880
       ],
       "typeVersion": 1
     },
@@ -486,7 +486,7 @@
       "name": "If n8n before GitHub",
       "type": "n8n-nodes-base.if",
       "position": [
-        -416,
+        -208,
         416
       ],
       "typeVersion": 2.2
@@ -652,7 +652,7 @@
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
       "position": [
-        1184,
+        1392,
         64
       ],
       "id": "4e432949-7630-409d-8954-e89772a17251",
@@ -687,7 +687,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        896,
+        1104,
         64
       ],
       "id": "217a8101-9a54-4799-87c3-d8122620ad1f",
@@ -706,8 +706,8 @@
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
       "position": [
-        -464,
-        960
+        64,
+        816
       ],
       "id": "a0fa0144-5daf-45fa-be21-364caa8ef115",
       "name": "Send a incident message1",
@@ -726,8 +726,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -752,
-        960
+        -224,
+        816
       ],
       "id": "b8abefcc-cd74-4d9d-b305-6d730ae4f00b",
       "name": "Set error message1",
@@ -738,7 +738,7 @@
       "type": "n8n-nodes-base.merge",
       "typeVersion": 3.2,
       "position": [
-        1680,
+        1888,
         176
       ],
       "id": "b0aea046-eab9-432e-ba6d-8aaa159de65e",
@@ -751,7 +751,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1920,
+        2128,
         176
       ],
       "id": "3ad1c32d-2079-443c-a4c1-b50d7563f8f3",
@@ -770,7 +770,7 @@
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
       "position": [
-        2144,
+        2352,
         176
       ],
       "id": "8e9140e0-834f-4520-aaeb-7ef1e0952743",
@@ -782,6 +782,97 @@
           "name": "Telegram account"
         }
       }
+    },
+    {
+      "parameters": {
+        "filters": {},
+        "requestOptions": {}
+      },
+      "type": "n8n-nodes-base.n8n",
+      "typeVersion": 1,
+      "position": [
+        -992,
+        768
+      ],
+      "id": "9274b2d7-5cdf-4488-99ab-c8b1af7d2fa3",
+      "name": "Get many workflows",
+      "executeOnce": true,
+      "credentials": {
+        "n8nApi": {
+          "id": "WLaJZQv44MOJEghD",
+          "name": "n8n account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "4f26142d-7646-4988-87d4-36b191d270df",
+              "leftValue": "={{ $json.isArchived }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -784,
+        784
+      ],
+      "id": "b3d373e1-ac05-4b38-a1c6-5d44d28bebac",
+      "name": "if is archived"
+    },
+    {
+      "parameters": {
+        "mergeByFields": {
+          "values": [
+            {
+              "field1": "name",
+              "field2": "name"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "6f51c695-4f7a-4ba9-98a6-2190640d64be",
+      "name": "n8n vs GitHub1",
+      "type": "n8n-nodes-base.compareDatasets",
+      "position": [
+        -544,
+        736
+      ],
+      "typeVersion": 2.3,
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "content": "если процесс архивный то не создаем новый",
+        "height": 336,
+        "width": 800
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -1088,
+        672
+      ],
+      "id": "c727e495-f6ee-40b3-a633-4cfa795bda09",
+      "name": "Sticky Note4"
     }
   ],
   "connections": {
@@ -914,7 +1005,12 @@
         ],
         [
           {
-            "node": "Set error message1",
+            "node": "Get many workflows",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "n8n vs GitHub1",
             "type": "main",
             "index": 0
           }
@@ -1106,6 +1202,39 @@
           }
         ]
       ]
+    },
+    "Get many workflows": {
+      "main": [
+        [
+          {
+            "node": "if is archived",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "if is archived": {
+      "main": [
+        [
+          {
+            "node": "n8n vs GitHub1",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "n8n vs GitHub1": {
+      "main": [
+        [
+          {
+            "node": "Set error message1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
@@ -1114,7 +1243,7 @@
   "staticData": null,
   "meta": null,
   "pinData": {},
-  "versionId": "c8627b30-f10a-4945-805a-8d85089a2ba2",
+  "versionId": "63e779dd-4e02-4622-9a89-f97f83771fed",
   "triggerCount": 0,
   "shared": [
     {
