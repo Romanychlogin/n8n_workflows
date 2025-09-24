@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-23T20:32:53.458Z",
-  "updatedAt": "2025-09-24T07:34:06.051Z",
+  "updatedAt": "2025-09-24T07:36:38.764Z",
   "id": "buEFTEMfZEENQOel",
   "name": "github_repo_workflows_sync",
   "active": false,
@@ -716,7 +716,7 @@
     },
     {
       "parameters": {
-        "jsCode": "let incident_text = '*Ошибка экспорта в gitHub*\\n';\nincident_text =incident_text+'*'+now.toLocaleTimeString('ru-RU', { timeZone:'Europe/Moscow', hour: '2-digit', minute: '2-digit' })+' MSK*';\n\nreturn [{ json: { text: incident_text } }];"
+        "jsCode": "let incident_text = '*Ошибка экспорта в gitHub*\\n';\nconst now = new Date();\nincident_text =incident_text+'*'+now.toLocaleTimeString('ru-RU', { timeZone:'Europe/Moscow', hour: '2-digit', minute: '2-digit' })+' MSK*\\n';\nincident_text =incident_text+' Error processing workflow:' + $input.first().json.fileName;\n\nreturn [{ json: { text: incident_text } }];"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -1014,7 +1014,7 @@
   "staticData": null,
   "meta": null,
   "pinData": {},
-  "versionId": "fec74aae-3597-4f3f-ba74-5f2795304e4e",
+  "versionId": "e42b9bc0-ecd7-4bad-8a1a-4e240a4f0a9d",
   "triggerCount": 0,
   "shared": [
     {
