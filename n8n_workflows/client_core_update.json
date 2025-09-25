@@ -1,0 +1,324 @@
+{
+  "createdAt": "2025-01-27T10:00:00.000Z",
+  "updatedAt": "2025-01-27T10:00:00.000Z",
+  "id": "client_core_update_workflow",
+  "name": "Client Core Update",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [-1200, -400],
+      "id": "manual_trigger",
+      "name": "When clicking 'Execute workflow'"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "company_name",
+              "name": "company_name",
+              "value": "Test Company",
+              "type": "string"
+            },
+            {
+              "id": "company_id",
+              "name": "company_id",
+              "value": 1,
+              "type": "number"
+            },
+            {
+              "id": "campaign_report_url",
+              "name": "campaign_report_url",
+              "value": "https://example.com/campaign_report.csv",
+              "type": "string"
+            },
+            {
+              "id": "threshold",
+              "name": "threshold",
+              "value": 0.88,
+              "type": "number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [-1000, -400],
+      "id": "set_variables",
+      "name": "Set variables"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO business_processes_states (business_process_id, company_id, n8n_workflow_execution_id, started, steps_total) SELECT MAX(business_process_id), $2, $3, NOW(), $4 FROM public.business_processes WHERE n8n_process_name = $1;",
+        "options": {
+          "queryReplacement": "=[{{$workflow.name}},{{$json.company_id}},{{$execution.id}},{{8}}]"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [-800, -400],
+      "id": "mark_workflow_started",
+      "name": "Mark workflow started",
+      "credentials": {
+        "postgres": {
+          "id": "4YkdFJcdTgzo9hkz",
+          "name": "PGvector"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const workflowData = $getWorkflowStaticData('global');\nworkflowData.steps_passed = 0;\nreturn items;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [-600, -400],
+      "id": "init_counter",
+      "name": "Init total counter"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "DELETE FROM current_list; DELETE FROM current_minus_words; DELETE FROM current_ads_list;",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [-400, -400],
+      "id": "clear_temp_tables",
+      "name": "Clear temporary tables",
+      "credentials": {
+        "postgres": {
+          "id": "4YkdFJcdTgzo9hkz",
+          "name": "PGvector"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "={{$json.campaign_report_url}}",
+        "responseFormat": "file",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 2,
+      "position": [-200, -400],
+      "id": "download_report",
+      "name": "Download campaign report"
+    },
+    {
+      "parameters": {
+        "options": {
+          "delimiter": ";"
+        }
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [0, -400],
+      "id": "extract_data",
+      "name": "Extract data from CSV"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO current_list (key_word, campaign_id, used_keyword, group_id, condition_type, category, ads_header, date, count_views, count_clics, count_convetions) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)",
+        "options": {
+          "queryReplacement": "=[{{$json.key_word}},{{$json.campaign_id}},{{$json.used_keyword}},{{$json.group_id}},{{$json.condition_type}},{{$json.category}},{{$json.ads_header}},{{$json.date}},{{$json.count_views}},{{$json.count_clics}},{{$json.count_convetions}}]"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [200, -400],
+      "id": "insert_campaign_data",
+      "name": "Insert campaign data",
+      "credentials": {
+        "postgres": {
+          "id": "4YkdFJcdTgzo9hkz",
+          "name": "PGvector"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "update business_processes_states set steps_passed=$3 where business_process_id=(select MAX(business_process_id) from business_processes where n8n_process_name=$1) and n8n_workflow_execution_id=$2",
+        "options": {
+          "queryReplacement": "=[{{$workflow.name}},{{$execution.id}},{{$json.steps_passed}}]"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [400, -400],
+      "id": "update_steps_1",
+      "name": "Update steps - Data loaded",
+      "executeOnce": true,
+      "credentials": {
+        "postgres": {
+          "id": "4YkdFJcdTgzo9hkz",
+          "name": "PGvector"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const workflowData = $getWorkflowStaticData('global');\nworkflowData.steps_passed = workflowData.steps_passed + 1;\nfor (const item of $input.all()) {\n  item.json.steps_passed = workflowData.steps_passed;\n}\nreturn $input.all();"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [600, -400],
+      "id": "increment_step_1",
+      "name": "Increment step counter 1"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "update business_processes_states set finished=NOW() where business_process_id=(select MAX(business_process_id) from business_processes where n8n_process_name=$1) and n8n_workflow_execution_id=$2",
+        "options": {
+          "queryReplacement": "=[{{$workflow.name}},{{$execution.id}}]"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [800, -400],
+      "id": "mark_workflow_completed",
+      "name": "Mark workflow completed",
+      "executeOnce": true,
+      "credentials": {
+        "postgres": {
+          "id": "4YkdFJcdTgzo9hkz",
+          "name": "PGvector"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "When clicking 'Execute workflow'": {
+      "main": [
+        [
+          {
+            "node": "Set variables",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set variables": {
+      "main": [
+        [
+          {
+            "node": "Mark workflow started",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mark workflow started": {
+      "main": [
+        [
+          {
+            "node": "Init total counter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Init total counter": {
+      "main": [
+        [
+          {
+            "node": "Clear temporary tables",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Clear temporary tables": {
+      "main": [
+        [
+          {
+            "node": "Download campaign report",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download campaign report": {
+      "main": [
+        [
+          {
+            "node": "Extract data from CSV",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract data from CSV": {
+      "main": [
+        [
+          {
+            "node": "Insert campaign data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Insert campaign data": {
+      "main": [
+        [
+          {
+            "node": "Increment step counter 1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Increment step counter 1": {
+      "main": [
+        [
+          {
+            "node": "Update steps - Data loaded",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update steps - Data loaded": {
+      "main": [
+        [
+          {
+            "node": "Mark workflow completed",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "client_core_update_v1",
+  "triggerCount": 0,
+  "shared": [],
+  "tags": []
+}
