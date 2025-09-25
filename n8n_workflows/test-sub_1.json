@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-19T09:22:29.568Z",
-  "updatedAt": "2025-09-19T12:12:29.112Z",
+  "updatedAt": "2025-09-25T13:36:57.276Z",
   "id": "3ELK7F0vA8SC12gG",
   "name": "test sub_1",
   "active": false,
@@ -141,7 +141,9 @@
       "name": "Loop Over Items"
     },
     {
-      "parameters": {},
+      "parameters": {
+        "amount": 0
+      },
       "type": "n8n-nodes-base.wait",
       "typeVersion": 1.1,
       "position": [
@@ -347,7 +349,7 @@
       }
     ]
   },
-  "versionId": "895ddf55-773c-4dd9-a55c-bbe7f550f3bf",
+  "versionId": "213542da-dab6-444c-8edc-2ed2eba213f1",
   "triggerCount": 0,
   "shared": [
     {
