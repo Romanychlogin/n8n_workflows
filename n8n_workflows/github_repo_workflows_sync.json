@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-23T20:32:53.458Z",
-  "updatedAt": "2025-09-24T08:34:42.104Z",
+  "updatedAt": "2025-09-25T13:14:53.715Z",
   "id": "buEFTEMfZEENQOel",
   "name": "github_repo_workflows_sync",
   "active": true,
@@ -712,8 +712,8 @@
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
       "position": [
-        64,
-        816
+        288,
+        1360
       ],
       "id": "a0fa0144-5daf-45fa-be21-364caa8ef115",
       "name": "Send a incident message1",
@@ -732,8 +732,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -224,
-        816
+        0,
+        1360
       ],
       "id": "b8abefcc-cd74-4d9d-b305-6d730ae4f00b",
       "name": "Set error message1",
@@ -1276,7 +1276,7 @@
       "main": [
         [
           {
-            "node": "Set error message1",
+            "node": "Create new workflow in n8n",
             "type": "main",
             "index": 0
           }
@@ -1323,7 +1323,7 @@
     "templateCredsSetupCompleted": true
   },
   "pinData": {},
-  "versionId": "57f8b3e2-7623-4e16-aa4e-3a1c411a4e54",
+  "versionId": "51a009e5-1d93-4326-b30d-c2dbd766fbcc",
   "triggerCount": 1,
   "shared": [
     {
