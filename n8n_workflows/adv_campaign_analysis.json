@@ -1,43 +1,11 @@
 {
   "createdAt": "2025-07-18T08:31:54.459Z",
-  "updatedAt": "2025-09-04T08:16:09.654Z",
+  "updatedAt": "2025-09-25T13:53:06.853Z",
   "id": "wZGLxMCCmOnDJZ1o",
   "name": "ADV_campaign_analysis",
   "active": false,
   "isArchived": false,
   "nodes": [
-    {
-      "parameters": {},
-      "id": "a1f82c98-34c1-44e0-89de-2b206bb7e0c6",
-      "name": "Start",
-      "type": "n8n-nodes-base.manualTrigger",
-      "typeVersion": 1,
-      "position": [
-        -640,
-        -80
-      ]
-    },
-    {
-      "parameters": {
-        "values": {
-          "string": [
-            {
-              "name": "url",
-              "value": "https://www.dropbox.com/scl/fi/vlbuzyzphihy2bjpef9ks/2025-07-01_2025-09-03_searchquery_kiberone-saratov.csv?rlkey=h5vqg335p5ljm5dt610zdtoyb&dl=1"
-            }
-          ]
-        },
-        "options": {}
-      },
-      "id": "8893f1a1-c703-464b-9077-53eb0889b9b2",
-      "name": "Enter URL",
-      "type": "n8n-nodes-base.set",
-      "typeVersion": 2,
-      "position": [
-        176,
-        -80
-      ]
-    },
     {
       "parameters": {
         "url": "={{$json[\"url\"]}}",
@@ -514,8 +482,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        -432,
-        -80
+        560,
+        304
       ],
       "id": "296a7cb2-4336-4240-8ce2-9fec33dcfdfb",
       "name": "Clear current_list",
@@ -547,8 +515,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        -224,
-        -80
+        768,
+        304
       ],
       "id": "1ab3a0cf-a029-4599-bacf-a3894e261f93",
       "name": "Clear current_minus_words",
@@ -580,8 +548,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        -16,
-        -80
+        976,
+        304
       ],
       "id": "76b60d31-1b7f-4a02-a07d-64028295db02",
       "name": "Clear current_ads",
@@ -1644,36 +1612,70 @@
       ],
       "id": "cfb990ed-43bf-46ea-bd90-b9fe5333f2ef",
       "name": "If competitors found"
+    },
+    {
+      "parameters": {
+        "inputSource": "passthrough"
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -784,
+        -240
+      ],
+      "id": "a2d419ea-af34-43ce-937d-1ac138dbefa4",
+      "name": "When Executed by Another Workflow"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "5b3485a2-cb50-486a-932c-fc27de0a25da",
+              "name": "company_name",
+              "value": "={{ $json.company_name }}",
+              "type": "string"
+            },
+            {
+              "id": "f74ac992-90a4-4403-a75e-17656de76902",
+              "name": "company_id",
+              "value": "={{ $json.company_id }}",
+              "type": "number"
+            },
+            {
+              "id": "172a851e-fdc7-4f3c-b095-88687e8a392a",
+              "name": "threshhold",
+              "value": "={{ $json.threshhold }}",
+              "type": "number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -544,
+        -240
+      ],
+      "id": "f85786c2-4f55-4a11-927c-95476f0da4a8",
+      "name": "set variables"
+    },
+    {
+      "parameters": {
+        "content": "добавить обработку кейса когда есть конверсии"
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1296,
+        -560
+      ],
+      "id": "f677af9e-c486-4d8e-90d3-9cbdd74d82d2",
+      "name": "Sticky Note3"
     }
   ],
   "connections": {
-    "Start": {
-      "main": [
-        [
-          {
-            "node": "Clear current_list",
-            "type": "main",
-            "index": 0
-          },
-          {
-            "node": "Get a file",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Enter URL": {
-      "main": [
-        [
-          {
-            "node": "Download File",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Download File": {
       "main": [
         [
@@ -1834,13 +1836,7 @@
     },
     "Clear current_ads": {
       "main": [
-        [
-          {
-            "node": "Enter URL",
-            "type": "main",
-            "index": 0
-          }
-        ]
+        []
       ]
     },
     "update": {
@@ -2148,6 +2144,33 @@
           }
         ]
       ]
+    },
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "set variables",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "set variables": {
+      "main": [
+        [
+          {
+            "node": "Get a file",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Download File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
@@ -2162,13 +2185,19 @@
     "templateCredsSetupCompleted": true
   },
   "pinData": {
-    "Start": [
+    "When Executed by Another Workflow": [
       {
-        "json": {}
+        "json": {
+          "id": "ezK8ihYnfxZNTIAc",
+          "root_execution_id": 20076,
+          "company_id": 2,
+          "threshhold": "0.88",
+          "company_name": "Первый визовый центр Курган"
+        }
       }
     ]
   },
-  "versionId": "f509b164-45b6-4b32-8cd2-e88293c5368b",
+  "versionId": "08f98aa9-4544-4a12-ad3c-7647ea13a8e7",
   "triggerCount": 0,
   "shared": [
     {
