@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-07-18T08:31:54.459Z",
-  "updatedAt": "2025-09-26T14:27:15.893Z",
+  "updatedAt": "2025-09-26T14:33:42.998Z",
   "id": "wZGLxMCCmOnDJZ1o",
   "name": "ADV_campaign_analysis",
   "active": false,
@@ -13,7 +13,7 @@
       "type": "n8n-nodes-base.splitInBatches",
       "typeVersion": 3,
       "position": [
-        1664,
+        992,
         -96
       ],
       "id": "14ab2730-450d-4b85-8dff-85f47057947b",
@@ -198,8 +198,8 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        -240,
-        -592
+        -480,
+        -640
       ],
       "id": "a8b2918a-ab3b-43a8-b9a3-a2fedeac0c86",
       "name": "Sticky Note1"
@@ -420,8 +420,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        2112,
-        -208
+        1744,
+        -112
       ],
       "id": "3d636614-e11e-4a0b-bf63-487342a42f07",
       "name": "Insert rows in a table",
@@ -918,8 +918,8 @@
       "type": "n8n-nodes-base.github",
       "typeVersion": 1.1,
       "position": [
-        464,
-        -336
+        192,
+        -416
       ],
       "id": "2705a1f5-4bfc-4dd9-a751-b86be2337888",
       "name": "Get a file",
@@ -939,8 +939,8 @@
       "type": "n8n-nodes-base.extractFromFile",
       "typeVersion": 1,
       "position": [
-        672,
-        -336
+        400,
+        -416
       ],
       "id": "41535c1f-f954-40d0-8b31-c54af2a0011b",
       "name": "Extract from File1"
@@ -963,8 +963,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        2320,
-        -208
+        1968,
+        -128
       ],
       "id": "420f1274-7e03-4dc1-bf54-96f5b405d825",
       "name": "Edit Fields4"
@@ -976,8 +976,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        880,
-        -336
+        608,
+        -416
       ],
       "id": "10bc2d0f-9668-4050-9ad8-dde1e2753f36",
       "name": "Code1"
@@ -1561,12 +1561,225 @@
           "name": "Postgres account 2"
         }
       }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO business_processes_states (business_process_id, company_id,n8n_workflow_execution_id,n8n_workflow_root_execution_id, started)\nSELECT MAX(business_process_id), $2,$3,$4, NOW()\nFROM public.business_processes\nWHERE n8n_process_name = $1;",
+        "options": {
+          "queryReplacement": "=[{{$workflow.name}},{{$json.company_id}},{{$execution.id}},{{ $('When Executed by Another Workflow').item.json.root_execution_id }}]"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -208,
+        -144
+      ],
+      "id": "1b9ba4f8-71e3-45eb-bb75-afc55989e722",
+      "name": "Mark_workwlow_started",
+      "credentials": {
+        "postgres": {
+          "id": "4YkdFJcdTgzo9hkz",
+          "name": "PGvector"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "update business_processes_states set steps_total=$3 where business_process_id=(select MAX(business_process_id) from business_processes where n8n_process_name=$1) and n8n_workflow_execution_id=$2",
+        "options": {
+          "queryReplacement": "=[{{$workflow.name}},{{$execution.id}},{{$input.all().length}}]"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        880,
+        304
+      ],
+      "id": "d7dced98-db28-4cdb-92c4-452cddb71e27",
+      "name": "Mark_workflow_total_steps1",
+      "executeOnce": true,
+      "credentials": {
+        "postgres": {
+          "id": "4YkdFJcdTgzo9hkz",
+          "name": "PGvector"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Function-Node (Run Once)\nconst workflowData = $getWorkflowStaticData('global');\nworkflowData.steps_passed = 0;\nworkflowData.tokens_used = 0;\nworkflowData.step = 0;\nreturn $input.all();\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        608,
+        -32
+      ],
+      "id": "2a0914fc-f1f5-40e7-b45a-707379ba1c5a",
+      "name": "Init total counter"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "update business_processes_states set finished=NOW() where business_process_id=(select MAX(business_process_id) from business_processes where n8n_process_name=$1) and n8n_workflow_execution_id=$2",
+        "options": {
+          "queryReplacement": "=[{{$workflow.name}},{{$execution.id}}]"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        1296,
+        -272
+      ],
+      "id": "d9570534-080b-4e39-83a2-014c8b4ac2ef",
+      "name": "Mark_workflow_completed",
+      "executeOnce": true,
+      "credentials": {
+        "postgres": {
+          "id": "4YkdFJcdTgzo9hkz",
+          "name": "PGvector"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "update business_processes_states set steps_passed=$3, tokens_used=$4,tokens_used_type=$5 where business_process_id=(select MAX(business_process_id) from business_processes where n8n_process_name=$1) and n8n_workflow_execution_id=$2",
+        "options": {
+          "queryReplacement": "=[{{$workflow.name}},{{$execution.id}},{{$json.steps_passed}},{{$json.tokens_used}},{{ 'gpt-5' }}]"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        9792,
+        -48
+      ],
+      "id": "56bff92d-817b-4fb5-bf93-e3fd6d772376",
+      "name": "Mark_workflow_passed_steps",
+      "executeOnce": true,
+      "credentials": {
+        "postgres": {
+          "id": "4YkdFJcdTgzo9hkz",
+          "name": "PGvector"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nconst workflowData = $getWorkflowStaticData('global');\nworkflowData.steps_passed = workflowData.steps_passed+1; // update steps counter\nconst step_tokens_used = $('HTTP Request').first().json.usage.total_tokens+$('HTTP Request1').first().json.usage.total_tokens+$('HTTP Request2').first().json.usage.total_tokens; //set used tokens here!!!!\nworkflowData.tokens_used = workflowData.tokens_used+step_tokens_used;\nfor (const item of $input.all()) {\n  item.json.steps_passed = workflowData.steps_passed;\n  item.json.tokens_used = workflowData.tokens_used\n}\n\nreturn $input.all();"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        9552,
+        -32
+      ],
+      "id": "7a3d33ad-9f12-4f6f-9b09-6d67a00e76a8",
+      "name": "Get current step and tokens saved"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "fa13510a-3a56-4cd5-8b80-3e4fe626ce0b",
+              "leftValue": "={{ $json.to_terminate }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        10176,
+        -16
+      ],
+      "id": "9114c887-564f-4e0f-b89d-99a381a7bdde",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "errorMessage": "Process terminated by user"
+      },
+      "type": "n8n-nodes-base.stopAndError",
+      "typeVersion": 1,
+      "position": [
+        10416,
+        -144
+      ],
+      "id": "fdab4be5-884f-4a7f-97b4-8c7ae8b22898",
+      "name": "Stop and Error"
+    },
+    {
+      "parameters": {
+        "operation": "select",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "business_processes_states",
+          "mode": "list",
+          "cachedResultName": "business_processes_states"
+        },
+        "returnAll": true,
+        "where": {
+          "values": [
+            {
+              "column": "n8n_workflow_execution_id",
+              "value": "={{ $execution.id }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        10000,
+        -48
+      ],
+      "id": "3b984213-9b8c-4d82-8b9f-38dcc24fcdc1",
+      "name": "check if termination is requested",
+      "credentials": {
+        "postgres": {
+          "id": "4YkdFJcdTgzo9hkz",
+          "name": "PGvector"
+        }
+      }
     }
   ],
   "connections": {
     "Loop Over Items": {
       "main": [
-        [],
+        [
+          {
+            "node": "Mark_workflow_completed",
+            "type": "main",
+            "index": 0
+          }
+        ],
         [
           {
             "node": "Insert rows in a table",
@@ -1578,13 +1791,7 @@
     },
     "Replace Me": {
       "main": [
-        [
-          {
-            "node": "Loop Over Items",
-            "type": "main",
-            "index": 0
-          }
-        ]
+        []
       ]
     },
     "Merge": {
@@ -2004,7 +2211,7 @@
             "index": 0
           },
           {
-            "node": "Execute a SQL query",
+            "node": "Mark_workwlow_started",
             "type": "main",
             "index": 0
           }
@@ -2015,7 +2222,85 @@
       "main": [
         [
           {
+            "node": "Init total counter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mark_workwlow_started": {
+      "main": [
+        [
+          {
+            "node": "Execute a SQL query",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Init total counter": {
+      "main": [
+        [
+          {
+            "node": "Mark_workflow_total_steps1",
+            "type": "main",
+            "index": 0
+          },
+          {
             "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mark_workflow_passed_steps": {
+      "main": [
+        [
+          {
+            "node": "check if termination is requested",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get current step and tokens saved": {
+      "main": [
+        [
+          {
+            "node": "Mark_workflow_passed_steps",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Stop and Error",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "check if termination is requested": {
+      "main": [
+        [
+          {
+            "node": "If",
             "type": "main",
             "index": 0
           }
@@ -2047,7 +2332,7 @@
       }
     ]
   },
-  "versionId": "944e7e57-d78b-42f8-a6ec-b9c05f25f31c",
+  "versionId": "b88c5734-7170-482c-ba54-0e8004b818ab",
   "triggerCount": 0,
   "shared": [
     {
