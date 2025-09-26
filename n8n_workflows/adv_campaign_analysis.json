@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-07-18T08:31:54.459Z",
-  "updatedAt": "2025-09-26T15:36:20.092Z",
+  "updatedAt": "2025-09-26T15:42:46.437Z",
   "id": "wZGLxMCCmOnDJZ1o",
   "name": "ADV_campaign_analysis",
   "active": false,
@@ -1598,7 +1598,10 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "options": {}
+        "query": "select c.company_name,cs.service_name, cs.service_description from key_words kw, companies c, company_services cs where kw.key_word='scratch' and kw.company_id=$1 and cs.service_id=kw.service_id and cs.company_id=$1 and c.company_id=$1",
+        "options": {
+          "queryReplacement": "={{ $('set variables').item.json.company_id }}"
+        }
       },
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
@@ -1675,8 +1678,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        4048,
-        -208
+        4112,
+        -144
       ],
       "id": "6b7e98b2-cf1f-4582-9335-09d5cad31dd1",
       "name": "remove applied key words"
@@ -2246,7 +2249,7 @@
       }
     ]
   },
-  "versionId": "f770962e-b916-4522-8f8b-deca7bb13abd",
+  "versionId": "344a7004-be37-4b84-851e-e0341589a347",
   "triggerCount": 0,
   "shared": [
     {
