@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-07-18T08:31:54.459Z",
-  "updatedAt": "2025-09-26T15:56:40.501Z",
+  "updatedAt": "2025-09-26T16:06:18.321Z",
   "id": "wZGLxMCCmOnDJZ1o",
   "name": "ADV_campaign_analysis",
   "active": false,
@@ -917,13 +917,13 @@
     },
     {
       "parameters": {
-        "jsCode": "return [{\n  json: \n {\n  \"model\": \"gpt-5\",\n  \"input\": [\n    {\n      \"role\": \"developer\",\n      \"content\": [\n        {\n          \"type\": \"input_text\",\n          \"text\": \"# Role and Objective\\n- You are a search query analysis assistant. Your role is to identify and filter out irrelevant queries and detect any negative keywords (“minus words”) indicating a non-target audience. Validate each input phrase and respond with a structured JSON object that indicates compliance and lists any detected minus words.\\n\\n# Instructions\\n- Always return a response as a strict JSON object matching the following format:\\n  {\\n    \\\"is_correct_phrase\\\": boolean,\\n    \\\"minus_words\\\": [string]\\n  }\\n- Do not output any comments, explanations, or additional text.\\n\\n## Sub-categories\\n- The `is_correct_phrase` field must be set to either `true` or `false`, and cannot be null or any other type.\\n- The `minus_words` array must only contain unique string values, or be an empty array (`[]`) if there are no minus words. Do not include duplicate entries. Item order is not important.\\n- If input is absent or improperly formatted, always return:\\n  {\\n    \\\"is_correct_phrase\\\": false,\\n    \\\"minus_words\\\": []\\n  }\\n\\n# Context\\n- Phrase correctness is determined by external requirements or rules not included here.\\n- Only input validation is required; generating or explaining logic is outside the scope.\\n\"\n        }\n      ]\n    },\n    {\n      \"role\": \"user\",\n      \"content\": [\n        {\n          \"type\": \"input_text\",\n          \"text\": my_prompt\n        }\n      ]\n    }\n  ],\n  \"text\": {\n    \"format\": {\n      \"type\": \"json_schema\",\n      \"name\": \"phrase_and_minus_words\",\n      \"strict\": true,\n      \"schema\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"is_correct_phrase\": {\n            \"type\": \"boolean\",\n            \"description\": \"Indicates if the phrase is correct.\"\n          },\n          \"minus_words\": {\n            \"type\": \"array\",\n            \"description\": \"A list of minus words. Can be empty.\",\n            \"items\": {\n              \"type\": \"string\",\n              \"description\": \"A minus word.\"\n            }\n          }\n        },\n        \"required\": [\n          \"is_correct_phrase\",\n          \"minus_words\"\n        ],\n        \"additionalProperties\": false\n      }\n    },\n    \"verbosity\": \"low\"\n  },\n  \"reasoning\": {\n    \"effort\": \"minimal\",\n    \"summary\": null\n  },\n  \"tools\": [\n    {\n      \"type\": \"function\",\n      \"description\": \"Return allowed 1–3 word combinations for negative keywords (minus words).\",\n      \"name\": \"get_non_matching_ngrams\",\n      \"parameters\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"phrase\": {\n            \"type\": \"string\",\n            \"description\": \"User phrase to analyze\"\n          },\n          \"threshold\": {\n            \"type\": \"number\",\n            \"description\": \"Match threshold, default 0.88\"\n          }\n        },\n        \"required\": [\n          \"phrase\"\n        ]\n      },\n      \"strict\": false\n    }\n  ],\n  \"store\": true,\n  \"include\": [\n    \"reasoning.encrypted_content\",\n    \"web_search_call.action.sources\"\n  ]\n}\n\n}];"
+        "jsCode": "return [{\n  json: \n {\n  \"model\": \"gpt-5\",\n  \"input\": [\n    {\n      \"role\": \"developer\",\n      \"content\": [\n        {\n          \"type\": \"input_text\",\n          \"text\": \"# Role and Objective\\n- You are a search query analysis assistant. Your role is to identify and filter out irrelevant queries and detect any negative keywords (“minus words”) indicating a non-target audience. Validate each input phrase and respond with a structured JSON object that indicates compliance and lists any detected minus words.\\n\\n# Instructions\\n- Always return a response as a strict JSON object matching the following format:\\n  {\\n    \\\"is_correct_phrase\\\": boolean,\\n    \\\"minus_words\\\": [string]\\n  }\\n- Do not output any comments, explanations, or additional text.\\n\\n## Sub-categories\\n- The `is_correct_phrase` field must be set to either `true` or `false`, and cannot be null or any other type.\\n- The `minus_words` array must only contain unique string values, or be an empty array (`[]`) if there are no minus words. Do not include duplicate entries. Item order is not important.\\n- If input is absent or improperly formatted, always return:\\n  {\\n    \\\"is_correct_phrase\\\": false,\\n    \\\"minus_words\\\": []\\n  }\\n\\n# Context\\n- Phrase correctness is determined by external requirements or rules not included here.\\n- Only input validation is required; generating or explaining logic is outside the scope.\\n\"\n        }\n      ]\n    },\n    {\n      \"role\": \"user\",\n      \"content\": [\n        {\n          \"type\": \"input_text\",\n          \"text\": $json.my_prompt\n        }\n      ]\n    }\n  ],\n  \"text\": {\n    \"format\": {\n      \"type\": \"json_schema\",\n      \"name\": \"phrase_and_minus_words\",\n      \"strict\": true,\n      \"schema\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"is_correct_phrase\": {\n            \"type\": \"boolean\",\n            \"description\": \"Indicates if the phrase is correct.\"\n          },\n          \"minus_words\": {\n            \"type\": \"array\",\n            \"description\": \"A list of minus words. Can be empty.\",\n            \"items\": {\n              \"type\": \"string\",\n              \"description\": \"A minus word.\"\n            }\n          }\n        },\n        \"required\": [\n          \"is_correct_phrase\",\n          \"minus_words\"\n        ],\n        \"additionalProperties\": false\n      }\n    },\n    \"verbosity\": \"low\"\n  },\n  \"reasoning\": {\n    \"effort\": \"minimal\",\n    \"summary\": null\n  },\n  \"tools\": [\n    {\n      \"type\": \"function\",\n      \"description\": \"Return allowed 1–3 word combinations for negative keywords (minus words).\",\n      \"name\": \"get_non_matching_ngrams\",\n      \"parameters\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"phrase\": {\n            \"type\": \"string\",\n            \"description\": \"User phrase to analyze\"\n          },\n          \"threshold\": {\n            \"type\": \"number\",\n            \"description\": \"Match threshold, default 0.88\"\n          }\n        },\n        \"required\": [\n          \"phrase\"\n        ]\n      },\n      \"strict\": false\n    }\n  ],\n  \"store\": true,\n  \"include\": [\n    \"reasoning.encrypted_content\",\n    \"web_search_call.action.sources\"\n  ]\n}\n\n}];"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        4784,
-        -128
+        4880,
+        -160
       ],
       "id": "1fe77e75-c3f7-45c6-9745-7d60d1a87ec1",
       "name": "Set API JSON"
@@ -1576,7 +1576,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        4560,
+        4688,
         -144
       ],
       "id": "65af494d-9402-4aab-abec-c8f3050500ac",
@@ -1584,13 +1584,15 @@
     },
     {
       "parameters": {
-        "content": "доделать откуда берем"
+        "content": "ВРЕМЕННО для KIBERone - нет Истории!!!!!",
+        "height": 496,
+        "width": 416
       },
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        3952,
-        -400
+        4240,
+        -192
       ],
       "id": "f53d55f5-4327-4ae0-9303-6baf69cbf0e1",
       "name": "Sticky Note4"
@@ -1616,7 +1618,8 @@
           "id": "Hx2VFmUi5WO2K4QX",
           "name": "Postgres account 2"
         }
-      }
+      },
+      "disabled": true
     },
     {
       "parameters": {
@@ -1672,11 +1675,12 @@
           "id": "Hx2VFmUi5WO2K4QX",
           "name": "Postgres account 2"
         }
-      }
+      },
+      "disabled": true
     },
     {
       "parameters": {
-        "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nfor (const item of $input.all()) {\n  item.json.key_word =$('Loop Over Items').last().json.used_key_word.replace(/\\s-\\S+/g, \"\").trim();\n}\n\nreturn $input.all();"
+        "jsCode": "const src = $('Loop Over Items').last().json?.used_key_word ?? '';\n\nreturn $input.all().map(it => {\n  const cleaned = String(src).replace(/\\s-\\S+/g, '').trim();\n  return { json: { ...it.json, key_word: cleaned } };\n});"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -1686,6 +1690,48 @@
       ],
       "id": "6b7e98b2-cf1f-4582-9335-09d5cad31dd1",
       "name": "remove applied key words"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "select c.company_name,cs.service_name, cs.service_description from companies c, company_services cs where  cs.service_id=6 and cs.company_id=1 and c.company_id=1",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        4512,
+        -144
+      ],
+      "id": "53be7ee3-e874-48f6-8f6a-019e70e9006c",
+      "name": "get service data by key word1",
+      "credentials": {
+        "postgres": {
+          "id": "Hx2VFmUi5WO2K4QX",
+          "name": "Postgres account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "select c.company_name,cs.service_name, cs.service_description from companies c, company_services cs where  cs.service_id=6 and cs.company_id=1 and c.company_id=1",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        4512,
+        16
+      ],
+      "id": "24912155-ac6a-438c-b9f7-32f799ce1a52",
+      "name": "get service data by AD header1",
+      "credentials": {
+        "postgres": {
+          "id": "Hx2VFmUi5WO2K4QX",
+          "name": "Postgres account 2"
+        }
+      }
     }
   ],
   "connections": {
@@ -2172,7 +2218,7 @@
       "main": [
         [
           {
-            "node": "Set prompt",
+            "node": "get service data by key word1",
             "type": "main",
             "index": 0
           }
@@ -2201,7 +2247,7 @@
       "main": [
         [
           {
-            "node": "Set prompt",
+            "node": "get service data by AD header1",
             "type": "main",
             "index": 0
           }
@@ -2218,6 +2264,28 @@
           }
         ]
       ]
+    },
+    "get service data by key word1": {
+      "main": [
+        [
+          {
+            "node": "Set prompt",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "get service data by AD header1": {
+      "main": [
+        [
+          {
+            "node": "Set prompt",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
@@ -2225,7 +2293,8 @@
     "saveDataErrorExecution": "all",
     "saveDataSuccessExecution": "none",
     "saveExecutionProgress": false,
-    "callerPolicy": "workflowsFromSameOwner"
+    "callerPolicy": "workflowsFromSameOwner",
+    "errorWorkflow": "v2Z32ISEUzsFYnZw"
   },
   "staticData": {
     "global": {
@@ -2248,14 +2317,14 @@
       {
         "json": {
           "id": "wZGLxMCCmOnDJZ1o",
-          "root_execution_id": 33132,
+          "root_execution_id": 33172,
           "company_id": 1,
           "threshhold": "0.88"
         }
       }
     ]
   },
-  "versionId": "5c2f89b9-4c47-4694-a5d9-2bed84c0b5d7",
+  "versionId": "15a50130-1599-4890-8a40-752f3d87d784",
   "triggerCount": 0,
   "shared": [
     {
