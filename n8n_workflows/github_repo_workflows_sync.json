@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-23T20:32:53.458Z",
-  "updatedAt": "2025-09-26T10:03:53.833Z",
+  "updatedAt": "2025-09-26T10:05:42.328Z",
   "id": "buEFTEMfZEENQOel",
   "name": "github_repo_workflows_sync",
   "active": false,
@@ -296,9 +296,7 @@
             }
           ]
         },
-        "options": {
-          "multipleMatches": "all"
-        }
+        "options": {}
       },
       "id": "2c39e20e-46b7-4a48-b4f9-aea25cf96012",
       "name": "n8n vs GitHub",
@@ -1545,7 +1543,7 @@
     "templateCredsSetupCompleted": true
   },
   "pinData": {},
-  "versionId": "c9bdc505-fda4-4314-bada-2539508287f1",
+  "versionId": "454048b9-d144-4d04-8590-7557159559b6",
   "triggerCount": 1,
   "shared": [
     {
