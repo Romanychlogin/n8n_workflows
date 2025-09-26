@@ -1,9 +1,9 @@
 {
   "createdAt": "2025-09-23T20:32:53.458Z",
-  "updatedAt": "2025-09-26T09:33:06.002Z",
+  "updatedAt": "2025-09-26T09:34:36.429Z",
   "id": "buEFTEMfZEENQOel",
   "name": "github_repo_workflows_sync",
-  "active": false,
+  "active": true,
   "isArchived": false,
   "nodes": [
     {
