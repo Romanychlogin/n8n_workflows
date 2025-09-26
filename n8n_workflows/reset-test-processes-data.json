@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-26T09:39:35.076Z",
-  "updatedAt": "2025-09-26T09:40:58.041Z",
+  "updatedAt": "2025-09-26T09:48:34.478Z",
   "id": "QiRdKifiIi2x4N6I",
   "name": "Reset test processes data",
   "active": false,
@@ -20,9 +20,9 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "update business_processes_states set error_happened=now(), error_message='test forced by user' \nwhere finished is null and error_happened is null \nand business_process_id in (select business_process_id from business_processes where business_process_id=$1 or root_process_id=$1)",
+        "query": "update business_processes_states set error_happened=now(), error_message='test forced by user' \nwhere finished is null and error_happened is null \nand business_process_id in (select business_process_id from business_processes where n8n_process_name=$1 or root_process_id=(select business_process_id from business_processes where n8n_process_name=$1))\n",
         "options": {
-          "queryReplacement": "={{$json.root_process_id}}"
+          "queryReplacement": "={{$json.root_process_name}}"
         }
       },
       "type": "n8n-nodes-base.postgres",
@@ -46,8 +46,8 @@
           "assignments": [
             {
               "id": "31e7d3b4-3d4d-4d76-937a-f0169af86785",
-              "name": "root_process_id",
-              "value": "7",
+              "name": "root_process_name",
+              "value": "campaign core update",
               "type": "string"
             }
           ]
@@ -96,7 +96,7 @@
     "templateCredsSetupCompleted": true
   },
   "pinData": {},
-  "versionId": "d9725604-c2be-450d-baf8-4fc3b24b2933",
+  "versionId": "96263be7-38c5-4113-a2a4-2243aa57ce16",
   "triggerCount": 0,
   "shared": [
     {
@@ -107,6 +107,5 @@
       "projectId": "spKmbJLU4mvACXIB"
     }
   ],
-  "tags": [],
-  "file_name": "reset-test-processes-data.json"
+  "tags": []
 }
