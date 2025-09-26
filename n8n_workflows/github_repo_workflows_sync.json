@@ -1,9 +1,9 @@
 {
   "createdAt": "2025-09-23T20:32:53.458Z",
-  "updatedAt": "2025-09-25T13:14:53.715Z",
+  "updatedAt": "2025-09-26T08:13:07.983Z",
   "id": "buEFTEMfZEENQOel",
   "name": "github_repo_workflows_sync",
-  "active": true,
+  "active": false,
   "isArchived": false,
   "nodes": [
     {
@@ -16,8 +16,8 @@
       "name": "Create new workflow in n8n",
       "type": "n8n-nodes-base.n8n",
       "position": [
-        352,
-        1008
+        688,
+        1568
       ],
       "typeVersion": 1,
       "credentials": {
@@ -160,7 +160,7 @@
       "name": "Upload file",
       "type": "n8n-nodes-base.github",
       "position": [
-        752,
+        960,
         -16
       ],
       "webhookId": "ce4b561b-acb9-4cd8-b76f-4928dada9674",
@@ -185,7 +185,7 @@
       "name": "Json file",
       "type": "n8n-nodes-base.convertToFile",
       "position": [
-        80,
+        288,
         -16
       ],
       "typeVersion": 1.1
@@ -199,7 +199,7 @@
       "name": "To base64",
       "type": "n8n-nodes-base.extractFromFile",
       "position": [
-        304,
+        512,
         -16
       ],
       "typeVersion": 1
@@ -242,7 +242,7 @@
       "name": "Update file",
       "type": "n8n-nodes-base.github",
       "position": [
-        1568,
+        1984,
         640
       ],
       "webhookId": "27218087-8df7-474d-a39f-70cfa9c34ec8",
@@ -252,7 +252,8 @@
           "id": "JQAFAcMNS9Ylyb0V",
           "name": "GitHub account"
         }
-      }
+      },
+      "onError": "continueErrorOutput"
     },
     {
       "parameters": {
@@ -266,7 +267,7 @@
       "name": "Json file1",
       "type": "n8n-nodes-base.convertToFile",
       "position": [
-        912,
+        1328,
         640
       ],
       "typeVersion": 1.1
@@ -280,7 +281,7 @@
       "name": "To base",
       "type": "n8n-nodes-base.extractFromFile",
       "position": [
-        1136,
+        1552,
         640
       ],
       "typeVersion": 1
@@ -321,8 +322,8 @@
       "name": "Update workflow in n8n",
       "type": "n8n-nodes-base.n8n",
       "position": [
-        272,
-        368
+        1424,
+        400
       ],
       "typeVersion": 1,
       "credentials": {
@@ -341,8 +342,8 @@
       "name": "Code - InputB",
       "type": "n8n-nodes-base.code",
       "position": [
-        48,
-        368
+        1200,
+        400
       ],
       "typeVersion": 2
     },
@@ -355,7 +356,7 @@
       "name": "Code - InputA",
       "type": "n8n-nodes-base.code",
       "position": [
-        464,
+        880,
         640
       ],
       "typeVersion": 2
@@ -370,7 +371,7 @@
       "name": "Edit Fields",
       "type": "n8n-nodes-base.set",
       "position": [
-        688,
+        1104,
         640
       ],
       "typeVersion": 3.4
@@ -399,7 +400,7 @@
       "name": "Edit for Upload",
       "type": "n8n-nodes-base.set",
       "position": [
-        528,
+        736,
         -16
       ],
       "typeVersion": 3.4
@@ -428,7 +429,7 @@
       "name": "Edit for Update",
       "type": "n8n-nodes-base.set",
       "position": [
-        1360,
+        1776,
         640
       ],
       "typeVersion": 3.4
@@ -459,8 +460,8 @@
       "name": "Sticky Note2",
       "type": "n8n-nodes-base.stickyNote",
       "position": [
-        304,
-        880
+        640,
+        1440
       ],
       "typeVersion": 1
     },
@@ -492,8 +493,8 @@
       "name": "If n8n before GitHub",
       "type": "n8n-nodes-base.if",
       "position": [
-        -208,
-        416
+        224,
+        640
       ],
       "typeVersion": 2.2
     },
@@ -658,7 +659,7 @@
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
       "position": [
-        1600,
+        1808,
         64
       ],
       "id": "4e432949-7630-409d-8954-e89772a17251",
@@ -680,8 +681,8 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        -16,
-        240
+        1088,
+        272
       ],
       "id": "4fdaf104-7a92-466c-b53c-b9febb1b2cd5",
       "name": "Sticky Note3"
@@ -693,7 +694,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1312,
+        1520,
         64
       ],
       "id": "217a8101-9a54-4799-87c3-d8122620ad1f",
@@ -712,7 +713,7 @@
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
       "position": [
-        288,
+        496,
         1360
       ],
       "id": "a0fa0144-5daf-45fa-be21-364caa8ef115",
@@ -732,7 +733,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        0,
+        208,
         1360
       ],
       "id": "b8abefcc-cd74-4d9d-b305-6d730ae4f00b",
@@ -744,7 +745,7 @@
       "type": "n8n-nodes-base.merge",
       "typeVersion": 3.2,
       "position": [
-        2080,
+        2496,
         224
       ],
       "id": "b0aea046-eab9-432e-ba6d-8aaa159de65e",
@@ -757,7 +758,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        2400,
+        2816,
         224
       ],
       "id": "3ad1c32d-2079-443c-a4c1-b50d7563f8f3",
@@ -776,7 +777,7 @@
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
       "position": [
-        2896,
+        3312,
         192
       ],
       "id": "8e9140e0-834f-4520-aaeb-7ef1e0952743",
@@ -837,7 +838,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        -784,
+        -576,
         784
       ],
       "id": "b3d373e1-ac05-4b38-a1c6-5d44d28bebac",
@@ -874,7 +875,7 @@
       "name": "n8n archived vs GitHub new",
       "type": "n8n-nodes-base.compareDatasets",
       "position": [
-        -544,
+        -336,
         736
       ],
       "typeVersion": 2.3
@@ -897,7 +898,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        1184,
+        1392,
         -96
       ],
       "id": "4270930c-f5f2-4b5b-93a7-d1897a846749",
@@ -921,11 +922,219 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        1808,
+        2224,
         528
       ],
       "id": "4e49a2d7-5c77-4622-a51f-afdd9e5a8081",
       "name": "modified"
+    },
+    {
+      "parameters": {
+        "filters": {},
+        "requestOptions": {}
+      },
+      "type": "n8n-nodes-base.n8n",
+      "typeVersion": 1,
+      "position": [
+        480,
+        352
+      ],
+      "id": "0a36afbf-0904-4f87-8cd9-9c907c58ff43",
+      "name": "Get many workflows1",
+      "executeOnce": true,
+      "credentials": {
+        "n8nApi": {
+          "id": "WLaJZQv44MOJEghD",
+          "name": "n8n account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "4f26142d-7646-4988-87d4-36b191d270df",
+              "leftValue": "={{ $json.isArchived }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        688,
+        368
+      ],
+      "id": "af9a5514-d2ca-4146-a957-6f1bb8e325a9",
+      "name": "if is archived1"
+    },
+    {
+      "parameters": {
+        "content": "если процесс архивный то не обновляем",
+        "height": 336,
+        "width": 1056
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        0,
+        256
+      ],
+      "id": "14dbd8f6-7da1-42b6-a78f-4f9ae0f5eff8",
+      "name": "Sticky Note5"
+    },
+    {
+      "parameters": {
+        "mergeByFields": {
+          "values": [
+            {
+              "field1": "name",
+              "field2": "name"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "ea2a290b-9e66-4d6b-b9a3-6a34d7b73721",
+      "name": "n8n archived vs GitHub new1",
+      "type": "n8n-nodes-base.compareDatasets",
+      "position": [
+        928,
+        320
+      ],
+      "typeVersion": 2.3
+    },
+    {
+      "parameters": {
+        "chatId": "-1003052639964",
+        "text": "={{ $json.text }}",
+        "additionalFields": {
+          "appendAttribution": true,
+          "parse_mode": "MarkdownV2"
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        2576,
+        704
+      ],
+      "id": "61abf7b0-f60a-4e71-8bb7-8d8633a65655",
+      "name": "Send a incident message2",
+      "webhookId": "a18d9a87-250a-437a-9193-952ef1cc833c",
+      "credentials": {
+        "telegramApi": {
+          "id": "ttGHKrzQMaymkKXW",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "let incident_text = '*Ошибка импорта в n8n из gitHub*\\n';\nconst now = new Date();\n// Экранирование под Telegram MarkdownV2\nfunction escapeMarkdownV2(s) {\n  // список из оф. доки Telegram для MarkdownV2:\n  // _ * [ ] ( ) ~ ` > # + - = | { } . !\n  return String(s).replace(/([_*\\[\\]()~`>#+\\-=|{}.!])/g, '\\\\$1');\n}\n\nincident_text =incident_text+'*'+now.toLocaleTimeString('ru-RU', { timeZone:'Europe/Moscow', hour: '2-digit', minute: '2-digit' })+' MSK*\\n';\nincident_text =incident_text+' Error processing workflow: ' + escapeMarkdownV2($input.first().json.fileName);\n\nreturn [{ json: { text: incident_text } }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2288,
+        704
+      ],
+      "id": "6f97702b-67ff-4e11-b069-41b6d29ac804",
+      "name": "Set error message2",
+      "executeOnce": false
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "ae1b84df-4be8-497c-9e2b-2e975819d83e",
+              "leftValue": "={{ $json.different.name.inputA }}",
+              "rightValue": "={{ $json.different.name.inputB }}",
+              "operator": {
+                "type": "string",
+                "operation": "notEquals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -560,
+        432
+      ],
+      "id": "5e788b1d-afcc-41b2-abda-dc06c8438fd8",
+      "name": "if renamed"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "ad2a692e-1261-4072-bdac-88edb07525ea",
+              "name": "file_name",
+              "value": "={{$json.name.trim().replace(/\\s+/g, '-').toLowerCase() }}.json",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        48,
+        -16
+      ],
+      "id": "97e77c41-c6f9-451e-87db-ce7ba517dd64",
+      "name": "Set file name"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "ad4ef89b-3670-464c-b29c-6abace0d83fc",
+              "name": "name",
+              "value": "={{ $json.different.name.inputA }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -304,
+        336
+      ],
+      "id": "04542c84-1a80-41d3-a798-dd909dcadb4b",
+      "name": "set file name for renamed"
     }
   ],
   "connections": {
@@ -1043,7 +1252,7 @@
       "main": [
         [
           {
-            "node": "Json file",
+            "node": "Set file name",
             "type": "main",
             "index": 0
           }
@@ -1051,7 +1260,7 @@
         [],
         [
           {
-            "node": "If n8n before GitHub",
+            "node": "if renamed",
             "type": "main",
             "index": 0
           }
@@ -1133,7 +1342,18 @@
     },
     "If n8n before GitHub": {
       "main": [
-        [],
+        [
+          {
+            "node": "Get many workflows1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "n8n archived vs GitHub new1",
+            "type": "main",
+            "index": 0
+          }
+        ],
         [
           {
             "node": "Code - InputA",
@@ -1225,6 +1445,13 @@
             "type": "main",
             "index": 0
           }
+        ],
+        [
+          {
+            "node": "Set error message2",
+            "type": "main",
+            "index": 0
+          }
         ]
       ]
     },
@@ -1276,7 +1503,7 @@
       "main": [
         [
           {
-            "node": "Create new workflow in n8n",
+            "node": "Set error message1",
             "type": "main",
             "index": 0
           }
@@ -1309,6 +1536,78 @@
           }
         ]
       ]
+    },
+    "Get many workflows1": {
+      "main": [
+        [
+          {
+            "node": "if is archived1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "if is archived1": {
+      "main": [
+        [
+          {
+            "node": "n8n archived vs GitHub new1",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "n8n archived vs GitHub new1": {
+      "main": [
+        []
+      ]
+    },
+    "Set error message2": {
+      "main": [
+        [
+          {
+            "node": "Send a incident message2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "if renamed": {
+      "main": [
+        [
+          {
+            "node": "set file name for renamed",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "If n8n before GitHub",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set file name": {
+      "main": [
+        []
+      ]
+    },
+    "set file name for renamed": {
+      "main": [
+        [
+          {
+            "node": "Set file name",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
@@ -1323,7 +1622,7 @@
     "templateCredsSetupCompleted": true
   },
   "pinData": {},
-  "versionId": "51a009e5-1d93-4326-b30d-c2dbd766fbcc",
+  "versionId": "26ff716c-dda4-4880-9596-e43655de9dba",
   "triggerCount": 1,
   "shared": [
     {
