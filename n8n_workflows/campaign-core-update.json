@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-25T13:33:58.106Z",
-  "updatedAt": "2025-09-26T14:28:29.502Z",
+  "updatedAt": "2025-09-26T14:47:45.709Z",
   "id": "0J5cvuaSz3IhDS99",
   "name": "campaign core update",
   "active": false,
@@ -390,7 +390,7 @@
         "operation": "executeQuery",
         "query": "SELECT id\nFROM workflow_entity\nWHERE name = $1\nORDER BY id DESC\nLIMIT 1;",
         "options": {
-          "queryReplacement": "={{ $('ADS headers and texts creation services').item.json.workflow_name }}"
+          "queryReplacement": "={{ $('ADV_campaign_analysis').item.json.workflow_name }}"
         }
       },
       "type": "n8n-nodes-base.postgres",
@@ -482,29 +482,6 @@
           "name": "PGvector"
         }
       }
-    },
-    {
-      "parameters": {
-        "assignments": {
-          "assignments": [
-            {
-              "id": "99e6bb89-0b33-4e72-b5be-2e118b69afa2",
-              "name": "workflow_name",
-              "value": "test sub_1",
-              "type": "string"
-            }
-          ]
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.set",
-      "typeVersion": 3.4,
-      "position": [
-        464,
-        256
-      ],
-      "id": "cf0b4dae-7648-4709-af1b-73cf0d71ff35",
-      "name": "ADS headers and texts creation services"
     },
     {
       "parameters": {
@@ -933,6 +910,29 @@
       ],
       "id": "3ed57cde-7bf2-46b5-97fa-dcf269af9ef0",
       "name": "company_id"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "99e6bb89-0b33-4e72-b5be-2e118b69afa2",
+              "name": "workflow_name",
+              "value": "ADV_campaign_analysis",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        464,
+        256
+      ],
+      "id": "cf0b4dae-7648-4709-af1b-73cf0d71ff35",
+      "name": "ADV_campaign_analysis"
     }
   ],
   "connections": {
@@ -1148,22 +1148,11 @@
         ]
       ]
     },
-    "ADS headers and texts creation services": {
-      "main": [
-        [
-          {
-            "node": "Execute a SQL query1",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "update workflow tokens usage": {
       "main": [
         [
           {
-            "node": "ADS headers and texts creation services",
+            "node": "ADV_campaign_analysis",
             "type": "main",
             "index": 0
           }
@@ -1324,6 +1313,17 @@
           }
         ]
       ]
+    },
+    "ADV_campaign_analysis": {
+      "main": [
+        [
+          {
+            "node": "Execute a SQL query1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
@@ -1340,7 +1340,7 @@
       }
     ]
   },
-  "versionId": "452283f5-691b-4e8b-9d97-c8784a84a3f8",
+  "versionId": "009aa84f-b4ef-461b-8dde-02c391f6ff56",
   "triggerCount": 0,
   "shared": [
     {
