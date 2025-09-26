@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-07-18T08:31:54.459Z",
-  "updatedAt": "2025-09-26T15:23:34.042Z",
+  "updatedAt": "2025-09-26T15:36:20.092Z",
   "id": "wZGLxMCCmOnDJZ1o",
   "name": "ADV_campaign_analysis",
   "active": false,
@@ -36,8 +36,8 @@
           "mappingMode": "defineBelow",
           "value": {
             "minus_word": "={{ $json.minus_word }}",
-            "current_record_id": "={{ $json.list_id }}",
-            "company_id": "={{ 0 }}"
+            "current_record_id": "={{ $('Loop Over Items').last().json.list_id }}",
+            "company_id": "={{ $('Loop Over Items').last().json.company_id }}"
           },
           "matchingColumns": [
             "id"
@@ -132,8 +132,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        8016,
-        -640
+        8720,
+        -160
       ],
       "id": "b2be9a68-4d5c-4dd1-85c7-4d71ce034518",
       "name": "Insert minus words",
@@ -153,8 +153,8 @@
       "type": "n8n-nodes-base.merge",
       "typeVersion": 3.2,
       "position": [
-        8464,
-        -800
+        9024,
+        -320
       ],
       "id": "0c60f5c9-db38-4edb-b16b-cd4b807c471a",
       "name": "Merge with initial data"
@@ -437,7 +437,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        8768,
+        9392,
         -1264
       ],
       "id": "233a9fb2-ccfc-4fbd-a2af-5630a61c7a22",
@@ -623,7 +623,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        8672,
+        9296,
         -480
       ],
       "id": "8200d389-0be7-463e-b356-76cf1a2d659f",
@@ -663,7 +663,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        5952,
+        6576,
         -464
       ],
       "id": "78d0f369-bc02-4a48-84af-389ac2c2f8cf",
@@ -903,7 +903,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        8144,
+        8768,
         -1104
       ],
       "id": "e95a4440-545c-4788-a36f-4a8649b6dcf9",
@@ -922,7 +922,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        4160,
+        4784,
         -128
       ],
       "id": "1fe77e75-c3f7-45c6-9745-7d60d1a87ec1",
@@ -942,7 +942,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        4464,
+        5088,
         -176
       ],
       "id": "5e99e27e-8a7f-4aa5-9bf8-ac03d750250f",
@@ -976,7 +976,7 @@
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1.2,
       "position": [
-        5248,
+        5872,
         -16
       ],
       "id": "5d7ed225-61eb-40cf-86f8-cf487e481e1c",
@@ -989,7 +989,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        4992,
+        5616,
         -16
       ],
       "id": "9eddec39-1da6-4ea2-b1a9-09e9356929e9",
@@ -1002,7 +1002,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        5440,
+        6064,
         -16
       ],
       "id": "6b46b906-0c32-4338-aa03-d8c6ea2aa4b4",
@@ -1022,7 +1022,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        5632,
+        6256,
         -16
       ],
       "id": "71ae78b7-07d9-476d-bd03-a0bc9665f099",
@@ -1042,8 +1042,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        7600,
-        -624
+        8160,
+        -336
       ],
       "id": "2f169d1d-9f54-4e14-8d57-39373804f250",
       "name": "Code"
@@ -1054,6 +1054,7 @@
           "__rl": true,
           "value": "xKP6S9XsCeVSgebo",
           "mode": "list",
+          "cachedResultUrl": "/workflow/xKP6S9XsCeVSgebo",
           "cachedResultName": "Check VS company name SUB"
         },
         "workflowInputs": {
@@ -1103,8 +1104,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        7168,
-        -640
+        7744,
+        -432
       ],
       "id": "32bea20b-bd2e-4a99-83b0-e9dce5af9140",
       "name": "If minuses array is empty"
@@ -1282,7 +1283,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        10000,
+        10624,
         -48
       ],
       "id": "56bff92d-817b-4fb5-bf93-e3fd6d772376",
@@ -1302,7 +1303,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        9760,
+        10384,
         -32
       ],
       "id": "7a3d33ad-9f12-4f6f-9b09-6d67a00e76a8",
@@ -1335,7 +1336,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        10384,
+        11008,
         -16
       ],
       "id": "9114c887-564f-4e0f-b89d-99a381a7bdde",
@@ -1348,7 +1349,7 @@
       "type": "n8n-nodes-base.stopAndError",
       "typeVersion": 1,
       "position": [
-        10624,
+        11248,
         -144
       ],
       "id": "fdab4be5-884f-4a7f-97b4-8c7ae8b22898",
@@ -1382,7 +1383,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        10208,
+        10832,
         -48
       ],
       "id": "3b984213-9b8c-4d82-8b9f-38dcc24fcdc1",
@@ -1421,8 +1422,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        2944,
-        -336
+        2816,
+        -288
       ],
       "id": "038b687a-066e-4e6f-b75f-9f3e42a3597c",
       "name": "If we have conversions for the key word"
@@ -1468,7 +1469,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        3664,
+        3632,
         -256
       ],
       "id": "cfb990ed-43bf-46ea-bd90-b9fe5333f2ef",
@@ -1502,7 +1503,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        4736,
+        5360,
         -160
       ],
       "id": "ab29b2a0-71ea-425c-8e92-01e2e174cee9",
@@ -1532,8 +1533,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        7168,
-        -832
+        8192,
+        -592
       ],
       "id": "6bf663d1-4db2-412c-aa73-d7943501ee9f",
       "name": "no relevant"
@@ -1562,24 +1563,11 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        7216,
-        -432
+        7648,
+        -960
       ],
       "id": "e75eef70-59a7-4697-8b04-373c54883a70",
       "name": "mark to add"
-    },
-    {
-      "parameters": {
-        "errorMessage": "test"
-      },
-      "type": "n8n-nodes-base.stopAndError",
-      "typeVersion": 1,
-      "position": [
-        7856,
-        -624
-      ],
-      "id": "c2f6dade-0709-478a-b9f2-a09f44fe90e4",
-      "name": "Stop and Error1"
     },
     {
       "parameters": {
@@ -1588,7 +1576,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        3936,
+        4560,
         -144
       ],
       "id": "65af494d-9402-4aab-abec-c8f3050500ac",
@@ -1606,6 +1594,92 @@
       ],
       "id": "f53d55f5-4327-4ae0-9303-6baf69cbf0e1",
       "name": "Sticky Note4"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        4304,
+        -96
+      ],
+      "id": "ca37c744-a547-4e2e-beef-f62e1b5049f3",
+      "name": "get service data by key word",
+      "credentials": {
+        "postgres": {
+          "id": "Hx2VFmUi5WO2K4QX",
+          "name": "Postgres account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "99ec263a-e232-4b91-9603-fea27331309c",
+              "leftValue": "={{ $('If we have conversions for the key word').item.json.used_keyword }}",
+              "rightValue": " '---autotargeting",
+              "operator": {
+                "type": "string",
+                "operation": "notEquals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        3840,
+        -112
+      ],
+      "id": "78399e42-113c-4fc7-9fed-7ddb97fadf94",
+      "name": "If not autotargeting"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        4304,
+        96
+      ],
+      "id": "87d1b141-5c27-45ef-8b40-8420a63b0fbd",
+      "name": "get service data by AD header",
+      "credentials": {
+        "postgres": {
+          "id": "Hx2VFmUi5WO2K4QX",
+          "name": "Postgres account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nfor (const item of $input.all()) {\n  item.json.key_word =key_word.replace(/\\s-\\S+/g, \"\").trim();\n}\n\nreturn $input.all();"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        4048,
+        -208
+      ],
+      "id": "6b7e98b2-cf1f-4582-9335-09d5cad31dd1",
+      "name": "remove applied key words"
     }
   ],
   "connections": {
@@ -1849,7 +1923,7 @@
       "main": [
         [
           {
-            "node": "Stop and Error1",
+            "node": "Insert minus words",
             "type": "main",
             "index": 0
           }
@@ -2003,7 +2077,13 @@
     },
     "If we have conversions for the key word": {
       "main": [
-        [],
+        [
+          {
+            "node": "mark to add",
+            "type": "main",
+            "index": 0
+          }
+        ],
         [
           {
             "node": "Find competitors mentions",
@@ -2017,7 +2097,7 @@
       "main": [
         [
           {
-            "node": "Set prompt",
+            "node": "If not autotargeting",
             "type": "main",
             "index": 0
           }
@@ -2081,6 +2161,57 @@
           }
         ]
       ]
+    },
+    "get service data by key word": {
+      "main": [
+        [
+          {
+            "node": "Set prompt",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If not autotargeting": {
+      "main": [
+        [
+          {
+            "node": "remove applied key words",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "get service data by AD header",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "get service data by AD header": {
+      "main": [
+        [
+          {
+            "node": "Set prompt",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "remove applied key words": {
+      "main": [
+        [
+          {
+            "node": "get service data by key word",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
@@ -2115,7 +2246,7 @@
       }
     ]
   },
-  "versionId": "e3fdd51a-7b71-4561-83ef-822d6b00ec56",
+  "versionId": "f770962e-b916-4522-8f8b-deca7bb13abd",
   "triggerCount": 0,
   "shared": [
     {
