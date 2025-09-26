@@ -1,0 +1,112 @@
+{
+  "createdAt": "2025-09-26T09:39:35.076Z",
+  "updatedAt": "2025-09-26T09:40:58.041Z",
+  "id": "QiRdKifiIi2x4N6I",
+  "name": "Reset test processes data",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -768,
+        -16
+      ],
+      "id": "9dfcb5fb-d34d-4039-80e1-952b4d02d3ad",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "update business_processes_states set error_happened=now(), error_message='test forced by user' \nwhere finished is null and error_happened is null \nand business_process_id in (select business_process_id from business_processes where business_process_id=$1 or root_process_id=$1)",
+        "options": {
+          "queryReplacement": "={{$json.root_process_id}}"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -352,
+        -16
+      ],
+      "id": "824190a5-12cc-4ba7-87fc-61fe5198eae7",
+      "name": "Execute a SQL query",
+      "credentials": {
+        "postgres": {
+          "id": "4YkdFJcdTgzo9hkz",
+          "name": "PGvector"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "31e7d3b4-3d4d-4d76-937a-f0169af86785",
+              "name": "root_process_id",
+              "value": "7",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -560,
+        -16
+      ],
+      "id": "2d75842e-6500-4e29-a3fb-99dfbdb105fa",
+      "name": "Edit Fields"
+    }
+  ],
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Execute a SQL query",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "d9725604-c2be-450d-baf8-4fc3b24b2933",
+  "triggerCount": 0,
+  "shared": [
+    {
+      "createdAt": "2025-09-26T09:39:35.076Z",
+      "updatedAt": "2025-09-26T09:39:35.076Z",
+      "role": "workflow:owner",
+      "workflowId": "QiRdKifiIi2x4N6I",
+      "projectId": "spKmbJLU4mvACXIB"
+    }
+  ],
+  "tags": [],
+  "file_name": "reset-test-processes-data.json"
+}
