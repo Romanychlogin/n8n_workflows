@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-07-18T08:31:54.459Z",
-  "updatedAt": "2025-09-25T13:53:06.853Z",
+  "updatedAt": "2025-09-26T14:27:15.893Z",
   "id": "wZGLxMCCmOnDJZ1o",
   "name": "ADV_campaign_analysis",
   "active": false,
@@ -8,42 +8,12 @@
   "nodes": [
     {
       "parameters": {
-        "url": "={{$json[\"url\"]}}",
-        "responseFormat": "file",
-        "options": {}
-      },
-      "id": "6f37b88f-d4f9-42c0-ac86-7c46984fe372",
-      "name": "Download File",
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 2,
-      "position": [
-        384,
-        -80
-      ]
-    },
-    {
-      "parameters": {
-        "options": {
-          "delimiter": ";"
-        }
-      },
-      "type": "n8n-nodes-base.extractFromFile",
-      "typeVersion": 1,
-      "position": [
-        608,
-        -80
-      ],
-      "id": "8cf533ac-5921-4bb1-9ed9-826dea215e10",
-      "name": "Extract from File"
-    },
-    {
-      "parameters": {
         "options": {}
       },
       "type": "n8n-nodes-base.splitInBatches",
       "typeVersion": 3,
       "position": [
-        1456,
+        1664,
         -96
       ],
       "id": "14ab2730-450d-4b85-8dff-85f47057947b",
@@ -55,7 +25,7 @@
       "name": "Replace Me",
       "typeVersion": 1,
       "position": [
-        9072,
+        9280,
         0
       ],
       "id": "cb260de5-cb39-4ae9-acf1-9988cd0b1a37"
@@ -69,7 +39,7 @@
       "type": "n8n-nodes-base.merge",
       "typeVersion": 3.2,
       "position": [
-        6032,
+        6240,
         -256
       ],
       "id": "3b586bb4-8249-460a-b5ab-23282c4ff096",
@@ -147,7 +117,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        7808,
+        8016,
         -640
       ],
       "id": "b2be9a68-4d5c-4dd1-85c7-4d71ce034518",
@@ -168,7 +138,7 @@
       "type": "n8n-nodes-base.merge",
       "typeVersion": 3.2,
       "position": [
-        8256,
+        8464,
         -800
       ],
       "id": "0c60f5c9-db38-4edb-b16b-cd4b807c471a",
@@ -215,7 +185,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        2256,
+        2464,
         -528
       ],
       "id": "b216be47-debc-40cf-b136-bec95d38fdee",
@@ -241,7 +211,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        2464,
+        2672,
         -704
       ],
       "id": "28c687e3-463b-473a-afd9-320b16c436f2",
@@ -275,7 +245,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        2688,
+        2896,
         -704
       ],
       "id": "9697e909-a82a-45b7-b036-d696f078145a",
@@ -450,7 +420,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        1904,
+        2112,
         -208
       ],
       "id": "3d636614-e11e-4a0b-bf63-487342a42f07",
@@ -461,105 +431,6 @@
           "name": "Postgres account 2"
         }
       }
-    },
-    {
-      "parameters": {
-        "operation": "deleteTable",
-        "schema": {
-          "__rl": true,
-          "mode": "list",
-          "value": "public"
-        },
-        "table": {
-          "__rl": true,
-          "value": "current_list",
-          "mode": "list",
-          "cachedResultName": "current_list"
-        },
-        "deleteCommand": "delete",
-        "options": {}
-      },
-      "type": "n8n-nodes-base.postgres",
-      "typeVersion": 2.6,
-      "position": [
-        560,
-        304
-      ],
-      "id": "296a7cb2-4336-4240-8ce2-9fec33dcfdfb",
-      "name": "Clear current_list",
-      "credentials": {
-        "postgres": {
-          "id": "Hx2VFmUi5WO2K4QX",
-          "name": "Postgres account 2"
-        }
-      },
-      "disabled": true
-    },
-    {
-      "parameters": {
-        "operation": "deleteTable",
-        "schema": {
-          "__rl": true,
-          "mode": "list",
-          "value": "public"
-        },
-        "table": {
-          "__rl": true,
-          "value": "current_minus_words",
-          "mode": "list",
-          "cachedResultName": "current_minus_words"
-        },
-        "deleteCommand": "delete",
-        "options": {}
-      },
-      "type": "n8n-nodes-base.postgres",
-      "typeVersion": 2.6,
-      "position": [
-        768,
-        304
-      ],
-      "id": "1ab3a0cf-a029-4599-bacf-a3894e261f93",
-      "name": "Clear current_minus_words",
-      "credentials": {
-        "postgres": {
-          "id": "Hx2VFmUi5WO2K4QX",
-          "name": "Postgres account 2"
-        }
-      },
-      "disabled": true
-    },
-    {
-      "parameters": {
-        "operation": "deleteTable",
-        "schema": {
-          "__rl": true,
-          "mode": "list",
-          "value": "public"
-        },
-        "table": {
-          "__rl": true,
-          "value": "current_ads_list",
-          "mode": "list",
-          "cachedResultName": "current_ads_list"
-        },
-        "deleteCommand": "delete",
-        "options": {}
-      },
-      "type": "n8n-nodes-base.postgres",
-      "typeVersion": 2.6,
-      "position": [
-        976,
-        304
-      ],
-      "id": "76b60d31-1b7f-4a02-a07d-64028295db02",
-      "name": "Clear current_ads",
-      "credentials": {
-        "postgres": {
-          "id": "Hx2VFmUi5WO2K4QX",
-          "name": "Postgres account 2"
-        }
-      },
-      "disabled": true
     },
     {
       "parameters": {
@@ -733,7 +604,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        8400,
+        8608,
         -1216
       ],
       "id": "233a9fb2-ccfc-4fbd-a2af-5630a61c7a22",
@@ -919,7 +790,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        8464,
+        8672,
         -480
       ],
       "id": "8200d389-0be7-463e-b356-76cf1a2d659f",
@@ -959,7 +830,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        6336,
+        6544,
         -704
       ],
       "id": "78d0f369-bc02-4a48-84af-389ac2c2f8cf",
@@ -989,7 +860,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        6784,
+        6992,
         -448
       ],
       "id": "e75eef70-59a7-4697-8b04-373c54883a70",
@@ -1019,7 +890,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        7168,
+        7376,
         -784
       ],
       "id": "6bf663d1-4db2-412c-aa73-d7943501ee9f",
@@ -1047,7 +918,7 @@
       "type": "n8n-nodes-base.github",
       "typeVersion": 1.1,
       "position": [
-        256,
+        464,
         -336
       ],
       "id": "2705a1f5-4bfc-4dd9-a751-b86be2337888",
@@ -1068,7 +939,7 @@
       "type": "n8n-nodes-base.extractFromFile",
       "typeVersion": 1,
       "position": [
-        464,
+        672,
         -336
       ],
       "id": "41535c1f-f954-40d0-8b31-c54af2a0011b",
@@ -1092,7 +963,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        2112,
+        2320,
         -208
       ],
       "id": "420f1274-7e03-4dc1-bf54-96f5b405d825",
@@ -1105,7 +976,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        672,
+        880,
         -336
       ],
       "id": "10bc2d0f-9668-4050-9ad8-dde1e2753f36",
@@ -1118,7 +989,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        3152,
+        3360,
         -432
       ],
       "id": "2c63e44c-2423-409c-8a98-0a0f93641033",
@@ -1296,7 +1167,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        8112,
+        8320,
         -1104
       ],
       "id": "e95a4440-545c-4788-a36f-4a8649b6dcf9",
@@ -1317,7 +1188,7 @@
       "type": "n8n-nodes-base.merge",
       "typeVersion": 3.2,
       "position": [
-        6288,
+        6496,
         -912
       ],
       "id": "ed595f4e-55cd-4653-8faf-156890b7853b",
@@ -1343,7 +1214,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        3984,
+        4192,
         -80
       ],
       "id": "1fe77e75-c3f7-45c6-9745-7d60d1a87ec1",
@@ -1363,7 +1234,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        4224,
+        4432,
         -64
       ],
       "id": "5e99e27e-8a7f-4aa5-9bf8-ac03d750250f",
@@ -1385,7 +1256,7 @@
       "type": "n8n-nodes-base.merge",
       "typeVersion": 3.2,
       "position": [
-        3744,
+        3952,
         -96
       ],
       "id": "08808d82-cc24-4aeb-b042-a2c9961999ab",
@@ -1412,7 +1283,7 @@
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1.2,
       "position": [
-        5008,
+        5216,
         -16
       ],
       "id": "5d7ed225-61eb-40cf-86f8-cf487e481e1c",
@@ -1425,7 +1296,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        4672,
+        4880,
         16
       ],
       "id": "9eddec39-1da6-4ea2-b1a9-09e9356929e9",
@@ -1438,7 +1309,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        5280,
+        5488,
         -32
       ],
       "id": "6b46b906-0c32-4338-aa03-d8c6ea2aa4b4",
@@ -1458,7 +1329,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        5664,
+        5872,
         -32
       ],
       "id": "71ae78b7-07d9-476d-bd03-a0bc9665f099",
@@ -1478,7 +1349,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        7392,
+        7600,
         -624
       ],
       "id": "2f169d1d-9f54-4e14-8d57-39373804f250",
@@ -1505,7 +1376,7 @@
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1.2,
       "position": [
-        3328,
+        3536,
         -224
       ],
       "id": "cd16a7e3-72ee-4ecb-b4ba-b40cebdc3476",
@@ -1539,7 +1410,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        7040,
+        7248,
         -624
       ],
       "id": "32bea20b-bd2e-4a99-83b0-e9dce5af9140",
@@ -1573,7 +1444,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        4432,
+        4640,
         -64
       ],
       "id": "ab29b2a0-71ea-425c-8e92-01e2e174cee9",
@@ -1607,7 +1478,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        3568,
+        3776,
         -256
       ],
       "id": "cfb990ed-43bf-46ea-bd90-b9fe5333f2ef",
@@ -1630,12 +1501,6 @@
       "parameters": {
         "assignments": {
           "assignments": [
-            {
-              "id": "5b3485a2-cb50-486a-932c-fc27de0a25da",
-              "name": "company_name",
-              "value": "={{ $json.company_name }}",
-              "type": "string"
-            },
             {
               "id": "f74ac992-90a4-4403-a75e-17656de76902",
               "name": "company_id",
@@ -1673,31 +1538,32 @@
       ],
       "id": "f677af9e-c486-4d8e-90d3-9cbdd74d82d2",
       "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "select * from current_list where report_id=(select max(import_id) from report_import where company_id=$1)\n",
+        "options": {
+          "queryReplacement": "={{ $json.company_id }}"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        288,
+        -176
+      ],
+      "id": "297d2aa0-7b31-4c3e-9cc9-356f906de7f7",
+      "name": "Execute a SQL query",
+      "credentials": {
+        "postgres": {
+          "id": "Hx2VFmUi5WO2K4QX",
+          "name": "Postgres account 2"
+        }
+      }
     }
   ],
   "connections": {
-    "Download File": {
-      "main": [
-        [
-          {
-            "node": "Extract from File",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Extract from File": {
-      "main": [
-        [
-          {
-            "node": "Loop Over Items",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Loop Over Items": {
       "main": [
         [],
@@ -1810,33 +1676,6 @@
             "index": 0
           }
         ]
-      ]
-    },
-    "Clear current_list": {
-      "main": [
-        [
-          {
-            "node": "Clear current_minus_words",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Clear current_minus_words": {
-      "main": [
-        [
-          {
-            "node": "Clear current_ads",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Clear current_ads": {
-      "main": [
-        []
       ]
     },
     "update": {
@@ -2165,7 +2004,18 @@
             "index": 0
           },
           {
-            "node": "Download File",
+            "node": "Execute a SQL query",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute a SQL query": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
             "type": "main",
             "index": 0
           }
@@ -2197,7 +2047,7 @@
       }
     ]
   },
-  "versionId": "08f98aa9-4544-4a12-ad3c-7647ea13a8e7",
+  "versionId": "944e7e57-d78b-42f8-a6ec-b9c05f25f31c",
   "triggerCount": 0,
   "shared": [
     {
