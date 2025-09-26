@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-25T13:56:50.878Z",
-  "updatedAt": "2025-09-26T13:45:48.348Z",
+  "updatedAt": "2025-09-26T13:57:07.871Z",
   "id": "4f5WJ06ItW520O75",
   "name": "ADV_campaign_data_load",
   "active": false,
@@ -102,7 +102,7 @@
             "count_clics": "={{ $json['Клики'] }}",
             "count_convetions": "={{ $json['Конверсии'] }}",
             "company_id": "={{ $json.company_id }}",
-            "report_id": 0
+            "report_id": "={{ $('report import record').item.json.import_id }}"
           },
           "matchingColumns": [
             "id"
@@ -630,7 +630,7 @@
     },
     {
       "parameters": {
-        "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nconst workflowData = $getWorkflowStaticData('global');\nworkflowData.steps_passed = workflowData.steps_passed+1; // update steps counter\n //set used tokens here!!!!\nworkflowData.step = workflowData.step+1\nworkflowData.tokens_used = workflowData.tokens_used+step_tokens_used;\nfor (const item of $input.all()) {\n  item.json.steps_passed = workflowData.steps_passed;\n  item.json.step = workflowData.step;\n  \n}\n\nreturn $input.all();"
+        "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nconst workflowData = $getWorkflowStaticData('global');\nworkflowData.steps_passed = workflowData.steps_passed+1; // update steps counter\n //set used tokens here!!!!\nworkflowData.step = workflowData.step+1;\n\nfor (const item of $input.all()) {\n  item.json.steps_passed = workflowData.steps_passed;\n  item.json.step = workflowData.step;\n  \n}\n\nreturn $input.all();"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -724,19 +724,6 @@
     },
     {
       "parameters": {
-        "jsCode": "const re = /(\\d{4}-\\d{2}-\\d{2})_(\\d{4}-\\d{2}-\\d{2})/;\n\nconst s = String($json.data.FileName ?? '');\nconst m = s.match(re);\n\nreturn {\n  ...$json,\n  date_from: m ? m[1] : null,\n  date_to:   m ? m[2] : null,\n};"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        176,
-        -128
-      ],
-      "id": "171bd827-c5cf-4ff7-bacf-093f798c4bf4",
-      "name": "Code in JavaScript"
-    },
-    {
-      "parameters": {
         "schema": {
           "__rl": true,
           "mode": "list",
@@ -751,7 +738,9 @@
         "columns": {
           "mappingMode": "defineBelow",
           "value": {
-            "company_id": "={{ $json.company_id }}"
+            "company_id": "={{ $json.company_id }}",
+            "start_date": "={{ $('get dates from file name').item.json.date_from }}",
+            "end_date": "={{ $('get dates from file name').item.json.date_to }}"
           },
           "matchingColumns": [],
           "schema": [
@@ -832,6 +821,19 @@
           "name": "Postgres account 2"
         }
       }
+    },
+    {
+      "parameters": {
+        "jsCode": "const re = /(\\d{4}-\\d{2}-\\d{2})_(\\d{4}-\\d{2}-\\d{2})/;\n\nreturn $input.all().map(item => {\n  const binKey = Object.keys(item.binary ?? {})[0];          // обычно \"data\"\n  const meta = binKey ? item.binary[binKey] : undefined;\n\n  // имя файла: сначала fileName, на всякий — \"File Name\"\n  const fileName = meta?.fileName ?? meta?.[\"File Name\"] ?? \"\";\n\n  const m = String(fileName).match(re);\n\n  return {\n    json: {\n      ...item.json,\n      date_from: m?.[1] ?? null,\n      date_to:   m?.[2] ?? null,\n      file_name: fileName,            // чтобы было видно, что взяли\n      bin_key: binKey,\n    },\n    binary: item.binary,              // не теряем бинарь\n  };\n});"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        176,
+        -128
+      ],
+      "id": "171bd827-c5cf-4ff7-bacf-093f798c4bf4",
+      "name": "get dates from file name"
     }
   ],
   "connections": {
@@ -839,7 +841,7 @@
       "main": [
         [
           {
-            "node": "Code in JavaScript",
+            "node": "get dates from file name",
             "type": "main",
             "index": 0
           }
@@ -1079,22 +1081,22 @@
         ]
       ]
     },
-    "Code in JavaScript": {
+    "report import record": {
       "main": [
         [
           {
-            "node": "header cut",
+            "node": "Clear current_list",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "report import record": {
+    "get dates from file name": {
       "main": [
         [
           {
-            "node": "Clear current_list",
+            "node": "header cut",
             "type": "main",
             "index": 0
           }
@@ -1110,7 +1112,13 @@
     "callerPolicy": "workflowsFromSameOwner",
     "errorWorkflow": "v2Z32ISEUzsFYnZw"
   },
-  "staticData": null,
+  "staticData": {
+    "global": {
+      "steps_passed": 100,
+      "tokens_used": 0,
+      "step": 100
+    }
+  },
   "meta": {
     "templateCredsSetupCompleted": true
   },
@@ -1119,14 +1127,14 @@
       {
         "json": {
           "id": "4f5WJ06ItW520O75",
-          "root_execution_id": 30032,
+          "root_execution_id": 32848,
           "yandex_report_dropbox_file_path": "https://www.dropbox.com/scl/fi/9kr6iebx4q6cstzp2xuwb/2025-09-04_2025-09-24_searchquery_kiberone-saratov.csv?rlkey=cew8cc5k2rfbq5wrco9inb4eu&dl=1",
           "threshhold": "0.88"
         }
       }
     ]
   },
-  "versionId": "f52ef6a1-92be-4888-9892-bcf5c47f7714",
+  "versionId": "f897dc84-8696-406d-9546-83de79f95523",
   "triggerCount": 0,
   "shared": [
     {
