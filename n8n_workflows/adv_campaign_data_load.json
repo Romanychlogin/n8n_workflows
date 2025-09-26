@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-25T13:56:50.878Z",
-  "updatedAt": "2025-09-25T13:56:50.878Z",
+  "updatedAt": "2025-09-25T16:47:38.536Z",
   "id": "4f5WJ06ItW520O75",
   "name": "ADV_campaign_data_load",
   "active": false,
@@ -8,7 +8,7 @@
   "nodes": [
     {
       "parameters": {
-        "url": "={{$json[\"url\"]}}",
+        "url": "={{ $json.yandex_report_dropbox_file_path }}",
         "responseFormat": "file",
         "options": {}
       },
@@ -17,8 +17,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 2,
       "position": [
-        384,
-        -80
+        -80,
+        -128
       ]
     },
     {
@@ -30,8 +30,8 @@
       "type": "n8n-nodes-base.extractFromFile",
       "typeVersion": 1,
       "position": [
-        608,
-        -80
+        352,
+        -128
       ],
       "id": "50987e1b-4945-4d3a-85f8-b0a5d90fc438",
       "name": "Extract from File"
@@ -43,137 +43,11 @@
       "type": "n8n-nodes-base.splitInBatches",
       "typeVersion": 3,
       "position": [
-        1456,
-        -96
+        1904,
+        -112
       ],
       "id": "f351581e-3b33-4833-8b03-ab2082146354",
       "name": "Loop Over Items"
-    },
-    {
-      "parameters": {},
-      "type": "n8n-nodes-base.noOp",
-      "name": "Replace Me",
-      "typeVersion": 1,
-      "position": [
-        9072,
-        0
-      ],
-      "id": "d08164bb-1a1a-4967-82fb-debfc84a781d"
-    },
-    {
-      "parameters": {
-        "mode": "combine",
-        "combineBy": "combineByPosition",
-        "options": {}
-      },
-      "type": "n8n-nodes-base.merge",
-      "typeVersion": 3.2,
-      "position": [
-        6032,
-        -256
-      ],
-      "id": "b35678ec-e6cb-4706-bec3-2d3ef2238931",
-      "name": "Merge"
-    },
-    {
-      "parameters": {
-        "schema": {
-          "__rl": true,
-          "mode": "list",
-          "value": "public"
-        },
-        "table": {
-          "__rl": true,
-          "value": "current_minus_words",
-          "mode": "list",
-          "cachedResultName": "current_minus_words"
-        },
-        "columns": {
-          "mappingMode": "defineBelow",
-          "value": {
-            "minus_word": "={{ $json.minus_word }}",
-            "current_record_id": "={{ $json.list_id }}"
-          },
-          "matchingColumns": [
-            "id"
-          ],
-          "schema": [
-            {
-              "id": "minus_id",
-              "displayName": "minus_id",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "number",
-              "canBeUsedToMatch": true,
-              "removed": true
-            },
-            {
-              "id": "minus_word",
-              "displayName": "minus_word",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true,
-              "removed": false
-            },
-            {
-              "id": "current_record_id",
-              "displayName": "current_record_id",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "number",
-              "canBeUsedToMatch": true,
-              "removed": false
-            },
-            {
-              "id": "keep_minus",
-              "displayName": "keep_minus",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "boolean",
-              "canBeUsedToMatch": true,
-              "removed": true
-            }
-          ],
-          "attemptToConvertTypes": false,
-          "convertFieldsToString": false
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.postgres",
-      "typeVersion": 2.6,
-      "position": [
-        7808,
-        -640
-      ],
-      "id": "eb1b20ad-85e3-4d22-9e81-03521c7ab6c1",
-      "name": "Insert minus words",
-      "credentials": {
-        "postgres": {
-          "id": "Hx2VFmUi5WO2K4QX",
-          "name": "Postgres account 2"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "mode": "combine",
-        "combineBy": "combineByPosition",
-        "options": {}
-      },
-      "type": "n8n-nodes-base.merge",
-      "typeVersion": 3.2,
-      "position": [
-        8256,
-        -800
-      ],
-      "id": "7adf488b-af22-45e0-88f0-88fa42ce3cfa",
-      "name": "Merge with initial data",
-      "disabled": true
     },
     {
       "parameters": {
@@ -190,39 +64,6 @@
     },
     {
       "parameters": {
-        "conditions": {
-          "options": {
-            "caseSensitive": true,
-            "leftValue": "",
-            "typeValidation": "strict",
-            "version": 2
-          },
-          "conditions": [
-            {
-              "id": "5db6f53d-c697-4fb8-8804-93f5c0a2fcca",
-              "leftValue": "={{ $json.condition_type }}",
-              "rightValue": "пословное",
-              "operator": {
-                "type": "string",
-                "operation": "equals"
-              }
-            }
-          ],
-          "combinator": "and"
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.if",
-      "typeVersion": 2.2,
-      "position": [
-        2256,
-        -528
-      ],
-      "id": "346d0718-4641-4b5d-b400-24e555b95eae",
-      "name": "пословное соответствие?"
-    },
-    {
-      "parameters": {
         "content": "Соответствие\n1)Если пословное то проверяем совпадение запроса с нашим ключом. \nа)совпадает(убираем кавычки у нашего ключа) - все ОК\nб)не совпадает - спрашиваем у чата релевантна ли нам фраза. Да - добавляем в ключи. Нет - добавляем в минус слова.\n2)Не пословное - спрашиваем у чата релевантна ли нам фраза. Да - добавляем в ключи. Нет - добавляем в минус слова."
       },
       "type": "n8n-nodes-base.stickyNote",
@@ -233,53 +74,6 @@
       ],
       "id": "5a53b8b9-73c5-4844-8ceb-ca9e222c7395",
       "name": "Sticky Note1"
-    },
-    {
-      "parameters": {
-        "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nfor (const item of $input.all()) {\n  item.json.same_key = item.json.key_word.replace(/[\\s\"]/g, '') === item.json.used_keyword.replace(/[\\s\"]/g, '');\n}\n\nreturn $input.all();"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        2464,
-        -704
-      ],
-      "id": "ae2f82e7-504c-4b31-8e2c-da74e53d24af",
-      "name": "проверяем полное соответствие"
-    },
-    {
-      "parameters": {
-        "conditions": {
-          "options": {
-            "caseSensitive": true,
-            "leftValue": "",
-            "typeValidation": "strict",
-            "version": 2
-          },
-          "conditions": [
-            {
-              "id": "b59658e0-7426-4b0c-bb61-db52e84fc3cf",
-              "leftValue": "={{ $json.same_key }}",
-              "rightValue": "",
-              "operator": {
-                "type": "boolean",
-                "operation": "true",
-                "singleValue": true
-              }
-            }
-          ],
-          "combinator": "and"
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.if",
-      "typeVersion": 2.2,
-      "position": [
-        2688,
-        -704
-      ],
-      "id": "f0ade528-2e97-4eba-b322-4401733c9016",
-      "name": "Соответствие полное?"
     },
     {
       "parameters": {
@@ -297,7 +91,7 @@
         "columns": {
           "mappingMode": "defineBelow",
           "value": {
-            "key_word": "={{ $json[Object.keys($json)[0]] }}",
+            "key_word": "={{ $json['Поисковый запрос'] }}",
             "campaign_id": "={{ $json['№ Кампании'] }}",
             "used_keyword": "={{ $json['Условие показа'] }}",
             "group_id": "={{ $json['№ Группы'] }}",
@@ -307,17 +101,18 @@
             "date": "={{ DateTime.fromFormat($json['﻿Дата'], 'dd.MM.yyyy').toISODate() }}",
             "count_views": "={{ $json['Показы'] }}",
             "count_clics": "={{ $json['Клики'] }}",
-            "count_convetions": "={{ $json['Конверсии'] }}"
+            "count_convetions": "={{ $json['Конверсии'] }}",
+            "company_id": "={{ $json.company_id }}"
           },
           "matchingColumns": [
             "id"
           ],
           "schema": [
             {
-              "id": "id",
-              "displayName": "id",
+              "id": "list_id",
+              "displayName": "list_id",
               "required": false,
-              "defaultMatch": true,
+              "defaultMatch": false,
               "display": true,
               "type": "number",
               "canBeUsedToMatch": true,
@@ -397,15 +192,6 @@
               "canBeUsedToMatch": true
             },
             {
-              "id": "ai_responce",
-              "displayName": "ai_responce",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true
-            },
-            {
               "id": "resolution",
               "displayName": "resolution",
               "required": false,
@@ -440,6 +226,26 @@
               "display": true,
               "type": "number",
               "canBeUsedToMatch": true
+            },
+            {
+              "id": "ai_response_tokens",
+              "displayName": "ai_response_tokens",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "company_id",
+              "displayName": "company_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": false
             }
           ],
           "attemptToConvertTypes": false,
@@ -450,8 +256,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        1904,
-        -208
+        2288,
+        -96
       ],
       "id": "581d23c7-f346-4495-bfbd-a8e629a42d93",
       "name": "Insert rows in a table",
@@ -477,23 +283,31 @@
           "cachedResultName": "current_list"
         },
         "deleteCommand": "delete",
+        "where": {
+          "values": [
+            {
+              "column": "company_id",
+              "value": "={{ $json.company_id }}"
+            }
+          ]
+        },
         "options": {}
       },
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        560,
-        304
+        768,
+        256
       ],
       "id": "9d5642cb-07a0-45bd-97d2-8bbd53b2d67b",
       "name": "Clear current_list",
+      "executeOnce": true,
       "credentials": {
         "postgres": {
           "id": "Hx2VFmUi5WO2K4QX",
           "name": "Postgres account 2"
         }
-      },
-      "disabled": true
+      }
     },
     {
       "parameters": {
@@ -510,23 +324,31 @@
           "cachedResultName": "current_minus_words"
         },
         "deleteCommand": "delete",
+        "where": {
+          "values": [
+            {
+              "column": "company_id",
+              "value": "={{ $json.company_id }}"
+            }
+          ]
+        },
         "options": {}
       },
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        768,
-        304
+        928,
+        256
       ],
       "id": "c5d5d0a3-6a41-4cb4-aa6c-639b7fc993b4",
       "name": "Clear current_minus_words",
+      "executeOnce": true,
       "credentials": {
         "postgres": {
           "id": "Hx2VFmUi5WO2K4QX",
           "name": "Postgres account 2"
         }
-      },
-      "disabled": true
+      }
     },
     {
       "parameters": {
@@ -543,786 +365,31 @@
           "cachedResultName": "current_ads_list"
         },
         "deleteCommand": "delete",
+        "where": {
+          "values": [
+            {
+              "column": "company_id",
+              "value": "={{ $json.company_id }}"
+            }
+          ]
+        },
         "options": {}
       },
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        976,
-        304
+        1088,
+        256
       ],
       "id": "ac781bf5-a342-4e0f-837c-b7d77e9accf9",
       "name": "Clear current_ads",
-      "credentials": {
-        "postgres": {
-          "id": "Hx2VFmUi5WO2K4QX",
-          "name": "Postgres account 2"
-        }
-      },
-      "disabled": true
-    },
-    {
-      "parameters": {
-        "operation": "update",
-        "schema": {
-          "__rl": true,
-          "mode": "list",
-          "value": "public"
-        },
-        "table": {
-          "__rl": true,
-          "value": "current_list",
-          "mode": "list",
-          "cachedResultName": "current_list"
-        },
-        "columns": {
-          "mappingMode": "defineBelow",
-          "value": {
-            "resolution": "same key",
-            "list_id": "={{ $json.list_id }}"
-          },
-          "matchingColumns": [
-            "list_id"
-          ],
-          "schema": [
-            {
-              "id": "list_id",
-              "displayName": "list_id",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "number",
-              "canBeUsedToMatch": true,
-              "removed": false
-            },
-            {
-              "id": "key_word",
-              "displayName": "key_word",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true,
-              "removed": true
-            },
-            {
-              "id": "campaign_id",
-              "displayName": "campaign_id",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "number",
-              "canBeUsedToMatch": true,
-              "removed": true
-            },
-            {
-              "id": "used_keyword",
-              "displayName": "used_keyword",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true,
-              "removed": true
-            },
-            {
-              "id": "group_id",
-              "displayName": "group_id",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "number",
-              "canBeUsedToMatch": true,
-              "removed": true
-            },
-            {
-              "id": "condition_type",
-              "displayName": "condition_type",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true,
-              "removed": true
-            },
-            {
-              "id": "category",
-              "displayName": "category",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true,
-              "removed": true
-            },
-            {
-              "id": "ads_header",
-              "displayName": "ads_header",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true,
-              "removed": true
-            },
-            {
-              "id": "date",
-              "displayName": "date",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "dateTime",
-              "canBeUsedToMatch": true,
-              "removed": true
-            },
-            {
-              "id": "ai_responce",
-              "displayName": "ai_responce",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true,
-              "removed": true
-            },
-            {
-              "id": "resolution",
-              "displayName": "resolution",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true
-            },
-            {
-              "id": "count_views",
-              "displayName": "count_views",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "number",
-              "canBeUsedToMatch": true,
-              "removed": true
-            },
-            {
-              "id": "count_clics",
-              "displayName": "count_clics",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "number",
-              "canBeUsedToMatch": true,
-              "removed": true
-            },
-            {
-              "id": "count_convetions",
-              "displayName": "count_convetions",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "number",
-              "canBeUsedToMatch": true,
-              "removed": true
-            }
-          ],
-          "attemptToConvertTypes": false,
-          "convertFieldsToString": false
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.postgres",
-      "typeVersion": 2.6,
-      "position": [
-        8400,
-        -1216
-      ],
-      "id": "d48ebd0b-82d7-4cbd-8850-120b9e385f86",
-      "name": "Помечаем что ключ совпадает",
+      "executeOnce": true,
       "credentials": {
         "postgres": {
           "id": "Hx2VFmUi5WO2K4QX",
           "name": "Postgres account 2"
         }
       }
-    },
-    {
-      "parameters": {
-        "operation": "update",
-        "schema": {
-          "__rl": true,
-          "mode": "list",
-          "value": "public"
-        },
-        "table": {
-          "__rl": true,
-          "value": "current_list",
-          "mode": "list",
-          "cachedResultName": "current_list"
-        },
-        "columns": {
-          "mappingMode": "defineBelow",
-          "value": {
-            "resolution": "={{ $json.resolution}}",
-            "list_id": "={{ $json.list_id }}",
-            "ai_response_tokens": "={{ $json.total_tokens }}"
-          },
-          "matchingColumns": [
-            "list_id"
-          ],
-          "schema": [
-            {
-              "id": "list_id",
-              "displayName": "list_id",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "number",
-              "canBeUsedToMatch": true,
-              "removed": false
-            },
-            {
-              "id": "key_word",
-              "displayName": "key_word",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true,
-              "removed": true
-            },
-            {
-              "id": "campaign_id",
-              "displayName": "campaign_id",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "number",
-              "canBeUsedToMatch": true,
-              "removed": true
-            },
-            {
-              "id": "used_keyword",
-              "displayName": "used_keyword",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true,
-              "removed": true
-            },
-            {
-              "id": "group_id",
-              "displayName": "group_id",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "number",
-              "canBeUsedToMatch": true,
-              "removed": true
-            },
-            {
-              "id": "condition_type",
-              "displayName": "condition_type",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true,
-              "removed": true
-            },
-            {
-              "id": "category",
-              "displayName": "category",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true,
-              "removed": true
-            },
-            {
-              "id": "ads_header",
-              "displayName": "ads_header",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true,
-              "removed": true
-            },
-            {
-              "id": "date",
-              "displayName": "date",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "dateTime",
-              "canBeUsedToMatch": true,
-              "removed": true
-            },
-            {
-              "id": "resolution",
-              "displayName": "resolution",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true,
-              "removed": false
-            },
-            {
-              "id": "count_views",
-              "displayName": "count_views",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "number",
-              "canBeUsedToMatch": true,
-              "removed": true
-            },
-            {
-              "id": "count_clics",
-              "displayName": "count_clics",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "number",
-              "canBeUsedToMatch": true,
-              "removed": true
-            },
-            {
-              "id": "count_convetions",
-              "displayName": "count_convetions",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "number",
-              "canBeUsedToMatch": true,
-              "removed": true
-            },
-            {
-              "id": "ai_response_tokens",
-              "displayName": "ai_response_tokens",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "number",
-              "canBeUsedToMatch": true,
-              "removed": false
-            }
-          ],
-          "attemptToConvertTypes": false,
-          "convertFieldsToString": false
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.postgres",
-      "typeVersion": 2.6,
-      "position": [
-        8464,
-        -480
-      ],
-      "id": "0160a919-c7be-45a9-83c1-03551f4c15c1",
-      "name": "update",
-      "credentials": {
-        "postgres": {
-          "id": "Hx2VFmUi5WO2K4QX",
-          "name": "Postgres account 2"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "conditions": {
-          "options": {
-            "caseSensitive": true,
-            "leftValue": "",
-            "typeValidation": "strict",
-            "version": 2
-          },
-          "conditions": [
-            {
-              "id": "60fdafa4-2c5e-4917-978b-dbc1a116f516",
-              "leftValue": "={{ JSON.parse($json.output[1].content[0].text).is_correct_phrase }}",
-              "rightValue": "true_phrase",
-              "operator": {
-                "type": "boolean",
-                "operation": "true",
-                "singleValue": true
-              }
-            }
-          ],
-          "combinator": "and"
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.if",
-      "typeVersion": 2.2,
-      "position": [
-        6336,
-        -704
-      ],
-      "id": "39094e1f-3a94-4229-859b-e71886aedc75",
-      "name": "Обработка ответа AI"
-    },
-    {
-      "parameters": {
-        "assignments": {
-          "assignments": [
-            {
-              "id": "33090f58-518c-4671-a0cf-22b8b484a226",
-              "name": "resolution",
-              "value": "to add",
-              "type": "string"
-            },
-            {
-              "id": "4f2396b9-b5c0-4e30-86c1-df42515df6af",
-              "name": "total_tokens",
-              "value": "={{ $json.usage.total_tokens }}",
-              "type": "number"
-            }
-          ]
-        },
-        "includeOtherFields": true,
-        "options": {}
-      },
-      "type": "n8n-nodes-base.set",
-      "typeVersion": 3.4,
-      "position": [
-        6784,
-        -448
-      ],
-      "id": "e3e630cf-38bd-478a-bbb8-5d97f0e19c2b",
-      "name": "Edit Fields"
-    },
-    {
-      "parameters": {
-        "assignments": {
-          "assignments": [
-            {
-              "id": "bb72a340-789e-459b-80c9-f1c2b454ed57",
-              "name": "resolution",
-              "value": "={{\"no relevant, minuses:\"+JSON.parse($json.output[1].content[0].text).minus_words.map(String).join(', ')}}",
-              "type": "string"
-            },
-            {
-              "id": "f1d5bde6-376a-40f1-b00d-9723628a1553",
-              "name": "total_tokens",
-              "value": "={{  $json.usage.total_tokens }}",
-              "type": "number"
-            }
-          ]
-        },
-        "includeOtherFields": true,
-        "options": {}
-      },
-      "type": "n8n-nodes-base.set",
-      "typeVersion": 3.4,
-      "position": [
-        7168,
-        -784
-      ],
-      "id": "7b4d2fd6-bf26-4a0a-9334-2c349697439e",
-      "name": "Edit Fields1"
-    },
-    {
-      "parameters": {
-        "resource": "file",
-        "operation": "get",
-        "owner": {
-          "__rl": true,
-          "value": "Romanychlogin",
-          "mode": "name"
-        },
-        "repository": {
-          "__rl": true,
-          "value": "n8n_prompts",
-          "mode": "list",
-          "cachedResultName": "n8n_prompts",
-          "cachedResultUrl": "https://github.com/Romanychlogin/n8n_prompts"
-        },
-        "filePath": "keyword_analysis.txt",
-        "additionalParameters": {},
-        "path": "d372ce6f-2ecd-4e6d-86b3-19861e627d27"
-      },
-      "type": "n8n-nodes-base.github",
-      "typeVersion": 1.1,
-      "position": [
-        256,
-        -336
-      ],
-      "id": "4e949815-a6a0-4310-91dd-9fc48d439215",
-      "name": "Get a file",
-      "webhookId": "d372ce6f-2ecd-4e6d-86b3-19861e627d27",
-      "credentials": {
-        "githubApi": {
-          "id": "JQAFAcMNS9Ylyb0V",
-          "name": "GitHub account"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "operation": "text",
-        "options": {}
-      },
-      "type": "n8n-nodes-base.extractFromFile",
-      "typeVersion": 1,
-      "position": [
-        464,
-        -336
-      ],
-      "id": "cd5be693-e590-473f-a593-d41c54e1f8c3",
-      "name": "Extract from File1"
-    },
-    {
-      "parameters": {
-        "assignments": {
-          "assignments": [
-            {
-              "id": "9a36baab-13a9-4eb3-9a76-79dd29a11294",
-              "name": "mergekey",
-              "value": "1",
-              "type": "string"
-            }
-          ]
-        },
-        "includeOtherFields": true,
-        "options": {}
-      },
-      "type": "n8n-nodes-base.set",
-      "typeVersion": 3.4,
-      "position": [
-        2112,
-        -208
-      ],
-      "id": "992d1dd2-38c1-47e5-a4a0-b183caabb956",
-      "name": "Edit Fields4"
-    },
-    {
-      "parameters": {
-        "jsCode": "// Function-Node (Run Once)\nconst workflowData = $getWorkflowStaticData('global');\nworkflowData.alaysis_prompt = items[0].json;\nreturn items;"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        672,
-        -336
-      ],
-      "id": "86ab3bc5-5b30-4286-9945-95333069bd98",
-      "name": "Code1"
-    },
-    {
-      "parameters": {
-        "jsCode": "// Function-Node (Run for Each Item)\nconst workflowData = $getWorkflowStaticData('global');\nconst firstItem = workflowData.analysis_prompt;\nreturn items.map(item => ({\n  json: { ...firstItem, ...item.json,company:\"KIBERone Саратов Октябрьский\",threshhold:0.88 }\n}));"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        3152,
-        -432
-      ],
-      "id": "bd370e0c-e093-43f8-b973-d56d8ff38c6c",
-      "name": "Code2"
-    },
-    {
-      "parameters": {
-        "operation": "update",
-        "schema": {
-          "__rl": true,
-          "mode": "list",
-          "value": "public"
-        },
-        "table": {
-          "__rl": true,
-          "value": "current_list",
-          "mode": "list",
-          "cachedResultName": "current_list"
-        },
-        "columns": {
-          "mappingMode": "defineBelow",
-          "value": {
-            "list_id": "={{ $json.list_id }}",
-            "resolution": "={{ \"найден конкурент: \"+$json.hits[0].matched+\", \"+$json.hits[0].canonical }}"
-          },
-          "matchingColumns": [
-            "list_id"
-          ],
-          "schema": [
-            {
-              "id": "list_id",
-              "displayName": "list_id",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "number",
-              "canBeUsedToMatch": true,
-              "removed": false
-            },
-            {
-              "id": "key_word",
-              "displayName": "key_word",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true,
-              "removed": true
-            },
-            {
-              "id": "campaign_id",
-              "displayName": "campaign_id",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "number",
-              "canBeUsedToMatch": true,
-              "removed": true
-            },
-            {
-              "id": "used_keyword",
-              "displayName": "used_keyword",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true,
-              "removed": true
-            },
-            {
-              "id": "group_id",
-              "displayName": "group_id",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "number",
-              "canBeUsedToMatch": true,
-              "removed": true
-            },
-            {
-              "id": "condition_type",
-              "displayName": "condition_type",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true,
-              "removed": true
-            },
-            {
-              "id": "category",
-              "displayName": "category",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true,
-              "removed": true
-            },
-            {
-              "id": "ads_header",
-              "displayName": "ads_header",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true,
-              "removed": true
-            },
-            {
-              "id": "date",
-              "displayName": "date",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "dateTime",
-              "canBeUsedToMatch": true,
-              "removed": true
-            },
-            {
-              "id": "ai_responce",
-              "displayName": "ai_responce",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true,
-              "removed": true
-            },
-            {
-              "id": "resolution",
-              "displayName": "resolution",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true
-            },
-            {
-              "id": "count_views",
-              "displayName": "count_views",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "number",
-              "canBeUsedToMatch": true,
-              "removed": true
-            },
-            {
-              "id": "count_clics",
-              "displayName": "count_clics",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "number",
-              "canBeUsedToMatch": true,
-              "removed": true
-            },
-            {
-              "id": "count_convetions",
-              "displayName": "count_convetions",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "number",
-              "canBeUsedToMatch": true,
-              "removed": true
-            }
-          ],
-          "attemptToConvertTypes": false,
-          "convertFieldsToString": false
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.postgres",
-      "typeVersion": 2.6,
-      "position": [
-        8112,
-        -1104
-      ],
-      "id": "73ea4213-ad86-4827-850f-5c115ad6af6b",
-      "name": "Помечаем что найден конкурент",
-      "credentials": {
-        "postgres": {
-          "id": "Hx2VFmUi5WO2K4QX",
-          "name": "Postgres account 2"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "mode": "combine",
-        "combineBy": "combineByPosition",
-        "options": {}
-      },
-      "type": "n8n-nodes-base.merge",
-      "typeVersion": 3.2,
-      "position": [
-        6288,
-        -912
-      ],
-      "id": "de4894ff-39e1-42c5-80f6-1e355b246f38",
-      "name": "Merge with initial data1"
     },
     {
       "parameters": {
@@ -1336,283 +403,6 @@
       ],
       "id": "57905adc-e41d-41c2-98ac-84a234445c35",
       "name": "Sticky Note2"
-    },
-    {
-      "parameters": {
-        "jsCode": "const workflowData = $getWorkflowStaticData('global');\nconst my_prompt = workflowData.alaysis_prompt.data;\n\nreturn [{\n  json: \n {\n  \"model\": \"gpt-5\",\n  \"input\": [\n    {\n      \"role\": \"developer\",\n      \"content\": [\n        {\n          \"type\": \"input_text\",\n          \"text\": \"# Role and Objective\\n- You are a search query analysis assistant. Your role is to identify and filter out irrelevant queries and detect any negative keywords (“minus words”) indicating a non-target audience. Validate each input phrase and respond with a structured JSON object that indicates compliance and lists any detected minus words.\\n\\n# Instructions\\n- Always return a response as a strict JSON object matching the following format:\\n  {\\n    \\\"is_correct_phrase\\\": boolean,\\n    \\\"minus_words\\\": [string]\\n  }\\n- Do not output any comments, explanations, or additional text.\\n\\n## Sub-categories\\n- The `is_correct_phrase` field must be set to either `true` or `false`, and cannot be null or any other type.\\n- The `minus_words` array must only contain unique string values, or be an empty array (`[]`) if there are no minus words. Do not include duplicate entries. Item order is not important.\\n- If input is absent or improperly formatted, always return:\\n  {\\n    \\\"is_correct_phrase\\\": false,\\n    \\\"minus_words\\\": []\\n  }\\n\\n# Context\\n- Phrase correctness is determined by external requirements or rules not included here.\\n- Only input validation is required; generating or explaining logic is outside the scope.\\n\"\n        }\n      ]\n    },\n    {\n      \"role\": \"user\",\n      \"content\": [\n        {\n          \"type\": \"input_text\",\n          \"text\": $json.key_word + \" \" + my_prompt\n        }\n      ]\n    }\n  ],\n  \"text\": {\n    \"format\": {\n      \"type\": \"json_schema\",\n      \"name\": \"phrase_and_minus_words\",\n      \"strict\": true,\n      \"schema\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"is_correct_phrase\": {\n            \"type\": \"boolean\",\n            \"description\": \"Indicates if the phrase is correct.\"\n          },\n          \"minus_words\": {\n            \"type\": \"array\",\n            \"description\": \"A list of minus words. Can be empty.\",\n            \"items\": {\n              \"type\": \"string\",\n              \"description\": \"A minus word.\"\n            }\n          }\n        },\n        \"required\": [\n          \"is_correct_phrase\",\n          \"minus_words\"\n        ],\n        \"additionalProperties\": false\n      }\n    },\n    \"verbosity\": \"low\"\n  },\n  \"reasoning\": {\n    \"effort\": \"minimal\",\n    \"summary\": null\n  },\n  \"tools\": [\n    {\n      \"type\": \"function\",\n      \"description\": \"Return allowed 1–3 word combinations for negative keywords (minus words).\",\n      \"name\": \"get_non_matching_ngrams\",\n      \"parameters\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"phrase\": {\n            \"type\": \"string\",\n            \"description\": \"User phrase to analyze\"\n          },\n          \"threshold\": {\n            \"type\": \"number\",\n            \"description\": \"Match threshold, default 0.88\"\n          }\n        },\n        \"required\": [\n          \"phrase\"\n        ]\n      },\n      \"strict\": false\n    }\n  ],\n  \"store\": true,\n  \"include\": [\n    \"reasoning.encrypted_content\",\n    \"web_search_call.action.sources\"\n  ]\n}\n\n}];"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        3984,
-        -80
-      ],
-      "id": "4c842ee6-8baa-49be-9966-ec81632e11ae",
-      "name": "Set API JSON"
-    },
-    {
-      "parameters": {
-        "method": "POST",
-        "url": "https://api.openai.com/v1/responses",
-        "authentication": "predefinedCredentialType",
-        "nodeCredentialType": "openAiApi",
-        "sendBody": true,
-        "specifyBody": "json",
-        "jsonBody": "={{$json}}",
-        "options": {}
-      },
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.2,
-      "position": [
-        4224,
-        -64
-      ],
-      "id": "ca0dd4bd-c807-4b2d-8cb0-2546da874af7",
-      "name": "HTTP Request",
-      "retryOnFail": true,
-      "credentials": {
-        "openAiApi": {
-          "id": "V8R8KiZKXscJQ1sL",
-          "name": "OpenAi account"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "mode": "combine",
-        "combineBy": "combineByPosition",
-        "options": {}
-      },
-      "type": "n8n-nodes-base.merge",
-      "typeVersion": 3.2,
-      "position": [
-        3744,
-        -96
-      ],
-      "id": "347d2482-0c8f-4f10-996d-19ff71bde579",
-      "name": "Merge with initial data2"
-    },
-    {
-      "parameters": {
-        "workflowId": {
-          "__rl": true,
-          "value": "bhBscYglbFhVyIcL",
-          "mode": "list",
-          "cachedResultName": "Check minuses API tool"
-        },
-        "workflowInputs": {
-          "mappingMode": "defineBelow",
-          "value": {},
-          "matchingColumns": [],
-          "schema": [],
-          "attemptToConvertTypes": false,
-          "convertFieldsToString": true
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.executeWorkflow",
-      "typeVersion": 1.2,
-      "position": [
-        5008,
-        -16
-      ],
-      "id": "0a8e7f13-8a97-4496-84d3-673f8eaab2a0",
-      "name": "Execute Workflow"
-    },
-    {
-      "parameters": {
-        "jsCode": "// INPUT: JSON ответа из responses.create\n// OUTPUT: массив элементов { response_id, tool_call_id, name, args }\n\nconst res = $json;\nconst out = [];\n\nfunction pushCall(obj, responseId,out_index) {\n  const id = responseId;\n  const call_id = obj.call_id;\n  const name = obj.name ;\n  const rawArgs = obj.arguments;\n  let args = {};\n  try {\n    args = typeof rawArgs === 'string' ? JSON.parse(rawArgs) : rawArgs;\n  } catch (e) { args = {}; }\n  out.push({ json: { response_id: id, call_id: call_id, name, args,out_index } });\n}\n\nif (Array.isArray(res.output)) {\n  res.output.forEach((item, index) => {\n    if (item.type === 'function_call') {\n      pushCall(item, res.id, index);\n    }\n  });\n}\n\n// Если модель не запросила tool — вернем маркер\nif (!out.length) return [{ json: { response_id: res.id, no_tool_call: true, raw: res } }];\nreturn out;"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        4672,
-        16
-      ],
-      "id": "0b57b9df-5086-49c8-a562-4fc51b4213ab",
-      "name": "parse_tool_call"
-    },
-    {
-      "parameters": {
-        "jsCode": "// INPUT: JSON из вашего вебхука (предыдущая HTTP-нода)\n// OUTPUT: { response_id, tool_call_id, output_string }\n\nlet prev = $('Set API JSON').first().json; // берем первый tool-call\n\nconst toolResult = $json; // весь JSON от вебхука\nprev.input.push($('HTTP Request').first().json.output[$('parse_tool_call').first().json.out_index-1]);\nprev.input.push($('HTTP Request').first().json.output[$('parse_tool_call').first().json.out_index]);\nprev.input.push({ \n    type: \"function_call_output\",\n    call_id: $('parse_tool_call').first().json.call_id,\n    output: JSON.stringify(JSON.stringify(toolResult))});\n\nreturn [{ json: prev }];\n"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        5280,
-        -32
-      ],
-      "id": "8991ba73-116c-4d7b-a656-2e40e76eb009",
-      "name": "package_tool_output"
-    },
-    {
-      "parameters": {
-        "method": "POST",
-        "url": "=https://api.openai.com/v1/responses",
-        "authentication": "predefinedCredentialType",
-        "nodeCredentialType": "openAiApi",
-        "sendBody": true,
-        "specifyBody": "json",
-        "jsonBody": "={{$json}}",
-        "options": {}
-      },
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.2,
-      "position": [
-        5664,
-        -32
-      ],
-      "id": "c483f350-cc16-455f-82ea-ba92b07032bc",
-      "name": "HTTP Request1",
-      "retryOnFail": true,
-      "credentials": {
-        "openAiApi": {
-          "id": "V8R8KiZKXscJQ1sL",
-          "name": "OpenAi account"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "jsCode": "// Достаём массив competitors\nconst variants = JSON.parse($json.output[1].content[0].text).minus_words;\n\n// Разворачиваем каждый объект в отдельный item\nreturn variants.map((c, index) => ({\n  json: {\n    index,\n    minus_word: c.toLowerCase(),\n    list_id:$json.list_id    \n  }\n}));"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        7392,
-        -624
-      ],
-      "id": "4ef4c9db-ff5d-4d44-aefb-74b42f35accc",
-      "name": "Code"
-    },
-    {
-      "parameters": {
-        "workflowId": {
-          "__rl": true,
-          "value": "xKP6S9XsCeVSgebo",
-          "mode": "list",
-          "cachedResultName": "Check VS company name SUB"
-        },
-        "workflowInputs": {
-          "mappingMode": "defineBelow",
-          "value": {},
-          "matchingColumns": [],
-          "schema": [],
-          "attemptToConvertTypes": false,
-          "convertFieldsToString": true
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.executeWorkflow",
-      "typeVersion": 1.2,
-      "position": [
-        3328,
-        -224
-      ],
-      "id": "016fad92-9dc6-4a85-abad-4d2cdaccf53d",
-      "name": "Find competitors mentions"
-    },
-    {
-      "parameters": {
-        "conditions": {
-          "options": {
-            "caseSensitive": true,
-            "leftValue": "",
-            "typeValidation": "strict",
-            "version": 2
-          },
-          "conditions": [
-            {
-              "id": "0b8b9cb2-368a-4ef4-b4b4-560b030f71f4",
-              "leftValue": "={{ JSON.parse($json.output[1].content[0].text).minus_words }}",
-              "rightValue": "",
-              "operator": {
-                "type": "array",
-                "operation": "empty",
-                "singleValue": true
-              }
-            }
-          ],
-          "combinator": "and"
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.if",
-      "typeVersion": 2.2,
-      "position": [
-        7040,
-        -624
-      ],
-      "id": "055314c1-2aaf-4cd6-b83f-66c3c2e58e2b",
-      "name": "If minuses array is empty"
-    },
-    {
-      "parameters": {
-        "conditions": {
-          "options": {
-            "caseSensitive": true,
-            "leftValue": "",
-            "typeValidation": "strict",
-            "version": 2
-          },
-          "conditions": [
-            {
-              "id": "eb5a9e58-8a32-432b-ba77-24910836d1fe",
-              "leftValue": "={{JSON.parse($json.output[1].content[0].text).is_correct_phrase}}",
-              "rightValue": "",
-              "operator": {
-                "type": "boolean",
-                "operation": "exists",
-                "singleValue": true
-              }
-            }
-          ],
-          "combinator": "and"
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.if",
-      "typeVersion": 2.2,
-      "position": [
-        4432,
-        -64
-      ],
-      "id": "028958fd-6a67-4e06-ac57-5a3efa18be24",
-      "name": "If is true pharse"
-    },
-    {
-      "parameters": {
-        "conditions": {
-          "options": {
-            "caseSensitive": true,
-            "leftValue": "",
-            "typeValidation": "strict",
-            "version": 2
-          },
-          "conditions": [
-            {
-              "id": "ca56d76f-8158-451b-95b0-48adbef68027",
-              "leftValue": "={{ $json.hits}}",
-              "rightValue": "",
-              "operator": {
-                "type": "array",
-                "operation": "empty",
-                "singleValue": true
-              }
-            }
-          ],
-          "combinator": "and"
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.if",
-      "typeVersion": 2.2,
-      "position": [
-        3568,
-        -256
-      ],
-      "id": "d4e72789-13b0-4380-b4c0-134367c1a0c1",
-      "name": "If competitors found"
     },
     {
       "parameters": {
@@ -1633,21 +423,9 @@
           "assignments": [
             {
               "id": "5b3485a2-cb50-486a-932c-fc27de0a25da",
-              "name": "company_name",
-              "value": "={{ $json.company_name }}",
+              "name": "yandex_report_dropbox_file_path",
+              "value": "={{ $json.yandex_report_dropbox_file_path}}",
               "type": "string"
-            },
-            {
-              "id": "f74ac992-90a4-4403-a75e-17656de76902",
-              "name": "company_id",
-              "value": "={{ $json.company_id }}",
-              "type": "number"
-            },
-            {
-              "id": "172a851e-fdc7-4f3c-b095-88687e8a392a",
-              "name": "threshhold",
-              "value": "={{ $json.threshhold }}",
-              "type": "number"
             }
           ]
         },
@@ -1664,16 +442,189 @@
     },
     {
       "parameters": {
-        "content": "добавить обработку кейса когда есть конверсии"
+        "content": "Очистка буферных таблиц",
+        "height": 368,
+        "width": 1120
       },
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        1296,
-        -560
+        336,
+        144
       ],
       "id": "d870109d-75f3-4683-8ce8-a76fc977c32d",
       "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "select company_id from companies where yandex_account=$1",
+        "options": {
+          "queryReplacement": "={{ $json['Логин клиента'] }}"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        480,
+        256
+      ],
+      "id": "38bc2dd1-bc4b-4d87-bb74-4da74e65e436",
+      "name": "get client id",
+      "executeOnce": true,
+      "credentials": {
+        "postgres": {
+          "id": "Hx2VFmUi5WO2K4QX",
+          "name": "Postgres account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO business_processes_states (business_process_id, company_id,n8n_workflow_execution_id,n8n_workflow_root_execution_id, started)\nSELECT MAX(business_process_id), $2,$3,$4, NOW()\nFROM public.business_processes\nWHERE n8n_process_name = $1;",
+        "options": {
+          "queryReplacement": "=[{{$workflow.name}},{{$json.company_id}},{{$execution.id}},{{ $('When Executed by Another Workflow').item.json.root_execution_id }}]"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        784,
+        0
+      ],
+      "id": "51dbf7c6-1b60-4d87-8343-96e93d26d51a",
+      "name": "Mark_workwlow_started",
+      "credentials": {
+        "postgres": {
+          "id": "4YkdFJcdTgzo9hkz",
+          "name": "PGvector"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "update business_processes_states set finished=NOW(),tokens_used=0 where business_process_id=(select MAX(business_process_id) from business_processes where n8n_process_name=$1) and n8n_workflow_execution_id=$2",
+        "options": {
+          "queryReplacement": "=[{{$workflow.name}},{{$execution.id}}]"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        2224,
+        -304
+      ],
+      "id": "77ce064e-d297-43a1-831e-54bf5652ca78",
+      "name": "Mark_workflow_completed",
+      "executeOnce": true,
+      "credentials": {
+        "postgres": {
+          "id": "4YkdFJcdTgzo9hkz",
+          "name": "PGvector"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Вход: Binary -> data (CSV)\n// Настройка: \"Binary property\": data\nconst bin = items[0].binary.data;\nconst buf = Buffer.from(bin.data, 'base64');\nconst text = buf.toString('utf-8'); // или cp1251 при необходимости\n\nconst lines = text.split(/\\r?\\n/);\n// Здесь укажи число служебных строк, например 4\nconst start = 4; \nconst trimmed = lines.slice(start).join('\\n');\n\nreturn [\n  {\n    binary: {\n      data: {\n        data: Buffer.from(trimmed, 'utf-8').toString('base64'),\n        fileName: 'cleaned.csv',\n        mimeType: 'text/csv',\n      }\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        128,
+        -128
+      ],
+      "id": "d5d79822-df4a-4618-90bf-bb2fae5e7f37",
+      "name": "header cut"
+    },
+    {
+      "parameters": {
+        "jsCode": "//Fixing common error in the first field name for CSV import\n\nfunction sanitizeKey(k) {\n  return String(k)\n    .replace(/[\\uFEFF\\u200B-\\u200D\\u2060\\u00A0]/g, \"\")\n    .replace(/[\\x00-\\x1F\\x7F]/g, \"\")\n    .replace(/[“”\"']/g, \"\")\n    .replace(/\\s+/g, \" \")\n    .trim();\n}\n\nconst obj = { ...$json };\nconst oldKey = Object.keys(obj)[0];\nif (oldKey) {\n  const newKey = sanitizeKey(oldKey) || oldKey;\n  if (newKey !== oldKey) {\n    obj[newKey] = obj[oldKey];\n    delete obj[oldKey];\n  }\n}\nreturn [{ json: obj }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2080,
+        -96
+      ],
+      "id": "cd3642a7-da92-4bb6-bece-ff896524b2a8",
+      "name": "sanitizeKey"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineAll",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        1680,
+        -112
+      ],
+      "id": "a15b300b-5926-4666-a0cb-363eeee8aba6",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "17df7f34-56a6-4d29-a7d3-9edfd4afaadb",
+              "name": "company_id",
+              "value": "={{ $('get client id').item.json.company_id }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1248,
+        256
+      ],
+      "id": "15a4d317-c23e-4f77-ab1e-ed118afcc7cf",
+      "name": "company_id"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "17df7f34-56a6-4d29-a7d3-9edfd4afaadb",
+              "name": "company_id",
+              "value": "={{ $('get client id').item.json.company_id }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2416,
+        -304
+      ],
+      "id": "1cc27ba6-b605-4602-b45b-c5b4fb7ac0e9",
+      "name": "company_id1"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Function-Node (Run Once)\nconst workflowData = $getWorkflowStaticData('global');\nworkflowData.steps_passed = 0;\nworkflowData.tokens_used = 0;\nreturn $input.all();\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1152,
+        -128
+      ],
+      "id": "9e4c7dc0-a445-4755-8b51-79ca9f911f0e",
+      "name": "Init total counter"
     }
   ],
   "connections": {
@@ -1681,7 +632,7 @@
       "main": [
         [
           {
-            "node": "Extract from File",
+            "node": "header cut",
             "type": "main",
             "index": 0
           }
@@ -1692,7 +643,12 @@
       "main": [
         [
           {
-            "node": "Loop Over Items",
+            "node": "get client id",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Init total counter",
             "type": "main",
             "index": 0
           }
@@ -1701,101 +657,16 @@
     },
     "Loop Over Items": {
       "main": [
-        [],
         [
           {
-            "node": "Insert rows in a table",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Replace Me": {
-      "main": [
-        [
-          {
-            "node": "Loop Over Items",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Merge": {
-      "main": [
-        [
-          {
-            "node": "Обработка ответа AI",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Insert minus words": {
-      "main": [
-        [
-          {
-            "node": "Merge with initial data",
-            "type": "main",
-            "index": 1
-          }
-        ]
-      ]
-    },
-    "Merge with initial data": {
-      "main": [
-        [
-          {
-            "node": "update",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "пословное соответствие?": {
-      "main": [
-        [
-          {
-            "node": "проверяем полное соответствие",
+            "node": "Mark_workflow_completed",
             "type": "main",
             "index": 0
           }
         ],
         [
           {
-            "node": "Code2",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "проверяем полное соответствие": {
-      "main": [
-        [
-          {
-            "node": "Соответствие полное?",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Соответствие полное?": {
-      "main": [
-        [
-          {
-            "node": "Помечаем что ключ совпадает",
-            "type": "main",
-            "index": 0
-          }
-        ],
-        [
-          {
-            "node": "Code2",
+            "node": "sanitizeKey",
             "type": "main",
             "index": 0
           }
@@ -1806,7 +677,7 @@
       "main": [
         [
           {
-            "node": "Edit Fields4",
+            "node": "Loop Over Items",
             "type": "main",
             "index": 0
           }
@@ -1837,311 +708,11 @@
     },
     "Clear current_ads": {
       "main": [
-        []
-      ]
-    },
-    "update": {
-      "main": [
         [
           {
-            "node": "Replace Me",
+            "node": "company_id",
             "type": "main",
             "index": 0
-          }
-        ]
-      ]
-    },
-    "Обработка ответа AI": {
-      "main": [
-        [
-          {
-            "node": "Edit Fields",
-            "type": "main",
-            "index": 0
-          }
-        ],
-        [
-          {
-            "node": "Edit Fields1",
-            "type": "main",
-            "index": 0
-          },
-          {
-            "node": "If minuses array is empty",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Edit Fields": {
-      "main": [
-        [
-          {
-            "node": "update",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Edit Fields1": {
-      "main": [
-        [
-          {
-            "node": "Merge with initial data",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Get a file": {
-      "main": [
-        [
-          {
-            "node": "Extract from File1",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Помечаем что ключ совпадает": {
-      "main": [
-        [
-          {
-            "node": "Replace Me",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Extract from File1": {
-      "main": [
-        [
-          {
-            "node": "Code1",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Edit Fields4": {
-      "main": [
-        [
-          {
-            "node": "пословное соответствие?",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Code1": {
-      "main": [
-        []
-      ]
-    },
-    "Code2": {
-      "main": [
-        [
-          {
-            "node": "Find competitors mentions",
-            "type": "main",
-            "index": 0
-          },
-          {
-            "node": "Merge",
-            "type": "main",
-            "index": 0
-          },
-          {
-            "node": "Merge with initial data1",
-            "type": "main",
-            "index": 0
-          },
-          {
-            "node": "Merge with initial data2",
-            "type": "main",
-            "index": 1
-          }
-        ]
-      ]
-    },
-    "Помечаем что найден конкурент": {
-      "main": [
-        [
-          {
-            "node": "Replace Me",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Merge with initial data1": {
-      "main": [
-        [
-          {
-            "node": "Помечаем что найден конкурент",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Set API JSON": {
-      "main": [
-        [
-          {
-            "node": "HTTP Request",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "HTTP Request": {
-      "main": [
-        [
-          {
-            "node": "If is true pharse",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Merge with initial data2": {
-      "main": [
-        [
-          {
-            "node": "Set API JSON",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Execute Workflow": {
-      "main": [
-        [
-          {
-            "node": "package_tool_output",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "parse_tool_call": {
-      "main": [
-        [
-          {
-            "node": "Execute Workflow",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "package_tool_output": {
-      "main": [
-        [
-          {
-            "node": "HTTP Request1",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "HTTP Request1": {
-      "main": [
-        [
-          {
-            "node": "Merge",
-            "type": "main",
-            "index": 1
-          }
-        ]
-      ]
-    },
-    "Code": {
-      "main": [
-        [
-          {
-            "node": "Insert minus words",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Find competitors mentions": {
-      "main": [
-        [
-          {
-            "node": "If competitors found",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "If minuses array is empty": {
-      "main": [
-        [
-          {
-            "node": "Merge with initial data",
-            "type": "main",
-            "index": 1
-          }
-        ],
-        [
-          {
-            "node": "Code",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "If is true pharse": {
-      "main": [
-        [
-          {
-            "node": "Merge",
-            "type": "main",
-            "index": 1
-          }
-        ],
-        [
-          {
-            "node": "parse_tool_call",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "If competitors found": {
-      "main": [
-        [
-          {
-            "node": "Merge with initial data2",
-            "type": "main",
-            "index": 0
-          }
-        ],
-        [
-          {
-            "node": "Merge with initial data1",
-            "type": "main",
-            "index": 1
           }
         ]
       ]
@@ -2161,12 +732,89 @@
       "main": [
         [
           {
-            "node": "Get a file",
+            "node": "Download File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "get client id": {
+      "main": [
+        [
+          {
+            "node": "Clear current_list",
             "type": "main",
             "index": 0
           },
           {
-            "node": "Download File",
+            "node": "Mark_workwlow_started",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "header cut": {
+      "main": [
+        [
+          {
+            "node": "Extract from File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "sanitizeKey": {
+      "main": [
+        [
+          {
+            "node": "Insert rows in a table",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "company_id": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Mark_workflow_completed": {
+      "main": [
+        [
+          {
+            "node": "company_id1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Init total counter": {
+      "main": [
+        [
+          {
+            "node": "Merge",
             "type": "main",
             "index": 0
           }
@@ -2177,9 +825,10 @@
   "settings": {
     "executionOrder": "v1",
     "saveDataErrorExecution": "all",
-    "saveDataSuccessExecution": "none",
+    "saveDataSuccessExecution": "all",
     "saveExecutionProgress": false,
-    "callerPolicy": "workflowsFromSameOwner"
+    "callerPolicy": "workflowsFromSameOwner",
+    "errorWorkflow": "v2Z32ISEUzsFYnZw"
   },
   "staticData": null,
   "meta": {
@@ -2189,16 +838,15 @@
     "When Executed by Another Workflow": [
       {
         "json": {
-          "id": "ezK8ihYnfxZNTIAc",
-          "root_execution_id": 20076,
-          "company_id": 2,
-          "threshhold": "0.88",
-          "company_name": "Первый визовый центр Курган"
+          "id": "4f5WJ06ItW520O75",
+          "root_execution_id": 30014,
+          "yandex_report_dropbox_file_path": "https://www.dropbox.com/scl/fi/9kr6iebx4q6cstzp2xuwb/2025-09-04_2025-09-24_searchquery_kiberone-saratov.csv?rlkey=cew8cc5k2rfbq5wrco9inb4eu&dl=1",
+          "threshhold": "0.88"
         }
       }
     ]
   },
-  "versionId": "cec12636-ddbb-47d4-8350-8b334a2d9b46",
+  "versionId": "1ef97906-5586-4d5d-b652-01fba80c5148",
   "triggerCount": 0,
   "shared": [
     {
