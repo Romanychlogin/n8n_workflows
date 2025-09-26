@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-23T20:32:53.458Z",
-  "updatedAt": "2025-09-26T10:11:42.322Z",
+  "updatedAt": "2025-09-26T10:18:55.824Z",
   "id": "buEFTEMfZEENQOel",
   "name": "github_repo_workflows_sync",
   "active": false,
@@ -16,7 +16,7 @@
       "name": "Create new workflow in n8n",
       "type": "n8n-nodes-base.n8n",
       "position": [
-        832,
+        1040,
         1360
       ],
       "typeVersion": 1,
@@ -459,7 +459,7 @@
       "name": "Sticky Note2",
       "type": "n8n-nodes-base.stickyNote",
       "position": [
-        784,
+        992,
         1232
       ],
       "typeVersion": 1
@@ -712,7 +712,7 @@
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
       "position": [
-        496,
+        704,
         1360
       ],
       "id": "a0fa0144-5daf-45fa-be21-364caa8ef115",
@@ -732,7 +732,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        208,
+        416,
         1360
       ],
       "id": "b8abefcc-cd74-4d9d-b305-6d730ae4f00b",
@@ -1079,6 +1079,19 @@
       ],
       "id": "97e77c41-c6f9-451e-87db-ce7ba517dd64",
       "name": "Set file name"
+    },
+    {
+      "parameters": {
+        "jsCode": "const otherIds = new Set(\n  $('if is not archived').all()\n    .map(it => (it.json ?? {}).id)\n    .filter(id => id !== undefined && id !== null)\n    .map(id => String(id))\n);\n\n// Фильтруем входные items: оставляем те, чьи id отсутствуют в otherIds\nconst out = [];\nfor (const item of $input.all()) {\n  const id = (item.json ?? {}).id;\n  const key = id !== undefined && id !== null ? String(id) : null;\n  if (key === null || !otherIds.has(key)) {\n    // Возвращаем исходный item (сохранит binary и прочие поля)\n    out.push(item);\n  }\n}\n\nreturn out;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        32,
+        1248
+      ],
+      "id": "e95e1f08-73bc-4236-a437-6afbf9f74f09",
+      "name": "Skip items with same id and different names"
     }
   ],
   "connections": {
@@ -1447,7 +1460,7 @@
       "main": [
         [
           {
-            "node": "Set error message1",
+            "node": "Skip items with same id and different names",
             "type": "main",
             "index": 0
           }
@@ -1529,6 +1542,17 @@
           }
         ]
       ]
+    },
+    "Skip items with same id and different names": {
+      "main": [
+        [
+          {
+            "node": "Set error message1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
@@ -1543,7 +1567,7 @@
     "templateCredsSetupCompleted": true
   },
   "pinData": {},
-  "versionId": "f358f4ee-753f-4ed2-8bf0-8def9cef3df5",
+  "versionId": "2df16b52-1ebb-411d-a4d9-baf021714532",
   "triggerCount": 1,
   "shared": [
     {
