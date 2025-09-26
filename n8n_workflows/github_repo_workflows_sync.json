@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-23T20:32:53.458Z",
-  "updatedAt": "2025-09-26T09:15:14.591Z",
+  "updatedAt": "2025-09-26T09:21:58.470Z",
   "id": "buEFTEMfZEENQOel",
   "name": "github_repo_workflows_sync",
   "active": false,
@@ -349,7 +349,7 @@
     },
     {
       "parameters": {
-        "jsCode": "// Получаем искомый id\nconst first = $('If n8n before GitHub').first().json || {};\nconst workflow_id = first?.same?.id;\n\n// Все items из узла \"n8n\"\nconst allItems = $('n8n').all();\n\n// Находим совпадение по id (приведём к строке на всякий случай)\nconst match = allItems\n  .map(i => i.json)\n  .find(j => String(j?.id) === String(workflow_id));\n\n// Возвращаем либо найденный объект в поле dataset, либо пусто\nreturn match ? [{ json: { dataset: match } }] : [];"
+        "jsCode": "// 1) Собираем ВСЕ искомые id из узла \"If n8n before GitHub\"\nconst srcItems = $('If n8n before GitHub').all().map(i => i.json || {});\nconst wantedIds = srcItems\n  .map(j => j?.same?.id)\n  .filter(id => id !== undefined && id !== null)\n  .map(id => String(id));\n\nif (wantedIds.length === 0) {\n  return [];\n}\n\n// 2) Берём все элементы из узла \"if is not archived\", ВЕТКА TRUE (индекс 0) \n// и индексируем их по полю id (как строке)\nconst index = new Map();\nfor (const it of $('if is not archived').all()) {\n  const j = it.json || {};\n  const key = j.id !== undefined && j.id !== null ? String(j.id) : null;\n  if (!key) continue;\n  if (!index.has(key)) index.set(key, []);\n  index.get(key).push(j);\n}\n\n// 3) Формируем выход: для каждого исходного id — каждое совпадение отдельным item\nconst out = [];\nfor (const wid of wantedIds) {\n  const matches = index.get(wid) || [];\n  for (const m of matches) {\n    out.push({ json: { matched_id: wid, dataset: m } });\n  }\n}\n\nreturn out;"
       },
       "id": "1ca91038-cf19-4ef3-b4b1-43f14e367a4f",
       "name": "Code - InputA",
@@ -1627,7 +1627,7 @@
     "templateCredsSetupCompleted": true
   },
   "pinData": {},
-  "versionId": "4f5a4e5f-10a7-4ed3-ac98-063ca7c6063c",
+  "versionId": "9681060e-3029-4703-bcbb-8a24ab59ee93",
   "triggerCount": 1,
   "shared": [
     {
