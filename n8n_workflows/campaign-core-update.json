@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-25T13:33:58.106Z",
-  "updatedAt": "2025-09-26T12:57:21.877Z",
+  "updatedAt": "2025-09-26T14:19:57.221Z",
   "id": "0J5cvuaSz3IhDS99",
   "name": "campaign core update",
   "active": false,
@@ -64,7 +64,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        2464,
+        2784,
         928
       ],
       "id": "b17b1715-9e42-463a-8c41-afd0be86f727",
@@ -84,7 +84,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1728,
+        2144,
         -288
       ],
       "id": "9552a2ab-303b-4308-a515-72feaf01397c",
@@ -169,7 +169,7 @@
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1.2,
       "position": [
-        1408,
+        1616,
         -208
       ],
       "id": "920939e8-55a3-4daa-8233-206e8b514781",
@@ -210,7 +210,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        960,
+        1168,
         -208
       ],
       "id": "3213d1a6-df60-43a3-81a6-793e13cb59b5",
@@ -252,7 +252,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        1152,
+        1360,
         -208
       ],
       "id": "edf1033c-e913-4b75-b448-04efc0a7a0d4",
@@ -298,7 +298,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        1872,
+        2288,
         368
       ],
       "id": "e5189338-9803-47e1-9337-544a1779709a",
@@ -318,7 +318,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1632,
+        2048,
         208
       ],
       "id": "5d593d2f-0a71-4666-bc59-28afc9293938",
@@ -352,7 +352,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        816,
+        1024,
         256
       ],
       "id": "53259c0f-085f-4349-9335-2fba7762c93b",
@@ -379,7 +379,7 @@
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1.2,
       "position": [
-        1392,
+        1808,
         368
       ],
       "id": "bf91914e-9db5-4b03-b247-39e129fb5f80",
@@ -396,7 +396,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        1008,
+        1216,
         304
       ],
       "id": "62ab09bf-5748-4bf9-a19b-a517b3402799",
@@ -421,7 +421,7 @@
             {
               "id": "fda82fe6-7e78-49d2-8130-43cb54ef5d8a",
               "name": "company_id",
-              "value": "={{ $('Call SUB').item.json.company_id }}",
+              "value": "={{ $('company_id').item.json.company_id }}",
               "type": "number"
             },
             {
@@ -438,7 +438,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        1200,
+        1408,
         368
       ],
       "id": "a437bc76-1110-4072-b33f-282c62ff42a4",
@@ -517,7 +517,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        2096,
+        2512,
         -208
       ],
       "id": "71a7db0e-57a1-4d38-8f5b-de955e3e46f3",
@@ -533,14 +533,14 @@
     {
       "parameters": {
         "content": "workflow 1\n",
-        "height": 384,
-        "width": 2112
+        "height": 512,
+        "width": 2416
       },
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
         288,
-        -320
+        -448
       ],
       "id": "6b814be9-3c3e-494c-a783-04a6c6cbcefa",
       "name": "Sticky Note1"
@@ -549,7 +549,7 @@
       "parameters": {
         "content": "workflow 2\n",
         "height": 448,
-        "width": 2016
+        "width": 2368
       },
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
@@ -571,7 +571,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        2080,
+        2496,
         368
       ],
       "id": "6d161fb8-4b77-443a-b50e-4ca5af6f3e98",
@@ -595,7 +595,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        1904,
+        2320,
         -208
       ],
       "id": "99d71d6e-cfe3-4dec-b061-9b2ebf3ffeab",
@@ -657,7 +657,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        1872,
+        2288,
         944
       ],
       "id": "feabefef-183e-48ad-acce-d1828102bf75",
@@ -677,7 +677,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1632,
+        2048,
         784
       ],
       "id": "01e927fa-5ff2-4740-add4-2378c3d3c04f",
@@ -711,7 +711,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        816,
+        1024,
         832
       ],
       "id": "e3795247-8ff2-4786-8067-f22fae4c1e42",
@@ -738,7 +738,7 @@
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1.2,
       "position": [
-        1392,
+        1808,
         944
       ],
       "id": "b8c312e7-03e7-4b24-90b3-3107c60887bc",
@@ -755,7 +755,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        1008,
+        1216,
         880
       ],
       "id": "0084d180-8c90-4a58-bd80-a15c19d39d8c",
@@ -780,7 +780,7 @@
             {
               "id": "fda82fe6-7e78-49d2-8130-43cb54ef5d8a",
               "name": "company_id",
-              "value": "={{ $('Call SUB').item.json.company_id }}",
+              "value": "={{ $('company_id').item.json.company_id }}",
               "type": "number"
             },
             {
@@ -797,7 +797,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        1200,
+        1408,
         944
       ],
       "id": "327c07c5-50e8-4692-8447-9703288a73fb",
@@ -854,7 +854,7 @@
       "parameters": {
         "content": "workflow 2\n",
         "height": 448,
-        "width": 2016
+        "width": 2368
       },
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
@@ -876,7 +876,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        2080,
+        2480,
         944
       ],
       "id": "33cd5c2e-e5aa-4763-a8b1-51d90939d298",
@@ -888,6 +888,50 @@
           "name": "PGvector"
         }
       }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "select * from report_import where import_id=(select max(import_id) from report_import)",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        1440,
+        -384
+      ],
+      "id": "3728d7ae-8855-4697-890d-b646d3584eef",
+      "name": "get company_id from lust succeed report ",
+      "credentials": {
+        "postgres": {
+          "id": "Hx2VFmUi5WO2K4QX",
+          "name": "Postgres account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "4dcef6dc-af71-47eb-9f11-3223f5cbab28",
+              "name": "",
+              "value": "",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1920,
+        -288
+      ],
+      "id": "3ed57cde-7bf2-46b5-97fa-dcf269af9ef0",
+      "name": "company_id"
     }
   ],
   "connections": {
@@ -950,7 +994,7 @@
       "main": [
         [
           {
-            "node": "Get current step saved",
+            "node": "get company_id from lust succeed report ",
             "type": "main",
             "index": 0
           }
@@ -968,7 +1012,7 @@
       "main": [
         [
           {
-            "node": "Get current step saved",
+            "node": "company_id",
             "type": "main",
             "index": 0
           }
@@ -1255,9 +1299,25 @@
     },
     "update workflow tokens usage2": {
       "main": [
+        []
+      ]
+    },
+    "get company_id from lust succeed report ": {
+      "main": [
         [
           {
-            "node": "Mark_workflow_completed",
+            "node": "company_id",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "company_id": {
+      "main": [
+        [
+          {
+            "node": "Get current step saved",
             "type": "main",
             "index": 0
           }
@@ -1279,7 +1339,7 @@
       }
     ]
   },
-  "versionId": "adab9550-4d70-4ff5-a1b2-6b6ee49da1c9",
+  "versionId": "e464f6e5-298c-43f2-ad1c-2e1d7ceb82e5",
   "triggerCount": 0,
   "shared": [
     {
