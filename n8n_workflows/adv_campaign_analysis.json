@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-07-18T08:31:54.459Z",
-  "updatedAt": "2025-09-26T16:06:18.321Z",
+  "updatedAt": "2025-09-26T16:28:13.991Z",
   "id": "wZGLxMCCmOnDJZ1o",
   "name": "ADV_campaign_analysis",
   "active": false,
@@ -1732,6 +1732,21 @@
           "name": "Postgres account 2"
         }
       }
+    },
+    {
+      "parameters": {
+        "content": "need to fix total steps saving!!! doesn't work",
+        "height": 320,
+        "width": 464
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        832,
+        240
+      ],
+      "id": "b0644bd1-465b-476d-af0a-2d8a6ba4bb87",
+      "name": "Sticky Note5"
     }
   ],
   "connections": {
@@ -2324,7 +2339,7 @@
       }
     ]
   },
-  "versionId": "15a50130-1599-4890-8a40-752f3d87d784",
+  "versionId": "63bb73fc-49be-4303-a617-0541b4574769",
   "triggerCount": 0,
   "shared": [
     {
