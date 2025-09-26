@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-25T13:56:50.878Z",
-  "updatedAt": "2025-09-26T12:54:40.547Z",
+  "updatedAt": "2025-09-26T13:36:35.057Z",
   "id": "4f5WJ06ItW520O75",
   "name": "ADV_campaign_data_load",
   "active": false,
@@ -30,7 +30,7 @@
       "type": "n8n-nodes-base.extractFromFile",
       "typeVersion": 1,
       "position": [
-        352,
+        560,
         -128
       ],
       "id": "50987e1b-4945-4d3a-85f8-b0a5d90fc438",
@@ -43,7 +43,7 @@
       "type": "n8n-nodes-base.splitInBatches",
       "typeVersion": 3,
       "position": [
-        1904,
+        2112,
         -112
       ],
       "id": "f351581e-3b33-4833-8b03-ab2082146354",
@@ -256,7 +256,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        2784,
+        2992,
         -96
       ],
       "id": "581d23c7-f346-4495-bfbd-a8e629a42d93",
@@ -296,7 +296,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        768,
+        976,
         256
       ],
       "id": "9d5642cb-07a0-45bd-97d2-8bbd53b2d67b",
@@ -337,7 +337,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        928,
+        1136,
         256
       ],
       "id": "c5d5d0a3-6a41-4cb4-aa6c-639b7fc993b4",
@@ -378,7 +378,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        1088,
+        1296,
         256
       ],
       "id": "ac781bf5-a342-4e0f-837c-b7d77e9accf9",
@@ -466,7 +466,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        480,
+        688,
         256
       ],
       "id": "38bc2dd1-bc4b-4d87-bb74-4da74e65e436",
@@ -490,7 +490,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        784,
+        992,
         0
       ],
       "id": "51dbf7c6-1b60-4d87-8343-96e93d26d51a",
@@ -513,7 +513,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        2224,
+        2432,
         -304
       ],
       "id": "77ce064e-d297-43a1-831e-54bf5652ca78",
@@ -533,7 +533,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        128,
+        368,
         -128
       ],
       "id": "d5d79822-df4a-4618-90bf-bb2fae5e7f37",
@@ -546,7 +546,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        2080,
+        2288,
         -96
       ],
       "id": "cd3642a7-da92-4bb6-bece-ff896524b2a8",
@@ -561,7 +561,7 @@
       "type": "n8n-nodes-base.merge",
       "typeVersion": 3.2,
       "position": [
-        1680,
+        1888,
         -112
       ],
       "id": "a15b300b-5926-4666-a0cb-363eeee8aba6",
@@ -584,7 +584,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        1248,
+        1456,
         256
       ],
       "id": "15a4d317-c23e-4f77-ab1e-ed118afcc7cf",
@@ -607,7 +607,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        2416,
+        2624,
         -304
       ],
       "id": "1cc27ba6-b605-4602-b45b-c5b4fb7ac0e9",
@@ -620,7 +620,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1152,
+        1360,
         -128
       ],
       "id": "9e4c7dc0-a445-4755-8b51-79ca9f911f0e",
@@ -633,7 +633,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        3008,
+        3216,
         -112
       ],
       "id": "99a18c47-2586-4371-a0ca-d7d362a20a90",
@@ -650,7 +650,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        3744,
+        3952,
         -128
       ],
       "id": "57c684ee-c4fe-4392-8dae-d575dd784843",
@@ -690,7 +690,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        3248,
+        3456,
         -80
       ],
       "id": "9b736fed-bc39-431d-ba95-0be0aaa758b8",
@@ -714,11 +714,24 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        3520,
+        3728,
         -112
       ],
       "id": "be2e66ba-6e51-4fe6-ba8c-3ed536dcb23e",
       "name": "reset step"
+    },
+    {
+      "parameters": {
+        "jsCode": "const re = /(\\d{4}-\\d{2}-\\d{2})_(\\d{4}-\\d{2}-\\d{2})/;\n\nconst s = String($json.data.FileName ?? '');\nconst m = s.match(re);\n\nreturn {\n  ...$json,\n  date_from: m ? m[1] : null,\n  date_to:   m ? m[2] : null,\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        176,
+        -128
+      ],
+      "id": "171bd827-c5cf-4ff7-bacf-093f798c4bf4",
+      "name": "Code in JavaScript"
     }
   ],
   "connections": {
@@ -726,7 +739,7 @@
       "main": [
         [
           {
-            "node": "header cut",
+            "node": "Code in JavaScript",
             "type": "main",
             "index": 0
           }
@@ -965,6 +978,17 @@
           }
         ]
       ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "header cut",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
@@ -984,14 +1008,14 @@
       {
         "json": {
           "id": "4f5WJ06ItW520O75",
-          "root_execution_id": 30014,
+          "root_execution_id": 30032,
           "yandex_report_dropbox_file_path": "https://www.dropbox.com/scl/fi/9kr6iebx4q6cstzp2xuwb/2025-09-04_2025-09-24_searchquery_kiberone-saratov.csv?rlkey=cew8cc5k2rfbq5wrco9inb4eu&dl=1",
           "threshhold": "0.88"
         }
       }
     ]
   },
-  "versionId": "eea24c94-faef-470b-a1d8-091f13eb2937",
+  "versionId": "d8d3bcb7-244f-4ef1-bd04-2367c8af1323",
   "triggerCount": 0,
   "shared": [
     {
