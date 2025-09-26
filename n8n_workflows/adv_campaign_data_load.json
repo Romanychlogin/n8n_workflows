@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-25T13:56:50.878Z",
-  "updatedAt": "2025-09-26T13:36:35.057Z",
+  "updatedAt": "2025-09-26T13:45:48.348Z",
   "id": "4f5WJ06ItW520O75",
   "name": "ADV_campaign_data_load",
   "active": false,
@@ -30,7 +30,7 @@
       "type": "n8n-nodes-base.extractFromFile",
       "typeVersion": 1,
       "position": [
-        560,
+        528,
         -128
       ],
       "id": "50987e1b-4945-4d3a-85f8-b0a5d90fc438",
@@ -43,7 +43,7 @@
       "type": "n8n-nodes-base.splitInBatches",
       "typeVersion": 3,
       "position": [
-        2112,
+        2320,
         -112
       ],
       "id": "f351581e-3b33-4833-8b03-ab2082146354",
@@ -98,11 +98,11 @@
             "condition_type": "={{ $json['Тип соответствия'] }}",
             "category": "={{ $json['Категория таргетинга'] }}",
             "ads_header": "={{ $json['Заголовок'] }}",
-            "date": "={{ DateTime.fromFormat($json['﻿Дата'], 'dd.MM.yyyy').toISODate() }}",
             "count_views": "={{ $json['Показы'] }}",
             "count_clics": "={{ $json['Клики'] }}",
             "count_convetions": "={{ $json['Конверсии'] }}",
-            "company_id": "={{ $json.company_id }}"
+            "company_id": "={{ $json.company_id }}",
+            "report_id": 0
           },
           "matchingColumns": [
             "id"
@@ -183,15 +183,6 @@
               "canBeUsedToMatch": true
             },
             {
-              "id": "date",
-              "displayName": "date",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "dateTime",
-              "canBeUsedToMatch": true
-            },
-            {
               "id": "resolution",
               "displayName": "resolution",
               "required": false,
@@ -246,6 +237,16 @@
               "type": "number",
               "canBeUsedToMatch": true,
               "removed": false
+            },
+            {
+              "id": "report_id",
+              "displayName": "report_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": false
             }
           ],
           "attemptToConvertTypes": false,
@@ -256,7 +257,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        2992,
+        3200,
         -96
       ],
       "id": "581d23c7-f346-4495-bfbd-a8e629a42d93",
@@ -296,7 +297,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        976,
+        1184,
         256
       ],
       "id": "9d5642cb-07a0-45bd-97d2-8bbd53b2d67b",
@@ -307,7 +308,8 @@
           "id": "Hx2VFmUi5WO2K4QX",
           "name": "Postgres account 2"
         }
-      }
+      },
+      "disabled": true
     },
     {
       "parameters": {
@@ -337,7 +339,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        1136,
+        1344,
         256
       ],
       "id": "c5d5d0a3-6a41-4cb4-aa6c-639b7fc993b4",
@@ -378,7 +380,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        1296,
+        1504,
         256
       ],
       "id": "ac781bf5-a342-4e0f-837c-b7d77e9accf9",
@@ -490,7 +492,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        992,
+        1200,
         0
       ],
       "id": "51dbf7c6-1b60-4d87-8343-96e93d26d51a",
@@ -513,7 +515,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        2432,
+        2640,
         -304
       ],
       "id": "77ce064e-d297-43a1-831e-54bf5652ca78",
@@ -533,7 +535,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        368,
+        352,
         -128
       ],
       "id": "d5d79822-df4a-4618-90bf-bb2fae5e7f37",
@@ -546,7 +548,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        2288,
+        2496,
         -96
       ],
       "id": "cd3642a7-da92-4bb6-bece-ff896524b2a8",
@@ -561,7 +563,7 @@
       "type": "n8n-nodes-base.merge",
       "typeVersion": 3.2,
       "position": [
-        1888,
+        2096,
         -112
       ],
       "id": "a15b300b-5926-4666-a0cb-363eeee8aba6",
@@ -584,7 +586,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        1456,
+        1664,
         256
       ],
       "id": "15a4d317-c23e-4f77-ab1e-ed118afcc7cf",
@@ -607,7 +609,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        2624,
+        2832,
         -304
       ],
       "id": "1cc27ba6-b605-4602-b45b-c5b4fb7ac0e9",
@@ -633,7 +635,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        3216,
+        3424,
         -112
       ],
       "id": "99a18c47-2586-4371-a0ca-d7d362a20a90",
@@ -650,7 +652,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        3952,
+        4160,
         -128
       ],
       "id": "57c684ee-c4fe-4392-8dae-d575dd784843",
@@ -690,7 +692,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        3456,
+        3664,
         -80
       ],
       "id": "9b736fed-bc39-431d-ba95-0be0aaa758b8",
@@ -714,7 +716,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        3728,
+        3936,
         -112
       ],
       "id": "be2e66ba-6e51-4fe6-ba8c-3ed536dcb23e",
@@ -732,6 +734,104 @@
       ],
       "id": "171bd827-c5cf-4ff7-bacf-093f798c4bf4",
       "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "report_import",
+          "mode": "list",
+          "cachedResultName": "report_import"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "company_id": "={{ $json.company_id }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "import_id",
+              "displayName": "import_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "start_date",
+              "displayName": "start_date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "end_date",
+              "displayName": "end_date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "import_date",
+              "displayName": "import_date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "company_id",
+              "displayName": "company_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "processed_date",
+              "displayName": "processed_date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        976,
+        256
+      ],
+      "id": "a08875f7-6d61-4104-a6b3-b4f94af40cd8",
+      "name": "report import record",
+      "credentials": {
+        "postgres": {
+          "id": "Hx2VFmUi5WO2K4QX",
+          "name": "Postgres account 2"
+        }
+      }
     }
   ],
   "connections": {
@@ -850,12 +950,12 @@
       "main": [
         [
           {
-            "node": "Clear current_list",
+            "node": "Mark_workwlow_started",
             "type": "main",
             "index": 0
           },
           {
-            "node": "Mark_workwlow_started",
+            "node": "report import record",
             "type": "main",
             "index": 0
           }
@@ -989,6 +1089,17 @@
           }
         ]
       ]
+    },
+    "report import record": {
+      "main": [
+        [
+          {
+            "node": "Clear current_list",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
@@ -1015,7 +1126,7 @@
       }
     ]
   },
-  "versionId": "d8d3bcb7-244f-4ef1-bd04-2367c8af1323",
+  "versionId": "f52ef6a1-92be-4888-9892-bcf5c47f7714",
   "triggerCount": 0,
   "shared": [
     {
