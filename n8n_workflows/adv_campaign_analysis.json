@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-07-18T08:31:54.459Z",
-  "updatedAt": "2025-09-27T16:10:02.233Z",
+  "updatedAt": "2025-09-27T16:40:13.451Z",
   "id": "wZGLxMCCmOnDJZ1o",
   "name": "ADV_campaign_analysis",
   "active": false,
@@ -13,7 +13,7 @@
       "type": "n8n-nodes-base.splitInBatches",
       "typeVersion": 3,
       "position": [
-        992,
+        1200,
         -96
       ],
       "id": "14ab2730-450d-4b85-8dff-85f47057947b",
@@ -132,7 +132,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        8720,
+        8928,
         -160
       ],
       "id": "b2be9a68-4d5c-4dd1-85c7-4d71ce034518",
@@ -153,7 +153,7 @@
       "type": "n8n-nodes-base.merge",
       "typeVersion": 3.2,
       "position": [
-        9024,
+        9232,
         -320
       ],
       "id": "0c60f5c9-db38-4edb-b16b-cd4b807c471a",
@@ -199,7 +199,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        1680,
+        1888,
         -208
       ],
       "id": "b216be47-debc-40cf-b136-bec95d38fdee",
@@ -225,7 +225,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        2080,
+        2288,
         -512
       ],
       "id": "28c687e3-463b-473a-afd9-320b16c436f2",
@@ -259,7 +259,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        2640,
+        2848,
         -672
       ],
       "id": "9697e909-a82a-45b7-b036-d696f078145a",
@@ -437,7 +437,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        9392,
+        9600,
         -1264
       ],
       "id": "233a9fb2-ccfc-4fbd-a2af-5630a61c7a22",
@@ -623,7 +623,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        9296,
+        9504,
         -480
       ],
       "id": "8200d389-0be7-463e-b356-76cf1a2d659f",
@@ -663,7 +663,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        6576,
+        6784,
         -464
       ],
       "id": "78d0f369-bc02-4a48-84af-389ac2c2f8cf",
@@ -903,7 +903,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        8768,
+        8976,
         -1104
       ],
       "id": "e95a4440-545c-4788-a36f-4a8649b6dcf9",
@@ -922,7 +922,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        4880,
+        5088,
         -160
       ],
       "id": "1fe77e75-c3f7-45c6-9745-7d60d1a87ec1",
@@ -942,7 +942,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        5088,
+        5296,
         -176
       ],
       "id": "5e99e27e-8a7f-4aa5-9bf8-ac03d750250f",
@@ -976,7 +976,7 @@
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1.2,
       "position": [
-        5872,
+        6080,
         -16
       ],
       "id": "5d7ed225-61eb-40cf-86f8-cf487e481e1c",
@@ -989,7 +989,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        5616,
+        5824,
         -16
       ],
       "id": "9eddec39-1da6-4ea2-b1a9-09e9356929e9",
@@ -1002,7 +1002,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        6064,
+        6272,
         -16
       ],
       "id": "6b46b906-0c32-4338-aa03-d8c6ea2aa4b4",
@@ -1022,7 +1022,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        6256,
+        6464,
         -16
       ],
       "id": "71ae78b7-07d9-476d-bd03-a0bc9665f099",
@@ -1042,7 +1042,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        8160,
+        8368,
         -336
       ],
       "id": "2f169d1d-9f54-4e14-8d57-39373804f250",
@@ -1070,7 +1070,7 @@
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1.2,
       "position": [
-        3392,
+        3600,
         -256
       ],
       "id": "cd16a7e3-72ee-4ecb-b4ba-b40cebdc3476",
@@ -1104,7 +1104,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        7744,
+        7952,
         -432
       ],
       "id": "32bea20b-bd2e-4a99-83b0-e9dce5af9140",
@@ -1176,8 +1176,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        288,
-        -96
+        80,
+        -112
       ],
       "id": "297d2aa0-7b31-4c3e-9cc9-356f906de7f7",
       "name": "Execute a SQL query",
@@ -1222,8 +1222,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        880,
-        304
+        560,
+        80
       ],
       "id": "d7dced98-db28-4cdb-92c4-452cddb71e27",
       "name": "Mark_workflow_total_steps1",
@@ -1242,8 +1242,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        608,
-        -32
+        320,
+        -80
       ],
       "id": "2a0914fc-f1f5-40e7-b45a-707379ba1c5a",
       "name": "Init total counter"
@@ -1259,7 +1259,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        1440,
+        1648,
         -768
       ],
       "id": "d9570534-080b-4e39-83a2-014c8b4ac2ef",
@@ -1283,7 +1283,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        10624,
+        10832,
         -48
       ],
       "id": "56bff92d-817b-4fb5-bf93-e3fd6d772376",
@@ -1303,7 +1303,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        10384,
+        10592,
         -32
       ],
       "id": "7a3d33ad-9f12-4f6f-9b09-6d67a00e76a8",
@@ -1336,7 +1336,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        11008,
+        11216,
         -16
       ],
       "id": "9114c887-564f-4e0f-b89d-99a381a7bdde",
@@ -1349,7 +1349,7 @@
       "type": "n8n-nodes-base.stopAndError",
       "typeVersion": 1,
       "position": [
-        11248,
+        11456,
         -144
       ],
       "id": "fdab4be5-884f-4a7f-97b4-8c7ae8b22898",
@@ -1383,7 +1383,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        10832,
+        11040,
         -48
       ],
       "id": "3b984213-9b8c-4d82-8b9f-38dcc24fcdc1",
@@ -1422,7 +1422,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        2816,
+        3024,
         -288
       ],
       "id": "038b687a-066e-4e6f-b75f-9f3e42a3597c",
@@ -1469,7 +1469,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        3632,
+        3840,
         -256
       ],
       "id": "cfb990ed-43bf-46ea-bd90-b9fe5333f2ef",
@@ -1503,7 +1503,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        5360,
+        5568,
         -160
       ],
       "id": "ab29b2a0-71ea-425c-8e92-01e2e174cee9",
@@ -1533,7 +1533,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        8192,
+        8400,
         -592
       ],
       "id": "6bf663d1-4db2-412c-aa73-d7943501ee9f",
@@ -1563,7 +1563,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        7648,
+        7856,
         -960
       ],
       "id": "e75eef70-59a7-4697-8b04-373c54883a70",
@@ -1571,12 +1571,12 @@
     },
     {
       "parameters": {
-        "jsCode": "const workflowData = $getWorkflowStaticData('global');\nlet my_prompt = workflowData.my_prompt.data;\n\nfor (const item of $input.all()) {\n  item.json.my_prompt = my_prompt.replaceAll(\"{{service_description}}\",item.json.service_name +' ' + item.service_description).replaceAll(\"{{key_word}}\", $('Loop Over Items').last().json.key_word).replaceAll(\"{{company_name}}\", item.json.company_name);\n}\n\nreturn $input.all();"
+        "jsCode": "const workflowData = $getWorkflowStaticData('global');\nlet my_prompt = workflowData.my_prompt.data;\n\nfor (const item of $input.all()) {\n  item.json.my_prompt = my_prompt.replaceAll(\"{{service_description}}\",item.json.service_name +' ' + item.json.service_description).replaceAll(\"{{key_word}}\", $('Loop Over Items').last().json.key_word).replaceAll(\"{{company_name}}\", item.json.company_name);\n}\n\nreturn $input.all();"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        4688,
+        4896,
         -144
       ],
       "id": "65af494d-9402-4aab-abec-c8f3050500ac",
@@ -1608,7 +1608,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        4304,
+        4512,
         -144
       ],
       "id": "ca37c744-a547-4e2e-beef-f62e1b5049f3",
@@ -1648,7 +1648,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        3840,
+        4048,
         -112
       ],
       "id": "78399e42-113c-4fc7-9fed-7ddb97fadf94",
@@ -1665,7 +1665,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        4304,
+        4512,
         32
       ],
       "id": "87d1b141-5c27-45ef-8b40-8420a63b0fbd",
@@ -1685,7 +1685,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        4112,
+        4320,
         -144
       ],
       "id": "6b7e98b2-cf1f-4582-9335-09d5cad31dd1",
@@ -1700,7 +1700,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        4512,
+        4720,
         -144
       ],
       "id": "53be7ee3-e874-48f6-8f6a-019e70e9006c",
@@ -1721,7 +1721,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        4512,
+        4720,
         16
       ],
       "id": "24912155-ac6a-438c-b9f7-32f799ce1a52",
@@ -1735,21 +1735,6 @@
     },
     {
       "parameters": {
-        "content": "need to fix total steps saving!!! doesn't work",
-        "height": 320,
-        "width": 464
-      },
-      "type": "n8n-nodes-base.stickyNote",
-      "typeVersion": 1,
-      "position": [
-        832,
-        240
-      ],
-      "id": "b0644bd1-465b-476d-af0a-2d8a6ba4bb87",
-      "name": "Sticky Note5"
-    },
-    {
-      "parameters": {
         "content": "add company id"
       },
       "type": "n8n-nodes-base.stickyNote",
@@ -1760,6 +1745,19 @@
       ],
       "id": "e4d61d2a-8f5d-4a77-be30-8d8fcbc6d395",
       "name": "Sticky Note6"
+    },
+    {
+      "parameters": {
+        "mode": "chooseBranch"
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        816,
+        -80
+      ],
+      "id": "3bc57ebf-abb7-4e0e-a850-dbc5ea2a6ea0",
+      "name": "Merge"
     }
   ],
   "connections": {
@@ -2097,7 +2095,7 @@
             "index": 0
           },
           {
-            "node": "Loop Over Items",
+            "node": "Merge",
             "type": "main",
             "index": 0
           }
@@ -2314,6 +2312,28 @@
           }
         ]
       ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mark_workflow_total_steps1": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
     }
   },
   "settings": {
@@ -2345,14 +2365,14 @@
       {
         "json": {
           "id": "wZGLxMCCmOnDJZ1o",
-          "root_execution_id": 33178,
+          "root_execution_id": 36438,
           "company_id": 1,
           "threshhold": "0.88"
         }
       }
     ]
   },
-  "versionId": "a1f8cb45-86c9-4709-bee3-06127315c4fa",
+  "versionId": "a7cdd2eb-80c2-4c9e-8b1a-93ea283578e0",
   "triggerCount": 0,
   "shared": [
     {
