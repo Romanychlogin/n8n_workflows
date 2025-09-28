@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-01T16:15:28.703Z",
-  "updatedAt": "2025-09-15T11:26:03.123Z",
+  "updatedAt": "2025-09-28T06:06:25.246Z",
   "id": "xKP6S9XsCeVSgebo",
   "name": "Check VS company name SUB",
   "active": false,
@@ -217,7 +217,7 @@
   },
   "settings": {
     "executionOrder": "v1",
-    "saveDataSuccessExecution": "none",
+    "saveDataSuccessExecution": "all",
     "callerPolicy": "workflowsFromSameOwner"
   },
   "staticData": null,
@@ -225,7 +225,7 @@
     "templateCredsSetupCompleted": true
   },
   "pinData": {},
-  "versionId": "e5a6963d-b71e-4f68-82f2-066561eb89b8",
+  "versionId": "b791252e-7819-4dc3-a2f4-a97a40a9541d",
   "triggerCount": 1,
   "shared": [
     {
