@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-28T19:51:37.055Z",
-  "updatedAt": "2025-09-28T19:55:11.755Z",
+  "updatedAt": "2025-09-28T20:14:23.167Z",
   "id": "ltegbccNxKgB39WY",
   "name": "clear competitors from content",
   "active": false,
@@ -43,7 +43,7 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "DELETE FROM competitor_name_variants AS v\nUSING competitor_entities AS e\nWHERE e.competitor_id = v.competitor_id\n  AND e.company_id    = $1\n  AND (\n        SELECT v.embedding <=> c.phrase_embedding\n        FROM company_content AS c\n        WHERE c.company_id = 1\n        ORDER BY v.embedding <=> c.phrase_embedding\n        LIMIT 1\n      ) < 0.05\n-- опционально вернуть удалённые строки для контроля:\nRETURNING v.competitor_id, v.name_text;",
+        "query": "DELETE FROM competitor_name_variants AS v\nUSING competitor_entities AS e\nWHERE e.competitor_id = v.competitor_id\n  AND e.company_id    = $1\n  AND (\n        SELECT v.embedding <=> c.phrase_embedding\n        FROM company_content AS c\n        WHERE c.company_id = 1\n        ORDER BY v.embedding <=> c.phrase_embedding\n        LIMIT 1\n      ) <= 0.2\n-- опционально вернуть удалённые строки для контроля:\nRETURNING v.competitor_id, v.name_text;",
         "options": {
           "queryReplacement": "={{ $json.company_id }}"
         }
@@ -96,7 +96,7 @@
     "templateCredsSetupCompleted": true
   },
   "pinData": {},
-  "versionId": "a1f63965-5991-4720-a875-61ffc057ccf2",
+  "versionId": "3b8c5c14-b74c-4223-a3d5-ccc66307bc54",
   "triggerCount": 0,
   "shared": [
     {
