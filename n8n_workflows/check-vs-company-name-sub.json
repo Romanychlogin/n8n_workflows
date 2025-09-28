@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-01T16:15:28.703Z",
-  "updatedAt": "2025-09-28T06:06:25.246Z",
+  "updatedAt": "2025-09-28T09:07:54.049Z",
   "id": "xKP6S9XsCeVSgebo",
   "name": "Check VS company name SUB",
   "active": false,
@@ -62,7 +62,7 @@
     },
     {
       "parameters": {
-        "jsCode": "const emb = ($json.body?.data?.[0]?.embedding) ?? ($json.data?.[0]?.embedding);\nif (!Array.isArray(emb) || emb.length === 0) {\n  throw new Error('Embedding not found');\n}\n\n\nconst out = $input.all().map(c => ({ json: { \n  vector:'[' + c.json.data[0].embedding.map(Number).join(',') + ']',   company_name: $('Code: explode_candidates').all()[c.json.data[0].index].json.company_id, \n  threshold: $('Code: explode_candidates').all()[c.json.data[0].index].json.threshold, \n  candidate: $('Code: explode_candidates').all()[c.json.data[0].index].json.candidate } }));\nreturn out;\n"
+        "jsCode": "const emb = ($json.body?.data?.[0]?.embedding) ?? ($json.data?.[0]?.embedding);\nif (!Array.isArray(emb) || emb.length === 0) {\n  throw new Error('Embedding not found');\n}\n\n\nconst out = $input.all().map(c => ({ json: { \n  vector:'[' + c.json.data[0].embedding.map(Number).join(',') + ']',   company_id: $('Code: explode_candidates').all()[c.json.data[0].index].json.company_id, \n  threshold: $('Code: explode_candidates').all()[c.json.data[0].index].json.threshold, \n  candidate: $('Code: explode_candidates').all()[c.json.data[0].index].json.candidate } }));\nreturn out;\n"
       },
       "id": "5b34a748-5ad7-4c9f-91b0-e57cf1352fbb",
       "name": "Code: build_vector_literal",
@@ -224,8 +224,32 @@
   "meta": {
     "templateCredsSetupCompleted": true
   },
-  "pinData": {},
-  "versionId": "b791252e-7819-4dc3-a2f4-a97a40a9541d",
+  "pinData": {
+    "When Executed by Another Workflow": [
+      {
+        "json": {
+          "list_id": "7769",
+          "key_word": "coddyschool com",
+          "campaign_id": "702142188",
+          "used_keyword": "программирование обучение",
+          "group_id": "5641334703",
+          "condition_type": "семантическое",
+          "category": "Альтернативные запросы",
+          "ads_header": "Программирование обучение для детей 6–14 лет — KIBERone",
+          "resolution": null,
+          "count_views": 1,
+          "count_clics": 0,
+          "count_convetions": 0,
+          "ai_response_tokens": 1567,
+          "company_id": "1",
+          "report_id": "5",
+          "service_id": null,
+          "threshold": 0.8
+        }
+      }
+    ]
+  },
+  "versionId": "2fdf5204-d6b0-44f5-a93f-fd61b620d7ba",
   "triggerCount": 1,
   "shared": [
     {
