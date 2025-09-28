@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-28T11:31:13.045Z",
-  "updatedAt": "2025-09-28T11:36:51.166Z",
+  "updatedAt": "2025-09-28T11:44:21.875Z",
   "id": "lBAh8kjoXRX0aGUF",
   "name": "ADS headers and texts creation services for updates",
   "active": false,
@@ -43,12 +43,12 @@
               "value": "={{ $('set variables').item.json.company_id }}"
             },
             {
-              "column": "is_relevant",
-              "value": "true"
-            },
-            {
               "column": "service_id",
               "value": "={{ $json.service_id }}"
+            },
+            {
+              "column": "resolution",
+              "value": "to add"
             },
             {
               "column": "is_adv_processed",
@@ -1170,6 +1170,19 @@
           "name": "PGvector"
         }
       }
+    },
+    {
+      "parameters": {
+        "content": "обновить все запоосы, добавить report id"
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -448,
+        304
+      ],
+      "id": "60362725-a5df-45ee-9854-f0d01aa512aa",
+      "name": "Sticky Note"
     }
   ],
   "connections": {
@@ -1658,7 +1671,7 @@
       }
     ]
   },
-  "versionId": "376b20e8-6410-4cd1-9821-ef76cb81d7a3",
+  "versionId": "dfe256c7-b05c-47a2-b837-0e024f01cd5c",
   "triggerCount": 0,
   "shared": [
     {
@@ -1669,6 +1682,5 @@
       "projectId": "spKmbJLU4mvACXIB"
     }
   ],
-  "tags": [],
-  "file_name": "ads-headers-and-texts-creation-services-for-updates.json"
+  "tags": []
 }
