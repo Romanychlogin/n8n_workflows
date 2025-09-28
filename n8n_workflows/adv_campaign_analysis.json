@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-07-18T08:31:54.459Z",
-  "updatedAt": "2025-09-28T10:18:22.738Z",
+  "updatedAt": "2025-09-28T10:22:17.270Z",
   "id": "wZGLxMCCmOnDJZ1o",
   "name": "ADV_campaign_analysis",
   "active": false,
@@ -1169,29 +1169,6 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "select * from current_list where report_id=(select max(import_id) from report_import where company_id=$1)\n",
-        "options": {
-          "queryReplacement": "={{ $('set variables').item.json.company_id }}"
-        }
-      },
-      "type": "n8n-nodes-base.postgres",
-      "typeVersion": 2.6,
-      "position": [
-        80,
-        -112
-      ],
-      "id": "297d2aa0-7b31-4c3e-9cc9-356f906de7f7",
-      "name": "Execute a SQL query",
-      "credentials": {
-        "postgres": {
-          "id": "Hx2VFmUi5WO2K4QX",
-          "name": "Postgres account 2"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "operation": "executeQuery",
         "query": "INSERT INTO business_processes_states (business_process_id, company_id,n8n_workflow_execution_id,n8n_workflow_root_execution_id, started)\nSELECT MAX(business_process_id), $2,$3,$4, NOW()\nFROM public.business_processes\nWHERE n8n_process_name = $1;",
         "options": {
           "queryReplacement": "=[{{$workflow.name}},{{$json.company_id}},{{$execution.id}},{{ $('When Executed by Another Workflow').item.json.root_execution_id }}]"
@@ -1770,6 +1747,29 @@
       ],
       "id": "db6e3563-dd82-4416-b389-f1af5609931f",
       "name": "set threshold"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "select * from current_list where report_id=(select max(import_id) from report_import where company_id=$1) and resolution is null\n",
+        "options": {
+          "queryReplacement": "={{ $('set variables').item.json.company_id }}"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        80,
+        -112
+      ],
+      "id": "297d2aa0-7b31-4c3e-9cc9-356f906de7f7",
+      "name": "get last import not processed records",
+      "credentials": {
+        "postgres": {
+          "id": "Hx2VFmUi5WO2K4QX",
+          "name": "Postgres account 2"
+        }
+      }
     }
   ],
   "connections": {
@@ -2076,22 +2076,11 @@
         ]
       ]
     },
-    "Execute a SQL query": {
-      "main": [
-        [
-          {
-            "node": "Init total counter",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Mark_workwlow_started": {
       "main": [
         [
           {
-            "node": "Execute a SQL query",
+            "node": "get last import not processed records",
             "type": "main",
             "index": 0
           }
@@ -2357,6 +2346,17 @@
           }
         ]
       ]
+    },
+    "get last import not processed records": {
+      "main": [
+        [
+          {
+            "node": "Init total counter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
@@ -2395,7 +2395,7 @@
       }
     ]
   },
-  "versionId": "3fa28dc8-4d01-49e3-8a0c-e14ce168a742",
+  "versionId": "5488c924-7ff7-42d5-842b-fada412e13f7",
   "triggerCount": 0,
   "shared": [
     {
