@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-25T13:33:58.106Z",
-  "updatedAt": "2025-09-28T05:48:31.004Z",
+  "updatedAt": "2025-09-28T09:38:00.793Z",
   "id": "0J5cvuaSz3IhDS99",
   "name": "campaign core update",
   "active": false,
@@ -271,7 +271,7 @@
             {
               "id": "c39715db-2173-438e-9e3b-8e20372ebf86",
               "name": "threshhold",
-              "value": 0.8,
+              "value": 0.79,
               "type": "number"
             }
           ]
@@ -1340,7 +1340,7 @@
       }
     ]
   },
-  "versionId": "04d94548-9075-488c-831b-4af9eb370fa0",
+  "versionId": "62fe634b-a9a8-4e39-b20a-b86785b0d331",
   "triggerCount": 0,
   "shared": [
     {
