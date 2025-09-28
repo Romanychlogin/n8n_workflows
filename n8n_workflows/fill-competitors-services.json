@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-10T17:26:44.235Z",
-  "updatedAt": "2025-09-28T09:53:07.218Z",
+  "updatedAt": "2025-09-28T10:32:40.468Z",
   "id": "gOiXkFb3LETVri46",
   "name": "Fill competitors services",
   "active": false,
@@ -75,7 +75,9 @@
         "sendBody": true,
         "specifyBody": "json",
         "jsonBody": "={{$json}}",
-        "options": {}
+        "options": {
+          "timeout": 600000
+        }
       },
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
@@ -504,7 +506,7 @@
     "templateCredsSetupCompleted": true
   },
   "pinData": {},
-  "versionId": "826250c7-8753-49a2-b4a0-b14dac902bf2",
+  "versionId": "85b733cf-9837-4b2b-8290-3adae7d692dd",
   "triggerCount": 0,
   "shared": [
     {
