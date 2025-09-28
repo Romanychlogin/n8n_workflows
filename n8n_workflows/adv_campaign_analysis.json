@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-07-18T08:31:54.459Z",
-  "updatedAt": "2025-09-28T20:18:28.581Z",
+  "updatedAt": "2025-09-28T20:23:44.938Z",
   "id": "wZGLxMCCmOnDJZ1o",
   "name": "ADV_campaign_analysis",
   "active": false,
@@ -1276,7 +1276,7 @@
     },
     {
       "parameters": {
-        "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nconst workflowData = $getWorkflowStaticData('global');\nworkflowData.steps_passed = workflowData.steps_passed+1; // update steps counter\nlet step_tokens_used = 0;\nif  $('HTTP Request').all().length > 0 \n{ step_tokens_used = $('HTTP Request').first().json.usage.total_tokens};\nif  $('HTTP Request1').all().length > 0\n{step_tokens_used = step_tokens_used + $('HTTP Request1').first().json.usage.total_tokens}; //set used tokens here!!!!\nworkflowData.tokens_used = workflowData.tokens_used+step_tokens_used;\nfor (const item of $input.all()) {\n  item.json.steps_passed = workflowData.steps_passed;\n  item.json.tokens_used = workflowData.tokens_used\n}\n\nreturn $input.all();"
+        "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nconst workflowData = $getWorkflowStaticData('global');\nworkflowData.steps_passed = workflowData.steps_passed+1; // update steps counter\nlet step_tokens_used = 0;\nif  ($('HTTP Request').all().length > 0) \n{ step_tokens_used = $('HTTP Request').first().json.usage.total_tokens};\nif  ($('HTTP Request1').all().length > 0)\n{step_tokens_used = step_tokens_used + $('HTTP Request1').first().json.usage.total_tokens}; //set used tokens here!!!!\nworkflowData.tokens_used = workflowData.tokens_used+step_tokens_used;\nfor (const item of $input.all()) {\n  item.json.steps_passed = workflowData.steps_passed;\n  item.json.tokens_used = workflowData.tokens_used\n}\n\nreturn $input.all();"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -1731,7 +1731,7 @@
             {
               "id": "4db35a49-e130-4ff8-9ccb-7b452205f80a",
               "name": "threshold",
-              "value": "={{ $('When Executed by Another Workflow').item.json.threshhold }}",
+              "value": "=0.88",
               "type": "number"
             }
           ]
@@ -2388,14 +2388,14 @@
       {
         "json": {
           "id": "wZGLxMCCmOnDJZ1o",
-          "root_execution_id": 40792,
+          "root_execution_id": 40817,
           "company_id": 1,
           "threshhold": "0.79"
         }
       }
     ]
   },
-  "versionId": "69e29171-b7ea-4df6-9173-e91585187dbf",
+  "versionId": "1ee96b88-fc9c-4a8d-8ccb-bec33e0b94e9",
   "triggerCount": 0,
   "shared": [
     {
