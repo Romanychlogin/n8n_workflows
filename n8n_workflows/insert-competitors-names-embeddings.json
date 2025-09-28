@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-08-28T07:11:26.353Z",
-  "updatedAt": "2025-09-28T11:18:47.626Z",
+  "updatedAt": "2025-09-28T11:27:17.478Z",
   "id": "RRfsHJBi4bZ0tYV3",
   "name": "insert competitors names embeddings",
   "active": false,
@@ -79,8 +79,8 @@
       "type": "n8n-nodes-base.merge",
       "typeVersion": 3.2,
       "position": [
-        1440,
-        0
+        1344,
+        -96
       ],
       "id": "43337059-f055-40d3-904b-e61cb81058c7",
       "name": "Merge"
@@ -110,29 +110,6 @@
     },
     {
       "parameters": {
-        "operation": "executeQuery",
-        "query": "UPDATE competitor_name_variants\nSET embedding = $1::vector\nWHERE competitor_id = $2\n  AND name_text = $3;",
-        "options": {
-          "queryReplacement": "=[\n  { \"value\": \"={{'[' + $json.data[0].embedding.map(e => Number(e)).join(',') + ']'}}\" },\n  { \"value\": \"={{$json.competitor_id}}\" },\n  { \"value\": \"={{$json.name_text}}\" }\n]"
-        }
-      },
-      "type": "n8n-nodes-base.postgres",
-      "typeVersion": 2.6,
-      "position": [
-        1648,
-        0
-      ],
-      "id": "f5ff8e6a-8a5f-44b1-a328-ad503531d4df",
-      "name": "Execute a SQL query1",
-      "credentials": {
-        "postgres": {
-          "id": "4YkdFJcdTgzo9hkz",
-          "name": "PGvector"
-        }
-      }
-    },
-    {
-      "parameters": {
         "assignments": {
           "assignments": [
             {
@@ -153,6 +130,29 @@
       ],
       "id": "d52a6a8a-2a1a-4f57-b136-ad79f0a5dd1e",
       "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "UPDATE competitor_name_variants\nSET embedding = $1::vector\nWHERE competitor_id = $2\n  AND name_text = $3;",
+        "options": {
+          "queryReplacement": "=[\n  { \"value\": \"={{'[' + $json.data[0].embedding.map(e => Number(e)).join(',') + ']'}}\" },\n  { \"value\": \"={{$json.competitor_id}}\" },\n  { \"value\": \"={{$json.name_text}}\" }\n]"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        1648,
+        0
+      ],
+      "id": "f5ff8e6a-8a5f-44b1-a328-ad503531d4df",
+      "name": "insert embedding",
+      "credentials": {
+        "postgres": {
+          "id": "4YkdFJcdTgzo9hkz",
+          "name": "PGvector"
+        }
+      }
     }
   ],
   "connections": {
@@ -210,7 +210,7 @@
       "main": [
         [
           {
-            "node": "Execute a SQL query1",
+            "node": "insert embedding",
             "type": "main",
             "index": 0
           }
@@ -218,17 +218,6 @@
       ]
     },
     "Execute a SQL query": {
-      "main": [
-        [
-          {
-            "node": "Loop Over Items",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Execute a SQL query1": {
       "main": [
         [
           {
@@ -249,6 +238,17 @@
           }
         ]
       ]
+    },
+    "insert embedding": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
@@ -259,7 +259,7 @@
     "templateCredsSetupCompleted": true
   },
   "pinData": {},
-  "versionId": "21a992c4-c4ad-4d50-a148-c76b30b467f0",
+  "versionId": "7044dd6b-6c6e-41cf-82b5-7230e78854a6",
   "triggerCount": 0,
   "shared": [
     {
