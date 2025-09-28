@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-07-18T08:31:54.459Z",
-  "updatedAt": "2025-09-28T06:04:47.817Z",
+  "updatedAt": "2025-09-28T06:25:51.095Z",
   "id": "wZGLxMCCmOnDJZ1o",
   "name": "ADV_campaign_analysis",
   "active": false,
@@ -1634,8 +1634,8 @@
           "conditions": [
             {
               "id": "99ec263a-e232-4b91-9603-fea27331309c",
-              "leftValue": "={{ $('If we have conversions for the key word').last().json.used_keyword }}",
-              "rightValue": " ---autotargeting",
+              "leftValue": "={{ $('set threshold').item.json.used_keyword }}",
+              "rightValue": "---autotargeting",
               "operator": {
                 "type": "string",
                 "operation": "notContains"
@@ -1778,8 +1778,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        3232,
-        -192
+        3424,
+        -224
       ],
       "id": "db6e3563-dd82-4416-b389-f1af5609931f",
       "name": "set threshold"
@@ -2401,14 +2401,14 @@
       {
         "json": {
           "id": "wZGLxMCCmOnDJZ1o",
-          "root_execution_id": 38289,
+          "root_execution_id": 38473,
           "company_id": 1,
-          "threshhold": "0.88"
+          "threshhold": "0.8"
         }
       }
     ]
   },
-  "versionId": "927dd891-ec01-42ff-be4f-7a9ea372bb87",
+  "versionId": "2198a639-db73-48df-987c-4fc40f4c1a9e",
   "triggerCount": 0,
   "shared": [
     {
