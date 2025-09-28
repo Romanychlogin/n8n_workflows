@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-12T08:55:43.434Z",
-  "updatedAt": "2025-09-15T12:20:20.296Z",
+  "updatedAt": "2025-09-28T09:55:17.913Z",
   "id": "rm2JX4uSi4LmMkZN",
   "name": "Create competitors variants",
   "active": false,
@@ -390,13 +390,13 @@
             {
               "id": "1d3a9799-854d-4d8f-b324-a86b1e329575",
               "name": "company_id",
-              "value": 2,
+              "value": 1,
               "type": "number"
             },
             {
               "id": "746f2015-4b03-4f60-9467-564bfa2fb713",
               "name": "company_mane",
-              "value": "Первый визовый центр Курган",
+              "value": "KIBERone Саратов Октябрьский",
               "type": "string"
             }
           ]
@@ -608,7 +608,7 @@
     "templateCredsSetupCompleted": true
   },
   "pinData": {},
-  "versionId": "37c4fb39-49c5-41c8-ac2c-99e1cb55362b",
+  "versionId": "92bac18f-d479-4a94-93c8-3a18c209e4fd",
   "triggerCount": 0,
   "shared": [
     {
