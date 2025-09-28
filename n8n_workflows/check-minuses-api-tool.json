@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-01T13:14:53.645Z",
-  "updatedAt": "2025-09-16T13:10:09.281Z",
+  "updatedAt": "2025-09-28T05:37:08.916Z",
   "id": "bhBscYglbFhVyIcL",
   "name": "Check minuses API tool",
   "active": false,
@@ -336,7 +336,7 @@
   },
   "settings": {
     "executionOrder": "v1",
-    "saveDataSuccessExecution": "none",
+    "saveDataSuccessExecution": "all",
     "callerPolicy": "workflowsFromSameOwner"
   },
   "staticData": null,
@@ -358,7 +358,7 @@
       }
     ]
   },
-  "versionId": "5cd22287-5a9c-4fff-bc29-0fb6fe018413",
+  "versionId": "ab29836a-9d1e-4f6c-beac-e5a2a352b9c6",
   "triggerCount": 1,
   "shared": [
     {
