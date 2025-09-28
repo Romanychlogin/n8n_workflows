@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-01T13:14:53.645Z",
-  "updatedAt": "2025-09-28T05:37:08.916Z",
+  "updatedAt": "2025-09-28T09:14:51.449Z",
   "id": "bhBscYglbFhVyIcL",
   "name": "Check minuses API tool",
   "active": false,
@@ -27,7 +27,7 @@
     },
     {
       "parameters": {
-        "jsCode": "// === Code: normalize_and_ngrams ===\n// INPUT:  HTTP Webhook body { phrase: string, threshold?: number }\n// OUTPUT: { threshold: number, candidates: string[], tokens: string[] }\n// PURPOSE:\n//   1) Normalize the phrase (lowercase, keep letters/digits/underscore and - + #)\n//   2) Remove Russian prepositions as separate words (not touching - + #)\n//   3) Tokenize and build 1..3-gram unique candidates preserving order\n//   4) Provide threshold (default 0.88) downstream\n\n// Input JSON: { company_name, text, threshold? }\nconst body = $json;\nconst prepositions = [\n  \"в\",\"без\",\"до\",\"из\",\"к\",\"и\",\"на\",\"по\",\"о\",\"от\",\"перед\",\"при\",\n  \"через\",\"с\",\"у\",\"за\",\"над\",\"об\",\"под\",\"про\",\"для\",\"между\"\n];\n\n// Нормализуем регистр\nlet text = String(body.args.phrase ?? \"\").toLowerCase();\n\n// Экранируем спецсимволы\nconst escape = s => s.replace(/[.*+?^${}()|[\\]\\\\]/g, \"\\\\$&\");\nconst alts = prepositions.map(escape).join(\"|\");\n\n// Разрешаем буквы, цифры, подчёркивание, а также - + #\nconst re = new RegExp(\n  `(^|[^\\\\p{L}\\\\p{N}_\\\\-+#])(?:${alts})(?=$|[^\\\\p{L}\\\\p{N}_\\\\-+#])`,\n  \"giu\"\n);\n\n// Удаляем предлоги, сохраняя левый разделитель\ntext = text.replace(re, \"$1\");\n\n// Чистим пробелы\ntext = text.replace(/\\s+/g, \" \").trim();\n//const company = body.company_name;\nconst threshold = (typeof body.args.threshold === 'number') ? body.threshold : 0.88;\n\nconst tokens = (text.match(/[A-Za-zА-Яа-яЁё0-9][A-Za-zА-Яа-яЁё0-9&.\\-]{0,}/g) || [])\n  .map(s => s.trim())\n  .filter(Boolean);\n\nconst MAX_N = 3;\nconst set = new Set();\nfor (let i = 0; i < tokens.length; i++) {\n  for (let n = 1; n <= MAX_N && i + n <= tokens.length; n++) {\n    const phrase = tokens.slice(i, i+n).join(' ');\n    set.add(phrase);\n  }\n}\nlet candidates = Array.from(set);\n// если пусто — добавляем пустую строку\nif (candidates.length === 0) {\n  candidates = [\"\"];\n}\n\nreturn [{ json: { threshold, candidates,MAX_N } }];\n"
+        "jsCode": "// === Code: normalize_and_ngrams ===\n// INPUT:  HTTP Webhook body { phrase: string, threshold?: number }\n// OUTPUT: { threshold: number, candidates: string[], tokens: string[] }\n// PURPOSE:\n//   1) Normalize the phrase (lowercase, keep letters/digits/underscore and - + #)\n//   2) Remove Russian prepositions as separate words (not touching - + #)\n//   3) Tokenize and build 1..3-gram unique candidates preserving order\n//   4) Provide threshold (default 0.88) downstream\n\n// Input JSON: { company_name, text, threshold? }\nconst body = $json;\nconst prepositions = [\n  \"в\",\"без\",\"до\",\"из\",\"к\",\"и\",\"на\",\"по\",\"о\",\"от\",\"перед\",\"при\",\n  \"через\",\"с\",\"у\",\"за\",\"над\",\"об\",\"под\",\"про\",\"для\",\"между\"\n];\n\n// Нормализуем регистр\nlet text = String(body.args.phrase ?? \"\").toLowerCase();\n\n// Экранируем спецсимволы\nconst escape = s => s.replace(/[.*+?^${}()|[\\]\\\\]/g, \"\\\\$&\");\nconst alts = prepositions.map(escape).join(\"|\");\n\n// Разрешаем буквы, цифры, подчёркивание, а также - + #\nconst re = new RegExp(\n  `(^|[^\\\\p{L}\\\\p{N}_\\\\-+#])(?:${alts})(?=$|[^\\\\p{L}\\\\p{N}_\\\\-+#])`,\n  \"giu\"\n);\n\n// Удаляем предлоги, сохраняя левый разделитель\ntext = text.replace(re, \"$1\");\n\n// Чистим пробелы\ntext = text.replace(/\\s+/g, \" \").trim();\n//const company = body.company_name;\nconst threshold = Math.min(Math.max(\n  Number(String(body?.args?.threshold ?? 0.88).replace(',', '.').trim()) || 0.88\n, 0), 1);\n\nconst tokens = (text.match(/[A-Za-zА-Яа-яЁё0-9][A-Za-zА-Яа-яЁё0-9&.\\-]{0,}/g) || [])\n  .map(s => s.trim())\n  .filter(Boolean);\n\nconst MAX_N = 3;\nconst set = new Set();\nfor (let i = 0; i < tokens.length; i++) {\n  for (let n = 1; n <= MAX_N && i + n <= tokens.length; n++) {\n    const phrase = tokens.slice(i, i+n).join(' ');\n    set.add(phrase);\n  }\n}\nlet candidates = Array.from(set);\n// если пусто — добавляем пустую строку\nif (candidates.length === 0) {\n  candidates = [\"\"];\n}\n\nreturn [{ json: { threshold, candidates,MAX_N } }];\n"
       },
       "id": "c90f42d4-63de-4ef3-8b9e-ca771d252db1",
       "name": "Code: normalize_and_ngrams",
@@ -347,18 +347,20 @@
     "When Executed by Another Workflow": [
       {
         "json": {
-          "response_id": "resp_09942182ca8cf8930168c9600d2c2481a2a58a26762862b3a3",
-          "call_id": "call_jnzPQR03N07GALSxlcD5iNr4",
+          "response_id": "resp_68d8d50bac7c8197be5e7cdc8c1c90b8056a29ca24c304f9",
+          "call_id": "call_uxM0v9lrgoN4bd7Ti1r65BdW",
           "name": "get_non_matching_ngrams",
           "args": {
-            "phrase": "документы для оформления визы"
+            "phrase": "55 школа саратов",
+            "company_id": "1",
+            "threshold": "0.8"
           },
           "out_index": 1
         }
       }
     ]
   },
-  "versionId": "ab29836a-9d1e-4f6c-beac-e5a2a352b9c6",
+  "versionId": "e3841399-bd47-48b9-9574-3be7b693b08c",
   "triggerCount": 1,
   "shared": [
     {
