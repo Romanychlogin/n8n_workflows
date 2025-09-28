@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-07-18T08:31:54.459Z",
-  "updatedAt": "2025-09-28T05:50:00.789Z",
+  "updatedAt": "2025-09-28T06:04:47.817Z",
   "id": "wZGLxMCCmOnDJZ1o",
   "name": "ADV_campaign_analysis",
   "active": false,
@@ -132,7 +132,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        8928,
+        9136,
         -160
       ],
       "id": "b2be9a68-4d5c-4dd1-85c7-4d71ce034518",
@@ -153,7 +153,7 @@
       "type": "n8n-nodes-base.merge",
       "typeVersion": 3.2,
       "position": [
-        9232,
+        9440,
         -320
       ],
       "id": "0c60f5c9-db38-4edb-b16b-cd4b807c471a",
@@ -437,7 +437,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        9600,
+        9808,
         -1264
       ],
       "id": "233a9fb2-ccfc-4fbd-a2af-5630a61c7a22",
@@ -623,7 +623,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        9504,
+        9712,
         -480
       ],
       "id": "8200d389-0be7-463e-b356-76cf1a2d659f",
@@ -663,7 +663,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        6784,
+        6992,
         -464
       ],
       "id": "78d0f369-bc02-4a48-84af-389ac2c2f8cf",
@@ -903,7 +903,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        8976,
+        9184,
         -1104
       ],
       "id": "e95a4440-545c-4788-a36f-4a8649b6dcf9",
@@ -922,7 +922,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        5088,
+        5296,
         -160
       ],
       "id": "1fe77e75-c3f7-45c6-9745-7d60d1a87ec1",
@@ -942,7 +942,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        5296,
+        5504,
         -176
       ],
       "id": "5e99e27e-8a7f-4aa5-9bf8-ac03d750250f",
@@ -977,7 +977,7 @@
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1.2,
       "position": [
-        6080,
+        6288,
         -16
       ],
       "id": "5d7ed225-61eb-40cf-86f8-cf487e481e1c",
@@ -985,12 +985,12 @@
     },
     {
       "parameters": {
-        "jsCode": "// INPUT: JSON ответа из responses.create\n// OUTPUT: массив элементов { response_id, tool_call_id, name, args }\n\nconst res = $json;\nconst out = [];\n\nfunction pushCall(obj, responseId,out_index) {\n  const id = responseId;\n  const call_id = obj.call_id;\n  const name = obj.name ;\n  const rawArgs = obj.arguments;\n  let args = {};\n  try {\n    args = typeof rawArgs === 'string' ? JSON.parse(rawArgs) : rawArgs;\n    args.company_id=$('Loop Over Items').last().json.company_id;\n  } catch (e) { args = {}; }\n  out.push({ json: { response_id: id, call_id: call_id, name, args,out_index } });\n}\n\nif (Array.isArray(res.output)) {\n  res.output.forEach((item, index) => {\n    if (item.type === 'function_call') {\n      pushCall(item, res.id, index);\n    }\n  });\n}\n\n// Если модель не запросила tool — вернем маркер\nif (!out.length) return [{ json: { response_id: res.id, no_tool_call: true, raw: res } }];\nreturn out;"
+        "jsCode": "// INPUT: JSON ответа из responses.create\n// OUTPUT: массив элементов { response_id, tool_call_id, name, args }\n\nconst res = $json;\nconst out = [];\n\nfunction pushCall(obj, responseId,out_index) {\n  const id = responseId;\n  const call_id = obj.call_id;\n  const name = obj.name ;\n  const rawArgs = obj.arguments;\n  let args = {};\n  try {\n    args = typeof rawArgs === 'string' ? JSON.parse(rawArgs) : rawArgs;\n    args.company_id=$('Loop Over Items').last().json.company_id;\n    args.threshold=$('When Executed by Another Workflow').first().json.threshhold;\n  } catch (e) { args = {}; }\n  out.push({ json: { response_id: id, call_id: call_id, name, args,out_index } });\n}\n\nif (Array.isArray(res.output)) {\n  res.output.forEach((item, index) => {\n    if (item.type === 'function_call') {\n      pushCall(item, res.id, index);\n    }\n  });\n}\n\n// Если модель не запросила tool — вернем маркер\nif (!out.length) return [{ json: { response_id: res.id, no_tool_call: true, raw: res } }];\nreturn out;"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        5824,
+        6032,
         -16
       ],
       "id": "9eddec39-1da6-4ea2-b1a9-09e9356929e9",
@@ -1003,7 +1003,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        6272,
+        6480,
         -16
       ],
       "id": "6b46b906-0c32-4338-aa03-d8c6ea2aa4b4",
@@ -1023,7 +1023,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        6464,
+        6672,
         -16
       ],
       "id": "71ae78b7-07d9-476d-bd03-a0bc9665f099",
@@ -1043,7 +1043,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        8368,
+        8576,
         -336
       ],
       "id": "2f169d1d-9f54-4e14-8d57-39373804f250",
@@ -1071,7 +1071,7 @@
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1.2,
       "position": [
-        3600,
+        3808,
         -256
       ],
       "id": "cd16a7e3-72ee-4ecb-b4ba-b40cebdc3476",
@@ -1105,7 +1105,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        7952,
+        8160,
         -432
       ],
       "id": "32bea20b-bd2e-4a99-83b0-e9dce5af9140",
@@ -1284,7 +1284,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        10832,
+        11040,
         -48
       ],
       "id": "56bff92d-817b-4fb5-bf93-e3fd6d772376",
@@ -1304,7 +1304,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        10592,
+        10800,
         -32
       ],
       "id": "7a3d33ad-9f12-4f6f-9b09-6d67a00e76a8",
@@ -1337,7 +1337,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        11216,
+        11424,
         -16
       ],
       "id": "9114c887-564f-4e0f-b89d-99a381a7bdde",
@@ -1350,7 +1350,7 @@
       "type": "n8n-nodes-base.stopAndError",
       "typeVersion": 1,
       "position": [
-        11456,
+        11664,
         -144
       ],
       "id": "fdab4be5-884f-4a7f-97b4-8c7ae8b22898",
@@ -1384,7 +1384,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        11040,
+        11248,
         -48
       ],
       "id": "3b984213-9b8c-4d82-8b9f-38dcc24fcdc1",
@@ -1470,7 +1470,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        3840,
+        4048,
         -256
       ],
       "id": "cfb990ed-43bf-46ea-bd90-b9fe5333f2ef",
@@ -1504,7 +1504,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        5568,
+        5776,
         -160
       ],
       "id": "ab29b2a0-71ea-425c-8e92-01e2e174cee9",
@@ -1534,7 +1534,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        8400,
+        8608,
         -592
       ],
       "id": "6bf663d1-4db2-412c-aa73-d7943501ee9f",
@@ -1564,7 +1564,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        7856,
+        8064,
         -960
       ],
       "id": "e75eef70-59a7-4697-8b04-373c54883a70",
@@ -1577,7 +1577,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        4896,
+        5104,
         -144
       ],
       "id": "65af494d-9402-4aab-abec-c8f3050500ac",
@@ -1609,7 +1609,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        4512,
+        4720,
         -144
       ],
       "id": "ca37c744-a547-4e2e-beef-f62e1b5049f3",
@@ -1634,7 +1634,7 @@
           "conditions": [
             {
               "id": "99ec263a-e232-4b91-9603-fea27331309c",
-              "leftValue": "={{ $('If we have conversions for the key word').item.json.used_keyword }}",
+              "leftValue": "={{ $('If we have conversions for the key word').last().json.used_keyword }}",
               "rightValue": " ---autotargeting",
               "operator": {
                 "type": "string",
@@ -1649,7 +1649,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        4048,
+        4256,
         -112
       ],
       "id": "78399e42-113c-4fc7-9fed-7ddb97fadf94",
@@ -1666,7 +1666,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        4512,
+        4720,
         32
       ],
       "id": "87d1b141-5c27-45ef-8b40-8420a63b0fbd",
@@ -1686,7 +1686,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        4320,
+        4528,
         -144
       ],
       "id": "6b7e98b2-cf1f-4582-9335-09d5cad31dd1",
@@ -1701,7 +1701,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        4720,
+        4928,
         -144
       ],
       "id": "53be7ee3-e874-48f6-8f6a-019e70e9006c",
@@ -1722,7 +1722,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        4720,
+        4928,
         16
       ],
       "id": "24912155-ac6a-438c-b9f7-32f799ce1a52",
@@ -1759,6 +1759,30 @@
       ],
       "id": "3bc57ebf-abb7-4e0e-a850-dbc5ea2a6ea0",
       "name": "Merge"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "4db35a49-e130-4ff8-9ccb-7b452205f80a",
+              "name": "threshold",
+              "value": "={{ $('When Executed by Another Workflow').item.json.threshhold }}",
+              "type": "number"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        3232,
+        -192
+      ],
+      "id": "db6e3563-dd82-4416-b389-f1af5609931f",
+      "name": "set threshold"
     }
   ],
   "connections": {
@@ -2165,7 +2189,7 @@
         ],
         [
           {
-            "node": "Find competitors mentions",
+            "node": "set threshold",
             "type": "main",
             "index": 0
           }
@@ -2335,6 +2359,17 @@
           }
         ]
       ]
+    },
+    "set threshold": {
+      "main": [
+        [
+          {
+            "node": "Find competitors mentions",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
@@ -2373,7 +2408,7 @@
       }
     ]
   },
-  "versionId": "f378fbda-8842-4531-91ba-665190a42c9e",
+  "versionId": "927dd891-ec01-42ff-be4f-7a9ea372bb87",
   "triggerCount": 0,
   "shared": [
     {
