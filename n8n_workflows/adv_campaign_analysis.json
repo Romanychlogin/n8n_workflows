@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-07-18T08:31:54.459Z",
-  "updatedAt": "2025-09-29T12:50:01.709Z",
+  "updatedAt": "2025-09-29T12:52:52.904Z",
   "id": "wZGLxMCCmOnDJZ1o",
   "name": "ADV_campaign_analysis",
   "active": false,
@@ -132,8 +132,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        9472,
-        -192
+        9488,
+        -240
       ],
       "id": "b2be9a68-4d5c-4dd1-85c7-4d71ce034518",
       "name": "Insert minus words",
@@ -970,19 +970,6 @@
     },
     {
       "parameters": {
-        "jsCode": "// Достаём массив competitors\n\n\n// Разворачиваем каждый объект в отдельный item\nreturn $json..minus_words.map((c, index) => ({\n  json: {\n    index,\n    minus_word: c.toLowerCase(),\n    list_id:$('Loop Over Items').last().json.list_id    \n  }\n}));"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        9168,
-        -272
-      ],
-      "id": "2f169d1d-9f54-4e14-8d57-39373804f250",
-      "name": "Code"
-    },
-    {
-      "parameters": {
         "workflowId": {
           "__rl": true,
           "value": "xKP6S9XsCeVSgebo",
@@ -1383,9 +1370,9 @@
               "type": "string"
             },
             {
-              "id": "f1d5bde6-376a-40f1-b00d-9723628a1553",
+              "id": "2f7246f7-a167-46be-9212-edc599a35ff3",
               "name": "total_tokens",
-              "value": "={{  $json.usage.total_tokens }}",
+              "value": null,
               "type": "number"
             }
           ]
@@ -1396,11 +1383,12 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        8816,
-        -592
+        9696,
+        -368
       ],
       "id": "6bf663d1-4db2-412c-aa73-d7943501ee9f",
-      "name": "no relevant"
+      "name": "no relevant",
+      "executeOnce": true
     },
     {
       "parameters": {
@@ -1878,6 +1866,19 @@
       ],
       "id": "4decea27-b434-48a0-a948-cd1e5ac4e456",
       "name": "minus_words_array"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Достаём массив competitors\n\n\n// Разворачиваем каждый объект в отдельный item\nreturn $json..minus_words.map((c, index) => ({\n  json: {\n    index,\n    minus_word: c.toLowerCase(),\n    list_id:$('Loop Over Items').last().json.list_id    \n  }\n}));"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        9248,
+        -240
+      ],
+      "id": "2f169d1d-9f54-4e14-8d57-39373804f250",
+      "name": "map_minus_words"
     }
   ],
   "connections": {
@@ -1901,7 +1902,13 @@
     },
     "Insert minus words": {
       "main": [
-        []
+        [
+          {
+            "node": "no relevant",
+            "type": "main",
+            "index": 0
+          }
+        ]
       ]
     },
     "пословное соответствие?": {
@@ -2062,17 +2069,6 @@
         ]
       ]
     },
-    "Code": {
-      "main": [
-        [
-          {
-            "node": "Insert minus words",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Find competitors mentions": {
       "main": [
         [
@@ -2086,10 +2082,16 @@
     },
     "If minuses array is empty": {
       "main": [
-        [],
         [
           {
-            "node": "Code",
+            "node": "no relevant",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "map_minus_words",
             "type": "main",
             "index": 0
           }
@@ -2490,6 +2492,17 @@
           }
         ]
       ]
+    },
+    "map_minus_words": {
+      "main": [
+        [
+          {
+            "node": "Insert minus words",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
@@ -2512,7 +2525,7 @@
         "data": "Проанализируй поисковый запрос пользователя:\"{{key_word}}\" на предмет релевантности сервису \"{{service_description}}\" компании \"{{company_name}}\".\nDefinitions\nРелевантность сервису это запрос соответствующий тематике сервиса, но не содержащий намерения к самостоятельной реализации\nInstructions\nДействуй строго по следующим правилам и согласно заданной последовательности действий:\nшаг 1. Если запрос релевантен сервису компании, верни: \"is_correct_phrase\": true и не выполняй шаг 2 и не вызывай tool get_non_matching_ngrams.\nшаг 2. Если запрос не релевантен сервису компании 1) верни \"is_correct_phrase\": false 2) определи список потенциально допустимых минус слов, для этого обязателен вызов tool get_non_matching_ngrams. Передавай threshold, только если пользователь задал его; иначе не указывай (используется дефолт 0,88). 3)Из полученного от tool списка выдели минимальный набор минус-слов, обеспечивающих блокировку широкого класса подобных нерелевантных запросов.\nТребования к минус-словам: Используй минимально возможную комбинацию слов. Минус-слова должны однозначно исключать нерелевантные запросы.\n\n\n"
       },
       "my_prompt_minus": {
-        "data": "Для фразы пользователя {{key_word}} не релевантной сервису {{service_name}} компании {{company_name }}доступен следующий список ключевых слов {{minus_words}}. \nВерни сокращенный список из 1 или 2 ключевых слов, обеспечивающих блокировку широкого класса подобных нерелевантных запросов.\nТребования к минус-словам:\nРазрешено использовать только элементы входящего списка. Любое видоизменение элементов запрещено\nИспользуй минимально возможную комбинацию слов.\nМинус-слова должны однозначно исключать нерелевантные запросы.\n"
+        "data": "Для фразы пользователя {{key_word}} не релевантной сервису {{service_name}} компании {{company_name}} доступен следующий список ключевых слов {{minus_words}}. \nВерни сокращенный список из 1 или 2 ключевых слов, обеспечивающих блокировку широкого класса подобных нерелевантных запросов.\nТребования к минус-словам:\nРазрешено использовать только элементы входящего списка. Любое видоизменение элементов запрещено\nИспользуй минимально возможную комбинацию слов.\nМинус-слова должны однозначно исключать нерелевантные запросы.\n"
       }
     }
   },
@@ -2531,7 +2544,7 @@
       }
     ]
   },
-  "versionId": "a784e7b0-f8c4-4f4c-b5d3-6a92700cf927",
+  "versionId": "9c078b35-4b28-4672-8b3d-98cacdd2799e",
   "triggerCount": 0,
   "shared": [
     {
