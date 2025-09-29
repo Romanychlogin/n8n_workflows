@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-07-18T08:31:54.459Z",
-  "updatedAt": "2025-09-29T16:13:13.160Z",
+  "updatedAt": "2025-09-29T18:04:52.109Z",
   "id": "wZGLxMCCmOnDJZ1o",
   "name": "ADV_campaign_analysis",
   "active": false,
@@ -132,7 +132,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        10112,
+        10320,
         -240
       ],
       "id": "b2be9a68-4d5c-4dd1-85c7-4d71ce034518",
@@ -422,7 +422,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        10592,
+        10800,
         -1696
       ],
       "id": "233a9fb2-ccfc-4fbd-a2af-5630a61c7a22",
@@ -638,7 +638,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        10544,
+        10752,
         -480
       ],
       "id": "8200d389-0be7-463e-b356-76cf1a2d659f",
@@ -678,7 +678,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        7200,
+        7408,
         -464
       ],
       "id": "78d0f369-bc02-4a48-84af-389ac2c2f8cf",
@@ -918,7 +918,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        9776,
+        9984,
         -1488
       ],
       "id": "e95a4440-545c-4788-a36f-4a8649b6dcf9",
@@ -937,7 +937,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        5504,
+        5712,
         -160
       ],
       "id": "1fe77e75-c3f7-45c6-9745-7d60d1a87ec1",
@@ -957,12 +957,14 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        5712,
+        5920,
         -176
       ],
       "id": "5e99e27e-8a7f-4aa5-9bf8-ac03d750250f",
       "name": "HTTP Request",
       "retryOnFail": true,
+      "waitBetweenTries": 5000,
+      "maxTries": 5,
       "credentials": {
         "openAiApi": {
           "id": "V8R8KiZKXscJQ1sL",
@@ -992,7 +994,7 @@
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1.2,
       "position": [
-        7696,
+        7904,
         -352
       ],
       "id": "5d7ed225-61eb-40cf-86f8-cf487e481e1c",
@@ -1054,7 +1056,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        9392,
+        9600,
         -336
       ],
       "id": "32bea20b-bd2e-4a99-83b0-e9dce5af9140",
@@ -1210,7 +1212,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        11872,
+        12080,
         -48
       ],
       "id": "56bff92d-817b-4fb5-bf93-e3fd6d772376",
@@ -1230,7 +1232,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        11632,
+        11840,
         -32
       ],
       "id": "7a3d33ad-9f12-4f6f-9b09-6d67a00e76a8",
@@ -1263,7 +1265,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        12256,
+        12464,
         -16
       ],
       "id": "9114c887-564f-4e0f-b89d-99a381a7bdde",
@@ -1276,7 +1278,7 @@
       "type": "n8n-nodes-base.stopAndError",
       "typeVersion": 1,
       "position": [
-        12496,
+        12704,
         -144
       ],
       "id": "fdab4be5-884f-4a7f-97b4-8c7ae8b22898",
@@ -1310,7 +1312,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        12080,
+        12288,
         -48
       ],
       "id": "3b984213-9b8c-4d82-8b9f-38dcc24fcdc1",
@@ -1413,7 +1415,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        10320,
+        10528,
         -368
       ],
       "id": "6bf663d1-4db2-412c-aa73-d7943501ee9f",
@@ -1444,7 +1446,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        8480,
+        8688,
         -960
       ],
       "id": "e75eef70-59a7-4697-8b04-373c54883a70",
@@ -1457,7 +1459,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        5312,
+        5520,
         -144
       ],
       "id": "65af494d-9402-4aab-abec-c8f3050500ac",
@@ -1602,8 +1604,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        5136,
-        16
+        5120,
+        32
       ],
       "id": "24912155-ac6a-438c-b9f7-32f799ce1a52",
       "name": "get service data by AD header1",
@@ -1717,7 +1719,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        7456,
+        7664,
         -368
       ],
       "id": "828b3288-b068-4d7e-8518-4fb483913b3e",
@@ -1730,7 +1732,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        7904,
+        8112,
         -352
       ],
       "id": "391c2166-e3d3-4f7d-b266-03511d308753",
@@ -1747,7 +1749,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        8112,
+        8320,
         -352
       ],
       "id": "f25eddc8-852a-4b9e-ba74-d205c9cc2de1",
@@ -1766,7 +1768,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        8512,
+        8720,
         -368
       ],
       "id": "04a89737-a544-41b1-9595-5bf87fd07fb5",
@@ -1786,12 +1788,14 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        8736,
+        8944,
         -368
       ],
       "id": "32c90372-c72f-4ccb-857d-c989ec8918a3",
       "name": "HTTP Request1",
       "retryOnFail": true,
+      "waitBetweenTries": 5000,
+      "maxTries": 5,
       "credentials": {
         "openAiApi": {
           "id": "V8R8KiZKXscJQ1sL",
@@ -1801,12 +1805,12 @@
     },
     {
       "parameters": {
-        "jsCode": "const workflowData = $getWorkflowStaticData('global');\nlet my_prompt = workflowData.my_prompt_minus.data;\n\nconst input = $input.all();\nmy_prompt = my_prompt.replaceAll(\"{{service_name}}\",$('get service data by key word1').last().json.service_name).replaceAll(\"{{key_word}}\", $('Loop Over Items').last().json.key_word).replaceAll(\"{{company_name}}\", $('get service data by key word1').last().json.company_name).replaceAll(\"{{minus_words}}\",JSON.stringify(input));\n\nreturn [\n  {\n    json: {\n     \n     my_prompt:my_prompt\n    }\n  }\n];\n\n"
+        "jsCode": "const workflowData = $getWorkflowStaticData('global');\nlet my_prompt = workflowData.my_prompt_minus.data;\n\nconst input = $input.all();\nmy_prompt = my_prompt.replaceAll(\"{{service_name}}\",$('Set service parameters').last().json.service_name).replaceAll(\"{{key_word}}\", $('Loop Over Items').last().json.key_word).replaceAll(\"{{company_name}}\", $('Set service parameters').last().json.company_name).replaceAll(\"{{minus_words}}\",JSON.stringify(input));\n\nreturn [\n  {\n    json: {\n     \n     my_prompt:my_prompt\n    }\n  }\n];\n\n"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        8320,
+        8528,
         -368
       ],
       "id": "b215a0dc-2fdd-4a42-a694-42e94a46d34c",
@@ -1881,7 +1885,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        9664,
+        9872,
         -240
       ],
       "id": "2f169d1d-9f54-4e14-8d57-39373804f250",
@@ -1894,7 +1898,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        9024,
+        9232,
         -368
       ],
       "id": "f9009c6a-6a7e-4c66-b8a2-c41c8b83d941",
@@ -1907,7 +1911,7 @@
       "type": "n8n-nodes-base.merge",
       "typeVersion": 3.2,
       "position": [
-        10272,
+        10480,
         -1040
       ],
       "id": "e513fecc-579d-47a2-9a2b-aaac244d7f15",
@@ -2026,7 +2030,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        9760,
+        9968,
         -1232
       ],
       "id": "05ffb772-d578-42fc-9520-f57c65b6ff00",
@@ -2066,11 +2070,25 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        8800,
+        9008,
         -1232
       ],
       "id": "d39e81ed-4fb4-493a-b400-dee069a12b96",
       "name": "if not exact competitor match"
+    },
+    {
+      "parameters": {
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        5344,
+        -144
+      ],
+      "id": "bd1dae7e-1eb7-4c72-b91a-c3fd1aaefec4",
+      "name": "Set service parameters"
     }
   ],
   "connections": {
@@ -2529,7 +2547,7 @@
       "main": [
         [
           {
-            "node": "Set prompt",
+            "node": "Set service parameters",
             "type": "main",
             "index": 0
           }
@@ -2540,7 +2558,7 @@
       "main": [
         [
           {
-            "node": "Set prompt",
+            "node": "Set service parameters",
             "type": "main",
             "index": 0
           }
@@ -2740,6 +2758,17 @@
           }
         ]
       ]
+    },
+    "Set service parameters": {
+      "main": [
+        [
+          {
+            "node": "Set prompt",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
@@ -2774,14 +2803,15 @@
       {
         "json": {
           "id": "wZGLxMCCmOnDJZ1o",
-          "root_execution_id": 43553,
+          "root_execution_id": 44139,
           "company_id": 1,
-          "threshhold": "0.79"
+          "threshhold": "0.79",
+          "import_id": 5
         }
       }
     ]
   },
-  "versionId": "9af9c11f-eed2-4cf2-851f-321f9873c4a4",
+  "versionId": "b187eeb6-0307-4a27-a158-88e3ca5ed367",
   "triggerCount": 0,
   "shared": [
     {
