@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-07-18T08:31:54.459Z",
-  "updatedAt": "2025-09-29T11:19:49.775Z",
+  "updatedAt": "2025-09-29T11:26:21.006Z",
   "id": "wZGLxMCCmOnDJZ1o",
   "name": "ADV_campaign_analysis",
   "active": false,
@@ -1721,9 +1721,9 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "SELECT * FROM (\n  WITH incoming AS (\n    SELECT DISTINCT trim(both ' ' from s) AS word\n    FROM unnest(ARRAY[$1]::text[]) AS t(s)\n  )\n  SELECT i.word\n  FROM incoming i\n  LEFT JOIN minus_words mw\n    ON lower(mw.minus_word) = lower(i.word)\n\tAND mw.company_id=$2\n  WHERE mw.minus_word IS NULL\n) q;",
+        "query": "SELECT * FROM (\n  WITH incoming AS (\n    SELECT DISTINCT trim(both ' ' from s) AS word\n    FROM unnest($1::text[]) AS t(s)\n  )\n  SELECT i.word\n  FROM incoming i\n  LEFT JOIN minus_words mw\n    ON lower(mw.minus_word) = lower(i.word)\n\tAND mw.company_id=$2\n  WHERE mw.minus_word IS NULL\n) q;",
         "options": {
-          "queryReplacement": "=[{{'{\"scratch wiki\",\"wiki sprites\",\"sprites\"}'}},{{$json.company_id}}]"
+          "queryReplacement": "=[{{'{\\\"scratch wiki\\\",\\\"wiki sprites\\\",\\\"sprites\\\"}'}},{{$json.company_id}}]"
         }
       },
       "type": "n8n-nodes-base.postgres",
@@ -2479,14 +2479,14 @@
       {
         "json": {
           "id": "wZGLxMCCmOnDJZ1o",
-          "root_execution_id": 42935,
+          "root_execution_id": 42980,
           "company_id": 1,
           "threshhold": "0.79"
         }
       }
     ]
   },
-  "versionId": "49b2122c-1e67-45d2-b873-1b88be414417",
+  "versionId": "1bde1da8-0210-48b9-8c01-73c3984cf28c",
   "triggerCount": 0,
   "shared": [
     {
