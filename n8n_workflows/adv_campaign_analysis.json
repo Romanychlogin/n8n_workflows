@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-07-18T08:31:54.459Z",
-  "updatedAt": "2025-09-29T10:47:25.830Z",
+  "updatedAt": "2025-09-29T10:56:34.615Z",
   "id": "wZGLxMCCmOnDJZ1o",
   "name": "ADV_campaign_analysis",
   "active": false,
@@ -1707,7 +1707,7 @@
     },
     {
       "parameters": {
-        "jsCode": "\n// Преобразуем в строку формата ARRAY['...','...']\nconst result = \n '{' +\n  $json.non_matches.map(s =>\n    '\"' + String(s).replace(/\\\\/g,'\\\\\\\\').replace(/\"/g,'\\\\\"') + '\"'\n  ).join(',') +\n  '}';\n\nreturn [{ json: { array_string:result ,company_id:$('set input params').last().json.args.company_id } }];\n\n"
+        "jsCode": "\n// Преобразуем в строку формата ARRAY['...','...']\nconst result = \n\n'[' + $json.non_matches.map(v => '\\'' + String(v).replace(/\\\\/g,'\\\\\\\\').replace(/\"/g,'\\\\\"') + '\\'').join(',') + ']';\n\nreturn [{ json: { array_string:result ,company_id:$('set input params').last().json.args.company_id } }];\n\n"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -2479,14 +2479,14 @@
       {
         "json": {
           "id": "wZGLxMCCmOnDJZ1o",
-          "root_execution_id": 42818,
+          "root_execution_id": 42865,
           "company_id": 1,
           "threshhold": "0.79"
         }
       }
     ]
   },
-  "versionId": "a769f057-a9c3-4e17-b64a-4c57c7e3ccdb",
+  "versionId": "ded3294b-af32-4276-9981-25eb47afec5c",
   "triggerCount": 0,
   "shared": [
     {
