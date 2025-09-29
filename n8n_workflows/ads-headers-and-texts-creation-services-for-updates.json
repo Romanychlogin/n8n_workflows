@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-28T11:31:13.045Z",
-  "updatedAt": "2025-09-29T16:30:09.601Z",
+  "updatedAt": "2025-09-29T16:35:26.746Z",
   "id": "lBAh8kjoXRX0aGUF",
   "name": "ADS headers and texts creation services for updates",
   "active": false,
@@ -887,9 +887,9 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "select count(key_word_id) AS total from key_words where is_relevant=true and is_adv_processed=false and company_id=2",
+        "query": "select count(list_id) AS total from current_list where resolution='to add' and is_adv_processed=false and company_id=$1 and report_id=$2",
         "options": {
-          "queryReplacement": "={{ $('set variables').item.json.company_id }}"
+          "queryReplacement": "=[{{ $('set variables').item.json.company_id }},{{ $('set variables').item.json.import_id }}]"
         }
       },
       "type": "n8n-nodes-base.postgres",
@@ -917,23 +917,23 @@
         },
         "table": {
           "__rl": true,
-          "value": "key_words",
+          "value": "current_list",
           "mode": "list",
-          "cachedResultName": "key_words"
+          "cachedResultName": "current_list"
         },
         "columns": {
           "mappingMode": "defineBelow",
           "value": {
             "is_adv_processed": "={{ true }}",
-            "key_word_id": "={{ $('reset first_item').last().json.key_word_id }}"
+            "list_id": "={{$('Loop Over Items').last().json.list_id}}"
           },
           "matchingColumns": [
-            "key_word_id"
+            "list_id"
           ],
           "schema": [
             {
-              "id": "key_word_id",
-              "displayName": "key_word_id",
+              "id": "list_id",
+              "displayName": "list_id",
               "required": false,
               "defaultMatch": false,
               "display": true,
@@ -942,19 +942,9 @@
               "removed": false
             },
             {
-              "id": "company_id",
-              "displayName": "company_id",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "number",
-              "canBeUsedToMatch": true,
-              "removed": true
-            },
-            {
               "id": "key_word",
               "displayName": "key_word",
-              "required": true,
+              "required": false,
               "defaultMatch": false,
               "display": true,
               "type": "string",
@@ -962,8 +952,8 @@
               "removed": true
             },
             {
-              "id": "wordstat_count",
-              "displayName": "wordstat_count",
+              "id": "campaign_id",
+              "displayName": "campaign_id",
               "required": false,
               "defaultMatch": false,
               "display": true,
@@ -972,8 +962,18 @@
               "removed": true
             },
             {
-              "id": "service_id",
-              "displayName": "service_id",
+              "id": "used_keyword",
+              "displayName": "used_keyword",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "group_id",
+              "displayName": "group_id",
               "required": false,
               "defaultMatch": false,
               "display": true,
@@ -982,32 +982,72 @@
               "removed": true
             },
             {
-              "id": "wordstat_parsed",
-              "displayName": "wordstat_parsed",
+              "id": "condition_type",
+              "displayName": "condition_type",
               "required": false,
               "defaultMatch": false,
               "display": true,
-              "type": "boolean",
+              "type": "string",
               "canBeUsedToMatch": true,
               "removed": true
             },
             {
-              "id": "from_wordstat",
-              "displayName": "from_wordstat",
+              "id": "category",
+              "displayName": "category",
               "required": false,
               "defaultMatch": false,
               "display": true,
-              "type": "boolean",
+              "type": "string",
               "canBeUsedToMatch": true,
               "removed": true
             },
             {
-              "id": "is_relevant",
-              "displayName": "is_relevant",
+              "id": "ads_header",
+              "displayName": "ads_header",
               "required": false,
               "defaultMatch": false,
               "display": true,
-              "type": "boolean",
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "resolution",
+              "displayName": "resolution",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "count_views",
+              "displayName": "count_views",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "count_clics",
+              "displayName": "count_clics",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "count_convetions",
+              "displayName": "count_convetions",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
               "canBeUsedToMatch": true,
               "removed": true
             },
@@ -1022,12 +1062,32 @@
               "removed": true
             },
             {
-              "id": "minus_words_processed",
-              "displayName": "minus_words_processed",
+              "id": "company_id",
+              "displayName": "company_id",
               "required": false,
               "defaultMatch": false,
               "display": true,
-              "type": "boolean",
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "report_id",
+              "displayName": "report_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "service_id",
+              "displayName": "service_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
               "canBeUsedToMatch": true,
               "removed": true
             },
@@ -1681,7 +1741,7 @@
       }
     ]
   },
-  "versionId": "01380981-59fd-40e6-853f-8caae810115c",
+  "versionId": "6eafd076-a5f3-4fbb-a998-67f14e7a224d",
   "triggerCount": 0,
   "shared": [
     {
