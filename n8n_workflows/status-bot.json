@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-19T15:26:59.886Z",
-  "updatedAt": "2025-09-24T07:50:14.615Z",
+  "updatedAt": "2025-09-29T12:40:07.115Z",
   "id": "SptAKErjQeOJuESk",
   "name": "status bot",
   "active": true,
@@ -127,7 +127,8 @@
         0
       ],
       "id": "583b006b-6ca8-4ce3-88f6-ce8b4d41125a",
-      "name": "Schedule Trigger for statuses"
+      "name": "Schedule Trigger for statuses",
+      "disabled": true
     },
     {
       "parameters": {
@@ -441,7 +442,8 @@
         624
       ],
       "id": "77941827-d4c4-4bac-b2e8-fb91b9989957",
-      "name": "Schedule Trigger for completed processes"
+      "name": "Schedule Trigger for completed processes",
+      "disabled": true
     },
     {
       "parameters": {
@@ -650,7 +652,7 @@
     },
     {
       "parameters": {
-        "chatId": "-1003052639964",
+        "chatId": "-3196763261/5",
         "text": "={{ $json.text }}",
         "additionalFields": {
           "appendAttribution": true,
@@ -905,10 +907,32 @@
           "Timezone": "Europe/Moscow (UTC+03:00)"
         }
       }
+    ],
+    "Telegram Trigger": [
+      {
+        "json": {
+          "update_id": 965439204,
+          "channel_post": {
+            "message_id": 180,
+            "sender_chat": {
+              "id": -1003052639964,
+              "title": "Yandex Direct Incidents",
+              "type": "channel"
+            },
+            "chat": {
+              "id": -1003052639964,
+              "title": "Yandex Direct Incidents",
+              "type": "channel"
+            },
+            "date": 1759149220,
+            "text": "test"
+          }
+        }
+      }
     ]
   },
-  "versionId": "28939be2-4e65-4a4a-857e-80721cb7d693",
-  "triggerCount": 3,
+  "versionId": "1104e94b-4ff1-427d-a1d8-5586360369e8",
+  "triggerCount": 1,
   "shared": [
     {
       "createdAt": "2025-09-19T15:26:59.886Z",
