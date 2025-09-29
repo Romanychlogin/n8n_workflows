@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-25T13:33:58.106Z",
-  "updatedAt": "2025-09-28T09:38:00.793Z",
+  "updatedAt": "2025-09-29T16:19:25.467Z",
   "id": "0J5cvuaSz3IhDS99",
   "name": "campaign core update",
   "active": false,
@@ -421,7 +421,7 @@
             {
               "id": "fda82fe6-7e78-49d2-8130-43cb54ef5d8a",
               "name": "company_id",
-              "value": "={{ $('company_id').item.json.company_id }}",
+              "value": "={{ $('company_record_id').item.json.company_id }}",
               "type": "number"
             },
             {
@@ -429,6 +429,12 @@
               "name": "threshhold",
               "value": "={{ $('Set variables').item.json.threshhold }}",
               "type": "string"
+            },
+            {
+              "id": "6e3154c1-d961-4edb-8615-648bfee279e1",
+              "name": "record_id",
+              "value": "={{ $('company_record_id').item.json.record_id }}",
+              "type": "number"
             }
           ]
         },
@@ -757,13 +763,19 @@
             {
               "id": "fda82fe6-7e78-49d2-8130-43cb54ef5d8a",
               "name": "company_id",
-              "value": "={{ $('company_id').item.json.company_id }}",
+              "value": "={{ $('company_record_id').item.json.company_id }}",
               "type": "number"
             },
             {
               "id": "da41f8d6-0b51-4e6c-91c3-96c8ca5d1659",
               "name": "threshhold",
               "value": "={{ $('Set variables').item.json.threshhold }}",
+              "type": "string"
+            },
+            {
+              "id": "242e22ab-d73d-4b1f-b148-3cd44943fe6f",
+              "name": "record_id",
+              "value": "={{ $('company_record_id').item.json.record_id }}",
               "type": "string"
             }
           ]
@@ -892,30 +904,6 @@
         "assignments": {
           "assignments": [
             {
-              "id": "4dcef6dc-af71-47eb-9f11-3223f5cbab28",
-              "name": "",
-              "value": "",
-              "type": "string"
-            }
-          ]
-        },
-        "includeOtherFields": true,
-        "options": {}
-      },
-      "type": "n8n-nodes-base.set",
-      "typeVersion": 3.4,
-      "position": [
-        1920,
-        -288
-      ],
-      "id": "3ed57cde-7bf2-46b5-97fa-dcf269af9ef0",
-      "name": "company_id"
-    },
-    {
-      "parameters": {
-        "assignments": {
-          "assignments": [
-            {
               "id": "99e6bb89-0b33-4e72-b5be-2e118b69afa2",
               "name": "workflow_name",
               "value": "ADV_campaign_analysis",
@@ -933,6 +921,30 @@
       ],
       "id": "cf0b4dae-7648-4709-af1b-73cf0d71ff35",
       "name": "ADV_campaign_analysis"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "4dcef6dc-af71-47eb-9f11-3223f5cbab28",
+              "name": "",
+              "value": "",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1920,
+        -288
+      ],
+      "id": "3ed57cde-7bf2-46b5-97fa-dcf269af9ef0",
+      "name": "company_record_id"
     }
   ],
   "connections": {
@@ -1013,7 +1025,7 @@
       "main": [
         [
           {
-            "node": "company_id",
+            "node": "company_record_id",
             "type": "main",
             "index": 0
           }
@@ -1296,18 +1308,7 @@
       "main": [
         [
           {
-            "node": "company_id",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "company_id": {
-      "main": [
-        [
-          {
-            "node": "Get current step saved",
+            "node": "company_record_id",
             "type": "main",
             "index": 0
           }
@@ -1319,6 +1320,17 @@
         [
           {
             "node": "Execute a SQL query1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "company_record_id": {
+      "main": [
+        [
+          {
+            "node": "Get current step saved",
             "type": "main",
             "index": 0
           }
@@ -1340,7 +1352,7 @@
       }
     ]
   },
-  "versionId": "62fe634b-a9a8-4e39-b20a-b86785b0d331",
+  "versionId": "f9e5d76c-63ee-402f-b54b-1a0ea181a051",
   "triggerCount": 0,
   "shared": [
     {
