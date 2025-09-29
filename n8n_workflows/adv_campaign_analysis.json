@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-07-18T08:31:54.459Z",
-  "updatedAt": "2025-09-29T11:39:32.925Z",
+  "updatedAt": "2025-09-29T11:46:53.907Z",
   "id": "wZGLxMCCmOnDJZ1o",
   "name": "ADV_campaign_analysis",
   "active": false,
@@ -1723,7 +1723,7 @@
         "operation": "executeQuery",
         "query": "WITH incoming AS (\n  SELECT DISTINCT trim(both ' ' FROM jsonb_array_elements_text($1::jsonb)) AS word\n)\nSELECT i.word\nFROM incoming i\nLEFT JOIN minus_words mw\n  ON lower(mw.minus_word) = lower(i.word)\nWHERE mw.minus_word IS NULL AND mw.company_id=$2\nORDER BY i.word;",
         "options": {
-          "queryReplacement": "=[{{$json.array_string}},{{$json.company_id}}]"
+          "queryReplacement": "=[{{JSON.stringify($json.array_string)}},{{$json.company_id}}]"
         }
       },
       "type": "n8n-nodes-base.postgres",
@@ -2479,14 +2479,14 @@
       {
         "json": {
           "id": "wZGLxMCCmOnDJZ1o",
-          "root_execution_id": 43008,
+          "root_execution_id": 43033,
           "company_id": 1,
           "threshhold": "0.79"
         }
       }
     ]
   },
-  "versionId": "16298548-9d57-4d9f-9ce0-326a907f0d23",
+  "versionId": "db468554-7dcc-4f9d-9ccb-203497c13cf3",
   "triggerCount": 0,
   "shared": [
     {
