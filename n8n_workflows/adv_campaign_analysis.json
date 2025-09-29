@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-07-18T08:31:54.459Z",
-  "updatedAt": "2025-09-29T12:32:15.465Z",
+  "updatedAt": "2025-09-29T12:50:01.709Z",
   "id": "wZGLxMCCmOnDJZ1o",
   "name": "ADV_campaign_analysis",
   "active": false,
@@ -970,12 +970,12 @@
     },
     {
       "parameters": {
-        "jsCode": "// Достаём массив competitors\nconst variants = JSON.parse($json.output[1].content[0].text).minus_words;\n\n// Разворачиваем каждый объект в отдельный item\nreturn variants.map((c, index) => ({\n  json: {\n    index,\n    minus_word: c.toLowerCase(),\n    list_id:$json.list_id    \n  }\n}));"
+        "jsCode": "// Достаём массив competitors\n\n\n// Разворачиваем каждый объект в отдельный item\nreturn $json..minus_words.map((c, index) => ({\n  json: {\n    index,\n    minus_word: c.toLowerCase(),\n    list_id:$('Loop Over Items').last().json.list_id    \n  }\n}));"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        9088,
+        9168,
         -272
       ],
       "id": "2f169d1d-9f54-4e14-8d57-39373804f250",
@@ -1021,7 +1021,7 @@
           "conditions": [
             {
               "id": "0b8b9cb2-368a-4ef4-b4b4-560b030f71f4",
-              "leftValue": "={{ JSON.parse($json.output[1].content[0].text).minus_words }}",
+              "leftValue": "={{ $json.minus_words }}",
               "rightValue": "",
               "operator": {
                 "type": "array",
@@ -1037,7 +1037,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        8816,
+        8976,
         -336
       ],
       "id": "32bea20b-bd2e-4a99-83b0-e9dce5af9140",
@@ -1855,6 +1855,29 @@
       ],
       "id": "a5a8ff36-5943-474f-8d7e-0dff776dddfd",
       "name": "Code2"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "1aabf3c8-2695-4fb8-a2d0-3b260f7e93fa",
+              "name": "minus_words",
+              "value": "={{ JSON.parse($json.output[1].content[0].text) }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        8752,
+        -320
+      ],
+      "id": "4decea27-b434-48a0-a948-cd1e5ac4e456",
+      "name": "minus_words_array"
     }
   ],
   "connections": {
@@ -2445,12 +2468,34 @@
           }
         ]
       ]
+    },
+    "HTTP Request1": {
+      "main": [
+        [
+          {
+            "node": "minus_words_array",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "minus_words_array": {
+      "main": [
+        [
+          {
+            "node": "If minuses array is empty",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
     "executionOrder": "v1",
     "saveDataErrorExecution": "all",
-    "saveDataSuccessExecution": "none",
+    "saveDataSuccessExecution": "all",
     "saveExecutionProgress": false,
     "callerPolicy": "workflowsFromSameOwner",
     "errorWorkflow": "v2Z32ISEUzsFYnZw"
@@ -2479,14 +2524,14 @@
       {
         "json": {
           "id": "wZGLxMCCmOnDJZ1o",
-          "root_execution_id": 43170,
+          "root_execution_id": 43197,
           "company_id": 1,
           "threshhold": "0.79"
         }
       }
     ]
   },
-  "versionId": "4150b48b-fb33-42b4-a4ea-84fd8dfbcb34",
+  "versionId": "a784e7b0-f8c4-4f4c-b5d3-6a92700cf927",
   "triggerCount": 0,
   "shared": [
     {
