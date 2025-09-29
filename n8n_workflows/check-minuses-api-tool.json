@@ -1,30 +1,11 @@
 {
   "createdAt": "2025-09-01T13:14:53.645Z",
-  "updatedAt": "2025-09-28T09:14:51.449Z",
+  "updatedAt": "2025-09-29T06:54:23.884Z",
   "id": "bhBscYglbFhVyIcL",
   "name": "Check minuses API tool",
   "active": false,
   "isArchived": false,
   "nodes": [
-    {
-      "parameters": {
-        "httpMethod": "POST",
-        "path": "tool/minus-non-matches",
-        "responseMode": "lastNode",
-        "options": {}
-      },
-      "id": "f9c28bf6-aa1f-4511-9533-285b8b0819a2",
-      "name": "Webhook In",
-      "type": "n8n-nodes-base.webhook",
-      "typeVersion": 1,
-      "position": [
-        528,
-        288
-      ],
-      "webhookId": "89e3a4df-e4b5-421b-a33b-3e309d1d0fcb",
-      "disabled": true,
-      "notes": "POST { phrase: string, threshold?: number }\nReturns { non_matches: string[], meta: {...} }"
-    },
     {
       "parameters": {
         "jsCode": "// === Code: normalize_and_ngrams ===\n// INPUT:  HTTP Webhook body { phrase: string, threshold?: number }\n// OUTPUT: { threshold: number, candidates: string[], tokens: string[] }\n// PURPOSE:\n//   1) Normalize the phrase (lowercase, keep letters/digits/underscore and - + #)\n//   2) Remove Russian prepositions as separate words (not touching - + #)\n//   3) Tokenize and build 1..3-gram unique candidates preserving order\n//   4) Provide threshold (default 0.88) downstream\n\n// Input JSON: { company_name, text, threshold? }\nconst body = $json;\nconst prepositions = [\n  \"в\",\"без\",\"до\",\"из\",\"к\",\"и\",\"на\",\"по\",\"о\",\"от\",\"перед\",\"при\",\n  \"через\",\"с\",\"у\",\"за\",\"над\",\"об\",\"под\",\"про\",\"для\",\"между\"\n];\n\n// Нормализуем регистр\nlet text = String(body.args.phrase ?? \"\").toLowerCase();\n\n// Экранируем спецсимволы\nconst escape = s => s.replace(/[.*+?^${}()|[\\]\\\\]/g, \"\\\\$&\");\nconst alts = prepositions.map(escape).join(\"|\");\n\n// Разрешаем буквы, цифры, подчёркивание, а также - + #\nconst re = new RegExp(\n  `(^|[^\\\\p{L}\\\\p{N}_\\\\-+#])(?:${alts})(?=$|[^\\\\p{L}\\\\p{N}_\\\\-+#])`,\n  \"giu\"\n);\n\n// Удаляем предлоги, сохраняя левый разделитель\ntext = text.replace(re, \"$1\");\n\n// Чистим пробелы\ntext = text.replace(/\\s+/g, \" \").trim();\n//const company = body.company_name;\nconst threshold = Math.min(Math.max(\n  Number(String(body?.args?.threshold ?? 0.88).replace(',', '.').trim()) || 0.88\n, 0), 1);\n\nconst tokens = (text.match(/[A-Za-zА-Яа-яЁё0-9][A-Za-zА-Яа-яЁё0-9&.\\-]{0,}/g) || [])\n  .map(s => s.trim())\n  .filter(Boolean);\n\nconst MAX_N = 3;\nconst set = new Set();\nfor (let i = 0; i < tokens.length; i++) {\n  for (let n = 1; n <= MAX_N && i + n <= tokens.length; n++) {\n    const phrase = tokens.slice(i, i+n).join(' ');\n    set.add(phrase);\n  }\n}\nlet candidates = Array.from(set);\n// если пусто — добавляем пустую строку\nif (candidates.length === 0) {\n  candidates = [\"\"];\n}\n\nreturn [{ json: { threshold, candidates,MAX_N } }];\n"
@@ -154,48 +135,6 @@
       "notes": "Produces the final response for the Webhook: list of n-grams that have no strong match."
     },
     {
-      "parameters": {},
-      "type": "n8n-nodes-base.manualTrigger",
-      "typeVersion": 1,
-      "position": [
-        432,
-        512
-      ],
-      "id": "bc0025f5-2dd9-4802-82bd-882c39ac2aee",
-      "name": "When clicking ‘Execute workflow’",
-      "disabled": true
-    },
-    {
-      "parameters": {
-        "assignments": {
-          "assignments": [
-            {
-              "id": "7d965486-1297-4240-af7c-2be7556a7b8d",
-              "name": "phrase",
-              "value": "онлайн школа кодинга для взрослых бесплатно",
-              "type": "string"
-            },
-            {
-              "id": "3f303f2d-b5bb-487d-88c0-f44550961553",
-              "name": "threshold",
-              "value": 0.88,
-              "type": "number"
-            }
-          ]
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.set",
-      "typeVersion": 3.4,
-      "position": [
-        624,
-        496
-      ],
-      "id": "1c3f6f13-03b5-436c-9e99-352fb8599ff9",
-      "name": "Edit Fields",
-      "disabled": true
-    },
-    {
       "parameters": {
         "inputSource": "passthrough"
       },
@@ -223,17 +162,6 @@
     }
   ],
   "connections": {
-    "Webhook In": {
-      "main": [
-        [
-          {
-            "node": "Code: normalize_and_ngrams",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Code: normalize_and_ngrams": {
       "main": [
         [
@@ -300,28 +228,6 @@
         ]
       ]
     },
-    "When clicking ‘Execute workflow’": {
-      "main": [
-        [
-          {
-            "node": "Edit Fields",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Edit Fields": {
-      "main": [
-        [
-          {
-            "node": "Code: normalize_and_ngrams",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "When Executed by Another Workflow": {
       "main": [
         [
@@ -336,7 +242,7 @@
   },
   "settings": {
     "executionOrder": "v1",
-    "saveDataSuccessExecution": "all",
+    "saveDataSuccessExecution": "none",
     "callerPolicy": "workflowsFromSameOwner"
   },
   "staticData": null,
@@ -360,7 +266,7 @@
       }
     ]
   },
-  "versionId": "e3841399-bd47-48b9-9574-3be7b693b08c",
+  "versionId": "d7e1f207-7b64-4ed8-a070-e79924bc3d35",
   "triggerCount": 1,
   "shared": [
     {
