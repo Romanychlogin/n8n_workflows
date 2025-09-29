@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-07-18T08:31:54.459Z",
-  "updatedAt": "2025-09-29T15:27:36.577Z",
+  "updatedAt": "2025-09-29T15:39:39.308Z",
   "id": "wZGLxMCCmOnDJZ1o",
   "name": "ADV_campaign_analysis",
   "active": false,
@@ -132,7 +132,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        9488,
+        9696,
         -240
       ],
       "id": "b2be9a68-4d5c-4dd1-85c7-4d71ce034518",
@@ -422,7 +422,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        10016,
+        10224,
         -1264
       ],
       "id": "233a9fb2-ccfc-4fbd-a2af-5630a61c7a22",
@@ -638,7 +638,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        9920,
+        10128,
         -480
       ],
       "id": "8200d389-0be7-463e-b356-76cf1a2d659f",
@@ -918,7 +918,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        9392,
+        9600,
         -1104
       ],
       "id": "e95a4440-545c-4788-a36f-4a8649b6dcf9",
@@ -1054,7 +1054,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        8976,
+        9184,
         -336
       ],
       "id": "32bea20b-bd2e-4a99-83b0-e9dce5af9140",
@@ -1210,7 +1210,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        11248,
+        11456,
         -48
       ],
       "id": "56bff92d-817b-4fb5-bf93-e3fd6d772376",
@@ -1230,7 +1230,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        11008,
+        11216,
         -32
       ],
       "id": "7a3d33ad-9f12-4f6f-9b09-6d67a00e76a8",
@@ -1263,7 +1263,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        11632,
+        11840,
         -16
       ],
       "id": "9114c887-564f-4e0f-b89d-99a381a7bdde",
@@ -1276,7 +1276,7 @@
       "type": "n8n-nodes-base.stopAndError",
       "typeVersion": 1,
       "position": [
-        11872,
+        12080,
         -144
       ],
       "id": "fdab4be5-884f-4a7f-97b4-8c7ae8b22898",
@@ -1310,7 +1310,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        11456,
+        11664,
         -48
       ],
       "id": "3b984213-9b8c-4d82-8b9f-38dcc24fcdc1",
@@ -1413,7 +1413,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        9696,
+        9904,
         -368
       ],
       "id": "6bf663d1-4db2-412c-aa73-d7943501ee9f",
@@ -1876,39 +1876,29 @@
     },
     {
       "parameters": {
-        "assignments": {
-          "assignments": [
-            {
-              "id": "1aabf3c8-2695-4fb8-a2d0-3b260f7e93fa",
-              "name": "minus_words",
-              "value": "={{ JSON.parse($json.output[1].content[0].text) }}",
-              "type": "object"
-            }
-          ]
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.set",
-      "typeVersion": 3.4,
-      "position": [
-        8752,
-        -320
-      ],
-      "id": "4decea27-b434-48a0-a948-cd1e5ac4e456",
-      "name": "minus_words_array"
-    },
-    {
-      "parameters": {
-        "jsCode": "// Достаём массив competitors\n\n\n// Разворачиваем каждый объект в отдельный item\nreturn $json..minus_words.map((c, index) => ({\n  json: {\n    index,\n    minus_word: c.toLowerCase(),\n    list_id:$('Loop Over Items').last().json.list_id    \n  }\n}));"
+        "jsCode": "// Достаём массив competitors\n\n\n// Разворачиваем каждый объект в отдельный item\nreturn $json.minus_words.map((c, index) => ({\n  json: {\n    index,\n    minus_word: c.toLowerCase(),\n    list_id:$('Loop Over Items').last().json.list_id    \n  }\n}));"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        9248,
+        9456,
         -240
       ],
       "id": "2f169d1d-9f54-4e14-8d57-39373804f250",
       "name": "map_minus_words"
+    },
+    {
+      "parameters": {
+        "jsCode": "const parsed = JSON.parse($input.first().json.output[1].content[0].text);\n\n// Если иногда приходит уже массив — обработаем и этот случай\nconst list = Array.isArray(parsed) ? parsed : parsed.minus_words;\n\nreturn [{ json: { minus_words: list } }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        8816,
+        -368
+      ],
+      "id": "f9009c6a-6a7e-4c66-b8a2-c41c8b83d941",
+      "name": "minus_words_array"
     }
   ],
   "connections": {
@@ -2512,22 +2502,22 @@
         ]
       ]
     },
-    "minus_words_array": {
+    "map_minus_words": {
       "main": [
         [
           {
-            "node": "If minuses array is empty",
+            "node": "Insert minus words",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "map_minus_words": {
+    "minus_words_array": {
       "main": [
         [
           {
-            "node": "Insert minus words",
+            "node": "If minuses array is empty",
             "type": "main",
             "index": 0
           }
@@ -2567,14 +2557,14 @@
       {
         "json": {
           "id": "wZGLxMCCmOnDJZ1o",
-          "root_execution_id": 43484,
+          "root_execution_id": 43530,
           "company_id": 1,
           "threshhold": "0.79"
         }
       }
     ]
   },
-  "versionId": "1e9320c1-6824-4c2b-89dd-1f4655e197b4",
+  "versionId": "48873e5b-ad2d-4f81-b130-90c29a1e8939",
   "triggerCount": 0,
   "shared": [
     {
