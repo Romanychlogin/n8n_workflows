@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-25T13:56:50.878Z",
-  "updatedAt": "2025-09-26T14:09:12.609Z",
+  "updatedAt": "2025-09-29T16:17:46.220Z",
   "id": "4f5WJ06ItW520O75",
   "name": "ADV_campaign_data_load",
   "active": false,
@@ -594,29 +594,6 @@
     },
     {
       "parameters": {
-        "assignments": {
-          "assignments": [
-            {
-              "id": "17df7f34-56a6-4d29-a7d3-9edfd4afaadb",
-              "name": "company_id",
-              "value": "={{ $('get client id').item.json.company_id }}",
-              "type": "string"
-            }
-          ]
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.set",
-      "typeVersion": 3.4,
-      "position": [
-        2832,
-        -304
-      ],
-      "id": "1cc27ba6-b605-4602-b45b-c5b4fb7ac0e9",
-      "name": "company_id1"
-    },
-    {
-      "parameters": {
         "jsCode": "// Function-Node (Run Once)\nconst workflowData = $getWorkflowStaticData('global');\nworkflowData.steps_passed = 0;\nworkflowData.tokens_used = 0;\nworkflowData.step = 0;\nreturn $input.all();\n"
       },
       "type": "n8n-nodes-base.code",
@@ -847,6 +824,35 @@
       ],
       "id": "41224e5e-4b96-44b0-a6de-0270fad992e6",
       "name": "reset step"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "17df7f34-56a6-4d29-a7d3-9edfd4afaadb",
+              "name": "company_id",
+              "value": "={{ $('get client id').item.json.company_id }}",
+              "type": "string"
+            },
+            {
+              "id": "d12188b1-d423-4782-98c9-1d584a01ae44",
+              "name": "report_id",
+              "value": "={{ $('report import record').last().json.import_id }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2832,
+        -304
+      ],
+      "id": "1cc27ba6-b605-4602-b45b-c5b4fb7ac0e9",
+      "name": "company_id_report_id"
     }
   ],
   "connections": {
@@ -1025,7 +1031,7 @@
       "main": [
         [
           {
-            "node": "company_id1",
+            "node": "company_id_report_id",
             "type": "main",
             "index": 0
           }
@@ -1145,14 +1151,14 @@
       {
         "json": {
           "id": "4f5WJ06ItW520O75",
-          "root_execution_id": 32863,
+          "root_execution_id": 32924,
           "yandex_report_dropbox_file_path": "https://www.dropbox.com/scl/fi/9kr6iebx4q6cstzp2xuwb/2025-09-04_2025-09-24_searchquery_kiberone-saratov.csv?rlkey=cew8cc5k2rfbq5wrco9inb4eu&dl=1",
           "threshhold": "0.88"
         }
       }
     ]
   },
-  "versionId": "9db83dae-76ed-4336-99db-b2441d888871",
+  "versionId": "5c6e067f-dfcf-4180-8a03-7aff393bb1a7",
   "triggerCount": 0,
   "shared": [
     {
