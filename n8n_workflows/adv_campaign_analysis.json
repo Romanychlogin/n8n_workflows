@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-07-18T08:31:54.459Z",
-  "updatedAt": "2025-09-29T11:59:00.880Z",
+  "updatedAt": "2025-09-29T12:32:15.465Z",
   "id": "wZGLxMCCmOnDJZ1o",
   "name": "ADV_campaign_analysis",
   "active": false,
@@ -1783,7 +1783,7 @@
     },
     {
       "parameters": {
-        "jsCode": "const workflowData = $getWorkflowStaticData('global');\nlet my_prompt = workflowData.my_prompt_minus.data;\n\nfor (const item of $input.all()) {\n  item.json.my_prompt = my_prompt.replaceAll(\"{{service_name}}\",item.json.service_name ).replaceAll(\"{{key_word}}\", $('Loop Over Items').last().json.key_word).replaceAll(\"{{company_name}}\", item.json.company_name);\n}\n\nreturn $input.all();"
+        "jsCode": "const workflowData = $getWorkflowStaticData('global');\nlet my_prompt = workflowData.my_prompt_minus.data;\n\nconst input = $input.all();\nmy_prompt = my_prompt.replaceAll(\"{{service_name}}\",$('get service data by key word1').last().json.service_name).replaceAll(\"{{key_word}}\", $('Loop Over Items').last().json.key_word).replaceAll(\"{{company_name}}\", $('get service data by key word1').last().json.company_name).replaceAll(\"{{minus_words}}\",JSON.stringify(input));\n\nreturn [\n  {\n    json: {\n     \n     my_prompt:my_prompt\n    }\n  }\n];\n\n"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -2479,14 +2479,14 @@
       {
         "json": {
           "id": "wZGLxMCCmOnDJZ1o",
-          "root_execution_id": 43079,
+          "root_execution_id": 43170,
           "company_id": 1,
           "threshhold": "0.79"
         }
       }
     ]
   },
-  "versionId": "305dd75c-9df2-4a9b-ab92-c18cb33190c2",
+  "versionId": "4150b48b-fb33-42b4-a4ea-84fd8dfbcb34",
   "triggerCount": 0,
   "shared": [
     {
