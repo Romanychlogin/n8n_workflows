@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-07-18T08:31:54.459Z",
-  "updatedAt": "2025-09-29T07:16:08.789Z",
+  "updatedAt": "2025-09-29T10:29:25.153Z",
   "id": "wZGLxMCCmOnDJZ1o",
   "name": "ADV_campaign_analysis",
   "active": false,
@@ -132,8 +132,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        9136,
-        -160
+        9472,
+        -192
       ],
       "id": "b2be9a68-4d5c-4dd1-85c7-4d71ce034518",
       "name": "Insert minus words",
@@ -143,21 +143,6 @@
           "name": "Postgres account 2"
         }
       }
-    },
-    {
-      "parameters": {
-        "mode": "combine",
-        "combineBy": "combineByPosition",
-        "options": {}
-      },
-      "type": "n8n-nodes-base.merge",
-      "typeVersion": 3.2,
-      "position": [
-        9648,
-        -320
-      ],
-      "id": "0c60f5c9-db38-4edb-b16b-cd4b807c471a",
-      "name": "Merge with initial data"
     },
     {
       "parameters": {
@@ -990,8 +975,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        8576,
-        -336
+        9088,
+        -272
       ],
       "id": "2f169d1d-9f54-4e14-8d57-39373804f250",
       "name": "Code"
@@ -1052,8 +1037,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        8128,
-        -352
+        8816,
+        -336
       ],
       "id": "32bea20b-bd2e-4a99-83b0-e9dce5af9140",
       "name": "If minuses array is empty"
@@ -1690,19 +1675,19 @@
           "assignments": [
             {
               "id": "26a3b4cf-c374-4833-8b03-55dcf4df1097",
-              "name": "company_id",
+              "name": "args.company_id",
               "value": "={{ $('Loop Over Items').last().json.company_id }}",
               "type": "number"
             },
             {
               "id": "ec583710-a44c-47de-ba3f-ebbfaa229fb1",
-              "name": "phrase",
+              "name": "args.phrase",
               "value": "={{ $('Loop Over Items').last().json.key_word }}",
               "type": "string"
             },
             {
               "id": "bf431c92-c6e4-41ab-b8b1-ee33acf9e25f",
-              "name": "threshold",
+              "name": "args.threshold",
               "value": 0.8,
               "type": "number"
             }
@@ -1722,7 +1707,7 @@
     },
     {
       "parameters": {
-        "jsCode": "\n// Преобразуем в строку формата ARRAY['...','...']\nconst result = \"ARRAY[\\n\" +\n  $json.non_matches.map(s => `'${s.replace(/'/g, \"''\")}'`).join(\",\\n\") +\n  \"\\n]\";\n\nreturn [{ json: { array_string: result,company_id:$('set input params').last().json.company_id } }];\n\n"
+        "jsCode": "\n// Преобразуем в строку формата ARRAY['...','...']\nconst result = \"ARRAY[\\n\" +\n  $json.non_matches.map(s => `'${s.replace(/'/g, \"''\")}'`).join(\",\\n\") +\n  \"\\n]\";\n\nreturn [{ json: { array_string: result,company_id:$('set input params').last().json.args.company_id } }];\n\n"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -1755,6 +1740,121 @@
           "name": "PGvector"
         }
       }
+    },
+    {
+      "parameters": {
+        "jsCode": "return [{\n  json: \n{\n  \"prompt\": {\n    \"id\": \"pmpt_68da4b2ffb548197ab7411056683f9e700e9d66510616b86\",\n    \"version\": \"5\",\n    \"variables\": {\n      \"key_word\": \"test1\",\n      \"service_name\": \"test2\",\n      \"company_name\": \"test3\",\n      \"minus_words\": \"[\\\"test4\\\",\\\"test5\\\"]\"\n    }\n  },\n  \"input\": [\n      ]\n    }\n  ],\n  \"text\": {\n    \"format\": {\n      \"type\": \"json_schema\",\n      \"name\": \"minus_words\",\n      \"strict\": true,\n      \"schema\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"minus_words\": {\n            \"type\": \"array\",\n            \"description\": \"A list of minus words. Can be empty.\",\n            \"items\": {\n              \"type\": \"string\",\n              \"description\": \"A minus word.\"\n            }\n          }\n        },\n        \"required\": [\n          \"minus_words\"\n        ],\n        \"additionalProperties\": false\n      }\n    },\n    \"verbosity\": \"low\"\n  },\n  \"reasoning\": {\n    \"summary\": null\n  },\n  \"store\": false,\n  \"include\": [\n    \"reasoning.encrypted_content\",\n    \"web_search_call.action.sources\"\n  ]\n}\n\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        8304,
+        -368
+      ],
+      "id": "04a89737-a544-41b1-9595-5bf87fd07fb5",
+      "name": "Set API JSON1"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.openai.com/v1/responses",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "openAiApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{$json}}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        8528,
+        -368
+      ],
+      "id": "32c90372-c72f-4ccb-857d-c989ec8918a3",
+      "name": "HTTP Request1",
+      "retryOnFail": true,
+      "credentials": {
+        "openAiApi": {
+          "id": "V8R8KiZKXscJQ1sL",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const workflowData = $getWorkflowStaticData('global');\nlet my_prompt = workflowData.my_prompt_minus.data;\n\nfor (const item of $input.all()) {\n  item.json.my_prompt = my_prompt.replaceAll(\"{{service_name}}\",item.json.service_name ).replaceAll(\"{{key_word}}\", $('Loop Over Items').last().json.key_word).replaceAll(\"{{company_name}}\", item.json.company_name);\n}\n\nreturn $input.all();"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        8112,
+        -368
+      ],
+      "id": "b215a0dc-2fdd-4a42-a694-42e94a46d34c",
+      "name": "Set prompt1"
+    },
+    {
+      "parameters": {
+        "resource": "file",
+        "operation": "get",
+        "owner": {
+          "__rl": true,
+          "value": "Romanychlogin",
+          "mode": "name"
+        },
+        "repository": {
+          "__rl": true,
+          "value": "n8n_prompts",
+          "mode": "list",
+          "cachedResultName": "n8n_prompts",
+          "cachedResultUrl": "https://github.com/Romanychlogin/n8n_prompts"
+        },
+        "filePath": "minus_words_list_narrow_down.txt",
+        "additionalParameters": {}
+      },
+      "type": "n8n-nodes-base.github",
+      "typeVersion": 1.1,
+      "position": [
+        160,
+        -608
+      ],
+      "id": "f6ca719d-ea97-4fb1-a468-dd69389ce2dc",
+      "name": "Get a file1",
+      "webhookId": "77e7d794-90e5-4e94-94bd-1b637cecf31b",
+      "credentials": {
+        "githubApi": {
+          "id": "JQAFAcMNS9Ylyb0V",
+          "name": "GitHub account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "text",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        368,
+        -608
+      ],
+      "id": "d4a0a8ed-9c3d-4921-9fd5-b31ea38e9f2f",
+      "name": "Extract from File"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Function-Node (Run Once)\nconst workflowData = $getWorkflowStaticData('global');\nworkflowData.my_prompt_minus = items[0].json;\nreturn items;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        576,
+        -608
+      ],
+      "id": "a5a8ff36-5943-474f-8d7e-0dff776dddfd",
+      "name": "Code2"
     }
   ],
   "connections": {
@@ -1778,24 +1878,7 @@
     },
     "Insert minus words": {
       "main": [
-        [
-          {
-            "node": "Merge with initial data",
-            "type": "main",
-            "index": 1
-          }
-        ]
-      ]
-    },
-    "Merge with initial data": {
-      "main": [
-        [
-          {
-            "node": "update",
-            "type": "main",
-            "index": 0
-          }
-        ]
+        []
       ]
     },
     "пословное соответствие?": {
@@ -1866,11 +1949,6 @@
           }
         ],
         [
-          {
-            "node": "no relevant",
-            "type": "main",
-            "index": 0
-          },
           {
             "node": "set input params",
             "type": "main",
@@ -1985,13 +2063,7 @@
     },
     "If minuses array is empty": {
       "main": [
-        [
-          {
-            "node": "Merge with initial data",
-            "type": "main",
-            "index": 1
-          }
-        ],
+        [],
         [
           {
             "node": "Code",
@@ -2022,6 +2094,11 @@
           },
           {
             "node": "Mark_workwlow_started",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Get a file1",
             "type": "main",
             "index": 0
           }
@@ -2146,7 +2223,7 @@
       "main": [
         [
           {
-            "node": "Merge with initial data",
+            "node": "update",
             "type": "main",
             "index": 0
           }
@@ -2318,7 +2395,51 @@
       "main": [
         [
           {
-            "node": "If minuses array is empty",
+            "node": "Set prompt1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set API JSON1": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set prompt1": {
+      "main": [
+        [
+          {
+            "node": "Set API JSON1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get a file1": {
+      "main": [
+        [
+          {
+            "node": "Extract from File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File": {
+      "main": [
+        [
+          {
+            "node": "Code2",
             "type": "main",
             "index": 0
           }
@@ -2339,11 +2460,14 @@
       "alaysis_prompt": {
         "data": "Для полученного запроса Instructions\nПроанализируй поисковый запрос пользователя на предмет релевантности услугам компании KIBERone Саратов Октябрьский(company_name). Действуй строго по следующим правилам и согласно заданной последовательности действий:\n1.Если запрос полностью релевантен услугам компании , верни: \"is_correct_phrase\": true.\n2.Если запрос нерелевантен услугам компании 1) верни \"is_correct_phrase\": false 2) определи список потенциально допустимых минус слов. для этого всегда вызывай tool get_non_matching_ngrams. Передавай threshold, только если пользователь задал его; иначе не указывай (используется дефолт 0,88). 3)Из полученного от tool списка выдели минимальный набор минус-слов, обеспечивающих блокировку широкого класса подобных нерелевантных запросов.\nТребования к минус-словам: Используй минимально возможную комбинацию слов. Минус-слова должны однозначно исключать нерелевантные запросы.\nContext (о компании KIBERone)\nKIBERone – международная КиберШкола программирования и цифровых технологий для детей от 6 до 14 лет. Позиционирование бренда: KIBERone — первая международная КиберШкола будущего для IT-поколения 6–14 лет, признана ЮНЕСКО лучшей детской образовательной IT-школой в мире. Бренд является партнером Microsoft, Roblox и Samsung. Бесплатные пробные уроки Основные услуги и программы: Полный перечень модулей: Вводный модуль (основы цифровой грамотности) Основы программирования Scratch Jr Создание игр на Scratch ПиктоМир (алгоритмическое мышление) CodeMonkey (логика и программирование) Устройство компьютера Эффектные презентации (PowerPoint, Desygner) QR-коды Деловые люди (предпринимательство) Google Blockly (визуальное программирование) Roblox Studio (создание игр) Kodu Game Lab (3D-программирование) Разработка мобильных приложений в Thunkable Blender (3D-моделирование) Компьютерная грамотность Minecraft Education Нейросети (основы ИИ) Alice 3D (3D-программирование) Run Marco (основы алгоритмов) Исполнители: Чертёжник и Черепашка GIF-анимация Tinkercad (3D-проектирование) Кибербезопасность Construct 2 (создание 2D-игр) Компас-3D (САПР) Основы HTML (веб-разработка) Голосовой помощник Алиса Создание лендинга (Tilda) Python (создание игр) Чат-бот на Python Web-дизайн (Figma) Web-мастер (HTML+CSS) Motion Design Unreal Engine 4 (игровой движок) JavaScript (игры) C# (создание 2D-игр) C++ Java (создание приложений) Unity 3D (игры) Олимпиадное программирование Облачные технологии, Блокчейн, Data Science PHP+SQL Photoshop Подготовка к олимпиадам Приложения Google Летние программы: Летние IT-интенсивы (краткосрочные программы по направлениям Roblox, Minecraft, Python и др.) Летние КИБЕРканикулы (городской лагерь с IT-обучением и развлекательной программой) Дополнительные механики: Кибервалюта («кибероны») для мотивации учеников, обмен на мерч на КиберМаркете Тьюторы и преподаватели: Опытные специалисты с практическим опытом и педагогической подготовкой Другие важные разделы: Новости (новости школы и сети) СМИ о нас (публикации о школе) Фотогалерея (фото с мероприятий и уроков) Видео (видеоматериалы о школе) Расписание занятий (время занятий для групп и пробных уроков) Локации (адрес школы в Октябрьском районе Саратова, ул. Тараса Шевченко, 8) Оплата (способы оплаты и договор-оферта) Сертификаты (активация промокодов партнеров)\n"
       },
-      "steps_passed": 48,
-      "tokens_used": 184832,
+      "steps_passed": 0,
+      "tokens_used": 0,
       "step": 0,
       "my_prompt": {
         "data": "Проанализируй поисковый запрос пользователя:\"{{key_word}}\" на предмет релевантности сервису \"{{service_description}}\" компании \"{{company_name}}\".\nDefinitions\nРелевантность сервису это запрос соответствующий тематике сервиса, но не содержащий намерения к самостоятельной реализации\nInstructions\nДействуй строго по следующим правилам и согласно заданной последовательности действий:\nшаг 1. Если запрос релевантен сервису компании, верни: \"is_correct_phrase\": true и не выполняй шаг 2 и не вызывай tool get_non_matching_ngrams.\nшаг 2. Если запрос не релевантен сервису компании 1) верни \"is_correct_phrase\": false 2) определи список потенциально допустимых минус слов, для этого обязателен вызов tool get_non_matching_ngrams. Передавай threshold, только если пользователь задал его; иначе не указывай (используется дефолт 0,88). 3)Из полученного от tool списка выдели минимальный набор минус-слов, обеспечивающих блокировку широкого класса подобных нерелевантных запросов.\nТребования к минус-словам: Используй минимально возможную комбинацию слов. Минус-слова должны однозначно исключать нерелевантные запросы.\n\n\n"
+      },
+      "my_prompt_minus": {
+        "data": "Для фразы пользователя {{key_word}} не релевантной сервису {{service_name}} компании {{company_name }}доступен следующий список ключевых слов {{minus_words}}. \nВерни сокращенный список из 1 или 2 ключевых слов, обеспечивающих блокировку широкого класса подобных нерелевантных запросов.\nТребования к минус-словам:\nРазрешено использовать только элементы входящего списка. Любое видоизменение элементов запрещено\nИспользуй минимально возможную комбинацию слов.\nМинус-слова должны однозначно исключать нерелевантные запросы.\n"
       }
     }
   },
@@ -2355,14 +2479,14 @@
       {
         "json": {
           "id": "wZGLxMCCmOnDJZ1o",
-          "root_execution_id": 40826,
+          "root_execution_id": 42763,
           "company_id": 1,
           "threshhold": "0.79"
         }
       }
     ]
   },
-  "versionId": "80dae380-fa59-4a09-acf1-bada983585cc",
+  "versionId": "0d129e07-e87f-494c-9bd7-5a962b2fdd57",
   "triggerCount": 0,
   "shared": [
     {
