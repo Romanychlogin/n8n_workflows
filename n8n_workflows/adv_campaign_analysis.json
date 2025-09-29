@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-07-18T08:31:54.459Z",
-  "updatedAt": "2025-09-28T20:23:44.938Z",
+  "updatedAt": "2025-09-29T07:16:08.789Z",
   "id": "wZGLxMCCmOnDJZ1o",
   "name": "ADV_campaign_analysis",
   "active": false,
@@ -153,7 +153,7 @@
       "type": "n8n-nodes-base.merge",
       "typeVersion": 3.2,
       "position": [
-        9440,
+        9648,
         -320
       ],
       "id": "0c60f5c9-db38-4edb-b16b-cd4b807c471a",
@@ -437,7 +437,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        9808,
+        10016,
         -1264
       ],
       "id": "233a9fb2-ccfc-4fbd-a2af-5630a61c7a22",
@@ -623,7 +623,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        9712,
+        9920,
         -480
       ],
       "id": "8200d389-0be7-463e-b356-76cf1a2d659f",
@@ -903,7 +903,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        9184,
+        9392,
         -1104
       ],
       "id": "e95a4440-545c-4788-a36f-4a8649b6dcf9",
@@ -977,64 +977,11 @@
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1.2,
       "position": [
-        6288,
-        -16
+        7488,
+        -352
       ],
       "id": "5d7ed225-61eb-40cf-86f8-cf487e481e1c",
       "name": "Execute Workflow"
-    },
-    {
-      "parameters": {
-        "jsCode": "// INPUT: JSON ответа из responses.create\n// OUTPUT: массив элементов { response_id, tool_call_id, name, args }\n\nconst res = $json;\nconst out = [];\n\nfunction pushCall(obj, responseId,out_index) {\n  const id = responseId;\n  const call_id = obj.call_id;\n  const name = obj.name ;\n  const rawArgs = obj.arguments;\n  let args = {};\n  try {\n    args = typeof rawArgs === 'string' ? JSON.parse(rawArgs) : rawArgs;\n    args.company_id=$('Loop Over Items').last().json.company_id;\n    args.threshold=$('When Executed by Another Workflow').first().json.threshhold;\n  } catch (e) { args = {}; }\n  out.push({ json: { response_id: id, call_id: call_id, name, args,out_index } });\n}\n\nif (Array.isArray(res.output)) {\n  res.output.forEach((item, index) => {\n    if (item.type === 'function_call') {\n      pushCall(item, res.id, index);\n    }\n  });\n}\n\n// Если модель не запросила tool — вернем маркер\nif (!out.length) return [{ json: { response_id: res.id, no_tool_call: true, raw: res } }];\nreturn out;"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        6032,
-        -16
-      ],
-      "id": "9eddec39-1da6-4ea2-b1a9-09e9356929e9",
-      "name": "parse_tool_call"
-    },
-    {
-      "parameters": {
-        "jsCode": "// INPUT: JSON из вашего вебхука (предыдущая HTTP-нода)\n// OUTPUT: { response_id, tool_call_id, output_string }\n\nlet prev = $('Set API JSON').first().json; // берем первый tool-call\n\nconst toolResult = $json; // весь JSON от вебхука\nprev.input.push($('HTTP Request').first().json.output[$('parse_tool_call').first().json.out_index-1]);\nprev.input.push($('HTTP Request').first().json.output[$('parse_tool_call').first().json.out_index]);\nprev.input.push({ \n    type: \"function_call_output\",\n    call_id: $('parse_tool_call').first().json.call_id,\n    output: JSON.stringify(JSON.stringify(toolResult))});\n\nreturn [{ json: prev }];\n"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        6480,
-        -16
-      ],
-      "id": "6b46b906-0c32-4338-aa03-d8c6ea2aa4b4",
-      "name": "package_tool_output"
-    },
-    {
-      "parameters": {
-        "method": "POST",
-        "url": "=https://api.openai.com/v1/responses",
-        "authentication": "predefinedCredentialType",
-        "nodeCredentialType": "openAiApi",
-        "sendBody": true,
-        "specifyBody": "json",
-        "jsonBody": "={{$json}}",
-        "options": {}
-      },
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.2,
-      "position": [
-        6672,
-        -16
-      ],
-      "id": "71ae78b7-07d9-476d-bd03-a0bc9665f099",
-      "name": "HTTP Request1",
-      "retryOnFail": true,
-      "credentials": {
-        "openAiApi": {
-          "id": "V8R8KiZKXscJQ1sL",
-          "name": "OpenAi account"
-        }
-      }
     },
     {
       "parameters": {
@@ -1105,8 +1052,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        8160,
-        -432
+        8128,
+        -352
       ],
       "id": "32bea20b-bd2e-4a99-83b0-e9dce5af9140",
       "name": "If minuses array is empty"
@@ -1261,7 +1208,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        11040,
+        11248,
         -48
       ],
       "id": "56bff92d-817b-4fb5-bf93-e3fd6d772376",
@@ -1281,7 +1228,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        10800,
+        11008,
         -32
       ],
       "id": "7a3d33ad-9f12-4f6f-9b09-6d67a00e76a8",
@@ -1314,7 +1261,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        11424,
+        11632,
         -16
       ],
       "id": "9114c887-564f-4e0f-b89d-99a381a7bdde",
@@ -1327,7 +1274,7 @@
       "type": "n8n-nodes-base.stopAndError",
       "typeVersion": 1,
       "position": [
-        11664,
+        11872,
         -144
       ],
       "id": "fdab4be5-884f-4a7f-97b4-8c7ae8b22898",
@@ -1361,7 +1308,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        11248,
+        11456,
         -48
       ],
       "id": "3b984213-9b8c-4d82-8b9f-38dcc24fcdc1",
@@ -1442,40 +1389,6 @@
     },
     {
       "parameters": {
-        "conditions": {
-          "options": {
-            "caseSensitive": true,
-            "leftValue": "",
-            "typeValidation": "strict",
-            "version": 2
-          },
-          "conditions": [
-            {
-              "id": "eb5a9e58-8a32-432b-ba77-24910836d1fe",
-              "leftValue": "={{JSON.parse($json.output[1].content[0].text).is_correct_phrase}}",
-              "rightValue": "",
-              "operator": {
-                "type": "boolean",
-                "operation": "exists",
-                "singleValue": true
-              }
-            }
-          ],
-          "combinator": "and"
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.if",
-      "typeVersion": 2.2,
-      "position": [
-        5776,
-        -160
-      ],
-      "id": "ab29b2a0-71ea-425c-8e92-01e2e174cee9",
-      "name": "If no tool call"
-    },
-    {
-      "parameters": {
         "assignments": {
           "assignments": [
             {
@@ -1498,7 +1411,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        8608,
+        8816,
         -592
       ],
       "id": "6bf663d1-4db2-412c-aa73-d7943501ee9f",
@@ -1528,7 +1441,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        8064,
+        8272,
         -960
       ],
       "id": "e75eef70-59a7-4697-8b04-373c54883a70",
@@ -1770,6 +1683,78 @@
           "name": "Postgres account 2"
         }
       }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "26a3b4cf-c374-4833-8b03-55dcf4df1097",
+              "name": "company_id",
+              "value": "={{ $('Loop Over Items').last().json.company_id }}",
+              "type": "number"
+            },
+            {
+              "id": "ec583710-a44c-47de-ba3f-ebbfaa229fb1",
+              "name": "phrase",
+              "value": "={{ $('Loop Over Items').last().json.key_word }}",
+              "type": "string"
+            },
+            {
+              "id": "bf431c92-c6e4-41ab-b8b1-ee33acf9e25f",
+              "name": "threshold",
+              "value": 0.8,
+              "type": "number"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        7248,
+        -368
+      ],
+      "id": "828b3288-b068-4d7e-8518-4fb483913b3e",
+      "name": "set input params"
+    },
+    {
+      "parameters": {
+        "jsCode": "\n// Преобразуем в строку формата ARRAY['...','...']\nconst result = \"ARRAY[\\n\" +\n  $json.non_matches.map(s => `'${s.replace(/'/g, \"''\")}'`).join(\",\\n\") +\n  \"\\n]\";\n\nreturn [{ json: { array_string: result,company_id:$('set input params').last().json.company_id } }];\n\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        7696,
+        -352
+      ],
+      "id": "391c2166-e3d3-4f7d-b266-03511d308753",
+      "name": "prepare for SQL"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT * FROM (\n  WITH incoming AS (\n    SELECT DISTINCT trim(both ' ' from s) AS word\n    FROM unnest($1::text[]) AS t(s)\n  )\n  SELECT i.word\n  FROM incoming i\n  LEFT JOIN minus_words mw\n    ON lower(mw.minus_word) = lower(i.word)\n\tAND mw.company_id=$2\n  WHERE mw.minus_word IS NULL\n) q;",
+        "options": {
+          "queryReplacement": "=[{{$json.array_string}},{{$json.company_id}}]"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        7904,
+        -352
+      ],
+      "id": "f25eddc8-852a-4b9e-ba74-d205c9cc2de1",
+      "name": "filter by existing minus words",
+      "credentials": {
+        "postgres": {
+          "id": "4YkdFJcdTgzo9hkz",
+          "name": "PGvector"
+        }
+      }
     }
   ],
   "connections": {
@@ -1887,7 +1872,7 @@
             "index": 0
           },
           {
-            "node": "If minuses array is empty",
+            "node": "set input params",
             "type": "main",
             "index": 0
           }
@@ -1958,7 +1943,7 @@
       "main": [
         [
           {
-            "node": "If no tool call",
+            "node": "Обработка ответа AI",
             "type": "main",
             "index": 0
           }
@@ -1969,40 +1954,7 @@
       "main": [
         [
           {
-            "node": "package_tool_output",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "parse_tool_call": {
-      "main": [
-        [
-          {
-            "node": "Execute Workflow",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "package_tool_output": {
-      "main": [
-        [
-          {
-            "node": "HTTP Request1",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "HTTP Request1": {
-      "main": [
-        [
-          {
-            "node": "Обработка ответа AI",
+            "node": "prepare for SQL",
             "type": "main",
             "index": 0
           }
@@ -2190,24 +2142,6 @@
         ]
       ]
     },
-    "If no tool call": {
-      "main": [
-        [
-          {
-            "node": "Обработка ответа AI",
-            "type": "main",
-            "index": 0
-          }
-        ],
-        [
-          {
-            "node": "parse_tool_call",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "no relevant": {
       "main": [
         [
@@ -2357,6 +2291,39 @@
           }
         ]
       ]
+    },
+    "set input params": {
+      "main": [
+        [
+          {
+            "node": "Execute Workflow",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "prepare for SQL": {
+      "main": [
+        [
+          {
+            "node": "filter by existing minus words",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "filter by existing minus words": {
+      "main": [
+        [
+          {
+            "node": "If minuses array is empty",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
@@ -2388,14 +2355,14 @@
       {
         "json": {
           "id": "wZGLxMCCmOnDJZ1o",
-          "root_execution_id": 40817,
+          "root_execution_id": 40826,
           "company_id": 1,
           "threshhold": "0.79"
         }
       }
     ]
   },
-  "versionId": "1ee96b88-fc9c-4a8d-8ccb-bec33e0b94e9",
+  "versionId": "80dae380-fa59-4a09-acf1-bada983585cc",
   "triggerCount": 0,
   "shared": [
     {
