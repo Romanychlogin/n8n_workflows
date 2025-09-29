@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-07-18T08:31:54.459Z",
-  "updatedAt": "2025-09-29T15:57:58.199Z",
+  "updatedAt": "2025-09-29T16:13:13.160Z",
   "id": "wZGLxMCCmOnDJZ1o",
   "name": "ADV_campaign_analysis",
   "active": false,
@@ -132,7 +132,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        9696,
+        10112,
         -240
       ],
       "id": "b2be9a68-4d5c-4dd1-85c7-4d71ce034518",
@@ -422,8 +422,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        10224,
-        -1264
+        10592,
+        -1696
       ],
       "id": "233a9fb2-ccfc-4fbd-a2af-5630a61c7a22",
       "name": "Помечаем что ключ совпадает",
@@ -638,7 +638,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        10128,
+        10544,
         -480
       ],
       "id": "8200d389-0be7-463e-b356-76cf1a2d659f",
@@ -678,7 +678,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        6992,
+        7200,
         -464
       ],
       "id": "78d0f369-bc02-4a48-84af-389ac2c2f8cf",
@@ -918,8 +918,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        9600,
-        -1104
+        9776,
+        -1488
       ],
       "id": "e95a4440-545c-4788-a36f-4a8649b6dcf9",
       "name": "Помечаем что найден конкурент",
@@ -937,7 +937,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        5296,
+        5504,
         -160
       ],
       "id": "1fe77e75-c3f7-45c6-9745-7d60d1a87ec1",
@@ -957,7 +957,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        5504,
+        5712,
         -176
       ],
       "id": "5e99e27e-8a7f-4aa5-9bf8-ac03d750250f",
@@ -992,7 +992,7 @@
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1.2,
       "position": [
-        7488,
+        7696,
         -352
       ],
       "id": "5d7ed225-61eb-40cf-86f8-cf487e481e1c",
@@ -1054,7 +1054,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        9184,
+        9392,
         -336
       ],
       "id": "32bea20b-bd2e-4a99-83b0-e9dce5af9140",
@@ -1210,7 +1210,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        11456,
+        11872,
         -48
       ],
       "id": "56bff92d-817b-4fb5-bf93-e3fd6d772376",
@@ -1230,7 +1230,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        11216,
+        11632,
         -32
       ],
       "id": "7a3d33ad-9f12-4f6f-9b09-6d67a00e76a8",
@@ -1263,7 +1263,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        11840,
+        12256,
         -16
       ],
       "id": "9114c887-564f-4e0f-b89d-99a381a7bdde",
@@ -1276,7 +1276,7 @@
       "type": "n8n-nodes-base.stopAndError",
       "typeVersion": 1,
       "position": [
-        12080,
+        12496,
         -144
       ],
       "id": "fdab4be5-884f-4a7f-97b4-8c7ae8b22898",
@@ -1310,7 +1310,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        11664,
+        12080,
         -48
       ],
       "id": "3b984213-9b8c-4d82-8b9f-38dcc24fcdc1",
@@ -1413,7 +1413,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        9904,
+        10320,
         -368
       ],
       "id": "6bf663d1-4db2-412c-aa73-d7943501ee9f",
@@ -1444,7 +1444,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        8272,
+        8480,
         -960
       ],
       "id": "e75eef70-59a7-4697-8b04-373c54883a70",
@@ -1457,7 +1457,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        5104,
+        5312,
         -144
       ],
       "id": "65af494d-9402-4aab-abec-c8f3050500ac",
@@ -1489,7 +1489,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        4720,
+        4928,
         -144
       ],
       "id": "ca37c744-a547-4e2e-beef-f62e1b5049f3",
@@ -1529,7 +1529,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        4256,
+        4464,
         -112
       ],
       "id": "78399e42-113c-4fc7-9fed-7ddb97fadf94",
@@ -1546,7 +1546,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        4720,
+        4928,
         32
       ],
       "id": "87d1b141-5c27-45ef-8b40-8420a63b0fbd",
@@ -1566,7 +1566,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        4528,
+        4736,
         -144
       ],
       "id": "6b7e98b2-cf1f-4582-9335-09d5cad31dd1",
@@ -1581,7 +1581,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        4928,
+        5136,
         -144
       ],
       "id": "53be7ee3-e874-48f6-8f6a-019e70e9006c",
@@ -1602,7 +1602,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        4928,
+        5136,
         16
       ],
       "id": "24912155-ac6a-438c-b9f7-32f799ce1a52",
@@ -1717,7 +1717,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        7248,
+        7456,
         -368
       ],
       "id": "828b3288-b068-4d7e-8518-4fb483913b3e",
@@ -1730,7 +1730,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        7696,
+        7904,
         -352
       ],
       "id": "391c2166-e3d3-4f7d-b266-03511d308753",
@@ -1747,7 +1747,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        7904,
+        8112,
         -352
       ],
       "id": "f25eddc8-852a-4b9e-ba74-d205c9cc2de1",
@@ -1766,7 +1766,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        8304,
+        8512,
         -368
       ],
       "id": "04a89737-a544-41b1-9595-5bf87fd07fb5",
@@ -1786,7 +1786,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        8528,
+        8736,
         -368
       ],
       "id": "32c90372-c72f-4ccb-857d-c989ec8918a3",
@@ -1806,7 +1806,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        8112,
+        8320,
         -368
       ],
       "id": "b215a0dc-2fdd-4a42-a694-42e94a46d34c",
@@ -1881,7 +1881,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        9456,
+        9664,
         -240
       ],
       "id": "2f169d1d-9f54-4e14-8d57-39373804f250",
@@ -1894,11 +1894,183 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        8816,
+        9024,
         -368
       ],
       "id": "f9009c6a-6a7e-4c66-b8a2-c41c8b83d941",
       "name": "minus_words_array"
+    },
+    {
+      "parameters": {
+        "mode": "chooseBranch"
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        10272,
+        -1040
+      ],
+      "id": "e513fecc-579d-47a2-9a2b-aaac244d7f15",
+      "name": "Merge1"
+    },
+    {
+      "parameters": {
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "current_minus_words",
+          "mode": "list",
+          "cachedResultName": "current_minus_words"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "current_record_id": "={{ $('Loop Over Items').last().json.list_id }}",
+            "company_id": "={{ $('Loop Over Items').last().json.company_id }}",
+            "minus_word": "={{ $('If competitors not found').last().json.hits[0].candidate }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "minus_id",
+              "displayName": "minus_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "minus_word",
+              "displayName": "minus_word",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "current_record_id",
+              "displayName": "current_record_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "keep_minus",
+              "displayName": "keep_minus",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "boolean",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "minus_word_v2",
+              "displayName": "minus_word_v2",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "keep_minus_v2",
+              "displayName": "keep_minus_v2",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "boolean",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "comment",
+              "displayName": "comment",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "company_id",
+              "displayName": "company_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        9760,
+        -1232
+      ],
+      "id": "05ffb772-d578-42fc-9520-f57c65b6ff00",
+      "name": "Insert minus words from Competitors",
+      "alwaysOutputData": true,
+      "credentials": {
+        "postgres": {
+          "id": "Hx2VFmUi5WO2K4QX",
+          "name": "Postgres account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "4a87b0f9-4ed9-409a-9def-bbaa4e413d90",
+              "leftValue": "={{ $json.hits[0].candidate }}",
+              "rightValue": "={{ $json.hits[0].matched }}",
+              "operator": {
+                "type": "string",
+                "operation": "notEquals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        8800,
+        -1232
+      ],
+      "id": "d39e81ed-4fb4-493a-b400-dee069a12b96",
+      "name": "if not exact competitor match"
     }
   ],
   "connections": {
@@ -2049,7 +2221,7 @@
       "main": [
         [
           {
-            "node": "Get current step and tokens saved",
+            "node": "Merge1",
             "type": "main",
             "index": 0
           }
@@ -2258,6 +2430,11 @@
         [
           {
             "node": "Помечаем что найден конкурент",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "if not exact competitor match",
             "type": "main",
             "index": 0
           }
@@ -2523,6 +2700,46 @@
           }
         ]
       ]
+    },
+    "Merge1": {
+      "main": [
+        [
+          {
+            "node": "Get current step and tokens saved",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Insert minus words from Competitors": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "if not exact competitor match": {
+      "main": [
+        [
+          {
+            "node": "Insert minus words from Competitors",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
     }
   },
   "settings": {
@@ -2564,7 +2781,7 @@
       }
     ]
   },
-  "versionId": "0f14d04a-7b9e-4eb6-9cb1-45f62cbeb3b1",
+  "versionId": "9af9c11f-eed2-4cf2-851f-321f9873c4a4",
   "triggerCount": 0,
   "shared": [
     {
