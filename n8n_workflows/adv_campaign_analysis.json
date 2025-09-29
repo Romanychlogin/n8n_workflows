@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-07-18T08:31:54.459Z",
-  "updatedAt": "2025-09-29T12:52:52.904Z",
+  "updatedAt": "2025-09-29T15:27:36.577Z",
   "id": "wZGLxMCCmOnDJZ1o",
   "name": "ADV_campaign_analysis",
   "active": false,
@@ -540,16 +540,6 @@
               "removed": true
             },
             {
-              "id": "date",
-              "displayName": "date",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "dateTime",
-              "canBeUsedToMatch": true,
-              "removed": true
-            },
-            {
               "id": "resolution",
               "displayName": "resolution",
               "required": false,
@@ -598,6 +588,46 @@
               "type": "number",
               "canBeUsedToMatch": true,
               "removed": false
+            },
+            {
+              "id": "company_id",
+              "displayName": "company_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "report_id",
+              "displayName": "report_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "service_id",
+              "displayName": "service_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "is_adv_processed",
+              "displayName": "is_adv_processed",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "boolean",
+              "canBeUsedToMatch": true,
+              "removed": true
             }
           ],
           "attemptToConvertTypes": false,
@@ -1366,13 +1396,13 @@
             {
               "id": "bb72a340-789e-459b-80c9-f1c2b454ed57",
               "name": "resolution",
-              "value": "={{\"no relevant, minuses:\"+JSON.parse($json.output[1].content[0].text).minus_words.map(String).join(', ')}}",
+              "value": "={{\"no relevant, minuses:\"+$('minus_words_array').last().json.minus_words.map(String).join(', ')}}",
               "type": "string"
             },
             {
               "id": "2f7246f7-a167-46be-9212-edc599a35ff3",
               "name": "total_tokens",
-              "value": null,
+              "value": "={{ $('HTTP Request1').item.json.usage.total_tokens+$('HTTP Request').item.json.usage.total_tokens }}",
               "type": "number"
             }
           ]
@@ -1852,7 +1882,7 @@
               "id": "1aabf3c8-2695-4fb8-a2d0-3b260f7e93fa",
               "name": "minus_words",
               "value": "={{ JSON.parse($json.output[1].content[0].text) }}",
-              "type": "string"
+              "type": "object"
             }
           ]
         },
@@ -2537,14 +2567,14 @@
       {
         "json": {
           "id": "wZGLxMCCmOnDJZ1o",
-          "root_execution_id": 43197,
+          "root_execution_id": 43484,
           "company_id": 1,
           "threshhold": "0.79"
         }
       }
     ]
   },
-  "versionId": "9c078b35-4b28-4672-8b3d-98cacdd2799e",
+  "versionId": "1e9320c1-6824-4c2b-89dd-1f4655e197b4",
   "triggerCount": 0,
   "shared": [
     {
