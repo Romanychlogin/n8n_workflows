@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-19T15:26:59.886Z",
-  "updatedAt": "2025-09-29T12:40:07.115Z",
+  "updatedAt": "2025-09-29T13:56:00.676Z",
   "id": "SptAKErjQeOJuESk",
   "name": "status bot",
   "active": true,
@@ -127,8 +127,7 @@
         0
       ],
       "id": "583b006b-6ca8-4ce3-88f6-ce8b4d41125a",
-      "name": "Schedule Trigger for statuses",
-      "disabled": true
+      "name": "Schedule Trigger for statuses"
     },
     {
       "parameters": {
@@ -442,8 +441,7 @@
         624
       ],
       "id": "77941827-d4c4-4bac-b2e8-fb91b9989957",
-      "name": "Schedule Trigger for completed processes",
-      "disabled": true
+      "name": "Schedule Trigger for completed processes"
     },
     {
       "parameters": {
@@ -652,11 +650,12 @@
     },
     {
       "parameters": {
-        "chatId": "-3196763261/5",
+        "chatId": "-1003196763261",
         "text": "={{ $json.text }}",
         "additionalFields": {
           "appendAttribution": true,
-          "parse_mode": "MarkdownV2"
+          "parse_mode": "MarkdownV2",
+          "message_thread_id": 5
         }
       },
       "type": "n8n-nodes-base.telegram",
@@ -677,11 +676,12 @@
     },
     {
       "parameters": {
-        "chatId": "-1002955047432",
+        "chatId": "-1003196763261",
         "text": "={{ $json.text }}",
         "additionalFields": {
           "appendAttribution": true,
-          "parse_mode": "MarkdownV2"
+          "parse_mode": "MarkdownV2",
+          "message_thread_id": 6
         }
       },
       "type": "n8n-nodes-base.telegram",
@@ -702,11 +702,12 @@
     },
     {
       "parameters": {
-        "chatId": "-1002955047432",
+        "chatId": "-1003196763261",
         "text": "={{ $json.text }}",
         "additionalFields": {
           "appendAttribution": true,
-          "parse_mode": "MarkdownV2"
+          "parse_mode": "MarkdownV2",
+          "message_thread_id": 6
         }
       },
       "type": "n8n-nodes-base.telegram",
@@ -929,10 +930,27 @@
           }
         }
       }
+    ],
+    "Schedule Trigger for incidents": [
+      {
+        "json": {
+          "timestamp": "2025-09-29T15:54:04.003+03:00",
+          "Readable date": "September 29th 2025, 3:54:04 pm",
+          "Readable time": "3:54:04 pm",
+          "Day of week": "Monday",
+          "Year": "2025",
+          "Month": "September",
+          "Day of month": "29",
+          "Hour": "15",
+          "Minute": "54",
+          "Second": "04",
+          "Timezone": "Europe/Moscow (UTC+03:00)"
+        }
+      }
     ]
   },
-  "versionId": "1104e94b-4ff1-427d-a1d8-5586360369e8",
-  "triggerCount": 1,
+  "versionId": "3b9a8c93-a84a-49b6-9adb-aa5a4f74f911",
+  "triggerCount": 3,
   "shared": [
     {
       "createdAt": "2025-09-19T15:26:59.886Z",
