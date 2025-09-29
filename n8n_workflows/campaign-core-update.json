@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-25T13:33:58.106Z",
-  "updatedAt": "2025-09-29T16:19:25.467Z",
+  "updatedAt": "2025-09-29T16:25:54.522Z",
   "id": "0J5cvuaSz3IhDS99",
   "name": "campaign core update",
   "active": false,
@@ -432,8 +432,8 @@
             },
             {
               "id": "6e3154c1-d961-4edb-8615-648bfee279e1",
-              "name": "record_id",
-              "value": "={{ $('company_record_id').item.json.record_id }}",
+              "name": "import_id",
+              "value": "={{ $('company_record_id').item.json.import_id }}",
               "type": "number"
             }
           ]
@@ -774,8 +774,8 @@
             },
             {
               "id": "242e22ab-d73d-4b1f-b148-3cd44943fe6f",
-              "name": "record_id",
-              "value": "={{ $('company_record_id').item.json.record_id }}",
+              "name": "import_id",
+              "value": "={{ $('company_record_id').item.json.import_id }}",
               "type": "string"
             }
           ]
@@ -1352,7 +1352,7 @@
       }
     ]
   },
-  "versionId": "f9e5d76c-63ee-402f-b54b-1a0ea181a051",
+  "versionId": "90b01b59-c4f2-49f9-8ac3-32379c694051",
   "triggerCount": 0,
   "shared": [
     {
