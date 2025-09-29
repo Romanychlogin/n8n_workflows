@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-01T13:14:53.645Z",
-  "updatedAt": "2025-09-29T06:54:23.884Z",
+  "updatedAt": "2025-09-29T07:16:05.328Z",
   "id": "bhBscYglbFhVyIcL",
   "name": "Check minuses API tool",
   "active": false,
@@ -149,13 +149,13 @@
     },
     {
       "parameters": {
-        "content": "Input: args.phrase - to analyse, company_id\n"
+        "content": "Input: args.phrase - to analyse, company_id,threshold\n"
       },
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        832,
-        80
+        448,
+        -128
       ],
       "id": "4caac3ea-29c4-4db2-b267-3fee1fbeff1f",
       "name": "Sticky Note"
@@ -266,7 +266,7 @@
       }
     ]
   },
-  "versionId": "d7e1f207-7b64-4ed8-a070-e79924bc3d35",
+  "versionId": "a01c9b2b-63ea-4dce-8b16-ff61ce4cfa45",
   "triggerCount": 1,
   "shared": [
     {
