@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-28T11:31:13.045Z",
-  "updatedAt": "2025-09-28T11:44:21.875Z",
+  "updatedAt": "2025-09-29T16:30:09.601Z",
   "id": "lBAh8kjoXRX0aGUF",
   "name": "ADS headers and texts creation services for updates",
   "active": false,
@@ -53,6 +53,10 @@
             {
               "column": "is_adv_processed",
               "value": "false"
+            },
+            {
+              "column": "report_id",
+              "value": "={{ $('set variables').item.json.import_id }}"
             }
           ]
         },
@@ -499,8 +503,8 @@
             "ad_url": "={{JSON.parse($json.output[1].content[0].text).url + '?utm_source=yandex&utm_medium=cpc&utm_campaign={campaign_id}&utm_content={ad_id}&utm_term={keyword}.{device_type}.{region_name}&block={position_type}.{position}.{source}'}}",
             "company_id": "={{ $('set variables').item.json.company_id }}",
             "group_name": "={{ JSON.parse($('HTTP Request').item.json.output[1].content[0].text).header }}",
-            "service_id": 0,
-            "report_id": 0
+            "service_id": "={{$('Loop Over Items').last().json.service_id}}",
+            "report_id": "={{ $('set variables').item.json.import_id }}"
           },
           "matchingColumns": [],
           "schema": [
@@ -738,6 +742,12 @@
               "id": "172a851e-fdc7-4f3c-b095-88687e8a392a",
               "name": "threshhold",
               "value": "={{ $json.threshhold }}",
+              "type": "number"
+            },
+            {
+              "id": "8e206de1-1acb-41d4-a215-0c0e11fd97b0",
+              "name": "import_id",
+              "value": "={{ $json.import_id }}",
               "type": "number"
             }
           ]
@@ -1671,7 +1681,7 @@
       }
     ]
   },
-  "versionId": "dfe256c7-b05c-47a2-b837-0e024f01cd5c",
+  "versionId": "01380981-59fd-40e6-853f-8caae810115c",
   "triggerCount": 0,
   "shared": [
     {
