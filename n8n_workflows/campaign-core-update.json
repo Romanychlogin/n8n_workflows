@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-25T13:33:58.106Z",
-  "updatedAt": "2025-09-29T16:46:18.693Z",
+  "updatedAt": "2025-09-30T12:58:33.543Z",
   "id": "0J5cvuaSz3IhDS99",
   "name": "campaign core update",
   "active": false,
@@ -1209,6 +1209,19 @@
       ],
       "id": "3b6ec5aa-1270-403e-af03-b597ae0099b4",
       "name": "Sticky Note6"
+    },
+    {
+      "parameters": {
+        "content": "Добавить после первого шага ADV_campaign_get_service для заполнения service_id"
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        2752,
+        -304
+      ],
+      "id": "cd6088f9-691c-4531-a1c7-43344ef7ef03",
+      "name": "Sticky Note7"
     }
   ],
   "connections": {
@@ -1711,7 +1724,7 @@
       }
     ]
   },
-  "versionId": "fe4d9fd7-5371-4e5b-b2ba-93db95cd5bd4",
+  "versionId": "f09f1f8c-3f51-4232-a4a5-f9d066d50cc3",
   "triggerCount": 0,
   "shared": [
     {

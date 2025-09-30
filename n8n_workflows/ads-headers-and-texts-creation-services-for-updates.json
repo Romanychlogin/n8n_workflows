@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-28T11:31:13.045Z",
-  "updatedAt": "2025-09-29T16:35:26.746Z",
+  "updatedAt": "2025-09-30T12:58:57.293Z",
   "id": "lBAh8kjoXRX0aGUF",
   "name": "ADS headers and texts creation services for updates",
   "active": false,
@@ -20,63 +20,6 @@
       ],
       "id": "339fe02b-ad75-4e32-9d50-2089c9aff64b",
       "name": "Loop Over Items"
-    },
-    {
-      "parameters": {
-        "operation": "select",
-        "schema": {
-          "__rl": true,
-          "mode": "list",
-          "value": "public"
-        },
-        "table": {
-          "__rl": true,
-          "value": "current_list",
-          "mode": "list",
-          "cachedResultName": "current_list"
-        },
-        "returnAll": true,
-        "where": {
-          "values": [
-            {
-              "column": "company_id",
-              "value": "={{ $('set variables').item.json.company_id }}"
-            },
-            {
-              "column": "service_id",
-              "value": "={{ $json.service_id }}"
-            },
-            {
-              "column": "resolution",
-              "value": "to add"
-            },
-            {
-              "column": "is_adv_processed",
-              "value": "false"
-            },
-            {
-              "column": "report_id",
-              "value": "={{ $('set variables').item.json.import_id }}"
-            }
-          ]
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.postgres",
-      "typeVersion": 2.6,
-      "position": [
-        384,
-        -240
-      ],
-      "id": "57b6a039-9828-4ffd-9fc3-49bb872b76ed",
-      "name": "Select rows from a table",
-      "alwaysOutputData": true,
-      "credentials": {
-        "postgres": {
-          "id": "Hx2VFmUi5WO2K4QX",
-          "name": "Postgres account 2"
-        }
-      }
     },
     {
       "parameters": {
@@ -497,14 +440,14 @@
         "columns": {
           "mappingMode": "defineBelow",
           "value": {
-            "key_words": "={{ $('Set prompt').item.json.key_word }}",
             "ad_header": "={{ JSON.parse($('HTTP Request').item.json.output[1].content[0].text).header }}",
             "ad_text": "={{JSON.parse($('HTTP Request1').item.json.output[1].content[0].text).ad_text}}",
             "ad_url": "={{JSON.parse($json.output[1].content[0].text).url + '?utm_source=yandex&utm_medium=cpc&utm_campaign={campaign_id}&utm_content={ad_id}&utm_term={keyword}.{device_type}.{region_name}&block={position_type}.{position}.{source}'}}",
             "company_id": "={{ $('set variables').item.json.company_id }}",
             "group_name": "={{ JSON.parse($('HTTP Request').item.json.output[1].content[0].text).header }}",
             "service_id": "={{$('Loop Over Items').last().json.service_id}}",
-            "report_id": "={{ $('set variables').item.json.import_id }}"
+            "report_id": "={{ $('set variables').item.json.import_id }}",
+            "key_word": "={{ $('Set prompt').item.json.key_word }}"
           },
           "matchingColumns": [],
           "schema": [
@@ -529,13 +472,14 @@
               "removed": false
             },
             {
-              "id": "key_words",
-              "displayName": "key_words",
+              "id": "key_word",
+              "displayName": "key_word",
               "required": false,
               "defaultMatch": false,
               "display": true,
               "type": "string",
-              "canBeUsedToMatch": true
+              "canBeUsedToMatch": true,
+              "removed": false
             },
             {
               "id": "ad_header",
@@ -727,12 +671,6 @@
         "assignments": {
           "assignments": [
             {
-              "id": "5b3485a2-cb50-486a-932c-fc27de0a25da",
-              "name": "company_name",
-              "value": "={{ $json.company_name }}",
-              "type": "string"
-            },
-            {
               "id": "f74ac992-90a4-4403-a75e-17656de76902",
               "name": "company_id",
               "value": "={{ $json.company_id }}",
@@ -887,7 +825,7 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "select count(list_id) AS total from current_list where resolution='to add' and is_adv_processed=false and company_id=$1 and report_id=$2",
+        "query": "WITH clean_keywords AS (\n  SELECT f.key_word\n  FROM current_list f\n  WHERE f.company_id = $1\n    AND f.report_id  = $2\n    AND f.resolution = 'to add'\n    AND NOT EXISTS (\n      SELECT 1\n      FROM current_list s\n      WHERE s.company_id = f.company_id\n        AND s.report_id  = f.report_id\n        AND s.key_word   = f.key_word\n        AND s.resolution = 'same key'\n    )\n  GROUP BY f.key_word\n)\nSELECT COUNT(*) AS total\nFROM clean_keywords;",
         "options": {
           "queryReplacement": "=[{{ $('set variables').item.json.company_id }},{{ $('set variables').item.json.import_id }}]"
         }
@@ -1253,6 +1191,30 @@
       ],
       "id": "60362725-a5df-45ee-9854-f0d01aa512aa",
       "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "WITH clean AS (\n  SELECT *\n  FROM current_list f\n  WHERE f.company_id = $1\n    AND f.report_id  = $2\n    AND f.service_id  = $3\n    AND f.resolution = 'to add'\n    AND NOT EXISTS (\n      SELECT 1\n      FROM current_list s\n      WHERE s.company_id = f.company_id\n        AND s.report_id  = f.report_id\n        AND s.key_word   = f.key_word\n        AND s.resolution = 'same key'\n    )\n),\nranked AS (\n  SELECT\n    c.*,\n    ROW_NUMBER() OVER (\n      PARTITION BY c.key_word\n      ORDER BY c.list_id   -- при необходимости поменяй на created_at\n    ) AS rn\n  FROM clean c\n)\nSELECT *\nFROM ranked\nWHERE rn = 1;",
+        "options": {
+          "queryReplacement": "=[{{ $('set variables').item.json.company_id }},{{ $('set variables').item.json.import_id }},{{ $json.service_id }}]"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        384,
+        -240
+      ],
+      "id": "57b6a039-9828-4ffd-9fc3-49bb872b76ed",
+      "name": "Execute a SQL query",
+      "alwaysOutputData": true,
+      "credentials": {
+        "postgres": {
+          "id": "Hx2VFmUi5WO2K4QX",
+          "name": "Postgres account 2"
+        }
+      }
     }
   ],
   "connections": {
@@ -1268,17 +1230,6 @@
         [
           {
             "node": "reset first_item",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Select rows from a table": {
-      "main": [
-        [
-          {
-            "node": "If empty",
             "type": "main",
             "index": 0
           }
@@ -1344,7 +1295,7 @@
       "main": [
         [
           {
-            "node": "Select rows from a table",
+            "node": "Execute a SQL query",
             "type": "main",
             "index": 0
           }
@@ -1701,6 +1652,17 @@
           }
         ]
       ]
+    },
+    "Execute a SQL query": {
+      "main": [
+        [
+          {
+            "node": "If empty",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
@@ -1719,10 +1681,10 @@
       "my_prompt_url": {
         "data": "Есть следующая фраза, заданная пользователем при поиске: \"{{key_word}}\". Подбери к фразе, заголовку:\"{{ad_header}}\" и тексту рекламного объявления \"{{ad_text}}\" ссылку на страницу сайта, максимально соответствующую запросу пользователя и тексту. Ответ должен содержать только ссылку. Учитывай то что в исходных фразах удалены все дополнительные символы, такие как #,- и пр. В ответе необходимо вернуть только запрошенную информацию, запрещено добавлять уточнения типа заголовок, ссылка, текст и любые рассуждения. В ответе запрещается использовать ссылки отсутствующие в описании компании или изменять ссылки приведенные в описании. Описание компании:{{company_description}} \n"
       },
-      "steps_passed": 2,
-      "tokens_used": 3731,
-      "company_description": "Первый визовый центр Курган Оформление виз Назначение: получение виз для поездок по миру — туризм, работа, учёба, лечение.\nГеография: Европа, Азия, США, Великобритания, Австралия, Канада — всего до 45 стран.\nСроки: от 5 рабочих дней (зависят от страны и типа визы).\nЧто делаем:\n- первичная консультация и подбор типа визы;\n- чек-лист и проверка документов;\n- переводы, заверение копий, заполнение анкет, подготовка сопроводительных писем;\n- запись на подачу (в консульства и визовые центры), подготовка к интервью;\n- сопровождение подачи, отслеживание статуса и получение готового паспорта;\n- дистанционное оформление при необходимости.\nДополнительные опции:\n- страхование для поездок по требованиям посольств;\n- бронирование авиабилетов и гостиниц, составление маршрута под подачу;\n- открытие иностранной банковской карты с удобной доставкой.\nОсобенности:\n- помощь в получении виз даже при «чистом» загранпаспорте;\n- автоматизированный поиск слотов подачи документов.\nПочему мы:\n- 10+ лет на рынке, более миллиона клиентов;\n- 2000+ одобренных виз ежемесячно;\n- 82% успешных решений;\n- более 120 офисов по стране.\nПримеры стоимости услуг:\n- Испания — от 4 500 ₽;\n- Италия — от 7 000 ₽;\n- Франция — от 7 000 ₽;\n- Китай — от 11 500 ₽.\nКонтакты и офис: г. Курган, ул. Пичугина, д. 21; телефон +7 (993) 426-19-77.",
-      "company_description_with_url": "Первый визовый центр Курган Оформление виз Назначение: получение виз для поездок по миру — туризм, работа, учёба, лечение.\nГеография: Европа, Азия, США, Великобритания, Австралия, Канада — всего до 45 стран.\nСроки: от 5 рабочих дней (зависят от страны и типа визы).\nЧто делаем:\n- первичная консультация и подбор типа визы;\n- чек-лист и проверка документов;\n- переводы, заверение копий, заполнение анкет, подготовка сопроводительных писем;\n- запись на подачу (в консульства и визовые центры), подготовка к интервью;\n- сопровождение подачи, отслеживание статуса и получение готового паспорта;\n- дистанционное оформление при необходимости.\nДополнительные опции:\n- страхование для поездок по требованиям посольств;\n- бронирование авиабилетов и гостиниц, составление маршрута под подачу;\n- открытие иностранной банковской карты с удобной доставкой.\nОсобенности:\n- помощь в получении виз даже при «чистом» загранпаспорте;\n- автоматизированный поиск слотов подачи документов.\nПочему мы:\n- 10+ лет на рынке, более миллиона клиентов;\n- 2000+ одобренных виз ежемесячно;\n- 82% успешных решений;\n- более 120 офисов по стране.\nПримеры стоимости услуг:\n- Испания — от 4 500 ₽;\n- Италия — от 7 000 ₽;\n- Франция — от 7 000 ₽;\n- Китай — от 11 500 ₽.\nКонтакты и офис: г. Курган, ул. Пичугина, д. 21; телефон +7 (993) 426-19-77. сервис доступен по адресу: http://krg45.visa-rf.ru/"
+      "steps_passed": 19,
+      "tokens_used": 51453,
+      "company_description": "KIBERone Саратов Октябрьский IT школа KIBERone KIBERone – международная КиберШкола программирования и цифровых технологий для детей от 6 до 14 лет.  Позиционирование бренда: KIBERone — первая международная КиберШкола будущего для IT-поколения 6–14 лет, признана ЮНЕСКО лучшей детской образовательной IT-школой в мире. Бренд является партнером Microsoft, Roblox и Samsung. Бесплатные пробные уроки  Основные услуги и программы:  Полный перечень модулей:  Вводный модуль (основы цифровой грамотности)  Основы программирования Scratch Jr  Создание игр на Scratch  ПиктоМир (алгоритмическое мышление)  CodeMonkey (логика и программирование)  Устройство компьютера  Эффектные презентации (PowerPoint, Desygner)  QR-коды  Деловые люди (предпринимательство)  Google Blockly (визуальное программирование)  Roblox Studio (создание игр)  Kodu Game Lab (3D-программирование)  Разработка мобильных приложений в Thunkable  Blender (3D-моделирование)  Компьютерная грамотность  Minecraft Education  Нейросети (основы ИИ)  Alice 3D (3D-программирование)  Run Marco (основы алгоритмов)  Исполнители: Чертёжник и Черепашка  GIF-анимация  Tinkercad (3D-проектирование)  Кибербезопасность  Construct 2 (создание 2D-игр)  Компас-3D (САПР)  Основы HTML (веб-разработка)  Голосовой помощник Алиса  Создание лендинга (Tilda)  Python (создание игр)  Чат-бот на Python  Web-дизайн (Figma)  Web-мастер (HTML+CSS)  Motion Design  Unreal Engine 4 (игровой движок)  JavaScript (игры)  C# (создание 2D-игр)  C++  Java (создание приложений)  Unity 3D (игры)  Олимпиадное программирование  Облачные технологии, Блокчейн, Data Science  PHP+SQL  Photoshop  Подготовка к олимпиадам  Приложения Google  Летние программы:  Летние IT-интенсивы (краткосрочные программы по направлениям Roblox, Minecraft, Python и др.)  Летние КИБЕРканикулы (городской лагерь с IT-обучением и развлекательной программой)  Дополнительные механики:  Кибервалюта («кибероны») для мотивации учеников, обмен на мерч на КиберМаркете  Тьюторы и преподаватели:  Опытные специалисты с практическим опытом и педагогической подготовкой  Другие важные разделы:  Новости (новости школы и сети)  СМИ о нас (публикации о школе)  Фотогалерея (фото с мероприятий и уроков)  Видео (видеоматериалы о школе)  Расписание занятий (время занятий для групп и пробных уроков)  Локации (адрес школы в Октябрьском районе Саратова, ул. Тараса Шевченко, 8)  Оплата (способы оплаты и договор-оферта)  Сертификаты (активация промокодов партнеров)  Контакты (телефон +7 963 112-49-11, email saratov@kiber-one.com",
+      "company_description_with_url": "KIBERone Саратов Октябрьский IT школа KIBERone KIBERone – международная КиберШкола программирования и цифровых технологий для детей от 6 до 14 лет.  Позиционирование бренда: KIBERone — первая международная КиберШкола будущего для IT-поколения 6–14 лет, признана ЮНЕСКО лучшей детской образовательной IT-школой в мире. Бренд является партнером Microsoft, Roblox и Samsung. Бесплатные пробные уроки  Основные услуги и программы:  Полный перечень модулей:  Вводный модуль (основы цифровой грамотности)  Основы программирования Scratch Jr  Создание игр на Scratch  ПиктоМир (алгоритмическое мышление)  CodeMonkey (логика и программирование)  Устройство компьютера  Эффектные презентации (PowerPoint, Desygner)  QR-коды  Деловые люди (предпринимательство)  Google Blockly (визуальное программирование)  Roblox Studio (создание игр)  Kodu Game Lab (3D-программирование)  Разработка мобильных приложений в Thunkable  Blender (3D-моделирование)  Компьютерная грамотность  Minecraft Education  Нейросети (основы ИИ)  Alice 3D (3D-программирование)  Run Marco (основы алгоритмов)  Исполнители: Чертёжник и Черепашка  GIF-анимация  Tinkercad (3D-проектирование)  Кибербезопасность  Construct 2 (создание 2D-игр)  Компас-3D (САПР)  Основы HTML (веб-разработка)  Голосовой помощник Алиса  Создание лендинга (Tilda)  Python (создание игр)  Чат-бот на Python  Web-дизайн (Figma)  Web-мастер (HTML+CSS)  Motion Design  Unreal Engine 4 (игровой движок)  JavaScript (игры)  C# (создание 2D-игр)  C++  Java (создание приложений)  Unity 3D (игры)  Олимпиадное программирование  Облачные технологии, Блокчейн, Data Science  PHP+SQL  Photoshop  Подготовка к олимпиадам  Приложения Google  Летние программы:  Летние IT-интенсивы (краткосрочные программы по направлениям Roblox, Minecraft, Python и др.)  Летние КИБЕРканикулы (городской лагерь с IT-обучением и развлекательной программой)  Дополнительные механики:  Кибервалюта («кибероны») для мотивации учеников, обмен на мерч на КиберМаркете  Тьюторы и преподаватели:  Опытные специалисты с практическим опытом и педагогической подготовкой  Другие важные разделы:  Новости (новости школы и сети)  СМИ о нас (публикации о школе)  Фотогалерея (фото с мероприятий и уроков)  Видео (видеоматериалы о школе)  Расписание занятий (время занятий для групп и пробных уроков)  Локации (адрес школы в Октябрьском районе Саратова, ул. Тараса Шевченко, 8)  Оплата (способы оплаты и договор-оферта)  Сертификаты (активация промокодов партнеров)  Контакты (телефон +7 963 112-49-11, email saratov@kiber-one.com сервис доступен по адресу: https://saratov-okt.kiber-one.com/"
     }
   },
   "meta": {
@@ -1732,16 +1694,16 @@
     "When Executed by Another Workflow": [
       {
         "json": {
-          "id": "ezK8ihYnfxZNTIAc",
-          "root_execution_id": 20076,
-          "company_id": 2,
-          "threshhold": "0.88",
-          "company_name": "Первый визовый центр Курган"
+          "id": "lBAh8kjoXRX0aGUF",
+          "root_execution_id": 48574,
+          "company_id": 1,
+          "threshhold": "0.79",
+          "import_id": "5"
         }
       }
     ]
   },
-  "versionId": "6eafd076-a5f3-4fbb-a998-67f14e7a224d",
+  "versionId": "832a2cca-c860-48be-80a0-b32efc29700b",
   "triggerCount": 0,
   "shared": [
     {
