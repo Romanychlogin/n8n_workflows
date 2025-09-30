@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-28T11:31:13.045Z",
-  "updatedAt": "2025-09-30T10:12:53.353Z",
+  "updatedAt": "2025-09-30T10:30:29.897Z",
   "id": "lBAh8kjoXRX0aGUF",
   "name": "ADS headers and texts creation services for updates",
   "active": false,
@@ -669,12 +669,6 @@
       "parameters": {
         "assignments": {
           "assignments": [
-            {
-              "id": "5b3485a2-cb50-486a-932c-fc27de0a25da",
-              "name": "company_name",
-              "value": "={{ $json.company_name }}",
-              "type": "string"
-            },
             {
               "id": "f74ac992-90a4-4403-a75e-17656de76902",
               "name": "company_id",
@@ -1699,16 +1693,16 @@
     "When Executed by Another Workflow": [
       {
         "json": {
-          "id": "ezK8ihYnfxZNTIAc",
-          "root_execution_id": 20076,
-          "company_id": 2,
-          "threshhold": "0.88",
-          "company_name": "Первый визовый центр Курган"
+          "id": "lBAh8kjoXRX0aGUF",
+          "root_execution_id": 48236,
+          "company_id": 1,
+          "threshhold": "0.79",
+          "import_id": "5"
         }
       }
     ]
   },
-  "versionId": "2b508afd-6c55-4ea6-8397-24f51af5fa24",
+  "versionId": "5e06ff0e-9131-4d76-b013-a850e6287866",
   "triggerCount": 0,
   "shared": [
     {
