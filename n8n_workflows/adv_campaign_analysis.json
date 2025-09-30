@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-07-18T08:31:54.459Z",
-  "updatedAt": "2025-09-29T18:04:52.109Z",
+  "updatedAt": "2025-09-30T05:34:12.359Z",
   "id": "wZGLxMCCmOnDJZ1o",
   "name": "ADV_campaign_analysis",
   "active": false,
@@ -1227,7 +1227,7 @@
     },
     {
       "parameters": {
-        "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nconst workflowData = $getWorkflowStaticData('global');\nworkflowData.steps_passed = workflowData.steps_passed+1; // update steps counter\nlet step_tokens_used = 0;\nif  ($('HTTP Request').all().length > 0) \n{ step_tokens_used = $('HTTP Request').first().json.usage.total_tokens};\nif  ($('HTTP Request1').all().length > 0)\n{step_tokens_used = step_tokens_used + $('HTTP Request1').first().json.usage.total_tokens}; //set used tokens here!!!!\nworkflowData.tokens_used = workflowData.tokens_used+step_tokens_used;\nfor (const item of $input.all()) {\n  item.json.steps_passed = workflowData.steps_passed;\n  item.json.tokens_used = workflowData.tokens_used\n}\n\nreturn $input.all();"
+        "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nconst workflowData = $getWorkflowStaticData('global');\nworkflowData.steps_passed = workflowData.steps_passed+1; // update steps counter\nlet step_tokens_used = 0;// безопасное чтение данных другой ноды\n\nfunction safeAll(nodeName) {\n  try {\n    return $(nodeName).all();        // вернёт массив items этой ноды\n  } catch (_e) {\n    return [];                       // нода не исполнялась — вернём пусто\n  }\n}\n\n// пример для HTTP Request1 — если нода не выполнялась, токены = 0\nconst httpItems = safeAll('HTTP Request');\nconst httpItems1 = safeAll('HTTP Request1');\nstep_tokens_used = httpItems.length\n  ? (httpItems[0]?.json?.usage?.total_tokens ?? 0)\n  : 0;\nstep_tokens_used = + httpItems1.length\n  ? (httpItems1[0]?.json?.usage?.total_tokens ?? 0)\n  : 0;\n //set used tokens here!!!!\nworkflowData.tokens_used = workflowData.tokens_used+step_tokens_used;\nfor (const item of $input.all()) {\n  item.json.steps_passed = workflowData.steps_passed;\n  item.json.tokens_used = workflowData.tokens_used\n}\n\nreturn $input.all();"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -2803,7 +2803,7 @@
       {
         "json": {
           "id": "wZGLxMCCmOnDJZ1o",
-          "root_execution_id": 44139,
+          "root_execution_id": 47278,
           "company_id": 1,
           "threshhold": "0.79",
           "import_id": 5
@@ -2811,7 +2811,7 @@
       }
     ]
   },
-  "versionId": "b187eeb6-0307-4a27-a158-88e3ca5ed367",
+  "versionId": "209f9959-b787-48f6-9f72-36f836c328cf",
   "triggerCount": 0,
   "shared": [
     {
