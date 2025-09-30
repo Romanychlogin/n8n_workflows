@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-28T11:31:13.045Z",
-  "updatedAt": "2025-09-29T16:35:26.746Z",
+  "updatedAt": "2025-09-30T10:10:05.733Z",
   "id": "lBAh8kjoXRX0aGUF",
   "name": "ADS headers and texts creation services for updates",
   "active": false,
@@ -20,63 +20,6 @@
       ],
       "id": "339fe02b-ad75-4e32-9d50-2089c9aff64b",
       "name": "Loop Over Items"
-    },
-    {
-      "parameters": {
-        "operation": "select",
-        "schema": {
-          "__rl": true,
-          "mode": "list",
-          "value": "public"
-        },
-        "table": {
-          "__rl": true,
-          "value": "current_list",
-          "mode": "list",
-          "cachedResultName": "current_list"
-        },
-        "returnAll": true,
-        "where": {
-          "values": [
-            {
-              "column": "company_id",
-              "value": "={{ $('set variables').item.json.company_id }}"
-            },
-            {
-              "column": "service_id",
-              "value": "={{ $json.service_id }}"
-            },
-            {
-              "column": "resolution",
-              "value": "to add"
-            },
-            {
-              "column": "is_adv_processed",
-              "value": "false"
-            },
-            {
-              "column": "report_id",
-              "value": "={{ $('set variables').item.json.import_id }}"
-            }
-          ]
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.postgres",
-      "typeVersion": 2.6,
-      "position": [
-        384,
-        -240
-      ],
-      "id": "57b6a039-9828-4ffd-9fc3-49bb872b76ed",
-      "name": "Select rows from a table",
-      "alwaysOutputData": true,
-      "credentials": {
-        "postgres": {
-          "id": "Hx2VFmUi5WO2K4QX",
-          "name": "Postgres account 2"
-        }
-      }
     },
     {
       "parameters": {
@@ -1253,6 +1196,30 @@
       ],
       "id": "60362725-a5df-45ee-9854-f0d01aa512aa",
       "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "WITH clean AS (\n  SELECT *\n  FROM current_list f\n  WHERE f.company_id = $1\n    AND f.report_id  = $2\n    AND f.service_id  = $3\n    AND f.resolution = 'to add'\n    AND NOT EXISTS (\n      SELECT 1\n      FROM current_list s\n      WHERE s.company_id = f.company_id\n        AND s.report_id  = f.report_id\n        AND s.key_word   = f.key_word\n        AND s.resolution = 'same key'\n    )\n),\nranked AS (\n  SELECT\n    c.*,\n    ROW_NUMBER() OVER (\n      PARTITION BY c.key_word\n      ORDER BY c.list_id   -- при необходимости поменяй на created_at\n    ) AS rn\n  FROM clean c\n)\nSELECT *\nFROM ranked\nWHERE rn = 1;",
+        "options": {
+          "queryReplacement": ""
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        384,
+        -240
+      ],
+      "id": "57b6a039-9828-4ffd-9fc3-49bb872b76ed",
+      "name": "Execute a SQL query",
+      "alwaysOutputData": true,
+      "credentials": {
+        "postgres": {
+          "id": "Hx2VFmUi5WO2K4QX",
+          "name": "Postgres account 2"
+        }
+      }
     }
   ],
   "connections": {
@@ -1268,17 +1235,6 @@
         [
           {
             "node": "reset first_item",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Select rows from a table": {
-      "main": [
-        [
-          {
-            "node": "If empty",
             "type": "main",
             "index": 0
           }
@@ -1344,7 +1300,7 @@
       "main": [
         [
           {
-            "node": "Select rows from a table",
+            "node": "Execute a SQL query",
             "type": "main",
             "index": 0
           }
@@ -1701,6 +1657,17 @@
           }
         ]
       ]
+    },
+    "Execute a SQL query": {
+      "main": [
+        [
+          {
+            "node": "If empty",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
@@ -1741,7 +1708,7 @@
       }
     ]
   },
-  "versionId": "6eafd076-a5f3-4fbb-a998-67f14e7a224d",
+  "versionId": "085e3860-0a2e-4ae4-9469-01a6c8a3452c",
   "triggerCount": 0,
   "shared": [
     {
