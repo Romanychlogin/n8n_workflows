@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-28T11:31:13.045Z",
-  "updatedAt": "2025-09-30T12:58:57.293Z",
+  "updatedAt": "2025-09-30T13:40:25.252Z",
   "id": "lBAh8kjoXRX0aGUF",
   "name": "ADS headers and texts creation services for updates",
   "active": false,
@@ -1215,6 +1215,19 @@
           "name": "Postgres account 2"
         }
       }
+    },
+    {
+      "parameters": {
+        "content": "key word обрезать до 7 слов!!!!!!"
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1024,
+        -976
+      ],
+      "id": "43ea249a-77b6-44f9-b702-25f60003283f",
+      "name": "Sticky Note4"
     }
   ],
   "connections": {
@@ -1703,7 +1716,7 @@
       }
     ]
   },
-  "versionId": "832a2cca-c860-48be-80a0-b32efc29700b",
+  "versionId": "3332bc9e-2e15-4d1c-886f-8b64d4f018b4",
   "triggerCount": 0,
   "shared": [
     {
