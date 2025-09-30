@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-30T17:56:19.098Z",
-  "updatedAt": "2025-09-30T17:56:19.098Z",
+  "updatedAt": "2025-09-30T18:16:06.042Z",
   "id": "UUlsZU9GOCmdvDHg",
   "name": "extract data for updates 2",
   "active": false,
@@ -221,21 +221,9 @@
           "assignments": [
             {
               "id": "5b3485a2-cb50-486a-932c-fc27de0a25da",
-              "name": "company_name",
-              "value": "Первый визовый центр Курган",
+              "name": "company_id",
+              "value": "1",
               "type": "string"
-            },
-            {
-              "id": "84d45310-3810-4151-88b4-4782f16e6319",
-              "name": "company_url",
-              "value": "http://krg45.visa-rf.ru/",
-              "type": "string"
-            },
-            {
-              "id": "b6898b14-3324-4cee-a1ae-32b2d48b4afe",
-              "name": "threshhold",
-              "value": 0.88,
-              "type": "number"
             }
           ]
         },
@@ -253,7 +241,7 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "SELECT ad.*, cs1.service_bid, regexp_replace(\n    cs1.service_name,\n    '[^a-zA-Zа-яА-ЯёЁ ]',\n    '',\n    'g'\n) AS cleaned_service_name,cs1.wordstat_count\nFROM ads_list AS ad\nLEFT JOIN LATERAL (\n    SELECT cs.service_bid,cs.service_name, COALESCE(kw.wordstat_count,0) as wordstat_count\n    FROM key_words kw\n    JOIN company_services cs\n      ON cs.service_id = kw.service_id\n     AND cs.company_id = ad.company_id       -- если есть привязка к компании — рекомендую\n    WHERE kw.key_word = ad.key_words\n    ORDER BY cs.service_bid DESC NULLS LAST  -- критерий выбора ОДНОЙ записи\n    LIMIT 1\n) AS cs1 ON TRUE\nWHERE ad.company_id = $1 order by service_name,wordstat_count desc;",
+        "query": "SELECT ad.*, cs1.service_bid, regexp_replace(\n    cs1.service_name,\n    '[^a-zA-Zа-яА-ЯёЁ ]',\n    '',\n    'g'\n) AS cleaned_service_name,cs1.count_clics \nFROM current_ads_list AS ad\nLEFT JOIN LATERAL (\n    SELECT cs.service_bid,cs.service_name, COALESCE(kw.count_clics,0) as count_clics\n    FROM current_list kw\n    JOIN company_services cs\n      ON cs.service_id = kw.service_id\n     AND cs.company_id = ad.company_id       -- если есть привязка к компании — рекомендую\n    WHERE kw.key_word = ad.key_word  \n    ORDER BY cs.service_bid DESC NULLS LAST  -- критерий выбора ОДНОЙ записи\n    LIMIT 1\n) AS cs1 ON TRUE\nWHERE ad.company_id = $1 AND ad.need_check=false order by service_name,count_clics desc;",
         "options": {
           "queryReplacement": "={{ $json.company_id }}"
         }
@@ -291,8 +279,8 @@
         "where": {
           "values": [
             {
-              "column": "company_name",
-              "value": "={{ $json.company_name }}"
+              "column": "company_id",
+              "value": "={{ $json.company_id }}"
             }
           ]
         },
@@ -419,7 +407,7 @@
     "templateCredsSetupCompleted": true
   },
   "pinData": {},
-  "versionId": "a9d0157a-a256-462b-b50b-54c1d9b8e10e",
+  "versionId": "5ee4319e-084b-4cf4-804c-fa69ee13ece0",
   "triggerCount": 0,
   "shared": [
     {
