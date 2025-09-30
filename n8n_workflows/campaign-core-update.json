@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-25T13:33:58.106Z",
-  "updatedAt": "2025-09-29T16:46:18.693Z",
+  "updatedAt": "2025-09-30T12:42:24.398Z",
   "id": "0J5cvuaSz3IhDS99",
   "name": "campaign core update",
   "active": false,
@@ -1711,7 +1711,7 @@
       }
     ]
   },
-  "versionId": "fe4d9fd7-5371-4e5b-b2ba-93db95cd5bd4",
+  "versionId": "142ca05c-73ff-48d6-8c79-f8fe2d4cb575",
   "triggerCount": 0,
   "shared": [
     {
