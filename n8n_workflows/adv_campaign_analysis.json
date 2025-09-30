@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-07-18T08:31:54.459Z",
-  "updatedAt": "2025-09-30T05:34:12.359Z",
+  "updatedAt": "2025-09-30T13:13:40.679Z",
   "id": "wZGLxMCCmOnDJZ1o",
   "name": "ADV_campaign_analysis",
   "active": false,
@@ -1467,157 +1467,6 @@
     },
     {
       "parameters": {
-        "content": "ВРЕМЕННО для KIBERone - нет Истории!!!!!",
-        "height": 496,
-        "width": 416
-      },
-      "type": "n8n-nodes-base.stickyNote",
-      "typeVersion": 1,
-      "position": [
-        4240,
-        -192
-      ],
-      "id": "f53d55f5-4327-4ae0-9303-6baf69cbf0e1",
-      "name": "Sticky Note4"
-    },
-    {
-      "parameters": {
-        "operation": "executeQuery",
-        "query": "select c.company_name,cs.service_name, cs.service_description from key_words kw, companies c, company_services cs where kw.key_word=$2 and kw.company_id=$1 and cs.service_id=kw.service_id and cs.company_id=$1 and c.company_id=$1",
-        "options": {
-          "queryReplacement": "=[{{ $('set variables').item.json.company_id }},{{ $json.key_word }}]"
-        }
-      },
-      "type": "n8n-nodes-base.postgres",
-      "typeVersion": 2.6,
-      "position": [
-        4928,
-        -144
-      ],
-      "id": "ca37c744-a547-4e2e-beef-f62e1b5049f3",
-      "name": "get service data by key word",
-      "credentials": {
-        "postgres": {
-          "id": "Hx2VFmUi5WO2K4QX",
-          "name": "Postgres account 2"
-        }
-      },
-      "disabled": true
-    },
-    {
-      "parameters": {
-        "conditions": {
-          "options": {
-            "caseSensitive": true,
-            "leftValue": "",
-            "typeValidation": "strict",
-            "version": 2
-          },
-          "conditions": [
-            {
-              "id": "99ec263a-e232-4b91-9603-fea27331309c",
-              "leftValue": "={{ $('set threshold').item.json.used_keyword }}",
-              "rightValue": "---autotargeting",
-              "operator": {
-                "type": "string",
-                "operation": "notContains"
-              }
-            }
-          ],
-          "combinator": "and"
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.if",
-      "typeVersion": 2.2,
-      "position": [
-        4464,
-        -112
-      ],
-      "id": "78399e42-113c-4fc7-9fed-7ddb97fadf94",
-      "name": "If not autotargeting"
-    },
-    {
-      "parameters": {
-        "operation": "executeQuery",
-        "query": "select c.company_name,cs.service_name, cs.service_description from ads_list kw, companies c, company_services cs where kw.ad_header=$2 and kw.company_id=$1 and cs.service_id=kw.service_id and cs.company_id=$1 and c.company_id=$1 ",
-        "options": {
-          "queryReplacement": "=[{{ $('set variables').item.json.company_id }},{{ $('Loop Over Items').last().json.ads_header }}]"
-        }
-      },
-      "type": "n8n-nodes-base.postgres",
-      "typeVersion": 2.6,
-      "position": [
-        4928,
-        32
-      ],
-      "id": "87d1b141-5c27-45ef-8b40-8420a63b0fbd",
-      "name": "get service data by AD header",
-      "credentials": {
-        "postgres": {
-          "id": "Hx2VFmUi5WO2K4QX",
-          "name": "Postgres account 2"
-        }
-      },
-      "disabled": true
-    },
-    {
-      "parameters": {
-        "jsCode": "const src = $('Loop Over Items').last().json?.used_key_word ?? '';\n\nreturn $input.all().map(it => {\n  const cleaned = String(src).replace(/\\s-\\S+/g, '').trim();\n  return { json: { ...it.json, key_word: cleaned } };\n});"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        4736,
-        -144
-      ],
-      "id": "6b7e98b2-cf1f-4582-9335-09d5cad31dd1",
-      "name": "remove applied key words"
-    },
-    {
-      "parameters": {
-        "operation": "executeQuery",
-        "query": "select c.company_name,cs.service_name, cs.service_description from companies c, company_services cs where  cs.service_id=6 and cs.company_id=1 and c.company_id=1",
-        "options": {}
-      },
-      "type": "n8n-nodes-base.postgres",
-      "typeVersion": 2.6,
-      "position": [
-        5136,
-        -144
-      ],
-      "id": "53be7ee3-e874-48f6-8f6a-019e70e9006c",
-      "name": "get service data by key word1",
-      "credentials": {
-        "postgres": {
-          "id": "Hx2VFmUi5WO2K4QX",
-          "name": "Postgres account 2"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "operation": "executeQuery",
-        "query": "select c.company_name,cs.service_name, cs.service_description from companies c, company_services cs where  cs.service_id=6 and cs.company_id=1 and c.company_id=1",
-        "options": {}
-      },
-      "type": "n8n-nodes-base.postgres",
-      "typeVersion": 2.6,
-      "position": [
-        5120,
-        32
-      ],
-      "id": "24912155-ac6a-438c-b9f7-32f799ce1a52",
-      "name": "get service data by AD header1",
-      "credentials": {
-        "postgres": {
-          "id": "Hx2VFmUi5WO2K4QX",
-          "name": "Postgres account 2"
-        }
-      }
-    },
-    {
-      "parameters": {
         "content": "add company id"
       },
       "type": "n8n-nodes-base.stickyNote",
@@ -2084,11 +1933,34 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        5344,
-        -144
+        5248,
+        -128
       ],
       "id": "bd1dae7e-1eb7-4c72-b91a-c3fd1aaefec4",
       "name": "Set service parameters"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "select c.company_name,cs.service_name, cs.service_description from companies c, company_services cs where  cs.service_id=$1 and cs.company_id=$2 and c.company_id=$2",
+        "options": {
+          "queryReplacement": "=[{{$('Loop Over Items').last().json.service_id}},{{$('Loop Over Items').last().json.company_id}}]"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        4880,
+        -128
+      ],
+      "id": "53be7ee3-e874-48f6-8f6a-019e70e9006c",
+      "name": "get service data",
+      "credentials": {
+        "postgres": {
+          "id": "Hx2VFmUi5WO2K4QX",
+          "name": "Postgres account 2"
+        }
+      }
     }
   ],
   "connections": {
@@ -2440,7 +2312,7 @@
       "main": [
         [
           {
-            "node": "If not autotargeting",
+            "node": "get service data",
             "type": "main",
             "index": 0
           }
@@ -2486,79 +2358,6 @@
         [
           {
             "node": "Set API JSON",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "get service data by key word": {
-      "main": [
-        [
-          {
-            "node": "get service data by key word1",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "If not autotargeting": {
-      "main": [
-        [
-          {
-            "node": "remove applied key words",
-            "type": "main",
-            "index": 0
-          }
-        ],
-        [
-          {
-            "node": "get service data by AD header",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "get service data by AD header": {
-      "main": [
-        [
-          {
-            "node": "get service data by AD header1",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "remove applied key words": {
-      "main": [
-        [
-          {
-            "node": "get service data by key word",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "get service data by key word1": {
-      "main": [
-        [
-          {
-            "node": "Set service parameters",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "get service data by AD header1": {
-      "main": [
-        [
-          {
-            "node": "Set service parameters",
             "type": "main",
             "index": 0
           }
@@ -2769,6 +2568,17 @@
           }
         ]
       ]
+    },
+    "get service data": {
+      "main": [
+        [
+          {
+            "node": "Set service parameters",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
@@ -2811,7 +2621,7 @@
       }
     ]
   },
-  "versionId": "209f9959-b787-48f6-9f72-36f836c328cf",
+  "versionId": "f0ddfd4a-73b6-41df-aedb-3041bab22a39",
   "triggerCount": 0,
   "shared": [
     {
