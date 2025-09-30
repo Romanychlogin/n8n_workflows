@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-30T16:48:04.437Z",
-  "updatedAt": "2025-09-30T16:50:48.946Z",
+  "updatedAt": "2025-09-30T16:51:38.059Z",
   "id": "1gpijgJqDphxH4tg",
   "name": "check current  ads_candidates vs minus list",
   "active": false,
@@ -116,7 +116,7 @@
           "mappingMode": "defineBelow",
           "value": {
             "resolution": "={{$json.resolution}}",
-            "ad_id": "={{ $json.ad_id }}"
+            "ad_id": "={{ $('Loop Over Items').last().json.ad_id }}"
           },
           "matchingColumns": [
             "ad_id"
@@ -430,7 +430,7 @@
   "staticData": null,
   "meta": null,
   "pinData": {},
-  "versionId": "4fd7060f-8678-417f-b978-305c058653a0",
+  "versionId": "daf8b3a1-110f-45c3-94c8-c1c3b1424bb2",
   "triggerCount": 0,
   "shared": [
     {
@@ -441,6 +441,5 @@
       "projectId": "spKmbJLU4mvACXIB"
     }
   ],
-  "tags": [],
-  "file_name": "check-current-ads_candidates-vs-minus-list.json"
+  "tags": []
 }
