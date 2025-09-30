@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-30T17:56:19.098Z",
-  "updatedAt": "2025-09-30T18:16:06.042Z",
+  "updatedAt": "2025-09-30T20:49:56.877Z",
   "id": "UUlsZU9GOCmdvDHg",
   "name": "extract data for updates 2",
   "active": false,
@@ -115,7 +115,7 @@
             {
               "id": "1df69495-ac3c-4f36-ac5d-5a014914feb0",
               "name": "key_words",
-              "value": "={{ $json.key_words }}",
+              "value": "={{ $json.key_word }}",
               "type": "string"
             },
             {
@@ -407,7 +407,7 @@
     "templateCredsSetupCompleted": true
   },
   "pinData": {},
-  "versionId": "5ee4319e-084b-4cf4-804c-fa69ee13ece0",
+  "versionId": "19da06c9-34e4-432d-adfe-59349a49a801",
   "triggerCount": 0,
   "shared": [
     {
