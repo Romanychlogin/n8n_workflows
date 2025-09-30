@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-25T13:56:50.878Z",
-  "updatedAt": "2025-09-29T16:17:46.220Z",
+  "updatedAt": "2025-09-30T12:41:18.655Z",
   "id": "4f5WJ06ItW520O75",
   "name": "ADV_campaign_data_load",
   "active": false,
@@ -102,7 +102,8 @@
             "count_clics": "={{ $json['Клики'] }}",
             "count_convetions": "={{ $json['Конверсии'] }}",
             "company_id": "={{ $json.company_id }}",
-            "report_id": "={{ $('report import record').item.json.import_id }}"
+            "report_id": "={{ $('report import record').item.json.import_id }}",
+            "service_id": 0
           },
           "matchingColumns": [
             "id"
@@ -247,6 +248,26 @@
               "type": "number",
               "canBeUsedToMatch": true,
               "removed": false
+            },
+            {
+              "id": "service_id",
+              "displayName": "service_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "is_adv_processed",
+              "displayName": "is_adv_processed",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "boolean",
+              "canBeUsedToMatch": true,
+              "removed": true
             }
           ],
           "attemptToConvertTypes": false,
@@ -1158,7 +1179,7 @@
       }
     ]
   },
-  "versionId": "5c6e067f-dfcf-4180-8a03-7aff393bb1a7",
+  "versionId": "0d24344f-9b01-4f48-a281-e7bfc98e629c",
   "triggerCount": 0,
   "shared": [
     {
