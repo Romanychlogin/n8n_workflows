@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-19T15:26:59.886Z",
-  "updatedAt": "2025-09-24T07:50:14.615Z",
+  "updatedAt": "2025-09-29T13:56:00.676Z",
   "id": "SptAKErjQeOJuESk",
   "name": "status bot",
   "active": true,
@@ -650,11 +650,12 @@
     },
     {
       "parameters": {
-        "chatId": "-1003052639964",
+        "chatId": "-1003196763261",
         "text": "={{ $json.text }}",
         "additionalFields": {
           "appendAttribution": true,
-          "parse_mode": "MarkdownV2"
+          "parse_mode": "MarkdownV2",
+          "message_thread_id": 5
         }
       },
       "type": "n8n-nodes-base.telegram",
@@ -675,11 +676,12 @@
     },
     {
       "parameters": {
-        "chatId": "-1002955047432",
+        "chatId": "-1003196763261",
         "text": "={{ $json.text }}",
         "additionalFields": {
           "appendAttribution": true,
-          "parse_mode": "MarkdownV2"
+          "parse_mode": "MarkdownV2",
+          "message_thread_id": 6
         }
       },
       "type": "n8n-nodes-base.telegram",
@@ -700,11 +702,12 @@
     },
     {
       "parameters": {
-        "chatId": "-1002955047432",
+        "chatId": "-1003196763261",
         "text": "={{ $json.text }}",
         "additionalFields": {
           "appendAttribution": true,
-          "parse_mode": "MarkdownV2"
+          "parse_mode": "MarkdownV2",
+          "message_thread_id": 6
         }
       },
       "type": "n8n-nodes-base.telegram",
@@ -905,9 +908,48 @@
           "Timezone": "Europe/Moscow (UTC+03:00)"
         }
       }
+    ],
+    "Telegram Trigger": [
+      {
+        "json": {
+          "update_id": 965439204,
+          "channel_post": {
+            "message_id": 180,
+            "sender_chat": {
+              "id": -1003052639964,
+              "title": "Yandex Direct Incidents",
+              "type": "channel"
+            },
+            "chat": {
+              "id": -1003052639964,
+              "title": "Yandex Direct Incidents",
+              "type": "channel"
+            },
+            "date": 1759149220,
+            "text": "test"
+          }
+        }
+      }
+    ],
+    "Schedule Trigger for incidents": [
+      {
+        "json": {
+          "timestamp": "2025-09-29T15:54:04.003+03:00",
+          "Readable date": "September 29th 2025, 3:54:04 pm",
+          "Readable time": "3:54:04 pm",
+          "Day of week": "Monday",
+          "Year": "2025",
+          "Month": "September",
+          "Day of month": "29",
+          "Hour": "15",
+          "Minute": "54",
+          "Second": "04",
+          "Timezone": "Europe/Moscow (UTC+03:00)"
+        }
+      }
     ]
   },
-  "versionId": "28939be2-4e65-4a4a-857e-80721cb7d693",
+  "versionId": "3b9a8c93-a84a-49b6-9adb-aa5a4f74f911",
   "triggerCount": 3,
   "shared": [
     {

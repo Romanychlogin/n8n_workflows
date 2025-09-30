@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-10T17:26:44.235Z",
-  "updatedAt": "2025-09-12T13:32:21.188Z",
+  "updatedAt": "2025-09-28T10:32:40.468Z",
   "id": "gOiXkFb3LETVri46",
   "name": "Fill competitors services",
   "active": false,
@@ -75,7 +75,9 @@
         "sendBody": true,
         "specifyBody": "json",
         "jsonBody": "={{$json}}",
-        "options": {}
+        "options": {
+          "timeout": 600000
+        }
       },
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
@@ -266,13 +268,13 @@
             {
               "id": "5b3485a2-cb50-486a-932c-fc27de0a25da",
               "name": "company_name",
-              "value": "Первый визовый центр Курган",
+              "value": "KIBERone Саратов Октябрьский",
               "type": "string"
             },
             {
               "id": "f74ac992-90a4-4403-a75e-17656de76902",
               "name": "company_id",
-              "value": 2,
+              "value": 1,
               "type": "number"
             }
           ]
@@ -504,7 +506,7 @@
     "templateCredsSetupCompleted": true
   },
   "pinData": {},
-  "versionId": "31e287f6-cb67-4f35-8671-193ca0fb8291",
+  "versionId": "85b733cf-9837-4b2b-8290-3adae7d692dd",
   "triggerCount": 0,
   "shared": [
     {

@@ -1,73 +1,11 @@
 {
   "createdAt": "2025-07-18T08:31:54.459Z",
-  "updatedAt": "2025-09-04T08:16:09.654Z",
+  "updatedAt": "2025-09-30T05:34:12.359Z",
   "id": "wZGLxMCCmOnDJZ1o",
   "name": "ADV_campaign_analysis",
   "active": false,
   "isArchived": false,
   "nodes": [
-    {
-      "parameters": {},
-      "id": "a1f82c98-34c1-44e0-89de-2b206bb7e0c6",
-      "name": "Start",
-      "type": "n8n-nodes-base.manualTrigger",
-      "typeVersion": 1,
-      "position": [
-        -640,
-        -80
-      ]
-    },
-    {
-      "parameters": {
-        "values": {
-          "string": [
-            {
-              "name": "url",
-              "value": "https://www.dropbox.com/scl/fi/vlbuzyzphihy2bjpef9ks/2025-07-01_2025-09-03_searchquery_kiberone-saratov.csv?rlkey=h5vqg335p5ljm5dt610zdtoyb&dl=1"
-            }
-          ]
-        },
-        "options": {}
-      },
-      "id": "8893f1a1-c703-464b-9077-53eb0889b9b2",
-      "name": "Enter URL",
-      "type": "n8n-nodes-base.set",
-      "typeVersion": 2,
-      "position": [
-        176,
-        -80
-      ]
-    },
-    {
-      "parameters": {
-        "url": "={{$json[\"url\"]}}",
-        "responseFormat": "file",
-        "options": {}
-      },
-      "id": "6f37b88f-d4f9-42c0-ac86-7c46984fe372",
-      "name": "Download File",
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 2,
-      "position": [
-        384,
-        -80
-      ]
-    },
-    {
-      "parameters": {
-        "options": {
-          "delimiter": ";"
-        }
-      },
-      "type": "n8n-nodes-base.extractFromFile",
-      "typeVersion": 1,
-      "position": [
-        608,
-        -80
-      ],
-      "id": "8cf533ac-5921-4bb1-9ed9-826dea215e10",
-      "name": "Extract from File"
-    },
     {
       "parameters": {
         "options": {}
@@ -75,37 +13,11 @@
       "type": "n8n-nodes-base.splitInBatches",
       "typeVersion": 3,
       "position": [
-        1456,
+        1200,
         -96
       ],
       "id": "14ab2730-450d-4b85-8dff-85f47057947b",
       "name": "Loop Over Items"
-    },
-    {
-      "parameters": {},
-      "type": "n8n-nodes-base.noOp",
-      "name": "Replace Me",
-      "typeVersion": 1,
-      "position": [
-        9072,
-        0
-      ],
-      "id": "cb260de5-cb39-4ae9-acf1-9988cd0b1a37"
-    },
-    {
-      "parameters": {
-        "mode": "combine",
-        "combineBy": "combineByPosition",
-        "options": {}
-      },
-      "type": "n8n-nodes-base.merge",
-      "typeVersion": 3.2,
-      "position": [
-        6032,
-        -256
-      ],
-      "id": "3b586bb4-8249-460a-b5ab-23282c4ff096",
-      "name": "Merge"
     },
     {
       "parameters": {
@@ -124,7 +36,8 @@
           "mappingMode": "defineBelow",
           "value": {
             "minus_word": "={{ $json.minus_word }}",
-            "current_record_id": "={{ $json.list_id }}"
+            "current_record_id": "={{ $('Loop Over Items').last().json.list_id }}",
+            "company_id": "={{ $('Loop Over Items').last().json.company_id }}"
           },
           "matchingColumns": [
             "id"
@@ -169,6 +82,46 @@
               "type": "boolean",
               "canBeUsedToMatch": true,
               "removed": true
+            },
+            {
+              "id": "minus_word_v2",
+              "displayName": "minus_word_v2",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "keep_minus_v2",
+              "displayName": "keep_minus_v2",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "boolean",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "comment",
+              "displayName": "comment",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "company_id",
+              "displayName": "company_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": false
             }
           ],
           "attemptToConvertTypes": false,
@@ -179,8 +132,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        7808,
-        -640
+        10320,
+        -240
       ],
       "id": "b2be9a68-4d5c-4dd1-85c7-4d71ce034518",
       "name": "Insert minus words",
@@ -190,22 +143,6 @@
           "name": "Postgres account 2"
         }
       }
-    },
-    {
-      "parameters": {
-        "mode": "combine",
-        "combineBy": "combineByPosition",
-        "options": {}
-      },
-      "type": "n8n-nodes-base.merge",
-      "typeVersion": 3.2,
-      "position": [
-        8256,
-        -800
-      ],
-      "id": "0c60f5c9-db38-4edb-b16b-cd4b807c471a",
-      "name": "Merge with initial data",
-      "disabled": true
     },
     {
       "parameters": {
@@ -247,8 +184,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        2256,
-        -528
+        1888,
+        -208
       ],
       "id": "b216be47-debc-40cf-b136-bec95d38fdee",
       "name": "пословное соответствие?"
@@ -260,8 +197,8 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        -240,
-        -592
+        -480,
+        -640
       ],
       "id": "a8b2918a-ab3b-43a8-b9a3-a2fedeac0c86",
       "name": "Sticky Note1"
@@ -273,8 +210,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        2464,
-        -704
+        2288,
+        -512
       ],
       "id": "28c687e3-463b-473a-afd9-320b16c436f2",
       "name": "проверяем полное соответствие"
@@ -307,291 +244,11 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        2688,
-        -704
+        2848,
+        -672
       ],
       "id": "9697e909-a82a-45b7-b036-d696f078145a",
       "name": "Соответствие полное?"
-    },
-    {
-      "parameters": {
-        "schema": {
-          "__rl": true,
-          "mode": "list",
-          "value": "public"
-        },
-        "table": {
-          "__rl": true,
-          "value": "current_list",
-          "mode": "list",
-          "cachedResultName": "current_list"
-        },
-        "columns": {
-          "mappingMode": "defineBelow",
-          "value": {
-            "key_word": "={{ $json[Object.keys($json)[0]] }}",
-            "campaign_id": "={{ $json['№ Кампании'] }}",
-            "used_keyword": "={{ $json['Условие показа'] }}",
-            "group_id": "={{ $json['№ Группы'] }}",
-            "condition_type": "={{ $json['Тип соответствия'] }}",
-            "category": "={{ $json['Категория таргетинга'] }}",
-            "ads_header": "={{ $json['Заголовок'] }}",
-            "date": "={{ DateTime.fromFormat($json['﻿Дата'], 'dd.MM.yyyy').toISODate() }}",
-            "count_views": "={{ $json['Показы'] }}",
-            "count_clics": "={{ $json['Клики'] }}",
-            "count_convetions": "={{ $json['Конверсии'] }}"
-          },
-          "matchingColumns": [
-            "id"
-          ],
-          "schema": [
-            {
-              "id": "id",
-              "displayName": "id",
-              "required": false,
-              "defaultMatch": true,
-              "display": true,
-              "type": "number",
-              "canBeUsedToMatch": true,
-              "removed": true
-            },
-            {
-              "id": "key_word",
-              "displayName": "key_word",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true
-            },
-            {
-              "id": "campaign_id",
-              "displayName": "campaign_id",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "number",
-              "canBeUsedToMatch": true
-            },
-            {
-              "id": "used_keyword",
-              "displayName": "used_keyword",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true
-            },
-            {
-              "id": "group_id",
-              "displayName": "group_id",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "number",
-              "canBeUsedToMatch": true
-            },
-            {
-              "id": "condition_type",
-              "displayName": "condition_type",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true,
-              "removed": false
-            },
-            {
-              "id": "category",
-              "displayName": "category",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true
-            },
-            {
-              "id": "ads_header",
-              "displayName": "ads_header",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true
-            },
-            {
-              "id": "date",
-              "displayName": "date",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "dateTime",
-              "canBeUsedToMatch": true
-            },
-            {
-              "id": "ai_responce",
-              "displayName": "ai_responce",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true
-            },
-            {
-              "id": "resolution",
-              "displayName": "resolution",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true
-            },
-            {
-              "id": "count_views",
-              "displayName": "count_views",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "number",
-              "canBeUsedToMatch": true
-            },
-            {
-              "id": "count_clics",
-              "displayName": "count_clics",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "number",
-              "canBeUsedToMatch": true
-            },
-            {
-              "id": "count_convetions",
-              "displayName": "count_convetions",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "number",
-              "canBeUsedToMatch": true
-            }
-          ],
-          "attemptToConvertTypes": false,
-          "convertFieldsToString": false
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.postgres",
-      "typeVersion": 2.6,
-      "position": [
-        1904,
-        -208
-      ],
-      "id": "3d636614-e11e-4a0b-bf63-487342a42f07",
-      "name": "Insert rows in a table",
-      "credentials": {
-        "postgres": {
-          "id": "Hx2VFmUi5WO2K4QX",
-          "name": "Postgres account 2"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "operation": "deleteTable",
-        "schema": {
-          "__rl": true,
-          "mode": "list",
-          "value": "public"
-        },
-        "table": {
-          "__rl": true,
-          "value": "current_list",
-          "mode": "list",
-          "cachedResultName": "current_list"
-        },
-        "deleteCommand": "delete",
-        "options": {}
-      },
-      "type": "n8n-nodes-base.postgres",
-      "typeVersion": 2.6,
-      "position": [
-        -432,
-        -80
-      ],
-      "id": "296a7cb2-4336-4240-8ce2-9fec33dcfdfb",
-      "name": "Clear current_list",
-      "credentials": {
-        "postgres": {
-          "id": "Hx2VFmUi5WO2K4QX",
-          "name": "Postgres account 2"
-        }
-      },
-      "disabled": true
-    },
-    {
-      "parameters": {
-        "operation": "deleteTable",
-        "schema": {
-          "__rl": true,
-          "mode": "list",
-          "value": "public"
-        },
-        "table": {
-          "__rl": true,
-          "value": "current_minus_words",
-          "mode": "list",
-          "cachedResultName": "current_minus_words"
-        },
-        "deleteCommand": "delete",
-        "options": {}
-      },
-      "type": "n8n-nodes-base.postgres",
-      "typeVersion": 2.6,
-      "position": [
-        -224,
-        -80
-      ],
-      "id": "1ab3a0cf-a029-4599-bacf-a3894e261f93",
-      "name": "Clear current_minus_words",
-      "credentials": {
-        "postgres": {
-          "id": "Hx2VFmUi5WO2K4QX",
-          "name": "Postgres account 2"
-        }
-      },
-      "disabled": true
-    },
-    {
-      "parameters": {
-        "operation": "deleteTable",
-        "schema": {
-          "__rl": true,
-          "mode": "list",
-          "value": "public"
-        },
-        "table": {
-          "__rl": true,
-          "value": "current_ads_list",
-          "mode": "list",
-          "cachedResultName": "current_ads_list"
-        },
-        "deleteCommand": "delete",
-        "options": {}
-      },
-      "type": "n8n-nodes-base.postgres",
-      "typeVersion": 2.6,
-      "position": [
-        -16,
-        -80
-      ],
-      "id": "76b60d31-1b7f-4a02-a07d-64028295db02",
-      "name": "Clear current_ads",
-      "credentials": {
-        "postgres": {
-          "id": "Hx2VFmUi5WO2K4QX",
-          "name": "Postgres account 2"
-        }
-      },
-      "disabled": true
     },
     {
       "parameters": {
@@ -611,7 +268,7 @@
           "mappingMode": "defineBelow",
           "value": {
             "resolution": "same key",
-            "list_id": "={{ $json.list_id }}"
+            "list_id": "={{ $('Loop Over Items').last().json.list_id }}"
           },
           "matchingColumns": [
             "list_id"
@@ -765,8 +422,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        8400,
-        -1216
+        10800,
+        -1696
       ],
       "id": "233a9fb2-ccfc-4fbd-a2af-5630a61c7a22",
       "name": "Помечаем что ключ совпадает",
@@ -795,7 +452,7 @@
           "mappingMode": "defineBelow",
           "value": {
             "resolution": "={{ $json.resolution}}",
-            "list_id": "={{ $json.list_id }}",
+            "list_id": "={{ $('Loop Over Items').last().json.list_id }}",
             "ai_response_tokens": "={{ $json.total_tokens }}"
           },
           "matchingColumns": [
@@ -883,16 +540,6 @@
               "removed": true
             },
             {
-              "id": "date",
-              "displayName": "date",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "dateTime",
-              "canBeUsedToMatch": true,
-              "removed": true
-            },
-            {
               "id": "resolution",
               "displayName": "resolution",
               "required": false,
@@ -941,6 +588,46 @@
               "type": "number",
               "canBeUsedToMatch": true,
               "removed": false
+            },
+            {
+              "id": "company_id",
+              "displayName": "company_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "report_id",
+              "displayName": "report_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "service_id",
+              "displayName": "service_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "is_adv_processed",
+              "displayName": "is_adv_processed",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "boolean",
+              "canBeUsedToMatch": true,
+              "removed": true
             }
           ],
           "attemptToConvertTypes": false,
@@ -951,7 +638,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        8464,
+        10752,
         -480
       ],
       "id": "8200d389-0be7-463e-b356-76cf1a2d659f",
@@ -991,71 +678,11 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        6336,
-        -704
+        7408,
+        -464
       ],
       "id": "78d0f369-bc02-4a48-84af-389ac2c2f8cf",
       "name": "Обработка ответа AI"
-    },
-    {
-      "parameters": {
-        "assignments": {
-          "assignments": [
-            {
-              "id": "33090f58-518c-4671-a0cf-22b8b484a226",
-              "name": "resolution",
-              "value": "to add",
-              "type": "string"
-            },
-            {
-              "id": "4f2396b9-b5c0-4e30-86c1-df42515df6af",
-              "name": "total_tokens",
-              "value": "={{ $json.usage.total_tokens }}",
-              "type": "number"
-            }
-          ]
-        },
-        "includeOtherFields": true,
-        "options": {}
-      },
-      "type": "n8n-nodes-base.set",
-      "typeVersion": 3.4,
-      "position": [
-        6784,
-        -448
-      ],
-      "id": "e75eef70-59a7-4697-8b04-373c54883a70",
-      "name": "Edit Fields"
-    },
-    {
-      "parameters": {
-        "assignments": {
-          "assignments": [
-            {
-              "id": "bb72a340-789e-459b-80c9-f1c2b454ed57",
-              "name": "resolution",
-              "value": "={{\"no relevant, minuses:\"+JSON.parse($json.output[1].content[0].text).minus_words.map(String).join(', ')}}",
-              "type": "string"
-            },
-            {
-              "id": "f1d5bde6-376a-40f1-b00d-9723628a1553",
-              "name": "total_tokens",
-              "value": "={{  $json.usage.total_tokens }}",
-              "type": "number"
-            }
-          ]
-        },
-        "includeOtherFields": true,
-        "options": {}
-      },
-      "type": "n8n-nodes-base.set",
-      "typeVersion": 3.4,
-      "position": [
-        7168,
-        -784
-      ],
-      "id": "6bf663d1-4db2-412c-aa73-d7943501ee9f",
-      "name": "Edit Fields1"
     },
     {
       "parameters": {
@@ -1079,8 +706,8 @@
       "type": "n8n-nodes-base.github",
       "typeVersion": 1.1,
       "position": [
-        256,
-        -336
+        192,
+        -416
       ],
       "id": "2705a1f5-4bfc-4dd9-a751-b86be2337888",
       "name": "Get a file",
@@ -1100,61 +727,24 @@
       "type": "n8n-nodes-base.extractFromFile",
       "typeVersion": 1,
       "position": [
-        464,
-        -336
+        400,
+        -416
       ],
       "id": "41535c1f-f954-40d0-8b31-c54af2a0011b",
       "name": "Extract from File1"
     },
     {
       "parameters": {
-        "assignments": {
-          "assignments": [
-            {
-              "id": "9a36baab-13a9-4eb3-9a76-79dd29a11294",
-              "name": "mergekey",
-              "value": "1",
-              "type": "string"
-            }
-          ]
-        },
-        "includeOtherFields": true,
-        "options": {}
-      },
-      "type": "n8n-nodes-base.set",
-      "typeVersion": 3.4,
-      "position": [
-        2112,
-        -208
-      ],
-      "id": "420f1274-7e03-4dc1-bf54-96f5b405d825",
-      "name": "Edit Fields4"
-    },
-    {
-      "parameters": {
-        "jsCode": "// Function-Node (Run Once)\nconst workflowData = $getWorkflowStaticData('global');\nworkflowData.alaysis_prompt = items[0].json;\nreturn items;"
+        "jsCode": "// Function-Node (Run Once)\nconst workflowData = $getWorkflowStaticData('global');\nworkflowData.my_prompt = items[0].json;\nreturn items;"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        672,
-        -336
+        608,
+        -416
       ],
       "id": "10bc2d0f-9668-4050-9ad8-dde1e2753f36",
       "name": "Code1"
-    },
-    {
-      "parameters": {
-        "jsCode": "// Function-Node (Run for Each Item)\nconst workflowData = $getWorkflowStaticData('global');\nconst firstItem = workflowData.analysis_prompt;\nreturn items.map(item => ({\n  json: { ...firstItem, ...item.json,company:\"KIBERone Саратов Октябрьский\",threshhold:0.88 }\n}));"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        3152,
-        -432
-      ],
-      "id": "2c63e44c-2423-409c-8a98-0a0f93641033",
-      "name": "Code2"
     },
     {
       "parameters": {
@@ -1173,7 +763,7 @@
         "columns": {
           "mappingMode": "defineBelow",
           "value": {
-            "list_id": "={{ $json.list_id }}",
+            "list_id": "={{ $('Loop Over Items').last().json.list_id }}",
             "resolution": "={{ \"найден конкурент: \"+$json.hits[0].matched+\", \"+$json.hits[0].canonical }}"
           },
           "matchingColumns": [
@@ -1328,8 +918,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        8112,
-        -1104
+        9984,
+        -1488
       ],
       "id": "e95a4440-545c-4788-a36f-4a8649b6dcf9",
       "name": "Помечаем что найден конкурент",
@@ -1342,41 +932,13 @@
     },
     {
       "parameters": {
-        "mode": "combine",
-        "combineBy": "combineByPosition",
-        "options": {}
-      },
-      "type": "n8n-nodes-base.merge",
-      "typeVersion": 3.2,
-      "position": [
-        6288,
-        -912
-      ],
-      "id": "ed595f4e-55cd-4653-8faf-156890b7853b",
-      "name": "Merge with initial data1"
-    },
-    {
-      "parameters": {
-        "content": "Не забыть что я вручную удалил фразы select * from company_content where phrase like '%бесплат%' "
-      },
-      "type": "n8n-nodes-base.stickyNote",
-      "typeVersion": 1,
-      "position": [
-        2288,
-        -1152
-      ],
-      "id": "ee2eb3ab-6a32-44bf-a78c-36eba77b7a2b",
-      "name": "Sticky Note2"
-    },
-    {
-      "parameters": {
-        "jsCode": "const workflowData = $getWorkflowStaticData('global');\nconst my_prompt = workflowData.alaysis_prompt.data;\n\nreturn [{\n  json: \n {\n  \"model\": \"gpt-5\",\n  \"input\": [\n    {\n      \"role\": \"developer\",\n      \"content\": [\n        {\n          \"type\": \"input_text\",\n          \"text\": \"# Role and Objective\\n- You are a search query analysis assistant. Your role is to identify and filter out irrelevant queries and detect any negative keywords (“minus words”) indicating a non-target audience. Validate each input phrase and respond with a structured JSON object that indicates compliance and lists any detected minus words.\\n\\n# Instructions\\n- Always return a response as a strict JSON object matching the following format:\\n  {\\n    \\\"is_correct_phrase\\\": boolean,\\n    \\\"minus_words\\\": [string]\\n  }\\n- Do not output any comments, explanations, or additional text.\\n\\n## Sub-categories\\n- The `is_correct_phrase` field must be set to either `true` or `false`, and cannot be null or any other type.\\n- The `minus_words` array must only contain unique string values, or be an empty array (`[]`) if there are no minus words. Do not include duplicate entries. Item order is not important.\\n- If input is absent or improperly formatted, always return:\\n  {\\n    \\\"is_correct_phrase\\\": false,\\n    \\\"minus_words\\\": []\\n  }\\n\\n# Context\\n- Phrase correctness is determined by external requirements or rules not included here.\\n- Only input validation is required; generating or explaining logic is outside the scope.\\n\"\n        }\n      ]\n    },\n    {\n      \"role\": \"user\",\n      \"content\": [\n        {\n          \"type\": \"input_text\",\n          \"text\": $json.key_word + \" \" + my_prompt\n        }\n      ]\n    }\n  ],\n  \"text\": {\n    \"format\": {\n      \"type\": \"json_schema\",\n      \"name\": \"phrase_and_minus_words\",\n      \"strict\": true,\n      \"schema\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"is_correct_phrase\": {\n            \"type\": \"boolean\",\n            \"description\": \"Indicates if the phrase is correct.\"\n          },\n          \"minus_words\": {\n            \"type\": \"array\",\n            \"description\": \"A list of minus words. Can be empty.\",\n            \"items\": {\n              \"type\": \"string\",\n              \"description\": \"A minus word.\"\n            }\n          }\n        },\n        \"required\": [\n          \"is_correct_phrase\",\n          \"minus_words\"\n        ],\n        \"additionalProperties\": false\n      }\n    },\n    \"verbosity\": \"low\"\n  },\n  \"reasoning\": {\n    \"effort\": \"minimal\",\n    \"summary\": null\n  },\n  \"tools\": [\n    {\n      \"type\": \"function\",\n      \"description\": \"Return allowed 1–3 word combinations for negative keywords (minus words).\",\n      \"name\": \"get_non_matching_ngrams\",\n      \"parameters\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"phrase\": {\n            \"type\": \"string\",\n            \"description\": \"User phrase to analyze\"\n          },\n          \"threshold\": {\n            \"type\": \"number\",\n            \"description\": \"Match threshold, default 0.88\"\n          }\n        },\n        \"required\": [\n          \"phrase\"\n        ]\n      },\n      \"strict\": false\n    }\n  ],\n  \"store\": true,\n  \"include\": [\n    \"reasoning.encrypted_content\",\n    \"web_search_call.action.sources\"\n  ]\n}\n\n}];"
+        "jsCode": "return [{\n  json: \n {\n  \"model\": \"gpt-5\",\n  \"input\": [\n    {\n      \"role\": \"developer\",\n      \"content\": [\n        {\n          \"type\": \"input_text\",\n          \"text\": \"# Role and Objective\\n- You are a search query analysis assistant. Your role is to identify and filter out irrelevant queries and detect any negative keywords (“minus words”) indicating a non-target audience. Validate each input phrase and respond with a structured JSON object that indicates compliance and lists any detected minus words.\\n\\n# Instructions\\n- Always return a response as a strict JSON object matching the following format:\\n  {\\n    \\\"is_correct_phrase\\\": boolean,\\n    \\\"minus_words\\\": [string]\\n  }\\n- Do not output any comments, explanations, or additional text.\\n\\n## Sub-categories\\n- The `is_correct_phrase` field must be set to either `true` or `false`, and cannot be null or any other type.\\n- The `minus_words` array must only contain unique string values, or be an empty array (`[]`) if there are no minus words. Do not include duplicate entries. Item order is not important.\\n- If input is absent or improperly formatted, always return:\\n  {\\n    \\\"is_correct_phrase\\\": false,\\n    \\\"minus_words\\\": []\\n  }\\n\\n# Context\\n- Phrase correctness is determined by external requirements or rules not included here.\\n- Only input validation is required; generating or explaining logic is outside the scope.\\n\"\n        }\n      ]\n    },\n    {\n      \"role\": \"user\",\n      \"content\": [\n        {\n          \"type\": \"input_text\",\n          \"text\": $json.my_prompt\n        }\n      ]\n    }\n  ],\n  \"text\": {\n    \"format\": {\n      \"type\": \"json_schema\",\n      \"name\": \"phrase_and_minus_words\",\n      \"strict\": true,\n      \"schema\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"is_correct_phrase\": {\n            \"type\": \"boolean\",\n            \"description\": \"Indicates if the phrase is correct.\"\n          },\n          \"minus_words\": {\n            \"type\": \"array\",\n            \"description\": \"A list of minus words. Can be empty.\",\n            \"items\": {\n              \"type\": \"string\",\n              \"description\": \"A minus word.\"\n            }\n          }\n        },\n        \"required\": [\n          \"is_correct_phrase\",\n          \"minus_words\"\n        ],\n        \"additionalProperties\": false\n      }\n    },\n    \"verbosity\": \"low\"\n  },\n  \"reasoning\": {\n    \"effort\": \"low\",\n    \"summary\": null\n  },\n  \"tools\": [\n    {\n      \"type\": \"function\",\n      \"description\": \"Return allowed 1–3 word combinations for negative keywords (minus words).\",\n      \"name\": \"get_non_matching_ngrams\",\n      \"parameters\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"phrase\": {\n            \"type\": \"string\",\n            \"description\": \"User phrase to analyze\"\n          },\n          \"threshold\": {\n            \"type\": \"number\",\n            \"description\": \"Match threshold, default 0.88\"\n          }\n        },\n        \"required\": [\n          \"phrase\"\n        ]\n      },\n      \"strict\": false\n    }\n  ],\n  \"store\": true,\n  \"include\": [\n    \"reasoning.encrypted_content\",\n    \"web_search_call.action.sources\"\n  ]\n}\n\n}];"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        3984,
-        -80
+        5712,
+        -160
       ],
       "id": "1fe77e75-c3f7-45c6-9745-7d60d1a87ec1",
       "name": "Set API JSON"
@@ -1395,12 +957,14 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        4224,
-        -64
+        5920,
+        -176
       ],
       "id": "5e99e27e-8a7f-4aa5-9bf8-ac03d750250f",
       "name": "HTTP Request",
       "retryOnFail": true,
+      "waitBetweenTries": 5000,
+      "maxTries": 5,
       "credentials": {
         "openAiApi": {
           "id": "V8R8KiZKXscJQ1sL",
@@ -1410,25 +974,11 @@
     },
     {
       "parameters": {
-        "mode": "combine",
-        "combineBy": "combineByPosition",
-        "options": {}
-      },
-      "type": "n8n-nodes-base.merge",
-      "typeVersion": 3.2,
-      "position": [
-        3744,
-        -96
-      ],
-      "id": "08808d82-cc24-4aeb-b042-a2c9961999ab",
-      "name": "Merge with initial data2"
-    },
-    {
-      "parameters": {
         "workflowId": {
           "__rl": true,
           "value": "bhBscYglbFhVyIcL",
           "mode": "list",
+          "cachedResultUrl": "/workflow/bhBscYglbFhVyIcL",
           "cachedResultName": "Check minuses API tool"
         },
         "workflowInputs": {
@@ -1444,77 +994,11 @@
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1.2,
       "position": [
-        5008,
-        -16
+        7904,
+        -352
       ],
       "id": "5d7ed225-61eb-40cf-86f8-cf487e481e1c",
       "name": "Execute Workflow"
-    },
-    {
-      "parameters": {
-        "jsCode": "// INPUT: JSON ответа из responses.create\n// OUTPUT: массив элементов { response_id, tool_call_id, name, args }\n\nconst res = $json;\nconst out = [];\n\nfunction pushCall(obj, responseId,out_index) {\n  const id = responseId;\n  const call_id = obj.call_id;\n  const name = obj.name ;\n  const rawArgs = obj.arguments;\n  let args = {};\n  try {\n    args = typeof rawArgs === 'string' ? JSON.parse(rawArgs) : rawArgs;\n  } catch (e) { args = {}; }\n  out.push({ json: { response_id: id, call_id: call_id, name, args,out_index } });\n}\n\nif (Array.isArray(res.output)) {\n  res.output.forEach((item, index) => {\n    if (item.type === 'function_call') {\n      pushCall(item, res.id, index);\n    }\n  });\n}\n\n// Если модель не запросила tool — вернем маркер\nif (!out.length) return [{ json: { response_id: res.id, no_tool_call: true, raw: res } }];\nreturn out;"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        4672,
-        16
-      ],
-      "id": "9eddec39-1da6-4ea2-b1a9-09e9356929e9",
-      "name": "parse_tool_call"
-    },
-    {
-      "parameters": {
-        "jsCode": "// INPUT: JSON из вашего вебхука (предыдущая HTTP-нода)\n// OUTPUT: { response_id, tool_call_id, output_string }\n\nlet prev = $('Set API JSON').first().json; // берем первый tool-call\n\nconst toolResult = $json; // весь JSON от вебхука\nprev.input.push($('HTTP Request').first().json.output[$('parse_tool_call').first().json.out_index-1]);\nprev.input.push($('HTTP Request').first().json.output[$('parse_tool_call').first().json.out_index]);\nprev.input.push({ \n    type: \"function_call_output\",\n    call_id: $('parse_tool_call').first().json.call_id,\n    output: JSON.stringify(JSON.stringify(toolResult))});\n\nreturn [{ json: prev }];\n"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        5280,
-        -32
-      ],
-      "id": "6b46b906-0c32-4338-aa03-d8c6ea2aa4b4",
-      "name": "package_tool_output"
-    },
-    {
-      "parameters": {
-        "method": "POST",
-        "url": "=https://api.openai.com/v1/responses",
-        "authentication": "predefinedCredentialType",
-        "nodeCredentialType": "openAiApi",
-        "sendBody": true,
-        "specifyBody": "json",
-        "jsonBody": "={{$json}}",
-        "options": {}
-      },
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.2,
-      "position": [
-        5664,
-        -32
-      ],
-      "id": "71ae78b7-07d9-476d-bd03-a0bc9665f099",
-      "name": "HTTP Request1",
-      "retryOnFail": true,
-      "credentials": {
-        "openAiApi": {
-          "id": "V8R8KiZKXscJQ1sL",
-          "name": "OpenAi account"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "jsCode": "// Достаём массив competitors\nconst variants = JSON.parse($json.output[1].content[0].text).minus_words;\n\n// Разворачиваем каждый объект в отдельный item\nreturn variants.map((c, index) => ({\n  json: {\n    index,\n    minus_word: c.toLowerCase(),\n    list_id:$json.list_id    \n  }\n}));"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        7392,
-        -624
-      ],
-      "id": "2f169d1d-9f54-4e14-8d57-39373804f250",
-      "name": "Code"
     },
     {
       "parameters": {
@@ -1522,6 +1006,7 @@
           "__rl": true,
           "value": "xKP6S9XsCeVSgebo",
           "mode": "list",
+          "cachedResultUrl": "/workflow/xKP6S9XsCeVSgebo",
           "cachedResultName": "Check VS company name SUB"
         },
         "workflowInputs": {
@@ -1537,8 +1022,8 @@
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1.2,
       "position": [
-        3328,
-        -224
+        3808,
+        -256
       ],
       "id": "cd16a7e3-72ee-4ecb-b4ba-b40cebdc3476",
       "name": "Find competitors mentions"
@@ -1555,7 +1040,7 @@
           "conditions": [
             {
               "id": "0b8b9cb2-368a-4ef4-b4b4-560b030f71f4",
-              "leftValue": "={{ JSON.parse($json.output[1].content[0].text).minus_words }}",
+              "leftValue": "={{ $json.minus_words }}",
               "rightValue": "",
               "operator": {
                 "type": "array",
@@ -1571,11 +1056,187 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        7040,
-        -624
+        9600,
+        -336
       ],
       "id": "32bea20b-bd2e-4a99-83b0-e9dce5af9140",
       "name": "If minuses array is empty"
+    },
+    {
+      "parameters": {
+        "inputSource": "passthrough"
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -784,
+        -240
+      ],
+      "id": "a2d419ea-af34-43ce-937d-1ac138dbefa4",
+      "name": "When Executed by Another Workflow"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "f74ac992-90a4-4403-a75e-17656de76902",
+              "name": "company_id",
+              "value": "={{ $json.company_id }}",
+              "type": "number"
+            },
+            {
+              "id": "172a851e-fdc7-4f3c-b095-88687e8a392a",
+              "name": "threshhold",
+              "value": "={{ $json.threshhold }}",
+              "type": "number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -544,
+        -240
+      ],
+      "id": "f85786c2-4f55-4a11-927c-95476f0da4a8",
+      "name": "set variables"
+    },
+    {
+      "parameters": {
+        "content": "добавить обработку кейса когда есть конверсии"
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1744,
+        -624
+      ],
+      "id": "f677af9e-c486-4d8e-90d3-9cbdd74d82d2",
+      "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO business_processes_states (business_process_id, company_id,n8n_workflow_execution_id,n8n_workflow_root_execution_id, started)\nSELECT MAX(business_process_id), $2,$3,$4, NOW()\nFROM public.business_processes\nWHERE n8n_process_name = $1;",
+        "options": {
+          "queryReplacement": "=[{{$workflow.name}},{{$json.company_id}},{{$execution.id}},{{ $('When Executed by Another Workflow').item.json.root_execution_id }}]"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -208,
+        -144
+      ],
+      "id": "1b9ba4f8-71e3-45eb-bb75-afc55989e722",
+      "name": "Mark_workwlow_started",
+      "credentials": {
+        "postgres": {
+          "id": "4YkdFJcdTgzo9hkz",
+          "name": "PGvector"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "update business_processes_states set steps_total=$3 where business_process_id=(select MAX(business_process_id) from business_processes where n8n_process_name=$1) and n8n_workflow_execution_id=$2",
+        "options": {
+          "queryReplacement": "=[{{$workflow.name}},{{$execution.id}},{{$input.all().length}}]"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        560,
+        80
+      ],
+      "id": "d7dced98-db28-4cdb-92c4-452cddb71e27",
+      "name": "Mark_workflow_total_steps1",
+      "executeOnce": true,
+      "credentials": {
+        "postgres": {
+          "id": "4YkdFJcdTgzo9hkz",
+          "name": "PGvector"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Function-Node (Run Once)\nconst workflowData = $getWorkflowStaticData('global');\nworkflowData.steps_passed = 0;\nworkflowData.tokens_used = 0;\nworkflowData.step = 0;\nreturn $input.all();\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        320,
+        -80
+      ],
+      "id": "2a0914fc-f1f5-40e7-b45a-707379ba1c5a",
+      "name": "Init total counter"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "update business_processes_states set finished=NOW() where business_process_id=(select MAX(business_process_id) from business_processes where n8n_process_name=$1) and n8n_workflow_execution_id=$2",
+        "options": {
+          "queryReplacement": "=[{{$workflow.name}},{{$execution.id}}]"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        1648,
+        -768
+      ],
+      "id": "d9570534-080b-4e39-83a2-014c8b4ac2ef",
+      "name": "Mark_workflow_completed",
+      "executeOnce": true,
+      "credentials": {
+        "postgres": {
+          "id": "4YkdFJcdTgzo9hkz",
+          "name": "PGvector"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "update business_processes_states set steps_passed=$3, tokens_used=$4,tokens_used_type=$5 where business_process_id=(select MAX(business_process_id) from business_processes where n8n_process_name=$1) and n8n_workflow_execution_id=$2",
+        "options": {
+          "queryReplacement": "=[{{$workflow.name}},{{$execution.id}},{{$json.steps_passed}},{{$json.tokens_used}},{{ 'gpt-5' }}]"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        12080,
+        -48
+      ],
+      "id": "56bff92d-817b-4fb5-bf93-e3fd6d772376",
+      "name": "Mark_workflow_passed_steps",
+      "executeOnce": true,
+      "credentials": {
+        "postgres": {
+          "id": "4YkdFJcdTgzo9hkz",
+          "name": "PGvector"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nconst workflowData = $getWorkflowStaticData('global');\nworkflowData.steps_passed = workflowData.steps_passed+1; // update steps counter\nlet step_tokens_used = 0;// безопасное чтение данных другой ноды\n\nfunction safeAll(nodeName) {\n  try {\n    return $(nodeName).all();        // вернёт массив items этой ноды\n  } catch (_e) {\n    return [];                       // нода не исполнялась — вернём пусто\n  }\n}\n\n// пример для HTTP Request1 — если нода не выполнялась, токены = 0\nconst httpItems = safeAll('HTTP Request');\nconst httpItems1 = safeAll('HTTP Request1');\nstep_tokens_used = httpItems.length\n  ? (httpItems[0]?.json?.usage?.total_tokens ?? 0)\n  : 0;\nstep_tokens_used = + httpItems1.length\n  ? (httpItems1[0]?.json?.usage?.total_tokens ?? 0)\n  : 0;\n //set used tokens here!!!!\nworkflowData.tokens_used = workflowData.tokens_used+step_tokens_used;\nfor (const item of $input.all()) {\n  item.json.steps_passed = workflowData.steps_passed;\n  item.json.tokens_used = workflowData.tokens_used\n}\n\nreturn $input.all();"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        11840,
+        -32
+      ],
+      "id": "7a3d33ad-9f12-4f6f-9b09-6d67a00e76a8",
+      "name": "Get current step and tokens saved"
     },
     {
       "parameters": {
@@ -1588,13 +1249,12 @@
           },
           "conditions": [
             {
-              "id": "eb5a9e58-8a32-432b-ba77-24910836d1fe",
-              "leftValue": "={{JSON.parse($json.output[1].content[0].text).is_correct_phrase}}",
-              "rightValue": "",
+              "id": "fa13510a-3a56-4cd5-8b80-3e4fe626ce0b",
+              "leftValue": "={{ $json.to_terminate }}",
+              "rightValue": true,
               "operator": {
                 "type": "boolean",
-                "operation": "exists",
-                "singleValue": true
+                "operation": "equals"
               }
             }
           ],
@@ -1605,11 +1265,97 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        4432,
-        -64
+        12464,
+        -16
       ],
-      "id": "ab29b2a0-71ea-425c-8e92-01e2e174cee9",
-      "name": "If is true pharse"
+      "id": "9114c887-564f-4e0f-b89d-99a381a7bdde",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "errorMessage": "Process terminated by user"
+      },
+      "type": "n8n-nodes-base.stopAndError",
+      "typeVersion": 1,
+      "position": [
+        12704,
+        -144
+      ],
+      "id": "fdab4be5-884f-4a7f-97b4-8c7ae8b22898",
+      "name": "Stop and Error"
+    },
+    {
+      "parameters": {
+        "operation": "select",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "business_processes_states",
+          "mode": "list",
+          "cachedResultName": "business_processes_states"
+        },
+        "returnAll": true,
+        "where": {
+          "values": [
+            {
+              "column": "n8n_workflow_execution_id",
+              "value": "={{ $execution.id }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        12288,
+        -48
+      ],
+      "id": "3b984213-9b8c-4d82-8b9f-38dcc24fcdc1",
+      "name": "check if termination is requested",
+      "credentials": {
+        "postgres": {
+          "id": "4YkdFJcdTgzo9hkz",
+          "name": "PGvector"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "e4ab3071-3b4d-4307-9905-188f2f24c488",
+              "leftValue": "={{ $json.count_convetions }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        3024,
+        -288
+      ],
+      "id": "038b687a-066e-4e6f-b75f-9f3e42a3597c",
+      "name": "If we have conversions for the key word"
     },
     {
       "parameters": {
@@ -1639,91 +1385,725 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        3568,
+        4048,
         -256
       ],
       "id": "cfb990ed-43bf-46ea-bd90-b9fe5333f2ef",
-      "name": "If competitors found"
+      "name": "If competitors not found"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "bb72a340-789e-459b-80c9-f1c2b454ed57",
+              "name": "resolution",
+              "value": "={{\"no relevant, minuses: \"+$('minus_words_array').last().json.minus_words.map(String).join(', ')}}",
+              "type": "string"
+            },
+            {
+              "id": "2f7246f7-a167-46be-9212-edc599a35ff3",
+              "name": "total_tokens",
+              "value": "={{ $('HTTP Request1').last().json.usage.total_tokens+$('HTTP Request').last().json.usage.total_tokens }}",
+              "type": "number"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        10528,
+        -368
+      ],
+      "id": "6bf663d1-4db2-412c-aa73-d7943501ee9f",
+      "name": "no relevant",
+      "executeOnce": true
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "33090f58-518c-4671-a0cf-22b8b484a226",
+              "name": "resolution",
+              "value": "to add",
+              "type": "string"
+            },
+            {
+              "id": "4f2396b9-b5c0-4e30-86c1-df42515df6af",
+              "name": "total_tokens",
+              "value": "={{ $json.usage.total_tokens }}",
+              "type": "number"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        8688,
+        -960
+      ],
+      "id": "e75eef70-59a7-4697-8b04-373c54883a70",
+      "name": "mark to add"
+    },
+    {
+      "parameters": {
+        "jsCode": "const workflowData = $getWorkflowStaticData('global');\nlet my_prompt = workflowData.my_prompt.data;\n\nfor (const item of $input.all()) {\n  item.json.my_prompt = my_prompt.replaceAll(\"{{service_description}}\",item.json.service_name +' ' + item.json.service_description).replaceAll(\"{{key_word}}\", $('Loop Over Items').last().json.key_word).replaceAll(\"{{company_name}}\", item.json.company_name);\n}\n\nreturn $input.all();"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        5520,
+        -144
+      ],
+      "id": "65af494d-9402-4aab-abec-c8f3050500ac",
+      "name": "Set prompt"
+    },
+    {
+      "parameters": {
+        "content": "ВРЕМЕННО для KIBERone - нет Истории!!!!!",
+        "height": 496,
+        "width": 416
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        4240,
+        -192
+      ],
+      "id": "f53d55f5-4327-4ae0-9303-6baf69cbf0e1",
+      "name": "Sticky Note4"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "select c.company_name,cs.service_name, cs.service_description from key_words kw, companies c, company_services cs where kw.key_word=$2 and kw.company_id=$1 and cs.service_id=kw.service_id and cs.company_id=$1 and c.company_id=$1",
+        "options": {
+          "queryReplacement": "=[{{ $('set variables').item.json.company_id }},{{ $json.key_word }}]"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        4928,
+        -144
+      ],
+      "id": "ca37c744-a547-4e2e-beef-f62e1b5049f3",
+      "name": "get service data by key word",
+      "credentials": {
+        "postgres": {
+          "id": "Hx2VFmUi5WO2K4QX",
+          "name": "Postgres account 2"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "99ec263a-e232-4b91-9603-fea27331309c",
+              "leftValue": "={{ $('set threshold').item.json.used_keyword }}",
+              "rightValue": "---autotargeting",
+              "operator": {
+                "type": "string",
+                "operation": "notContains"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        4464,
+        -112
+      ],
+      "id": "78399e42-113c-4fc7-9fed-7ddb97fadf94",
+      "name": "If not autotargeting"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "select c.company_name,cs.service_name, cs.service_description from ads_list kw, companies c, company_services cs where kw.ad_header=$2 and kw.company_id=$1 and cs.service_id=kw.service_id and cs.company_id=$1 and c.company_id=$1 ",
+        "options": {
+          "queryReplacement": "=[{{ $('set variables').item.json.company_id }},{{ $('Loop Over Items').last().json.ads_header }}]"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        4928,
+        32
+      ],
+      "id": "87d1b141-5c27-45ef-8b40-8420a63b0fbd",
+      "name": "get service data by AD header",
+      "credentials": {
+        "postgres": {
+          "id": "Hx2VFmUi5WO2K4QX",
+          "name": "Postgres account 2"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "jsCode": "const src = $('Loop Over Items').last().json?.used_key_word ?? '';\n\nreturn $input.all().map(it => {\n  const cleaned = String(src).replace(/\\s-\\S+/g, '').trim();\n  return { json: { ...it.json, key_word: cleaned } };\n});"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        4736,
+        -144
+      ],
+      "id": "6b7e98b2-cf1f-4582-9335-09d5cad31dd1",
+      "name": "remove applied key words"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "select c.company_name,cs.service_name, cs.service_description from companies c, company_services cs where  cs.service_id=6 and cs.company_id=1 and c.company_id=1",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        5136,
+        -144
+      ],
+      "id": "53be7ee3-e874-48f6-8f6a-019e70e9006c",
+      "name": "get service data by key word1",
+      "credentials": {
+        "postgres": {
+          "id": "Hx2VFmUi5WO2K4QX",
+          "name": "Postgres account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "select c.company_name,cs.service_name, cs.service_description from companies c, company_services cs where  cs.service_id=6 and cs.company_id=1 and c.company_id=1",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        5120,
+        32
+      ],
+      "id": "24912155-ac6a-438c-b9f7-32f799ce1a52",
+      "name": "get service data by AD header1",
+      "credentials": {
+        "postgres": {
+          "id": "Hx2VFmUi5WO2K4QX",
+          "name": "Postgres account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "add company id"
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        5840,
+        208
+      ],
+      "id": "e4d61d2a-8f5d-4a77-be30-8d8fcbc6d395",
+      "name": "Sticky Note6"
+    },
+    {
+      "parameters": {
+        "mode": "chooseBranch"
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        816,
+        -80
+      ],
+      "id": "3bc57ebf-abb7-4e0e-a850-dbc5ea2a6ea0",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "4db35a49-e130-4ff8-9ccb-7b452205f80a",
+              "name": "threshold",
+              "value": "=0.88",
+              "type": "number"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        3424,
+        -224
+      ],
+      "id": "db6e3563-dd82-4416-b389-f1af5609931f",
+      "name": "set threshold"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "select * from current_list where report_id=(select max(import_id) from report_import where company_id=$1) and resolution is null\n",
+        "options": {
+          "queryReplacement": "={{ $('set variables').item.json.company_id }}"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        80,
+        -112
+      ],
+      "id": "297d2aa0-7b31-4c3e-9cc9-356f906de7f7",
+      "name": "get last import not processed records",
+      "credentials": {
+        "postgres": {
+          "id": "Hx2VFmUi5WO2K4QX",
+          "name": "Postgres account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "26a3b4cf-c374-4833-8b03-55dcf4df1097",
+              "name": "args.company_id",
+              "value": "={{ $('Loop Over Items').last().json.company_id }}",
+              "type": "number"
+            },
+            {
+              "id": "ec583710-a44c-47de-ba3f-ebbfaa229fb1",
+              "name": "args.phrase",
+              "value": "={{ $('Loop Over Items').last().json.key_word }}",
+              "type": "string"
+            },
+            {
+              "id": "bf431c92-c6e4-41ab-b8b1-ee33acf9e25f",
+              "name": "args.threshold",
+              "value": 0.8,
+              "type": "number"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        7664,
+        -368
+      ],
+      "id": "828b3288-b068-4d7e-8518-4fb483913b3e",
+      "name": "set input params"
+    },
+    {
+      "parameters": {
+        "jsCode": "\n// Преобразуем в строку формата ARRAY['...','...']\nconst result = \n\n$json.non_matches.map(v => '\\'' + String(v).replace(/\\\\/g,'\\\\\\\\').replace(/\"/g,'\\\\\"') + '\\'').join(',') ;\n\nreturn [{ json: { array_string:$json.non_matches ,company_id:$('set input params').last().json.args.company_id } }];\n\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        8112,
+        -352
+      ],
+      "id": "391c2166-e3d3-4f7d-b266-03511d308753",
+      "name": "prepare for SQL"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "WITH incoming AS (\n  SELECT DISTINCT trim(both ' ' FROM jsonb_array_elements_text($1::jsonb)) AS word\n)\nSELECT i.word\nFROM incoming i\nLEFT JOIN minus_words mw\n  ON lower(mw.minus_word) = lower(i.word)\n AND mw.company_id = $2\nWHERE mw.minus_word IS NULL\nORDER BY i.word;",
+        "options": {
+          "queryReplacement": "=[{{JSON.stringify($json.array_string)}},{{$json.company_id}}]"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        8320,
+        -352
+      ],
+      "id": "f25eddc8-852a-4b9e-ba74-d205c9cc2de1",
+      "name": "filter by existing minus words",
+      "credentials": {
+        "postgres": {
+          "id": "4YkdFJcdTgzo9hkz",
+          "name": "PGvector"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "return [{\n  json: \n {\n  \"model\": \"gpt-5-nano\",\n  \"input\": [\n    {\n      \"role\": \"developer\",\n      \"content\": [\n        {\n          \"type\": \"input_text\",\n          \"text\": \"# Role and Objective\\n- You are a search query analysis assistant. Your role is to  review negative keywords (“minus words”)  list indicating a non-target audience. \\n\\n# Instructions\\n\\n- The `minus_words` array must only contain unique string values, or be an empty array (`[]`) if there are no minus words. Do not include duplicate entries. Item order is not important.\\n\"\n        }\n      ]\n    },\n    {\n      \"role\": \"user\",\n      \"content\": [\n        {\n          \"type\": \"input_text\",\n          \"text\": $json.my_prompt\n        }\n      ]\n    }\n  ],\n  \"text\": {\n    \"format\": {\n      \"type\": \"json_schema\",\n      \"name\": \"minus_words\",\n      \"strict\": true,\n      \"schema\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"minus_words\": {\n            \"type\": \"array\",\n            \"description\": \"A list of minus words. Can be empty.\",\n            \"items\": {\n              \"type\": \"string\",\n              \"description\": \"A minus word.\"\n            },\n        \"maxItems\": 2\n          }\n        },\n        \"required\": [\n          \"minus_words\"\n        ],\n        \"additionalProperties\": false\n      }\n    },\n    \"verbosity\": \"low\"\n  },\n  \"reasoning\": {\n    \"effort\": \"minimal\",\n    \"summary\": null\n  },\n  \"tools\": [],\n  \"store\": false,\n  \"include\": [\n    \"reasoning.encrypted_content\",\n    \"web_search_call.action.sources\"\n  ]\n}\n\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        8720,
+        -368
+      ],
+      "id": "04a89737-a544-41b1-9595-5bf87fd07fb5",
+      "name": "Set API JSON1"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.openai.com/v1/responses",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "openAiApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{$json}}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        8944,
+        -368
+      ],
+      "id": "32c90372-c72f-4ccb-857d-c989ec8918a3",
+      "name": "HTTP Request1",
+      "retryOnFail": true,
+      "waitBetweenTries": 5000,
+      "maxTries": 5,
+      "credentials": {
+        "openAiApi": {
+          "id": "V8R8KiZKXscJQ1sL",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const workflowData = $getWorkflowStaticData('global');\nlet my_prompt = workflowData.my_prompt_minus.data;\n\nconst input = $input.all();\nmy_prompt = my_prompt.replaceAll(\"{{service_name}}\",$('Set service parameters').last().json.service_name).replaceAll(\"{{key_word}}\", $('Loop Over Items').last().json.key_word).replaceAll(\"{{company_name}}\", $('Set service parameters').last().json.company_name).replaceAll(\"{{minus_words}}\",JSON.stringify(input));\n\nreturn [\n  {\n    json: {\n     \n     my_prompt:my_prompt\n    }\n  }\n];\n\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        8528,
+        -368
+      ],
+      "id": "b215a0dc-2fdd-4a42-a694-42e94a46d34c",
+      "name": "Set prompt1"
+    },
+    {
+      "parameters": {
+        "resource": "file",
+        "operation": "get",
+        "owner": {
+          "__rl": true,
+          "value": "Romanychlogin",
+          "mode": "name"
+        },
+        "repository": {
+          "__rl": true,
+          "value": "n8n_prompts",
+          "mode": "list",
+          "cachedResultName": "n8n_prompts",
+          "cachedResultUrl": "https://github.com/Romanychlogin/n8n_prompts"
+        },
+        "filePath": "minus_words_list_narrow_down.txt",
+        "additionalParameters": {}
+      },
+      "type": "n8n-nodes-base.github",
+      "typeVersion": 1.1,
+      "position": [
+        160,
+        -608
+      ],
+      "id": "f6ca719d-ea97-4fb1-a468-dd69389ce2dc",
+      "name": "Get a file1",
+      "webhookId": "77e7d794-90e5-4e94-94bd-1b637cecf31b",
+      "credentials": {
+        "githubApi": {
+          "id": "JQAFAcMNS9Ylyb0V",
+          "name": "GitHub account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "text",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        368,
+        -608
+      ],
+      "id": "d4a0a8ed-9c3d-4921-9fd5-b31ea38e9f2f",
+      "name": "Extract from File"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Function-Node (Run Once)\nconst workflowData = $getWorkflowStaticData('global');\nworkflowData.my_prompt_minus = items[0].json;\nreturn items;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        576,
+        -608
+      ],
+      "id": "a5a8ff36-5943-474f-8d7e-0dff776dddfd",
+      "name": "Code2"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Достаём массив competitors\n\n\n// Разворачиваем каждый объект в отдельный item\nreturn $json.minus_words.map((c, index) => ({\n  json: {\n    index,\n    minus_word: c.toLowerCase(),\n    list_id:$('Loop Over Items').last().json.list_id    \n  }\n}));"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        9872,
+        -240
+      ],
+      "id": "2f169d1d-9f54-4e14-8d57-39373804f250",
+      "name": "map_minus_words"
+    },
+    {
+      "parameters": {
+        "jsCode": "const parsed = JSON.parse($input.first().json.output[1].content[0].text);\n\n// Если иногда приходит уже массив — обработаем и этот случай\nconst list = Array.isArray(parsed) ? parsed : parsed.minus_words;\n\nreturn [{ json: { minus_words: list } }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        9232,
+        -368
+      ],
+      "id": "f9009c6a-6a7e-4c66-b8a2-c41c8b83d941",
+      "name": "minus_words_array"
+    },
+    {
+      "parameters": {
+        "mode": "chooseBranch"
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        10480,
+        -1040
+      ],
+      "id": "e513fecc-579d-47a2-9a2b-aaac244d7f15",
+      "name": "Merge1"
+    },
+    {
+      "parameters": {
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "current_minus_words",
+          "mode": "list",
+          "cachedResultName": "current_minus_words"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "current_record_id": "={{ $('Loop Over Items').last().json.list_id }}",
+            "company_id": "={{ $('Loop Over Items').last().json.company_id }}",
+            "minus_word": "={{ $('If competitors not found').last().json.hits[0].candidate }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "minus_id",
+              "displayName": "minus_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "minus_word",
+              "displayName": "minus_word",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "current_record_id",
+              "displayName": "current_record_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "keep_minus",
+              "displayName": "keep_minus",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "boolean",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "minus_word_v2",
+              "displayName": "minus_word_v2",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "keep_minus_v2",
+              "displayName": "keep_minus_v2",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "boolean",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "comment",
+              "displayName": "comment",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "company_id",
+              "displayName": "company_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        9968,
+        -1232
+      ],
+      "id": "05ffb772-d578-42fc-9520-f57c65b6ff00",
+      "name": "Insert minus words from Competitors",
+      "alwaysOutputData": true,
+      "credentials": {
+        "postgres": {
+          "id": "Hx2VFmUi5WO2K4QX",
+          "name": "Postgres account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "4a87b0f9-4ed9-409a-9def-bbaa4e413d90",
+              "leftValue": "={{ $json.hits[0].candidate }}",
+              "rightValue": "={{ $json.hits[0].matched }}",
+              "operator": {
+                "type": "string",
+                "operation": "notEquals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        9008,
+        -1232
+      ],
+      "id": "d39e81ed-4fb4-493a-b400-dee069a12b96",
+      "name": "if not exact competitor match"
+    },
+    {
+      "parameters": {
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        5344,
+        -144
+      ],
+      "id": "bd1dae7e-1eb7-4c72-b91a-c3fd1aaefec4",
+      "name": "Set service parameters"
     }
   ],
   "connections": {
-    "Start": {
-      "main": [
-        [
-          {
-            "node": "Clear current_list",
-            "type": "main",
-            "index": 0
-          },
-          {
-            "node": "Get a file",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Enter URL": {
-      "main": [
-        [
-          {
-            "node": "Download File",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Download File": {
-      "main": [
-        [
-          {
-            "node": "Extract from File",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Extract from File": {
-      "main": [
-        [
-          {
-            "node": "Loop Over Items",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Loop Over Items": {
       "main": [
-        [],
         [
           {
-            "node": "Insert rows in a table",
+            "node": "Mark_workflow_completed",
             "type": "main",
             "index": 0
           }
-        ]
-      ]
-    },
-    "Replace Me": {
-      "main": [
+        ],
         [
           {
-            "node": "Loop Over Items",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Merge": {
-      "main": [
-        [
-          {
-            "node": "Обработка ответа AI",
+            "node": "пословное соответствие?",
             "type": "main",
             "index": 0
           }
@@ -1734,18 +2114,7 @@
       "main": [
         [
           {
-            "node": "Merge with initial data",
-            "type": "main",
-            "index": 1
-          }
-        ]
-      ]
-    },
-    "Merge with initial data": {
-      "main": [
-        [
-          {
-            "node": "update",
+            "node": "no relevant",
             "type": "main",
             "index": 0
           }
@@ -1763,7 +2132,7 @@
         ],
         [
           {
-            "node": "Code2",
+            "node": "If we have conversions for the key word",
             "type": "main",
             "index": 0
           }
@@ -1792,51 +2161,7 @@
         ],
         [
           {
-            "node": "Code2",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Insert rows in a table": {
-      "main": [
-        [
-          {
-            "node": "Edit Fields4",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Clear current_list": {
-      "main": [
-        [
-          {
-            "node": "Clear current_minus_words",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Clear current_minus_words": {
-      "main": [
-        [
-          {
-            "node": "Clear current_ads",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Clear current_ads": {
-      "main": [
-        [
-          {
-            "node": "Enter URL",
+            "node": "If we have conversions for the key word",
             "type": "main",
             "index": 0
           }
@@ -1847,7 +2172,7 @@
       "main": [
         [
           {
-            "node": "Replace Me",
+            "node": "Get current step and tokens saved",
             "type": "main",
             "index": 0
           }
@@ -1858,41 +2183,14 @@
       "main": [
         [
           {
-            "node": "Edit Fields",
+            "node": "mark to add",
             "type": "main",
             "index": 0
           }
         ],
         [
           {
-            "node": "Edit Fields1",
-            "type": "main",
-            "index": 0
-          },
-          {
-            "node": "If minuses array is empty",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Edit Fields": {
-      "main": [
-        [
-          {
-            "node": "update",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Edit Fields1": {
-      "main": [
-        [
-          {
-            "node": "Merge with initial data",
+            "node": "set input params",
             "type": "main",
             "index": 0
           }
@@ -1914,7 +2212,7 @@
       "main": [
         [
           {
-            "node": "Replace Me",
+            "node": "Get current step and tokens saved",
             "type": "main",
             "index": 0
           }
@@ -1932,64 +2230,16 @@
         ]
       ]
     },
-    "Edit Fields4": {
-      "main": [
-        [
-          {
-            "node": "пословное соответствие?",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Code1": {
       "main": [
         []
-      ]
-    },
-    "Code2": {
-      "main": [
-        [
-          {
-            "node": "Find competitors mentions",
-            "type": "main",
-            "index": 0
-          },
-          {
-            "node": "Merge",
-            "type": "main",
-            "index": 0
-          },
-          {
-            "node": "Merge with initial data1",
-            "type": "main",
-            "index": 0
-          },
-          {
-            "node": "Merge with initial data2",
-            "type": "main",
-            "index": 1
-          }
-        ]
       ]
     },
     "Помечаем что найден конкурент": {
       "main": [
         [
           {
-            "node": "Replace Me",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Merge with initial data1": {
-      "main": [
-        [
-          {
-            "node": "Помечаем что найден конкурент",
+            "node": "Merge1",
             "type": "main",
             "index": 0
           }
@@ -2011,18 +2261,7 @@
       "main": [
         [
           {
-            "node": "If is true pharse",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Merge with initial data2": {
-      "main": [
-        [
-          {
-            "node": "Set API JSON",
+            "node": "Обработка ответа AI",
             "type": "main",
             "index": 0
           }
@@ -2033,51 +2272,7 @@
       "main": [
         [
           {
-            "node": "package_tool_output",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "parse_tool_call": {
-      "main": [
-        [
-          {
-            "node": "Execute Workflow",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "package_tool_output": {
-      "main": [
-        [
-          {
-            "node": "HTTP Request1",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "HTTP Request1": {
-      "main": [
-        [
-          {
-            "node": "Merge",
-            "type": "main",
-            "index": 1
-          }
-        ]
-      ]
-    },
-    "Code": {
-      "main": [
-        [
-          {
-            "node": "Insert minus words",
+            "node": "prepare for SQL",
             "type": "main",
             "index": 0
           }
@@ -2088,7 +2283,7 @@
       "main": [
         [
           {
-            "node": "If competitors found",
+            "node": "If competitors not found",
             "type": "main",
             "index": 0
           }
@@ -2099,21 +2294,289 @@
       "main": [
         [
           {
-            "node": "Merge with initial data",
+            "node": "no relevant",
             "type": "main",
-            "index": 1
+            "index": 0
           }
         ],
         [
           {
-            "node": "Code",
+            "node": "map_minus_words",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "If is true pharse": {
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "set variables",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "set variables": {
+      "main": [
+        [
+          {
+            "node": "Get a file",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Mark_workwlow_started",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Get a file1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mark_workwlow_started": {
+      "main": [
+        [
+          {
+            "node": "get last import not processed records",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Init total counter": {
+      "main": [
+        [
+          {
+            "node": "Mark_workflow_total_steps1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mark_workflow_passed_steps": {
+      "main": [
+        [
+          {
+            "node": "check if termination is requested",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get current step and tokens saved": {
+      "main": [
+        [
+          {
+            "node": "Mark_workflow_passed_steps",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Stop and Error",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "check if termination is requested": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If we have conversions for the key word": {
+      "main": [
+        [
+          {
+            "node": "mark to add",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "set threshold",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If competitors not found": {
+      "main": [
+        [
+          {
+            "node": "If not autotargeting",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Помечаем что найден конкурент",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "if not exact competitor match",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "no relevant": {
+      "main": [
+        [
+          {
+            "node": "update",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "mark to add": {
+      "main": [
+        [
+          {
+            "node": "update",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set prompt": {
+      "main": [
+        [
+          {
+            "node": "Set API JSON",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "get service data by key word": {
+      "main": [
+        [
+          {
+            "node": "get service data by key word1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If not autotargeting": {
+      "main": [
+        [
+          {
+            "node": "remove applied key words",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "get service data by AD header",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "get service data by AD header": {
+      "main": [
+        [
+          {
+            "node": "get service data by AD header1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "remove applied key words": {
+      "main": [
+        [
+          {
+            "node": "get service data by key word",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "get service data by key word1": {
+      "main": [
+        [
+          {
+            "node": "Set service parameters",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "get service data by AD header1": {
+      "main": [
+        [
+          {
+            "node": "Set service parameters",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mark_workflow_total_steps1": {
       "main": [
         [
           {
@@ -2121,30 +2584,188 @@
             "type": "main",
             "index": 1
           }
-        ],
+        ]
+      ]
+    },
+    "set threshold": {
+      "main": [
         [
           {
-            "node": "parse_tool_call",
+            "node": "Find competitors mentions",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "If competitors found": {
+    "get last import not processed records": {
       "main": [
         [
           {
-            "node": "Merge with initial data2",
+            "node": "Init total counter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "set input params": {
+      "main": [
+        [
+          {
+            "node": "Execute Workflow",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "prepare for SQL": {
+      "main": [
+        [
+          {
+            "node": "filter by existing minus words",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "filter by existing minus words": {
+      "main": [
+        [
+          {
+            "node": "Set prompt1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set API JSON1": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set prompt1": {
+      "main": [
+        [
+          {
+            "node": "Set API JSON1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get a file1": {
+      "main": [
+        [
+          {
+            "node": "Extract from File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File": {
+      "main": [
+        [
+          {
+            "node": "Code2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request1": {
+      "main": [
+        [
+          {
+            "node": "minus_words_array",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "map_minus_words": {
+      "main": [
+        [
+          {
+            "node": "Insert minus words",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "minus_words_array": {
+      "main": [
+        [
+          {
+            "node": "If minuses array is empty",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge1": {
+      "main": [
+        [
+          {
+            "node": "Get current step and tokens saved",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Insert minus words from Competitors": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "if not exact competitor match": {
+      "main": [
+        [
+          {
+            "node": "Insert minus words from Competitors",
             "type": "main",
             "index": 0
           }
         ],
         [
           {
-            "node": "Merge with initial data1",
+            "node": "Merge1",
             "type": "main",
             "index": 1
+          }
+        ]
+      ]
+    },
+    "Set service parameters": {
+      "main": [
+        [
+          {
+            "node": "Set prompt",
+            "type": "main",
+            "index": 0
           }
         ]
       ]
@@ -2153,22 +2774,44 @@
   "settings": {
     "executionOrder": "v1",
     "saveDataErrorExecution": "all",
-    "saveDataSuccessExecution": "none",
+    "saveDataSuccessExecution": "all",
     "saveExecutionProgress": false,
-    "callerPolicy": "workflowsFromSameOwner"
+    "callerPolicy": "workflowsFromSameOwner",
+    "errorWorkflow": "v2Z32ISEUzsFYnZw"
   },
-  "staticData": null,
+  "staticData": {
+    "global": {
+      "alaysis_prompt": {
+        "data": "Для полученного запроса Instructions\nПроанализируй поисковый запрос пользователя на предмет релевантности услугам компании KIBERone Саратов Октябрьский(company_name). Действуй строго по следующим правилам и согласно заданной последовательности действий:\n1.Если запрос полностью релевантен услугам компании , верни: \"is_correct_phrase\": true.\n2.Если запрос нерелевантен услугам компании 1) верни \"is_correct_phrase\": false 2) определи список потенциально допустимых минус слов. для этого всегда вызывай tool get_non_matching_ngrams. Передавай threshold, только если пользователь задал его; иначе не указывай (используется дефолт 0,88). 3)Из полученного от tool списка выдели минимальный набор минус-слов, обеспечивающих блокировку широкого класса подобных нерелевантных запросов.\nТребования к минус-словам: Используй минимально возможную комбинацию слов. Минус-слова должны однозначно исключать нерелевантные запросы.\nContext (о компании KIBERone)\nKIBERone – международная КиберШкола программирования и цифровых технологий для детей от 6 до 14 лет. Позиционирование бренда: KIBERone — первая международная КиберШкола будущего для IT-поколения 6–14 лет, признана ЮНЕСКО лучшей детской образовательной IT-школой в мире. Бренд является партнером Microsoft, Roblox и Samsung. Бесплатные пробные уроки Основные услуги и программы: Полный перечень модулей: Вводный модуль (основы цифровой грамотности) Основы программирования Scratch Jr Создание игр на Scratch ПиктоМир (алгоритмическое мышление) CodeMonkey (логика и программирование) Устройство компьютера Эффектные презентации (PowerPoint, Desygner) QR-коды Деловые люди (предпринимательство) Google Blockly (визуальное программирование) Roblox Studio (создание игр) Kodu Game Lab (3D-программирование) Разработка мобильных приложений в Thunkable Blender (3D-моделирование) Компьютерная грамотность Minecraft Education Нейросети (основы ИИ) Alice 3D (3D-программирование) Run Marco (основы алгоритмов) Исполнители: Чертёжник и Черепашка GIF-анимация Tinkercad (3D-проектирование) Кибербезопасность Construct 2 (создание 2D-игр) Компас-3D (САПР) Основы HTML (веб-разработка) Голосовой помощник Алиса Создание лендинга (Tilda) Python (создание игр) Чат-бот на Python Web-дизайн (Figma) Web-мастер (HTML+CSS) Motion Design Unreal Engine 4 (игровой движок) JavaScript (игры) C# (создание 2D-игр) C++ Java (создание приложений) Unity 3D (игры) Олимпиадное программирование Облачные технологии, Блокчейн, Data Science PHP+SQL Photoshop Подготовка к олимпиадам Приложения Google Летние программы: Летние IT-интенсивы (краткосрочные программы по направлениям Roblox, Minecraft, Python и др.) Летние КИБЕРканикулы (городской лагерь с IT-обучением и развлекательной программой) Дополнительные механики: Кибервалюта («кибероны») для мотивации учеников, обмен на мерч на КиберМаркете Тьюторы и преподаватели: Опытные специалисты с практическим опытом и педагогической подготовкой Другие важные разделы: Новости (новости школы и сети) СМИ о нас (публикации о школе) Фотогалерея (фото с мероприятий и уроков) Видео (видеоматериалы о школе) Расписание занятий (время занятий для групп и пробных уроков) Локации (адрес школы в Октябрьском районе Саратова, ул. Тараса Шевченко, 8) Оплата (способы оплаты и договор-оферта) Сертификаты (активация промокодов партнеров)\n"
+      },
+      "steps_passed": 147,
+      "tokens_used": 57565,
+      "step": 0,
+      "my_prompt": {
+        "data": "Проанализируй поисковый запрос пользователя:\"{{key_word}}\" на предмет релевантности сервису \"{{service_description}}\" компании \"{{company_name}}\".\nDefinitions\nРелевантность сервису это запрос соответствующий тематике сервиса, но не содержащий намерения к самостоятельной реализации\nInstructions\nДействуй строго по следующим правилам и согласно заданной последовательности действий:\nшаг 1. Если запрос релевантен сервису компании, верни: \"is_correct_phrase\": true и не выполняй шаг 2 и не вызывай tool get_non_matching_ngrams.\nшаг 2. Если запрос не релевантен сервису компании 1) верни \"is_correct_phrase\": false 2) определи список потенциально допустимых минус слов, для этого обязателен вызов tool get_non_matching_ngrams. Передавай threshold, только если пользователь задал его; иначе не указывай (используется дефолт 0,88). 3)Из полученного от tool списка выдели минимальный набор минус-слов, обеспечивающих блокировку широкого класса подобных нерелевантных запросов.\nТребования к минус-словам: Используй минимально возможную комбинацию слов. Минус-слова должны однозначно исключать нерелевантные запросы.\n\n\n"
+      },
+      "my_prompt_minus": {
+        "data": "Для фразы пользователя {{key_word}} не релевантной сервису {{service_name}} компании {{company_name}} доступен следующий список ключевых слов {{minus_words}}. \nВерни сокращенный список состоящий строго не более чем из двух минус слов, обеспечивающих блокировку широкого класса подобных нерелевантных запросов.\nТребования к минус-словам:\nРазрешено использовать только элементы входящего списка. Любое видоизменение элементов запрещено\nИспользуй минимально возможную комбинацию слов.\nМинус-слова должны однозначно исключать нерелевантные запросы.\n"
+      }
+    }
+  },
   "meta": {
     "templateCredsSetupCompleted": true
   },
   "pinData": {
-    "Start": [
+    "When Executed by Another Workflow": [
       {
-        "json": {}
+        "json": {
+          "id": "wZGLxMCCmOnDJZ1o",
+          "root_execution_id": 47278,
+          "company_id": 1,
+          "threshhold": "0.79",
+          "import_id": 5
+        }
       }
     ]
   },
-  "versionId": "f509b164-45b6-4b32-8cd2-e88293c5368b",
+  "versionId": "209f9959-b787-48f6-9f72-36f836c328cf",
   "triggerCount": 0,
   "shared": [
     {

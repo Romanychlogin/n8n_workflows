@@ -1,0 +1,1173 @@
+{
+  "createdAt": "2025-09-25T13:56:50.878Z",
+  "updatedAt": "2025-09-29T16:17:46.220Z",
+  "id": "4f5WJ06ItW520O75",
+  "name": "ADV_campaign_data_load",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "url": "={{ $json.yandex_report_dropbox_file_path }}",
+        "responseFormat": "file",
+        "options": {}
+      },
+      "id": "07907cb6-9555-4887-8520-72cb57911074",
+      "name": "Download File",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 2,
+      "position": [
+        -80,
+        -128
+      ]
+    },
+    {
+      "parameters": {
+        "options": {
+          "delimiter": ";"
+        }
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        528,
+        -128
+      ],
+      "id": "50987e1b-4945-4d3a-85f8-b0a5d90fc438",
+      "name": "Extract from File"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        2320,
+        -112
+      ],
+      "id": "f351581e-3b33-4833-8b03-ab2082146354",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {
+        "content": "что делаем по регулярной отчетности. Пока из  CSV. Потом - API\nНа вход - стандартный поисковый запрос + Заголовок объявления. Без дат!!!!"
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -160,
+        -880
+      ],
+      "id": "a43b27e5-90da-4fb6-86c8-26070ef2ee10",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "Соответствие\n1)Если пословное то проверяем совпадение запроса с нашим ключом. \nа)совпадает(убираем кавычки у нашего ключа) - все ОК\nб)не совпадает - спрашиваем у чата релевантна ли нам фраза. Да - добавляем в ключи. Нет - добавляем в минус слова.\n2)Не пословное - спрашиваем у чата релевантна ли нам фраза. Да - добавляем в ключи. Нет - добавляем в минус слова."
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -240,
+        -592
+      ],
+      "id": "5a53b8b9-73c5-4844-8ceb-ca9e222c7395",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "current_list",
+          "mode": "list",
+          "cachedResultName": "current_list"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "key_word": "={{ $json['Поисковый запрос'] }}",
+            "campaign_id": "={{ $json['№ Кампании'] }}",
+            "used_keyword": "={{ $json['Условие показа'] }}",
+            "group_id": "={{ $json['№ Группы'] }}",
+            "condition_type": "={{ $json['Тип соответствия'] }}",
+            "category": "={{ $json['Категория таргетинга'] }}",
+            "ads_header": "={{ $json['Заголовок'] }}",
+            "count_views": "={{ $json['Показы'] }}",
+            "count_clics": "={{ $json['Клики'] }}",
+            "count_convetions": "={{ $json['Конверсии'] }}",
+            "company_id": "={{ $json.company_id }}",
+            "report_id": "={{ $('report import record').item.json.import_id }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "list_id",
+              "displayName": "list_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "key_word",
+              "displayName": "key_word",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "campaign_id",
+              "displayName": "campaign_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "used_keyword",
+              "displayName": "used_keyword",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "group_id",
+              "displayName": "group_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "condition_type",
+              "displayName": "condition_type",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "category",
+              "displayName": "category",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "ads_header",
+              "displayName": "ads_header",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "resolution",
+              "displayName": "resolution",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "count_views",
+              "displayName": "count_views",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "count_clics",
+              "displayName": "count_clics",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "count_convetions",
+              "displayName": "count_convetions",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "ai_response_tokens",
+              "displayName": "ai_response_tokens",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "company_id",
+              "displayName": "company_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "report_id",
+              "displayName": "report_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        3200,
+        -96
+      ],
+      "id": "581d23c7-f346-4495-bfbd-a8e629a42d93",
+      "name": "Insert rows in a table",
+      "credentials": {
+        "postgres": {
+          "id": "Hx2VFmUi5WO2K4QX",
+          "name": "Postgres account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "deleteTable",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "current_list",
+          "mode": "list",
+          "cachedResultName": "current_list"
+        },
+        "deleteCommand": "delete",
+        "where": {
+          "values": [
+            {
+              "column": "company_id",
+              "value": "={{ $json.company_id }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        1184,
+        256
+      ],
+      "id": "9d5642cb-07a0-45bd-97d2-8bbd53b2d67b",
+      "name": "Clear current_list",
+      "executeOnce": true,
+      "credentials": {
+        "postgres": {
+          "id": "Hx2VFmUi5WO2K4QX",
+          "name": "Postgres account 2"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "operation": "deleteTable",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "current_minus_words",
+          "mode": "list",
+          "cachedResultName": "current_minus_words"
+        },
+        "deleteCommand": "delete",
+        "where": {
+          "values": [
+            {
+              "column": "company_id",
+              "value": "={{ $json.company_id }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        1344,
+        256
+      ],
+      "id": "c5d5d0a3-6a41-4cb4-aa6c-639b7fc993b4",
+      "name": "Clear current_minus_words",
+      "executeOnce": true,
+      "credentials": {
+        "postgres": {
+          "id": "Hx2VFmUi5WO2K4QX",
+          "name": "Postgres account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "deleteTable",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "current_ads_list",
+          "mode": "list",
+          "cachedResultName": "current_ads_list"
+        },
+        "deleteCommand": "delete",
+        "where": {
+          "values": [
+            {
+              "column": "company_id",
+              "value": "={{ $json.company_id }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        1504,
+        256
+      ],
+      "id": "ac781bf5-a342-4e0f-837c-b7d77e9accf9",
+      "name": "Clear current_ads",
+      "executeOnce": true,
+      "credentials": {
+        "postgres": {
+          "id": "Hx2VFmUi5WO2K4QX",
+          "name": "Postgres account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "Не забыть что я вручную удалил фразы select * from company_content where phrase like '%бесплат%' "
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        2288,
+        -1152
+      ],
+      "id": "57905adc-e41d-41c2-98ac-84a234445c35",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "inputSource": "passthrough"
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -784,
+        -240
+      ],
+      "id": "a49af988-f964-42da-9c90-69298a6686d3",
+      "name": "When Executed by Another Workflow"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "5b3485a2-cb50-486a-932c-fc27de0a25da",
+              "name": "yandex_report_dropbox_file_path",
+              "value": "={{ $json.yandex_report_dropbox_file_path}}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -544,
+        -240
+      ],
+      "id": "da421315-cc6a-4e01-ae4a-7fdd5c3167c2",
+      "name": "set variables"
+    },
+    {
+      "parameters": {
+        "content": "Очистка буферных таблиц",
+        "height": 368,
+        "width": 1120
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        336,
+        144
+      ],
+      "id": "d870109d-75f3-4683-8ce8-a76fc977c32d",
+      "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "select company_id from companies where yandex_account=$1",
+        "options": {
+          "queryReplacement": "={{ $json['Логин клиента'] }}"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        688,
+        256
+      ],
+      "id": "38bc2dd1-bc4b-4d87-bb74-4da74e65e436",
+      "name": "get client id",
+      "executeOnce": true,
+      "credentials": {
+        "postgres": {
+          "id": "Hx2VFmUi5WO2K4QX",
+          "name": "Postgres account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO business_processes_states (business_process_id, company_id,n8n_workflow_execution_id,n8n_workflow_root_execution_id, started)\nSELECT MAX(business_process_id), $2,$3,$4, NOW()\nFROM public.business_processes\nWHERE n8n_process_name = $1;",
+        "options": {
+          "queryReplacement": "=[{{$workflow.name}},{{$json.company_id}},{{$execution.id}},{{ $('When Executed by Another Workflow').item.json.root_execution_id }}]"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        1200,
+        0
+      ],
+      "id": "51dbf7c6-1b60-4d87-8343-96e93d26d51a",
+      "name": "Mark_workwlow_started",
+      "credentials": {
+        "postgres": {
+          "id": "4YkdFJcdTgzo9hkz",
+          "name": "PGvector"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "update business_processes_states set finished=NOW(),tokens_used=0 where business_process_id=(select MAX(business_process_id) from business_processes where n8n_process_name=$1) and n8n_workflow_execution_id=$2",
+        "options": {
+          "queryReplacement": "=[{{$workflow.name}},{{$execution.id}}]"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        2640,
+        -304
+      ],
+      "id": "77ce064e-d297-43a1-831e-54bf5652ca78",
+      "name": "Mark_workflow_completed",
+      "executeOnce": true,
+      "credentials": {
+        "postgres": {
+          "id": "4YkdFJcdTgzo9hkz",
+          "name": "PGvector"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Вход: Binary -> data (CSV)\n// Настройка: \"Binary property\": data\nconst bin = items[0].binary.data;\nconst buf = Buffer.from(bin.data, 'base64');\nconst text = buf.toString('utf-8'); // или cp1251 при необходимости\n\nconst lines = text.split(/\\r?\\n/);\n// Здесь укажи число служебных строк, например 4\nconst start = 4; \nconst trimmed = lines.slice(start).join('\\n');\n\nreturn [\n  {\n    binary: {\n      data: {\n        data: Buffer.from(trimmed, 'utf-8').toString('base64'),\n        fileName: 'cleaned.csv',\n        mimeType: 'text/csv',\n      }\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        352,
+        -128
+      ],
+      "id": "d5d79822-df4a-4618-90bf-bb2fae5e7f37",
+      "name": "header cut"
+    },
+    {
+      "parameters": {
+        "jsCode": "//Fixing common error in the first field name for CSV import\n\nfunction sanitizeKey(k) {\n  return String(k)\n    .replace(/[\\uFEFF\\u200B-\\u200D\\u2060\\u00A0]/g, \"\")\n    .replace(/[\\x00-\\x1F\\x7F]/g, \"\")\n    .replace(/[“”\"']/g, \"\")\n    .replace(/\\s+/g, \" \")\n    .trim();\n}\n\nconst obj = { ...$json };\nconst oldKey = Object.keys(obj)[0];\nif (oldKey) {\n  const newKey = sanitizeKey(oldKey) || oldKey;\n  if (newKey !== oldKey) {\n    obj[newKey] = obj[oldKey];\n    delete obj[oldKey];\n  }\n}\nreturn [{ json: obj }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2496,
+        -96
+      ],
+      "id": "cd3642a7-da92-4bb6-bece-ff896524b2a8",
+      "name": "sanitizeKey"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineAll",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        2096,
+        -112
+      ],
+      "id": "a15b300b-5926-4666-a0cb-363eeee8aba6",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "17df7f34-56a6-4d29-a7d3-9edfd4afaadb",
+              "name": "company_id",
+              "value": "={{ $('get client id').item.json.company_id }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1664,
+        256
+      ],
+      "id": "15a4d317-c23e-4f77-ab1e-ed118afcc7cf",
+      "name": "company_id"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Function-Node (Run Once)\nconst workflowData = $getWorkflowStaticData('global');\nworkflowData.steps_passed = 0;\nworkflowData.tokens_used = 0;\nworkflowData.step = 0;\nreturn $input.all();\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1360,
+        -128
+      ],
+      "id": "9e4c7dc0-a445-4755-8b51-79ca9f911f0e",
+      "name": "Init total counter"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nconst workflowData = $getWorkflowStaticData('global');\nworkflowData.steps_passed = workflowData.steps_passed+1; // update steps counter\n //set used tokens here!!!!\nworkflowData.step = workflowData.step+1;\n\nfor (const item of $input.all()) {\n  item.json.steps_passed = workflowData.steps_passed;\n  item.json.step = workflowData.step;\n  \n}\n\nreturn $input.all();"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3424,
+        -112
+      ],
+      "id": "99a18c47-2586-4371-a0ca-d7d362a20a90",
+      "name": "Get current step  saved"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "update business_processes_states set steps_passed=$3, tokens_used=0,tokens_used_type=$4 where business_process_id=(select MAX(business_process_id) from business_processes where n8n_process_name=$1) and n8n_workflow_execution_id=$2",
+        "options": {
+          "queryReplacement": "=[{{$workflow.name}},{{$execution.id}},{{$json.steps_passed}},{{ 'gpt-5' }}]"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        4160,
+        -128
+      ],
+      "id": "57c684ee-c4fe-4392-8dae-d575dd784843",
+      "name": "Mark_workflow_passed_steps",
+      "executeOnce": true,
+      "credentials": {
+        "postgres": {
+          "id": "4YkdFJcdTgzo9hkz",
+          "name": "PGvector"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "00803116-bcbd-434f-87c7-9f785abb5930",
+              "leftValue": "={{ $json.step  }}",
+              "rightValue": 100,
+              "operator": {
+                "type": "number",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        3664,
+        -80
+      ],
+      "id": "9b736fed-bc39-431d-ba95-0be0aaa758b8",
+      "name": "each 100 items"
+    },
+    {
+      "parameters": {
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "report_import",
+          "mode": "list",
+          "cachedResultName": "report_import"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "company_id": "={{ $json.company_id }}",
+            "start_date": "={{ $('get dates from file name').item.json.date_from }}",
+            "end_date": "={{ $('get dates from file name').item.json.date_to }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "import_id",
+              "displayName": "import_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "start_date",
+              "displayName": "start_date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "end_date",
+              "displayName": "end_date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "import_date",
+              "displayName": "import_date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "company_id",
+              "displayName": "company_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "processed_date",
+              "displayName": "processed_date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        976,
+        256
+      ],
+      "id": "a08875f7-6d61-4104-a6b3-b4f94af40cd8",
+      "name": "report import record",
+      "credentials": {
+        "postgres": {
+          "id": "Hx2VFmUi5WO2K4QX",
+          "name": "Postgres account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const re = /(\\d{4}-\\d{2}-\\d{2})_(\\d{4}-\\d{2}-\\d{2})/;\n\nreturn $input.all().map(item => {\n  const binKey = Object.keys(item.binary ?? {})[0];          // обычно \"data\"\n  const meta = binKey ? item.binary[binKey] : undefined;\n\n  // имя файла: сначала fileName, на всякий — \"File Name\"\n  const fileName = meta?.fileName ?? meta?.[\"File Name\"] ?? \"\";\n\n  const m = String(fileName).match(re);\n\n  return {\n    json: {\n      ...item.json,\n      date_from: m?.[1] ?? null,\n      date_to:   m?.[2] ?? null,\n      file_name: fileName,            // чтобы было видно, что взяли\n      bin_key: binKey,\n    },\n    binary: item.binary,              // не теряем бинарь\n  };\n});"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        176,
+        -128
+      ],
+      "id": "171bd827-c5cf-4ff7-bacf-093f798c4bf4",
+      "name": "get dates from file name"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "update business_processes_states set steps_total=$3 where business_process_id=(select MAX(business_process_id) from business_processes where n8n_process_name=$1) and n8n_workflow_execution_id=$2",
+        "options": {
+          "queryReplacement": "=[{{$workflow.name}},{{$execution.id}},{{$input.all().length}}]"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        1616,
+        -304
+      ],
+      "id": "447e2fec-0a01-4415-a051-a4143b85079a",
+      "name": "Mark_workflow_total_steps",
+      "executeOnce": true,
+      "credentials": {
+        "postgres": {
+          "id": "4YkdFJcdTgzo9hkz",
+          "name": "PGvector"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nconst workflowData = $getWorkflowStaticData('global');\n\nworkflowData.step =0;\n\n\nreturn $input.all();"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3904,
+        -96
+      ],
+      "id": "41224e5e-4b96-44b0-a6de-0270fad992e6",
+      "name": "reset step"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "17df7f34-56a6-4d29-a7d3-9edfd4afaadb",
+              "name": "company_id",
+              "value": "={{ $('get client id').item.json.company_id }}",
+              "type": "string"
+            },
+            {
+              "id": "d12188b1-d423-4782-98c9-1d584a01ae44",
+              "name": "report_id",
+              "value": "={{ $('report import record').last().json.import_id }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2832,
+        -304
+      ],
+      "id": "1cc27ba6-b605-4602-b45b-c5b4fb7ac0e9",
+      "name": "company_id_report_id"
+    }
+  ],
+  "connections": {
+    "Download File": {
+      "main": [
+        [
+          {
+            "node": "get dates from file name",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File": {
+      "main": [
+        [
+          {
+            "node": "get client id",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Init total counter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [
+          {
+            "node": "Mark_workflow_completed",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "sanitizeKey",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Insert rows in a table": {
+      "main": [
+        [
+          {
+            "node": "Get current step  saved",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Clear current_list": {
+      "main": [
+        [
+          {
+            "node": "Clear current_minus_words",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Clear current_minus_words": {
+      "main": [
+        [
+          {
+            "node": "Clear current_ads",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Clear current_ads": {
+      "main": [
+        [
+          {
+            "node": "company_id",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "set variables",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "set variables": {
+      "main": [
+        [
+          {
+            "node": "Download File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "get client id": {
+      "main": [
+        [
+          {
+            "node": "Mark_workwlow_started",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "report import record",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "header cut": {
+      "main": [
+        [
+          {
+            "node": "Extract from File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "sanitizeKey": {
+      "main": [
+        [
+          {
+            "node": "Insert rows in a table",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "company_id": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Mark_workflow_completed": {
+      "main": [
+        [
+          {
+            "node": "company_id_report_id",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Init total counter": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Mark_workflow_total_steps",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get current step  saved": {
+      "main": [
+        [
+          {
+            "node": "each 100 items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "each 100 items": {
+      "main": [
+        [
+          {
+            "node": "reset step",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mark_workflow_passed_steps": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "report import record": {
+      "main": [
+        [
+          {
+            "node": "Clear current_list",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "get dates from file name": {
+      "main": [
+        [
+          {
+            "node": "header cut",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "reset step": {
+      "main": [
+        [
+          {
+            "node": "Mark_workflow_passed_steps",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "saveDataErrorExecution": "all",
+    "saveDataSuccessExecution": "all",
+    "saveExecutionProgress": false,
+    "callerPolicy": "workflowsFromSameOwner",
+    "errorWorkflow": "v2Z32ISEUzsFYnZw"
+  },
+  "staticData": {
+    "global": {
+      "steps_passed": 1500,
+      "tokens_used": 0,
+      "step": 0
+    }
+  },
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {
+    "When Executed by Another Workflow": [
+      {
+        "json": {
+          "id": "4f5WJ06ItW520O75",
+          "root_execution_id": 32924,
+          "yandex_report_dropbox_file_path": "https://www.dropbox.com/scl/fi/9kr6iebx4q6cstzp2xuwb/2025-09-04_2025-09-24_searchquery_kiberone-saratov.csv?rlkey=cew8cc5k2rfbq5wrco9inb4eu&dl=1",
+          "threshhold": "0.88"
+        }
+      }
+    ]
+  },
+  "versionId": "5c6e067f-dfcf-4180-8a03-7aff393bb1a7",
+  "triggerCount": 0,
+  "shared": [
+    {
+      "createdAt": "2025-09-25T13:56:50.878Z",
+      "updatedAt": "2025-09-25T13:56:50.878Z",
+      "role": "workflow:owner",
+      "workflowId": "4f5WJ06ItW520O75",
+      "projectId": "spKmbJLU4mvACXIB"
+    }
+  ],
+  "tags": []
+}
