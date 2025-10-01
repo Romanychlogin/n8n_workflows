@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-22T14:01:12.675Z",
-  "updatedAt": "2025-10-01T21:49:58.351Z",
+  "updatedAt": "2025-10-01T22:08:37.154Z",
   "id": "BKfU7GhWdir6g3Ib",
   "name": "Anton's test",
   "active": true,
@@ -93,7 +93,7 @@
     "templateCredsSetupCompleted": true
   },
   "pinData": {},
-  "versionId": "9c032312-51c2-4149-b715-c44624456edb",
+  "versionId": "f59426eb-2816-4a90-a94e-9128c326d7c4",
   "triggerCount": 1,
   "shared": [
     {
