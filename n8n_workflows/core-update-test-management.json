@@ -1,9 +1,9 @@
 {
   "createdAt": "2025-10-06T13:25:33.741Z",
-  "updatedAt": "2025-10-06T13:50:45.542Z",
+  "updatedAt": "2025-10-06T13:56:29.073Z",
   "id": "tbijdiaKB74Iaf6O",
   "name": "core update test management",
-  "active": true,
+  "active": false,
   "isArchived": false,
   "nodes": [
     {
@@ -26,36 +26,6 @@
           "name": "PGvector"
         }
       }
-    },
-    {
-      "parameters": {
-        "formFields": {
-          "values": [
-            {
-              "fieldLabel": "Select processes to reset completion",
-              "fieldType": "dropdown",
-              "fieldOptions": {
-                "values": [
-                  {
-                    "option": "={{ $input.all().map(r => ({\n  label: r.json.n8n_process_name,      // что видит пользователь\n  value: String(r.json.id ?? r.json.n8n_process_name) // что вернётся\n})) }}"
-                  },
-                  {}
-                ]
-              }
-            }
-          ]
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.form",
-      "typeVersion": 2.3,
-      "position": [
-        176,
-        -160
-      ],
-      "id": "5aaf1c85-187b-4fc4-be37-cc02859ad24c",
-      "name": "Form",
-      "webhookId": "efc10f6b-77c8-4e73-92fe-bf87481f003c"
     },
     {
       "parameters": {
@@ -172,8 +142,8 @@
       "type": "n8n-nodes-base.switch",
       "typeVersion": 3.3,
       "position": [
-        -416,
-        -192
+        -400,
+        -224
       ],
       "id": "cc1f0760-29f9-46dc-86af-e6394e591b68",
       "name": "Switch"
@@ -223,6 +193,58 @@
       ],
       "id": "d66b5bff-eafd-4407-bc82-818668c91c2a",
       "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "operation": "completion",
+        "completionTitle": "Все процессы помечены как остановленные",
+        "completionMessage": "Все процессы помечены как остановленные",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.form",
+      "typeVersion": 2.3,
+      "position": [
+        416,
+        -352
+      ],
+      "id": "cd846e0b-63d4-441c-a211-457505def0f4",
+      "name": "Form",
+      "webhookId": "c7a720d7-8a59-4cb3-9929-34dc8dabf5fb"
+    },
+    {
+      "parameters": {
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "test",
+              "fieldType": "dropdown",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "test1"
+                  },
+                  {
+                    "option": "test2"
+                  },
+                  {
+                    "option": "multiselect=true"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.form",
+      "typeVersion": 2.3,
+      "position": [
+        192,
+        -176
+      ],
+      "id": "a21c6b5d-3fa7-4140-b7c2-3f0bb51ecc4f",
+      "name": "Form1",
+      "webhookId": "84b35fba-718d-46b1-9244-cb4f259ac53a"
     }
   ],
   "connections": {
@@ -230,7 +252,7 @@
       "main": [
         [
           {
-            "node": "Form",
+            "node": "Form1",
             "type": "main",
             "index": 0
           }
@@ -277,6 +299,17 @@
           }
         ]
       ]
+    },
+    "Execute a SQL query": {
+      "main": [
+        [
+          {
+            "node": "Form",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
@@ -287,7 +320,7 @@
     "templateCredsSetupCompleted": true
   },
   "pinData": {},
-  "versionId": "658b01f3-abd3-4ca6-9305-c9b70284af11",
+  "versionId": "052293c7-cd16-4069-b89d-1ae4d5fe5420",
   "triggerCount": 1,
   "shared": [
     {
@@ -298,6 +331,5 @@
       "projectId": "spKmbJLU4mvACXIB"
     }
   ],
-  "tags": [],
-  "file_name": "core-update-test-management.json"
+  "tags": []
 }
