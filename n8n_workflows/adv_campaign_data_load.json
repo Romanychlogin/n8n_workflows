@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-25T13:56:50.878Z",
-  "updatedAt": "2025-09-30T12:41:18.655Z",
+  "updatedAt": "2025-10-06T10:23:40.716Z",
   "id": "4f5WJ06ItW520O75",
   "name": "ADV_campaign_data_load",
   "active": false,
@@ -371,7 +371,8 @@
           "id": "Hx2VFmUi5WO2K4QX",
           "name": "Postgres account 2"
         }
-      }
+      },
+      "disabled": true
     },
     {
       "parameters": {
@@ -412,7 +413,8 @@
           "id": "Hx2VFmUi5WO2K4QX",
           "name": "Postgres account 2"
         }
-      }
+      },
+      "disabled": true
     },
     {
       "parameters": {
@@ -1179,7 +1181,7 @@
       }
     ]
   },
-  "versionId": "0d24344f-9b01-4f48-a281-e7bfc98e629c",
+  "versionId": "739ace86-f1e5-477b-8683-1263605038a1",
   "triggerCount": 0,
   "shared": [
     {
