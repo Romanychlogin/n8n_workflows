@@ -1,9 +1,9 @@
 {
   "createdAt": "2025-10-06T13:25:33.741Z",
-  "updatedAt": "2025-10-06T13:30:16.288Z",
+  "updatedAt": "2025-10-06T13:38:11.327Z",
   "id": "tbijdiaKB74Iaf6O",
   "name": "My workflow 3",
-  "active": false,
+  "active": true,
   "isArchived": false,
   "nodes": [
     {
@@ -37,7 +37,7 @@
               "fieldOptions": {
                 "values": [
                   {
-                    "option": "={{ $input.all().map(r => ({    label: r.json.n8n_process_name })) }}"
+                    "option": "={{ $input.all().map(r => ({\n  label: r.json.n8n_process_name,      // что видит пользователь\n  value: String(r.json.id ?? r.json.n8n_process_name) // что вернётся\n})) }}"
                   }
                 ]
               }
@@ -58,14 +58,35 @@
     },
     {
       "parameters": {
-        "formTitle": "Reset update core processes",
+        "formTitle": "Test data management",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "Please select",
+              "fieldType": "radio",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "Reset all running business processes"
+                  },
+                  {
+                    "option": "Reset core update steps for the last execution"
+                  },
+                  {
+                    "option": "Reset core update test data for report"
+                  }
+                ]
+              }
+            }
+          ]
+        },
         "options": {}
       },
       "type": "n8n-nodes-base.formTrigger",
       "typeVersion": 2.3,
       "position": [
-        -480,
-        -176
+        -624,
+        -192
       ],
       "id": "35df9164-20fc-4133-9a8b-199af5e35691",
       "name": "On form submission",
@@ -104,8 +125,8 @@
     "templateCredsSetupCompleted": true
   },
   "pinData": {},
-  "versionId": "ef59a429-e83c-4c92-8df5-0f076c2ebd65",
-  "triggerCount": 0,
+  "versionId": "26cae2d9-1158-45e2-9481-874eb61e30e8",
+  "triggerCount": 1,
   "shared": [
     {
       "createdAt": "2025-10-06T13:25:33.741Z",
@@ -115,6 +136,5 @@
       "projectId": "spKmbJLU4mvACXIB"
     }
   ],
-  "tags": [],
-  "file_name": "my-workflow-3.json"
+  "tags": []
 }
