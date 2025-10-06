@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-07-18T08:31:54.459Z",
-  "updatedAt": "2025-10-06T12:02:33.575Z",
+  "updatedAt": "2025-10-06T13:07:23.474Z",
   "id": "wZGLxMCCmOnDJZ1o",
   "name": "ADV_campaign_analysis",
   "active": false,
@@ -2609,7 +2609,7 @@
       }
     ]
   },
-  "versionId": "01ee2b30-0f80-43ef-93c7-c7a754469885",
+  "versionId": "a39fb032-3d3b-444b-96fb-7bb07eb9bf1f",
   "triggerCount": 0,
   "shared": [
     {
@@ -2620,5 +2620,12 @@
       "projectId": "spKmbJLU4mvACXIB"
     }
   ],
-  "tags": []
+  "tags": [
+    {
+      "createdAt": "2025-10-06T13:06:54.644Z",
+      "updatedAt": "2025-10-06T13:06:54.644Z",
+      "id": "DBEf57wUDunVJUG6",
+      "name": "campaign update"
+    }
+  ]
 }
