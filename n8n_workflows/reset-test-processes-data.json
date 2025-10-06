@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-26T09:39:35.076Z",
-  "updatedAt": "2025-09-26T09:48:34.478Z",
+  "updatedAt": "2025-10-06T13:06:00.150Z",
   "id": "QiRdKifiIi2x4N6I",
   "name": "Reset test processes data",
   "active": false,
@@ -96,7 +96,7 @@
     "templateCredsSetupCompleted": true
   },
   "pinData": {},
-  "versionId": "96263be7-38c5-4113-a2a4-2243aa57ce16",
+  "versionId": "6b7b2133-69c2-42a3-85d2-1285cdf00e88",
   "triggerCount": 0,
   "shared": [
     {
@@ -107,5 +107,12 @@
       "projectId": "spKmbJLU4mvACXIB"
     }
   ],
-  "tags": []
+  "tags": [
+    {
+      "createdAt": "2025-10-06T13:05:59.145Z",
+      "updatedAt": "2025-10-06T13:05:59.145Z",
+      "id": "Fu9Wfx1UCGLuvAf0",
+      "name": "test data"
+    }
+  ]
 }
