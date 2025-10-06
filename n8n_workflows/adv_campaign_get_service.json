@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-30T12:45:50.445Z",
-  "updatedAt": "2025-09-30T12:55:34.826Z",
+  "updatedAt": "2025-10-06T10:21:56.591Z",
   "id": "c0NgmBzgLxUE7Wno",
   "name": "ADV_campaign_get_service",
   "active": false,
@@ -287,8 +287,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        -208,
-        -144
+        -192,
+        -192
       ],
       "id": "34e512f5-8154-489f-8567-372ec5d0fc72",
       "name": "Mark_workwlow_started",
@@ -892,7 +892,7 @@
       }
     ]
   },
-  "versionId": "565cbcb9-611d-4b95-9534-fff4173b0154",
+  "versionId": "4fa6bf35-0c41-4162-8733-c7885ed99f7e",
   "triggerCount": 0,
   "shared": [
     {
