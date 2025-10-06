@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-30T17:56:19.098Z",
-  "updatedAt": "2025-09-30T20:49:56.877Z",
+  "updatedAt": "2025-10-06T13:08:30.306Z",
   "id": "UUlsZU9GOCmdvDHg",
   "name": "extract data for updates 2",
   "active": false,
@@ -407,7 +407,7 @@
     "templateCredsSetupCompleted": true
   },
   "pinData": {},
-  "versionId": "19da06c9-34e4-432d-adfe-59349a49a801",
+  "versionId": "740dbc18-0c46-493e-a81c-676e05182562",
   "triggerCount": 0,
   "shared": [
     {
@@ -418,5 +418,12 @@
       "projectId": "spKmbJLU4mvACXIB"
     }
   ],
-  "tags": []
+  "tags": [
+    {
+      "createdAt": "2025-10-06T13:06:54.644Z",
+      "updatedAt": "2025-10-06T13:06:54.644Z",
+      "id": "DBEf57wUDunVJUG6",
+      "name": "campaign update"
+    }
+  ]
 }
