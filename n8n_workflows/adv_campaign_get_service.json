@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-30T12:45:50.445Z",
-  "updatedAt": "2025-10-06T12:19:19.764Z",
+  "updatedAt": "2025-10-06T12:24:23.129Z",
   "id": "c0NgmBzgLxUE7Wno",
   "name": "ADV_campaign_get_service",
   "active": false,
@@ -638,7 +638,7 @@
           "conditions": [
             {
               "id": "d27bd43b-9c58-4c64-87ba-c82c2ccd45d1",
-              "leftValue": "=$input.first().json",
+              "leftValue": "={{ $input.first().json }}",
               "rightValue": "",
               "operator": {
                 "type": "object",
@@ -945,7 +945,7 @@
       }
     ]
   },
-  "versionId": "315693e0-6928-4eb7-8ed8-f20c364e4829",
+  "versionId": "6717708b-6f98-42d5-9e66-6aa4a1f5de6f",
   "triggerCount": 0,
   "shared": [
     {
