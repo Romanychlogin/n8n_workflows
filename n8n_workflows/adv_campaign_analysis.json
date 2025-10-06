@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-07-18T08:31:54.459Z",
-  "updatedAt": "2025-09-30T13:13:40.679Z",
+  "updatedAt": "2025-10-06T12:02:33.575Z",
   "id": "wZGLxMCCmOnDJZ1o",
   "name": "ADV_campaign_analysis",
   "active": false,
@@ -1056,8 +1056,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        9600,
-        -336
+        8848,
+        -352
       ],
       "id": "32bea20b-bd2e-4a99-83b0-e9dce5af9140",
       "name": "If minuses array is empty"
@@ -1617,8 +1617,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        8720,
-        -368
+        8800,
+        -64
       ],
       "id": "04a89737-a544-41b1-9595-5bf87fd07fb5",
       "name": "Set API JSON1"
@@ -1637,8 +1637,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        8944,
-        -368
+        9024,
+        -64
       ],
       "id": "32c90372-c72f-4ccb-857d-c989ec8918a3",
       "name": "HTTP Request1",
@@ -1659,8 +1659,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        8528,
-        -368
+        8608,
+        -64
       ],
       "id": "b215a0dc-2fdd-4a42-a694-42e94a46d34c",
       "name": "Set prompt1"
@@ -1747,8 +1747,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        9232,
-        -368
+        9296,
+        -64
       ],
       "id": "f9009c6a-6a7e-4c66-b8a2-c41c8b83d941",
       "name": "minus_words_array"
@@ -2434,7 +2434,7 @@
       "main": [
         [
           {
-            "node": "Set prompt1",
+            "node": "If minuses array is empty",
             "type": "main",
             "index": 0
           }
@@ -2487,13 +2487,7 @@
     },
     "HTTP Request1": {
       "main": [
-        [
-          {
-            "node": "minus_words_array",
-            "type": "main",
-            "index": 0
-          }
-        ]
+        []
       ]
     },
     "map_minus_words": {
@@ -2509,13 +2503,7 @@
     },
     "minus_words_array": {
       "main": [
-        [
-          {
-            "node": "If minuses array is empty",
-            "type": "main",
-            "index": 0
-          }
-        ]
+        []
       ]
     },
     "Merge1": {
@@ -2621,7 +2609,7 @@
       }
     ]
   },
-  "versionId": "f0ddfd4a-73b6-41df-aedb-3041bab22a39",
+  "versionId": "01ee2b30-0f80-43ef-93c7-c7a754469885",
   "triggerCount": 0,
   "shared": [
     {
