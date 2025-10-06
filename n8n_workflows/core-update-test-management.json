@@ -1,0 +1,303 @@
+{
+  "createdAt": "2025-10-06T13:25:33.741Z",
+  "updatedAt": "2025-10-06T13:50:45.542Z",
+  "id": "tbijdiaKB74Iaf6O",
+  "name": "core update test management",
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "select n8n_process_name from business_processes where root_process_id=7 order by process_order ",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -16,
+        -176
+      ],
+      "id": "0ec2e521-a470-4d15-822c-0a48d1ba9a93",
+      "name": "get list for updates",
+      "credentials": {
+        "postgres": {
+          "id": "4YkdFJcdTgzo9hkz",
+          "name": "PGvector"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "Select processes to reset completion",
+              "fieldType": "dropdown",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "={{ $input.all().map(r => ({\n  label: r.json.n8n_process_name,      // что видит пользователь\n  value: String(r.json.id ?? r.json.n8n_process_name) // что вернётся\n})) }}"
+                  },
+                  {}
+                ]
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.form",
+      "typeVersion": 2.3,
+      "position": [
+        176,
+        -160
+      ],
+      "id": "5aaf1c85-187b-4fc4-be37-cc02859ad24c",
+      "name": "Form",
+      "webhookId": "efc10f6b-77c8-4e73-92fe-bf87481f003c"
+    },
+    {
+      "parameters": {
+        "formTitle": "Test data management",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "Please select",
+              "fieldType": "radio",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "Reset status for all running core update business processes"
+                  },
+                  {
+                    "option": "Reset core update steps for the last execution"
+                  },
+                  {
+                    "option": "Reset core update test data for report"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.3,
+      "position": [
+        -624,
+        -192
+      ],
+      "id": "35df9164-20fc-4133-9a8b-199af5e35691",
+      "name": "On form submission",
+      "webhookId": "275771f9-df29-4b85-b49d-9aec026e6b2f"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json[\"Please select\"] }}",
+                    "rightValue": "Reset status for all running core update business processes",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "0488ae60-a95a-4efb-9f72-2ead78afd0e7"
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "84b07d24-1b86-4dbf-ad96-d01c54509606",
+                    "leftValue": "={{ $json[\"Please select\"] }}",
+                    "rightValue": "Reset core update steps for the last execution",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "fcd118d9-e0eb-4be5-80ad-aa67ffc236d9",
+                    "leftValue": "={{ $json[\"Please select\"] }}",
+                    "rightValue": "Reset core update test data for report",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.3,
+      "position": [
+        -416,
+        -192
+      ],
+      "id": "cc1f0760-29f9-46dc-86af-e6394e591b68",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "update business_processes_states set error_happened=now(), error_message='test forced by user' \nwhere finished is null and error_happened is null \nand business_process_id in (select business_process_id from business_processes where n8n_process_name=$1 or root_process_id=(select business_process_id from business_processes where n8n_process_name=$1))\n",
+        "options": {
+          "queryReplacement": "={{$json.root_process_name}}"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        208,
+        -352
+      ],
+      "id": "f68b497e-5be1-48b3-9fac-6ae13cd0e1b4",
+      "name": "Execute a SQL query",
+      "credentials": {
+        "postgres": {
+          "id": "4YkdFJcdTgzo9hkz",
+          "name": "PGvector"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "31e7d3b4-3d4d-4d76-937a-f0169af86785",
+              "name": "root_process_name",
+              "value": "campaign core update",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        0,
+        -352
+      ],
+      "id": "d66b5bff-eafd-4407-bc82-818668c91c2a",
+      "name": "Edit Fields"
+    }
+  ],
+  "connections": {
+    "get list for updates": {
+      "main": [
+        [
+          {
+            "node": "Form",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "On form submission": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "get list for updates",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Execute a SQL query",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "658b01f3-abd3-4ca6-9305-c9b70284af11",
+  "triggerCount": 1,
+  "shared": [
+    {
+      "createdAt": "2025-10-06T13:25:33.741Z",
+      "updatedAt": "2025-10-06T13:25:33.741Z",
+      "role": "workflow:owner",
+      "workflowId": "tbijdiaKB74Iaf6O",
+      "projectId": "spKmbJLU4mvACXIB"
+    }
+  ],
+  "tags": [],
+  "file_name": "core-update-test-management.json"
+}
