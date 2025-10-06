@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-25T13:56:50.878Z",
-  "updatedAt": "2025-10-06T10:23:40.716Z",
+  "updatedAt": "2025-10-06T13:07:09.484Z",
   "id": "4f5WJ06ItW520O75",
   "name": "ADV_campaign_data_load",
   "active": false,
@@ -1181,7 +1181,7 @@
       }
     ]
   },
-  "versionId": "739ace86-f1e5-477b-8683-1263605038a1",
+  "versionId": "f7ba3912-9c23-4540-825c-9f983756fc4a",
   "triggerCount": 0,
   "shared": [
     {
@@ -1192,5 +1192,12 @@
       "projectId": "spKmbJLU4mvACXIB"
     }
   ],
-  "tags": []
+  "tags": [
+    {
+      "createdAt": "2025-10-06T13:06:54.644Z",
+      "updatedAt": "2025-10-06T13:06:54.644Z",
+      "id": "DBEf57wUDunVJUG6",
+      "name": "campaign update"
+    }
+  ]
 }
