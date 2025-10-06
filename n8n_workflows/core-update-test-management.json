@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-10-06T13:25:33.741Z",
-  "updatedAt": "2025-10-06T13:56:29.073Z",
+  "updatedAt": "2025-10-06T14:09:56.994Z",
   "id": "tbijdiaKB74Iaf6O",
   "name": "core update test management",
   "active": false,
@@ -213,38 +213,49 @@
     },
     {
       "parameters": {
-        "formFields": {
-          "values": [
-            {
-              "fieldLabel": "test",
-              "fieldType": "dropdown",
-              "fieldOptions": {
-                "values": [
-                  {
-                    "option": "test1"
-                  },
-                  {
-                    "option": "test2"
-                  },
-                  {
-                    "option": "multiselect=true"
-                  }
-                ]
-              }
-            }
-          ]
-        },
+        "defineForm": "json",
+        "jsonOutput": "=[\n{{\n(() => {\n  const values = $input.all().map(r => ({\n    option: String(r.json.n8n_process_name)   // текст пункта\n  }));\n  return {\n    fieldLabel: \"Checkboxes\",\n    fieldType: \"checkbox\",\n    fieldOptions: {\n      values\n    }\n  };\n})()\n}}\n \n]\n",
         "options": {}
       },
       "type": "n8n-nodes-base.form",
       "typeVersion": 2.3,
       "position": [
-        192,
+        400,
         -176
       ],
       "id": "a21c6b5d-3fa7-4140-b7c2-3f0bb51ecc4f",
       "name": "Form1",
       "webhookId": "84b35fba-718d-46b1-9244-cb4f259ac53a"
+    },
+    {
+      "parameters": {
+        "operation": "completion",
+        "completionTitle": "Thank you page",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.form",
+      "typeVersion": 2.3,
+      "position": [
+        608,
+        -176
+      ],
+      "id": "98337c15-422d-49a3-a7d4-2991ce3e4581",
+      "name": "Form2",
+      "webhookId": "09202ed5-0342-4ac0-b07f-0dd8fa096dc9"
+    },
+    {
+      "parameters": {
+        "jsCode": "{{\n(() => {\n  const values = $input.all().map(r => ({\n    option: String(r.json.n8n_process_name)   // текст пункта\n  }));\n  return {\n    fieldLabel: \"Checkboxes\",\n    fieldType: \"checkbox\",\n    fieldOptions: {\n      values\n    }\n  };\n})()\n}}"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        192,
+        -176
+      ],
+      "id": "2f44c043-125a-489b-95a6-6cbca648fc13",
+      "name": "Code in JavaScript",
+      "disabled": true
     }
   ],
   "connections": {
@@ -252,7 +263,7 @@
       "main": [
         [
           {
-            "node": "Form1",
+            "node": "Code in JavaScript",
             "type": "main",
             "index": 0
           }
@@ -310,6 +321,28 @@
           }
         ]
       ]
+    },
+    "Form1": {
+      "main": [
+        [
+          {
+            "node": "Form2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Form1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
@@ -320,7 +353,7 @@
     "templateCredsSetupCompleted": true
   },
   "pinData": {},
-  "versionId": "052293c7-cd16-4069-b89d-1ae4d5fe5420",
+  "versionId": "5c2f0c87-21ce-40a4-b2c6-ed99f2d48103",
   "triggerCount": 1,
   "shared": [
     {
