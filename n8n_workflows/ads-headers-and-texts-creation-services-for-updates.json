@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-28T11:31:13.045Z",
-  "updatedAt": "2025-09-30T13:41:11.008Z",
+  "updatedAt": "2025-10-06T13:08:13.298Z",
   "id": "lBAh8kjoXRX0aGUF",
   "name": "ADS headers and texts creation services for updates",
   "active": false,
@@ -1716,7 +1716,7 @@
       }
     ]
   },
-  "versionId": "80eacb33-26a4-464d-82d7-a95b84cca70f",
+  "versionId": "7700c1e6-44a0-4085-8e88-f0024531e64c",
   "triggerCount": 0,
   "shared": [
     {
@@ -1727,5 +1727,12 @@
       "projectId": "spKmbJLU4mvACXIB"
     }
   ],
-  "tags": []
+  "tags": [
+    {
+      "createdAt": "2025-10-06T13:06:54.644Z",
+      "updatedAt": "2025-10-06T13:06:54.644Z",
+      "id": "DBEf57wUDunVJUG6",
+      "name": "campaign update"
+    }
+  ]
 }
