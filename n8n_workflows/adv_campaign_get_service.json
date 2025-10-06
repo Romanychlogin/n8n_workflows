@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-30T12:45:50.445Z",
-  "updatedAt": "2025-10-06T12:24:23.129Z",
+  "updatedAt": "2025-10-06T13:07:32.419Z",
   "id": "c0NgmBzgLxUE7Wno",
   "name": "ADV_campaign_get_service",
   "active": false,
@@ -945,7 +945,7 @@
       }
     ]
   },
-  "versionId": "6717708b-6f98-42d5-9e66-6aa4a1f5de6f",
+  "versionId": "22e1f791-499c-4f82-bac8-495002763fa4",
   "triggerCount": 0,
   "shared": [
     {
@@ -956,5 +956,12 @@
       "projectId": "spKmbJLU4mvACXIB"
     }
   ],
-  "tags": []
+  "tags": [
+    {
+      "createdAt": "2025-10-06T13:06:54.644Z",
+      "updatedAt": "2025-10-06T13:06:54.644Z",
+      "id": "DBEf57wUDunVJUG6",
+      "name": "campaign update"
+    }
+  ]
 }
