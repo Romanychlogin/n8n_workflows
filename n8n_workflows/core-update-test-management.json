@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-10-06T13:25:33.741Z",
-  "updatedAt": "2025-10-07T06:43:45.106Z",
+  "updatedAt": "2025-10-07T07:35:15.160Z",
   "id": "tbijdiaKB74Iaf6O",
   "name": "core update test management",
   "active": false,
@@ -51,6 +51,21 @@
                   }
                 ]
               }
+            },
+            {
+              "fieldLabel": "Select company id",
+              "fieldType": "dropdown",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "1"
+                  },
+                  {
+                    "option": "2"
+                  }
+                ]
+              },
+              "requiredField": true
             }
           ]
         },
@@ -185,9 +200,9 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "update business_processes_states set error_happened=now(), error_message='test forced by user' \nwhere finished is null and error_happened is null \nand business_process_id in (select business_process_id from business_processes where n8n_process_name=$1 or root_process_id=(select business_process_id from business_processes where n8n_process_name=$1))\n",
+        "query": "update business_processes_states set error_happened=now(), error_message='test forced by user' \nwhere finished is null and error_happened is null \n  and company_id=$2\nand business_process_id in (select business_process_id from business_processes where n8n_process_name=$1 or root_process_id=(select business_process_id from business_processes where n8n_process_name=$1))\n",
         "options": {
-          "queryReplacement": "={{$json.root_process_name}}"
+          "queryReplacement": "=[{{$json.root_process_name}},{{ $('On form submission').item.json['Select company id'] }}]"
         }
       },
       "type": "n8n-nodes-base.postgres",
@@ -391,14 +406,15 @@
     "On form submission": [
       {
         "json": {
-          "Please select": "Reset core update steps for the last execution",
-          "submittedAt": "2025-10-07T09:39:51.676+03:00",
+          "Please select": "Reset status for all running core update business processes",
+          "Select company id": "1",
+          "submittedAt": "2025-10-07T10:32:12.748+03:00",
           "formMode": "test"
         }
       }
     ]
   },
-  "versionId": "7fc28b13-ac8d-4815-b639-bd15f5314a6c",
+  "versionId": "ddaf5c1c-5695-4090-906e-c30a8f6441f3",
   "triggerCount": 1,
   "shared": [
     {
