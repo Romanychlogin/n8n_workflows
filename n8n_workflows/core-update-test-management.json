@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-10-06T13:25:33.741Z",
-  "updatedAt": "2025-10-07T16:47:22.317Z",
+  "updatedAt": "2025-10-07T16:51:18.078Z",
   "id": "tbijdiaKB74Iaf6O",
   "name": "core update test management",
   "active": true,
@@ -910,6 +910,7 @@
       ],
       "id": "68e95e8c-772c-42b8-80b9-3fc1d8580879",
       "name": "Select rows from a table",
+      "alwaysOutputData": true,
       "credentials": {
         "postgres": {
           "id": "Hx2VFmUi5WO2K4QX",
@@ -974,6 +975,7 @@
           "values": [
             {
               "fieldLabel": "Test data found, are you ready to reset it?",
+              "fieldType": "textarea",
               "placeholder": "={{ 'Found ' +$input.all().length+ ' records' }}"
             }
           ]
@@ -1313,13 +1315,13 @@
         "json": {
           "Select company id": "1",
           "Please select": "Reset core update test data for report",
-          "submittedAt": "2025-10-07T19:43:55.977+03:00",
+          "submittedAt": "2025-10-07T19:49:37.715+03:00",
           "formMode": "production"
         }
       }
     ]
   },
-  "versionId": "d31c8834-3cae-47d4-9ac8-0cd176c6b18b",
+  "versionId": "ecfe733c-05bb-422f-ac8c-2bb71a7edc39",
   "triggerCount": 1,
   "shared": [
     {
