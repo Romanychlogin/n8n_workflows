@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-25T13:33:58.106Z",
-  "updatedAt": "2025-10-07T07:48:35.392Z",
+  "updatedAt": "2025-10-07T17:22:49.233Z",
   "id": "0J5cvuaSz3IhDS99",
   "name": "campaign core update",
   "active": false,
@@ -64,8 +64,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        2720,
-        1440
+        2736,
+        1552
       ],
       "id": "b17b1715-9e42-463a-8c41-afd0be86f727",
       "name": "Mark_workflow_completed",
@@ -180,7 +180,7 @@
         "operation": "executeQuery",
         "query": "update business_processes_states set steps_total=$3 where business_process_id=(select MAX(business_process_id) from business_processes where n8n_process_name=$1) and n8n_workflow_execution_id=$2",
         "options": {
-          "queryReplacement": "=[{{$workflow.name}},{{$execution.id}},{{ 3 }}]"
+          "queryReplacement": "=[{{$workflow.name}},{{$execution.id}},{{ 4 }}]"
         }
       },
       "type": "n8n-nodes-base.postgres",
@@ -492,9 +492,9 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "update business_processes_states set  tokens_used_type=$3, tokens_used=tokens_used+(select bps.tokens_used from business_processes bp1,business_processes_states bps,business_processes_states bps2 where bp1.n8n_process_name=$2 and bp1.business_process_id=bps.business_process_id and  bps.n8n_workflow_root_execution_id=bps2.n8n_workflow_execution_id  and bps.finished is not null and bps2.n8n_workflow_execution_id=$1 order by bps2.business_process_state_id desc LIMIT 1) where n8n_workflow_execution_id=$1;\n",
+        "query": "update business_processes_states set  tokens_used_type=$3,company_id=$4, tokens_used=tokens_used+(select bps.tokens_used from business_processes bp1,business_processes_states bps,business_processes_states bps2 where bp1.n8n_process_name=$2 and bp1.business_process_id=bps.business_process_id and  bps.n8n_workflow_root_execution_id=bps2.n8n_workflow_execution_id  and bps.finished is not null and bps2.n8n_workflow_execution_id=$1 order by bps2.business_process_state_id desc LIMIT 1) where n8n_workflow_execution_id=$1;\n",
         "options": {
-          "queryReplacement": "=[{{$execution.id}},{{$('ADV_campaign_data_load').item.json.workflow_name}},{{ 'gpt-5' }}]"
+          "queryReplacement": "=[{{$execution.id}},{{$('ADV_campaign_data_load').item.json.workflow_name}},{{ 'gpt-5' }},{{ $('company_record_id').item.json.company_id }}]"
         }
       },
       "type": "n8n-nodes-base.postgres",
@@ -1471,6 +1471,30 @@
       ],
       "id": "fa8515bb-a187-4fd7-b248-89084f9b201e",
       "name": "Sticky Note7"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "update business_processes_states set error_happened=NOW(),error_message='execution completed but not marked finished' where business_process_id=(select MAX(business_process_id) from business_processes where n8n_process_name=$1) and n8n_workflow_execution_id=$2",
+        "options": {
+          "queryReplacement": "=[{{$workflow.name}},{{$execution.id}}]"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        2704,
+        1360
+      ],
+      "id": "dccaa22d-4515-4559-a59c-5b403bf02d10",
+      "name": "Mark_workflow_error",
+      "executeOnce": true,
+      "credentials": {
+        "postgres": {
+          "id": "4YkdFJcdTgzo9hkz",
+          "name": "PGvector"
+        }
+      }
     }
   ],
   "connections": {
@@ -1816,7 +1840,13 @@
     },
     "update workflow tokens usage2": {
       "main": [
-        []
+        [
+          {
+            "node": "Mark_workflow_error",
+            "type": "main",
+            "index": 0
+          }
+        ]
       ]
     },
     "get company_id from lust succeed report ": {
@@ -2079,7 +2109,7 @@
       }
     ]
   },
-  "versionId": "0de14654-cd1a-43eb-bf58-d4dec6a0c89c",
+  "versionId": "9a370b90-3bf4-4c07-9b74-0dbcc088136f",
   "triggerCount": 0,
   "shared": [
     {
