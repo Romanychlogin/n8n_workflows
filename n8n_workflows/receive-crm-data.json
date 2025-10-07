@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-10-07T21:30:12.820Z",
-  "updatedAt": "2025-10-07T22:10:19.908Z",
+  "updatedAt": "2025-10-07T22:16:05.213Z",
   "id": "d4D0Fp4pO6Ch7S7C",
   "name": "Receive CRM data",
   "active": true,
@@ -239,13 +239,7 @@
     },
     "Code in JavaScript": {
       "main": [
-        [
-          {
-            "node": "Update row(s)",
-            "type": "main",
-            "index": 0
-          }
-        ]
+        []
       ]
     },
     "Get row(s)": {
@@ -266,7 +260,7 @@
   "staticData": null,
   "meta": null,
   "pinData": {},
-  "versionId": "3cc91e36-9f0d-4140-b0ca-d4227906c58d",
+  "versionId": "a4313f7b-4997-4e92-a7f0-0a77993d99bb",
   "triggerCount": 1,
   "shared": [
     {
