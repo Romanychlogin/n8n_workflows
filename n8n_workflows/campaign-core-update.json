@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-25T13:33:58.106Z",
-  "updatedAt": "2025-10-07T07:28:51.061Z",
+  "updatedAt": "2025-10-07T07:48:35.392Z",
   "id": "0J5cvuaSz3IhDS99",
   "name": "campaign core update",
   "active": false,
@@ -11,7 +11,7 @@
         "operation": "executeQuery",
         "query": "INSERT INTO business_processes_states (business_process_id,n8n_workflow_execution_id, started)\nSELECT MAX(business_process_id), $2, NOW()\nFROM public.business_processes\nWHERE n8n_process_name = $1;",
         "options": {
-          "queryReplacement": "=[{{$workflow.name}},{{$execution.id}},]"
+          "queryReplacement": "=[{{$workflow.name}},{{$execution.id}}]"
         }
       },
       "type": "n8n-nodes-base.postgres",
@@ -64,8 +64,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        2896,
-        1376
+        2720,
+        1440
       ],
       "id": "b17b1715-9e42-463a-8c41-afd0be86f727",
       "name": "Mark_workflow_completed",
@@ -482,6 +482,30 @@
       "id": "c6f0ea60-6d10-4fa0-88c6-e6be709846c3",
       "name": "Execute a SQL query1",
       "alwaysOutputData": true,
+      "credentials": {
+        "postgres": {
+          "id": "4YkdFJcdTgzo9hkz",
+          "name": "PGvector"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "update business_processes_states set  tokens_used_type=$3, tokens_used=tokens_used+(select bps.tokens_used from business_processes bp1,business_processes_states bps,business_processes_states bps2 where bp1.n8n_process_name=$2 and bp1.business_process_id=bps.business_process_id and  bps.n8n_workflow_root_execution_id=bps2.n8n_workflow_execution_id  and bps.finished is not null and bps2.n8n_workflow_execution_id=$1 order by bps2.business_process_state_id desc LIMIT 1) where n8n_workflow_execution_id=$1;\n",
+        "options": {
+          "queryReplacement": "=[{{$execution.id}},{{$('ADV_campaign_data_load').item.json.workflow_name}},{{ 'gpt-5' }}]"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        2512,
+        -208
+      ],
+      "id": "71a7db0e-57a1-4d38-8f5b-de955e3e46f3",
+      "name": "update workflow tokens usage",
+      "executeOnce": true,
       "credentials": {
         "postgres": {
           "id": "4YkdFJcdTgzo9hkz",
@@ -1437,51 +1461,16 @@
     },
     {
       "parameters": {
-        "operation": "executeQuery",
-        "query": "update business_processes_states set  tokens_used_type=$3,company_id=$4, tokens_used=tokens_used+(select bps.tokens_used from business_processes bp1,business_processes_states bps,business_processes_states bps2 where bp1.n8n_process_name=$2 and bp1.business_process_id=bps.business_process_id and  bps.n8n_workflow_root_execution_id=bps2.n8n_workflow_execution_id  and bps.finished is not null and bps2.n8n_workflow_execution_id=$1 order by bps2.business_process_state_id desc LIMIT 1) where n8n_workflow_execution_id=$1;\n",
-        "options": {
-          "queryReplacement": "=[{{$execution.id}},{{$('ADV_campaign_data_load').item.json.workflow_name}},{{ 'gpt-5' }},{{ $('company_record_id').item.json.company_id }}]"
-        }
+        "content": "Добавить company_id в анализ запущенных процессов!!!"
       },
-      "type": "n8n-nodes-base.postgres",
-      "typeVersion": 2.6,
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
       "position": [
-        2512,
-        -208
+        -192,
+        208
       ],
-      "id": "71a7db0e-57a1-4d38-8f5b-de955e3e46f3",
-      "name": "update workflow tokens usage and company_id",
-      "executeOnce": true,
-      "credentials": {
-        "postgres": {
-          "id": "4YkdFJcdTgzo9hkz",
-          "name": "PGvector"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "operation": "executeQuery",
-        "query": "update business_processes_states set error_happened=NOW(),error_message='completion without marked finished' where business_process_id=(select MAX(business_process_id) from business_processes where n8n_process_name=$1) and n8n_workflow_execution_id=$2",
-        "options": {
-          "queryReplacement": "=[{{$workflow.name}},{{$execution.id}}]"
-        }
-      },
-      "type": "n8n-nodes-base.postgres",
-      "typeVersion": 2.6,
-      "position": [
-        2864,
-        1584
-      ],
-      "id": "bb16830a-860a-41df-822d-b7a2d31a7dbe",
-      "name": "Mark_workflow_error",
-      "executeOnce": true,
-      "credentials": {
-        "postgres": {
-          "id": "4YkdFJcdTgzo9hkz",
-          "name": "PGvector"
-        }
-      }
+      "id": "fa8515bb-a187-4fd7-b248-89084f9b201e",
+      "name": "Sticky Note7"
     }
   ],
   "connections": {
@@ -1697,6 +1686,17 @@
         ]
       ]
     },
+    "update workflow tokens usage": {
+      "main": [
+        [
+          {
+            "node": "ADV_campaign_get_service",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
     "update workflow tokens usage1": {
       "main": [
         [
@@ -1712,7 +1712,7 @@
       "main": [
         [
           {
-            "node": "update workflow tokens usage and company_id",
+            "node": "update workflow tokens usage",
             "type": "main",
             "index": 0
           }
@@ -1816,13 +1816,7 @@
     },
     "update workflow tokens usage2": {
       "main": [
-        [
-          {
-            "node": "Mark_workflow_error",
-            "type": "main",
-            "index": 0
-          }
-        ]
+        []
       ]
     },
     "get company_id from lust succeed report ": {
@@ -2069,23 +2063,10 @@
           }
         ]
       ]
-    },
-    "update workflow tokens usage and company_id": {
-      "main": [
-        [
-          {
-            "node": "ADV_campaign_get_service",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
     }
   },
   "settings": {
-    "executionOrder": "v1",
-    "callerPolicy": "workflowsFromSameOwner",
-    "errorWorkflow": "v2Z32ISEUzsFYnZw"
+    "executionOrder": "v1"
   },
   "staticData": null,
   "meta": {
@@ -2098,7 +2079,7 @@
       }
     ]
   },
-  "versionId": "8f9ee6c9-c3d4-4caa-868d-c06966ceb304",
+  "versionId": "0de14654-cd1a-43eb-bf58-d4dec6a0c89c",
   "triggerCount": 0,
   "shared": [
     {
@@ -2109,5 +2090,12 @@
       "projectId": "spKmbJLU4mvACXIB"
     }
   ],
-  "tags": []
+  "tags": [
+    {
+      "createdAt": "2025-10-06T13:06:54.644Z",
+      "updatedAt": "2025-10-06T13:06:54.644Z",
+      "id": "DBEf57wUDunVJUG6",
+      "name": "campaign update"
+    }
+  ]
 }
