@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-07-18T08:31:54.459Z",
-  "updatedAt": "2025-10-07T12:54:20.787Z",
+  "updatedAt": "2025-10-07T13:10:48.829Z",
   "id": "wZGLxMCCmOnDJZ1o",
   "name": "ADV_campaign_analysis",
   "active": false,
@@ -1273,7 +1273,7 @@
             {
               "id": "bb72a340-789e-459b-80c9-f1c2b454ed57",
               "name": "resolution",
-              "value": "={{\"no relevant, minuses: \"+$json.non_matches.map(String).join(', ')}}",
+              "value": "={{\"no relevant, minuses: \"+$('Execute Workflow').item.json.non_matches.map(String).join(', ')}}",
               "type": "string"
             },
             {
@@ -1851,8 +1851,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        9936,
-        -224
+        9984,
+        -176
       ],
       "id": "423755a8-79d5-4e97-8b3e-dfa845ed5154",
       "name": "Get embedding",
@@ -1869,7 +1869,7 @@
         "operation": "executeQuery",
         "query": "INSERT INTO public.minus_words\n  (minus_word_embedding, minus_word,  company_id, comment, weight)\nVALUES\n  ($1::vector, $2, $3, $4, $5)\nON CONFLICT (company_id, minus_word) DO UPDATE\nSET weight = COALESCE(minus_words.weight, 0) + COALESCE(EXCLUDED.weight, 0)\nRETURNING id;",
         "options": {
-          "queryReplacement": "=[\n  { \"value\": \"={{'[' + $json.data[0].embedding.map(e => Number(e)).join(',') + ']'}}\" },\n  { \"value\": \"={{ $('Loop Over Items1').last().json.minus_word }}\" },\n  { \"value\": \"={{ $('Loop Over Items').last().json.company_id }}\" },\n  { \"value\": \"={{'tokens used:'+ ($('HTTP Request').last().json.usage.total_tokens) }}\" },\n  { \"value\": \"={{ $('Loop Over Items').last().json.count_views }}\" }\n]"
+          "queryReplacement": "=[\n  { \"value\": \"={{'[' + $json.data[0].embedding.map(e => Number(e)).join(',') + ']'}}\" },\n  { \"value\": \"={{ $('Loop Over Items1').item.json.minus_word }}\" },\n  { \"value\": \"={{ $('Loop Over Items').item.json.company_id }}\" },\n  { \"value\": \"={{'tokens used:'+ ($('HTTP Request').last().json.usage.total_tokens) }}\" },\n  { \"value\": \"={{ $('Loop Over Items').item.json.count_views }}\" }\n]"
         }
       },
       "type": "n8n-nodes-base.postgres",
@@ -1894,8 +1894,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        9728,
-        -192
+        9776,
+        -176
       ],
       "id": "f068e410-e03b-4a05-b110-546c0fa908b3",
       "name": "Set API JSON2"
@@ -1905,7 +1905,7 @@
         "operation": "executeQuery",
         "query": "INSERT INTO minus_words_origin(\n\tminus_word_id, list_id, origin_weight)\n\tVALUES ($1, $2, $3);",
         "options": {
-          "queryReplacement": "=[{{ $json.id }},{{ $('Loop Over Items1').last().json.list_id }},{{ $('Loop Over Items').last().json.count_views }}]"
+          "queryReplacement": "=[{{ $json.id }},{{ $('Loop Over Items1').item.json.list_id }},{{ $('Loop Over Items').item.json.count_views }}]"
         }
       },
       "type": "n8n-nodes-base.postgres",
@@ -1980,8 +1980,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        9552,
-        -144
+        9584,
+        -176
       ],
       "id": "8eaa9362-716d-4865-86fd-b8fe47cf7390",
       "name": "reset first_item"
@@ -2692,7 +2692,7 @@
       {
         "json": {
           "id": "wZGLxMCCmOnDJZ1o",
-          "root_execution_id": 71299,
+          "root_execution_id": 71320,
           "company_id": 1,
           "threshhold": "0.79",
           "import_id": 5
@@ -2700,7 +2700,7 @@
       }
     ]
   },
-  "versionId": "45e0ac39-afb4-4c34-8430-edac91d755b3",
+  "versionId": "93075b39-119b-4a7f-b489-81201cc6a307",
   "triggerCount": 0,
   "shared": [
     {
