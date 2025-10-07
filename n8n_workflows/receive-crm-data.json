@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-10-07T21:30:12.820Z",
-  "updatedAt": "2025-10-07T22:28:41.365Z",
+  "updatedAt": "2025-10-07T22:40:07.581Z",
   "id": "d4D0Fp4pO6Ch7S7C",
   "name": "Receive CRM data",
   "active": true,
@@ -265,6 +265,20 @@
       ],
       "id": "f88b36e2-2d12-4410-a1bd-1b77e05ae514",
       "name": "If"
+    },
+    {
+      "parameters": {
+        "amount": 60
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        208,
+        0
+      ],
+      "id": "5623de5e-3cbc-4099-8210-75a3a4924daf",
+      "name": "Wait",
+      "webhookId": "96d117b4-034c-40aa-a21f-e3ccde286983"
     }
   ],
   "connections": {
@@ -272,7 +286,7 @@
       "main": [
         [
           {
-            "node": "Code in JavaScript",
+            "node": "Wait",
             "type": "main",
             "index": 0
           }
@@ -311,6 +325,17 @@
           }
         ]
       ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
@@ -319,7 +344,7 @@
   "staticData": null,
   "meta": null,
   "pinData": {},
-  "versionId": "282f47c2-63b5-4320-8906-c726ff5dbe97",
+  "versionId": "78b8ca73-7ed3-476e-9788-ea05305e58d6",
   "triggerCount": 1,
   "shared": [
     {
