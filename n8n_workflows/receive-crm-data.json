@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-10-07T21:30:12.820Z",
-  "updatedAt": "2025-10-07T21:46:04.145Z",
+  "updatedAt": "2025-10-07T21:55:59.069Z",
   "id": "d4D0Fp4pO6Ch7S7C",
   "name": "Receive CRM data",
   "active": true,
@@ -24,20 +24,56 @@
     },
     {
       "parameters": {
-        "jsCode": "// 1) распарсим вход CRM\nconst crm = typeof $json.body === 'string' ? JSON.parse($json.body) : $json;\n\n// 2) параметры сопоставления\nconst now = Date.now();\nconst WINDOW_MS = 10 * 60 * 1000;     // окно ±10 минут (подстраивай)\nconst preferExactYclid = true;         // если есть yclid у CRM — жёстко по нему\n\n// 3) заберём последние N pending из Data Store (лимитируем для производительности)\nconst N = 200;\n\n// нода Data Store не тут — мы возьмём данные через helper\n// В n8n проще: добавь ДО этой Function ноду Data Store (Get Many, table site_leads, Return All: true, Limit: 200, Filter: { \"status\": \"pending\" })\n// и здесь просто читай $items(\"<Data Store Node Name>\", 0, 0).json\n// Ниже — логика выбора кандидата.\n\nconst pendingItems = $items('Data Store', 0, 0).map(i => i.json) || [];\n\n// 4) отфильтруем по окну времени\nconst inWindow = pendingItems.filter(r => Math.abs((r.ts_site || 0) - now) <= WINDOW_MS);\n\n// 5) если в CRM тоже есть yclid — матчим в первую очередь по нему\nlet best = null;\nif (preferExactYclid && crm.yclid) {\n  best = inWindow.find(r => (r.yclid || '') === crm.yclid);\n}\n\n// 6) иначе — по etext (если есть у одной из сторон)\nif (!best && crm.etext) {\n  best = inWindow.find(r => (r.etext || '') === crm.etext);\n}\n\n// 7) иначе — берём ближайшее по времени (минимальная дельта)\nif (!best) {\n  best = inWindow.sort((a,b) => Math.abs(a.ts_site - now) - Math.abs(b.ts_site - now))[0];\n}\n\n// 8) вернём два варианта исходов\nif (best) {\n  return [{\n    json: {\n      matched: true,\n      id: best.id,                 // id записи в Data Store (приходит из ноды Data Store → item.json.id)\n      ts_site: best.ts_site,\n      delta_ms: Math.abs(best.ts_site - now),\n      site: best,\n      crm: crm\n    }\n  }];\n} else {\n  return [{\n    json: {\n      matched: false,\n      reason: 'no_candidate_in_window',\n      window_ms: WINDOW_MS,\n      pending_count: pendingItems.length,\n      crm: crm\n    }\n  }];\n}"
+        "jsCode": "// ---------- helpers ----------\nfunction tryGetItems(nodeName) {\n  try {\n    const arr = $items(nodeName, 0, 0);\n    return Array.isArray(arr) ? arr : [];\n  } catch (e) {\n    return [];\n  }\n}\nfunction toNumber(v) {\n  if (v == null) return 0;\n  const n = Number(v);\n  if (!Number.isNaN(n) && Number.isFinite(n)) return n;\n  const t = Date.parse(v);\n  return Number.isFinite(t) ? t : 0;\n}\nfunction rowTs(row) {\n  // приоритет своей метки, иначе — createdAt Data Table\n  return toNumber(row.ts_site) || toNumber(row.createdAt);\n}\n\n// ---------- CRM payload ----------\nlet crm;\nconst webhookItems = tryGetItems('Webhook');           // <— замени имя, если у тебя нода названа иначе\nif (webhookItems.length) {\n  const w = webhookItems[0].json || {};\n  crm = typeof w.body === 'string' ? JSON.parse(w.body) : w;\n} else {\n  crm = typeof $json.body === 'string' ? JSON.parse($json.body) : $json;\n}\n\n// ---------- pending из Data Table ----------\nlet pendingItems = tryGetItems('Get row(s)').map(i => i.json);  // <— замени имя при необходимости\nif (!pendingItems.length) pendingItems = $input.all().map(i => i.json);\n\n// ---------- параметры сопоставления ----------\nconst now = Date.now();\nconst WINDOW_MS = 10 * 60 * 1000;  // ±10 минут\n\n// фильтр по окну времени\nconst inWindow = pendingItems.filter(r => Math.abs(rowTs(r) - now) <= WINDOW_MS);\n\n// ближайшая по времени\nlet best = null;\nif (inWindow.length) {\n  best = inWindow\n    .slice()\n    .sort((a, b) => Math.abs(rowTs(a) - now) - Math.abs(rowTs(b) - now))[0];\n}\n\n// ---------- результат ----------\nif (best) {\n  const ts = rowTs(best);\n  return [{\n    json: {\n      matched: true,\n      id: best.id,                         // id строки Data Table из Select\n      ts_site: ts,\n      delta_ms: Math.abs(ts - now),\n      site: best,\n      crm: crm\n    }\n  }];\n} else {\n  return [{\n    json: {\n      matched: false,\n      reason: 'no_candidate_in_window',\n      window_ms: WINDOW_MS,\n      pending_count: pendingItems.length,\n      crm: crm\n    }\n  }];\n}"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        208,
+        384,
         0
       ],
       "id": "0280247b-21b3-403b-8366-050088c9a937",
       "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "dataTableId": {
+          "__rl": true,
+          "value": "XlfQhVUBPeep3gvZ",
+          "mode": "list",
+          "cachedResultName": "site leads",
+          "cachedResultUrl": "/projects/spKmbJLU4mvACXIB/datatables/XlfQhVUBPeep3gvZ"
+        }
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1,
+      "position": [
+        208,
+        160
+      ],
+      "id": "78fd246c-1fe1-47a3-981d-237c516e655e",
+      "name": "Get row(s)"
     }
   ],
   "connections": {
     "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        []
+      ]
+    },
+    "Get row(s)": {
       "main": [
         [
           {
@@ -55,7 +91,7 @@
   "staticData": null,
   "meta": null,
   "pinData": {},
-  "versionId": "5ecf1d37-1b45-4411-abc4-55d29c3969e2",
+  "versionId": "3cd3389d-8482-4654-b6bb-2257c131b87f",
   "triggerCount": 1,
   "shared": [
     {
