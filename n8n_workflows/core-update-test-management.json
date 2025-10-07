@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-10-06T13:25:33.741Z",
-  "updatedAt": "2025-10-06T14:09:56.994Z",
+  "updatedAt": "2025-10-07T06:39:41.835Z",
   "id": "tbijdiaKB74Iaf6O",
   "name": "core update test management",
   "active": false,
@@ -197,8 +197,8 @@
     {
       "parameters": {
         "operation": "completion",
-        "completionTitle": "Все процессы помечены как остановленные",
-        "completionMessage": "Все процессы помечены как остановленные",
+        "completionTitle": "All running processes marked as finished",
+        "completionMessage": "All running processes marked as finished",
         "options": {}
       },
       "type": "n8n-nodes-base.form",
@@ -353,7 +353,7 @@
     "templateCredsSetupCompleted": true
   },
   "pinData": {},
-  "versionId": "5c2f0c87-21ce-40a4-b2c6-ed99f2d48103",
+  "versionId": "cb64092f-e9af-4837-8042-89f83984d27a",
   "triggerCount": 1,
   "shared": [
     {
