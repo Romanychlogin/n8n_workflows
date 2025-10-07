@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-07-18T08:31:54.459Z",
-  "updatedAt": "2025-10-07T12:46:57.153Z",
+  "updatedAt": "2025-10-07T12:54:20.787Z",
   "id": "wZGLxMCCmOnDJZ1o",
   "name": "ADV_campaign_analysis",
   "active": false,
@@ -1867,9 +1867,9 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "INSERT INTO public.minus_words\n  (minus_word_embedding, minus_word, key_word_id, company_id, comment, weight)\nVALUES\n  ($1::vector, $2, $3, $4, $5, $6)\nON CONFLICT (company_id, minus_word) DO UPDATE\nSET weight = COALESCE(minus_words.weight, 0) + COALESCE(EXCLUDED.weight, 0)\nRETURNING id;",
+        "query": "INSERT INTO public.minus_words\n  (minus_word_embedding, minus_word,  company_id, comment, weight)\nVALUES\n  ($1::vector, $2, $3, $4, $5)\nON CONFLICT (company_id, minus_word) DO UPDATE\nSET weight = COALESCE(minus_words.weight, 0) + COALESCE(EXCLUDED.weight, 0)\nRETURNING id;",
         "options": {
-          "queryReplacement": "=[\n  { \"value\": \"={{'[' + $json.data[0].embedding.map(e => Number(e)).join(',') + ']'}}\" },\n  { \"value\": \"={{ $('Code').last().json.minus_word }}\" },\n  { \"value\": \"={{$('create prompt').last().json.key_word_id}}\" },\n  { \"value\": \"={{ $('create prompt').last().json.company_id }}\" },\n  { \"value\": \"={{'tokens used:'+ ($('HTTP Request').last().json.usage.total_tokens + $('HTTP Request1').last().json.usage.total_tokens) }}\" }\n]"
+          "queryReplacement": "=[\n  { \"value\": \"={{'[' + $json.data[0].embedding.map(e => Number(e)).join(',') + ']'}}\" },\n  { \"value\": \"={{ $('Loop Over Items1').last().json.minus_word }}\" },\n  { \"value\": \"={{ $('Loop Over Items').last().json.company_id }}\" },\n  { \"value\": \"={{'tokens used:'+ ($('HTTP Request').last().json.usage.total_tokens) }}\" },\n  { \"value\": \"={{ $('Loop Over Items').last().json.count_views }}\" }\n]"
         }
       },
       "type": "n8n-nodes-base.postgres",
@@ -1905,7 +1905,7 @@
         "operation": "executeQuery",
         "query": "INSERT INTO minus_words_origin(\n\tminus_word_id, list_id, origin_weight)\n\tVALUES ($1, $2, $3);",
         "options": {
-          "queryReplacement": "=[{{ $json.id }},{{  }},{{  }}]"
+          "queryReplacement": "=[{{ $json.id }},{{ $('Loop Over Items1').last().json.list_id }},{{ $('Loop Over Items').last().json.count_views }}]"
         }
       },
       "type": "n8n-nodes-base.postgres",
@@ -2673,8 +2673,8 @@
       "alaysis_prompt": {
         "data": "Для полученного запроса Instructions\nПроанализируй поисковый запрос пользователя на предмет релевантности услугам компании KIBERone Саратов Октябрьский(company_name). Действуй строго по следующим правилам и согласно заданной последовательности действий:\n1.Если запрос полностью релевантен услугам компании , верни: \"is_correct_phrase\": true.\n2.Если запрос нерелевантен услугам компании 1) верни \"is_correct_phrase\": false 2) определи список потенциально допустимых минус слов. для этого всегда вызывай tool get_non_matching_ngrams. Передавай threshold, только если пользователь задал его; иначе не указывай (используется дефолт 0,88). 3)Из полученного от tool списка выдели минимальный набор минус-слов, обеспечивающих блокировку широкого класса подобных нерелевантных запросов.\nТребования к минус-словам: Используй минимально возможную комбинацию слов. Минус-слова должны однозначно исключать нерелевантные запросы.\nContext (о компании KIBERone)\nKIBERone – международная КиберШкола программирования и цифровых технологий для детей от 6 до 14 лет. Позиционирование бренда: KIBERone — первая международная КиберШкола будущего для IT-поколения 6–14 лет, признана ЮНЕСКО лучшей детской образовательной IT-школой в мире. Бренд является партнером Microsoft, Roblox и Samsung. Бесплатные пробные уроки Основные услуги и программы: Полный перечень модулей: Вводный модуль (основы цифровой грамотности) Основы программирования Scratch Jr Создание игр на Scratch ПиктоМир (алгоритмическое мышление) CodeMonkey (логика и программирование) Устройство компьютера Эффектные презентации (PowerPoint, Desygner) QR-коды Деловые люди (предпринимательство) Google Blockly (визуальное программирование) Roblox Studio (создание игр) Kodu Game Lab (3D-программирование) Разработка мобильных приложений в Thunkable Blender (3D-моделирование) Компьютерная грамотность Minecraft Education Нейросети (основы ИИ) Alice 3D (3D-программирование) Run Marco (основы алгоритмов) Исполнители: Чертёжник и Черепашка GIF-анимация Tinkercad (3D-проектирование) Кибербезопасность Construct 2 (создание 2D-игр) Компас-3D (САПР) Основы HTML (веб-разработка) Голосовой помощник Алиса Создание лендинга (Tilda) Python (создание игр) Чат-бот на Python Web-дизайн (Figma) Web-мастер (HTML+CSS) Motion Design Unreal Engine 4 (игровой движок) JavaScript (игры) C# (создание 2D-игр) C++ Java (создание приложений) Unity 3D (игры) Олимпиадное программирование Облачные технологии, Блокчейн, Data Science PHP+SQL Photoshop Подготовка к олимпиадам Приложения Google Летние программы: Летние IT-интенсивы (краткосрочные программы по направлениям Roblox, Minecraft, Python и др.) Летние КИБЕРканикулы (городской лагерь с IT-обучением и развлекательной программой) Дополнительные механики: Кибервалюта («кибероны») для мотивации учеников, обмен на мерч на КиберМаркете Тьюторы и преподаватели: Опытные специалисты с практическим опытом и педагогической подготовкой Другие важные разделы: Новости (новости школы и сети) СМИ о нас (публикации о школе) Фотогалерея (фото с мероприятий и уроков) Видео (видеоматериалы о школе) Расписание занятий (время занятий для групп и пробных уроков) Локации (адрес школы в Октябрьском районе Саратова, ул. Тараса Шевченко, 8) Оплата (способы оплаты и договор-оферта) Сертификаты (активация промокодов партнеров)\n"
       },
-      "steps_passed": 0,
-      "tokens_used": 0,
+      "steps_passed": 2,
+      "tokens_used": 3164,
       "step": 0,
       "my_prompt": {
         "data": "Проанализируй поисковый запрос пользователя:\"{{key_word}}\" на предмет релевантности сервису \"{{service_description}}\" компании \"{{company_name}}\".\nDefinitions\nРелевантность сервису это запрос соответствующий тематике сервиса, но не содержащий намерения к самостоятельной реализации\nInstructions\nДействуй строго по следующим правилам:\n1. Если запрос релевантен сервису компании, верни: \"is_correct_phrase\": true.\n2. Если запрос не релевантен сервису компании верни \"is_correct_phrase\": false \n\n"
@@ -2692,7 +2692,7 @@
       {
         "json": {
           "id": "wZGLxMCCmOnDJZ1o",
-          "root_execution_id": 71262,
+          "root_execution_id": 71299,
           "company_id": 1,
           "threshhold": "0.79",
           "import_id": 5
@@ -2700,7 +2700,7 @@
       }
     ]
   },
-  "versionId": "f1fe59b4-3408-4c51-ae1f-42d0f9c4daf1",
+  "versionId": "45e0ac39-afb4-4c34-8430-edac91d755b3",
   "triggerCount": 0,
   "shared": [
     {
