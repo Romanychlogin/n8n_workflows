@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-10-07T21:30:12.820Z",
-  "updatedAt": "2025-10-07T22:16:05.213Z",
+  "updatedAt": "2025-10-07T22:28:41.365Z",
   "id": "d4D0Fp4pO6Ch7S7C",
   "name": "Receive CRM data",
   "active": true,
@@ -24,7 +24,7 @@
     },
     {
       "parameters": {
-        "jsCode": "// ---------- helpers ----------\nfunction tryGetItems(nodeName) {\n  try {\n    const arr = $items(nodeName, 0, 0);\n    return Array.isArray(arr) ? arr : [];\n  } catch (e) {\n    return [];\n  }\n}\nfunction toNumber(v) {\n  if (v == null) return 0;\n  const n = Number(v);\n  if (!Number.isNaN(n) && Number.isFinite(n)) return n;\n  const t = Date.parse(v);\n  return Number.isFinite(t) ? t : 0;\n}\nfunction rowTs(row) {\n  // приоритет своей метки, иначе — createdAt Data Table\n  return toNumber(row.ts_site) || toNumber(row.createdAt);\n}\n\n// ---------- CRM payload ----------\nlet crm;\nconst webhookItems = tryGetItems('Webhook');           // <— замени имя, если у тебя нода названа иначе\nif (webhookItems.length) {\n  const w = webhookItems[0].json || {};\n  crm = typeof w.body === 'string' ? JSON.parse(w.body) : w;\n} else {\n  crm = typeof $json.body === 'string' ? JSON.parse($json.body) : $json;\n}\n\n// ---------- pending из Data Table ----------\nlet pendingItems = tryGetItems('Get row(s)').map(i => i.json);  // <— замени имя при необходимости\nif (!pendingItems.length) pendingItems = $input.all().map(i => i.json);\n\n// ---------- параметры сопоставления ----------\nconst now = Date.now();\nconst WINDOW_MS = 10 * 60 * 1000;  // ±10 минут\n\n// фильтр по окну времени\nconst inWindow = pendingItems.filter(r => Math.abs(rowTs(r) - now) <= WINDOW_MS);\n\n// ближайшая по времени\nlet best = null;\nif (inWindow.length) {\n  best = inWindow\n    .slice()\n    .sort((a, b) => Math.abs(rowTs(a) - now) - Math.abs(rowTs(b) - now))[0];\n}\n\n// ---------- результат ----------\nif (best) {\n  const ts = rowTs(best);\n  return [{\n    json: {\n      matched: true,\n      id: best.id,                         // id строки Data Table из Select\n      ts_site: ts,\n      delta_ms: Math.abs(ts - now),\n      site: best,\n      crm: crm\n    }\n  }];\n} else {\n  return [{\n    json: {\n      matched: false,\n      reason: 'no_candidate_in_window',\n      window_ms: WINDOW_MS,\n      pending_count: pendingItems.length,\n      crm: crm\n    }\n  }];\n}"
+        "jsCode": "// ---------- helpers ----------\nfunction tryGetItems(nodeName) {\n  try {\n    const arr = $items(nodeName, 0, 0);\n    return Array.isArray(arr) ? arr : [];\n  } catch (e) {\n    return [];\n  }\n}\nfunction toNumber(v) {\n  if (v == null) return 0;\n  const n = Number(v);\n  if (!Number.isNaN(n) && Number.isFinite(n)) return n;\n  const t = Date.parse(v);\n  return Number.isFinite(t) ? t : 0;\n}\nfunction rowTs(row) {\n  // приоритет своей метки, иначе — createdAt Data Table\n  return toNumber(row.ts_site) || toNumber(row.createdAt);\n}\n\n// ---------- CRM payload ----------\nlet crm;\nconst webhookItems = tryGetItems('Webhook');           // <— замени имя, если у тебя нода названа иначе\nif (webhookItems.length) {\n  const w = webhookItems[0].json || {};\n  crm = typeof w.body === 'string' ? JSON.parse(w.body) : w;\n} else {\n  crm = typeof $json.body === 'string' ? JSON.parse($json.body) : $json;\n}\n\n// ---------- pending из Data Table ----------\nlet pendingItems = tryGetItems('Get row(s)').map(i => i.json);  // <— замени имя при необходимости\nif (!pendingItems.length) pendingItems = $input.all().map(i => i.json);\n\n// ---------- параметры сопоставления ----------\nconst now = Date.now();\nconst WINDOW_MS = 1 * 60 * 1000;  // ±1 минута\n\n// фильтр по окну времени\nconst inWindow = pendingItems.filter(r => Math.abs(rowTs(r) - now) <= WINDOW_MS);\n\n// ближайшая по времени\nlet best = null;\nif (inWindow.length) {\n  best = inWindow\n    .slice()\n    .sort((a, b) => Math.abs(rowTs(a) - now) - Math.abs(rowTs(b) - now))[0];\n}\n\n// ---------- результат ----------\nif (best) {\n  const ts = rowTs(best);\n  return [{\n    json: {\n      matched: true,\n      id: best.id,                         // id строки Data Table из Select\n      ts_site: ts,\n      delta_ms: Math.abs(ts - now),\n      site: best,\n      crm: crm\n    }\n  }];\n} else {\n  return [{\n    json: {\n      matched: false,\n      reason: 'no_candidate_in_window',\n      window_ms: WINDOW_MS,\n      pending_count: pendingItems.length,\n      crm: crm\n    }\n  }];\n}"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -52,7 +52,8 @@
               "condition": "isTrue"
             }
           ]
-        }
+        },
+        "limit": 10
       },
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1,
@@ -72,6 +73,13 @@
           "mode": "list",
           "cachedResultName": "site leads",
           "cachedResultUrl": "/projects/spKmbJLU4mvACXIB/datatables/XlfQhVUBPeep3gvZ"
+        },
+        "filters": {
+          "conditions": [
+            {
+              "keyValue": "={{ $json.id }}"
+            }
+          ]
         },
         "columns": {
           "mappingMode": "defineBelow",
@@ -218,11 +226,45 @@
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1,
       "position": [
-        592,
-        0
+        816,
+        -80
       ],
       "id": "9bf6585d-2a49-4b7a-953a-e45d873bc6d4",
       "name": "Update row(s)"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "b0dfc800-13f4-472f-aef1-ebd612ae2789",
+              "leftValue": "",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        592,
+        0
+      ],
+      "id": "f88b36e2-2d12-4410-a1bd-1b77e05ae514",
+      "name": "If"
     }
   ],
   "connections": {
@@ -239,7 +281,13 @@
     },
     "Code in JavaScript": {
       "main": [
-        []
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
       ]
     },
     "Get row(s)": {
@@ -247,6 +295,17 @@
         [
           {
             "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Update row(s)",
             "type": "main",
             "index": 0
           }
@@ -260,7 +319,7 @@
   "staticData": null,
   "meta": null,
   "pinData": {},
-  "versionId": "a4313f7b-4997-4e92-a7f0-0a77993d99bb",
+  "versionId": "282f47c2-63b5-4320-8906-c726ff5dbe97",
   "triggerCount": 1,
   "shared": [
     {
