@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-07-18T08:31:54.459Z",
-  "updatedAt": "2025-10-06T13:07:23.474Z",
+  "updatedAt": "2025-10-07T12:20:53.873Z",
   "id": "wZGLxMCCmOnDJZ1o",
   "name": "ADV_campaign_analysis",
   "active": false,
@@ -18,131 +18,6 @@
       ],
       "id": "14ab2730-450d-4b85-8dff-85f47057947b",
       "name": "Loop Over Items"
-    },
-    {
-      "parameters": {
-        "schema": {
-          "__rl": true,
-          "mode": "list",
-          "value": "public"
-        },
-        "table": {
-          "__rl": true,
-          "value": "current_minus_words",
-          "mode": "list",
-          "cachedResultName": "current_minus_words"
-        },
-        "columns": {
-          "mappingMode": "defineBelow",
-          "value": {
-            "minus_word": "={{ $json.minus_word }}",
-            "current_record_id": "={{ $('Loop Over Items').last().json.list_id }}",
-            "company_id": "={{ $('Loop Over Items').last().json.company_id }}"
-          },
-          "matchingColumns": [
-            "id"
-          ],
-          "schema": [
-            {
-              "id": "minus_id",
-              "displayName": "minus_id",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "number",
-              "canBeUsedToMatch": true,
-              "removed": true
-            },
-            {
-              "id": "minus_word",
-              "displayName": "minus_word",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true,
-              "removed": false
-            },
-            {
-              "id": "current_record_id",
-              "displayName": "current_record_id",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "number",
-              "canBeUsedToMatch": true,
-              "removed": false
-            },
-            {
-              "id": "keep_minus",
-              "displayName": "keep_minus",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "boolean",
-              "canBeUsedToMatch": true,
-              "removed": true
-            },
-            {
-              "id": "minus_word_v2",
-              "displayName": "minus_word_v2",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true,
-              "removed": true
-            },
-            {
-              "id": "keep_minus_v2",
-              "displayName": "keep_minus_v2",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "boolean",
-              "canBeUsedToMatch": true,
-              "removed": true
-            },
-            {
-              "id": "comment",
-              "displayName": "comment",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true,
-              "removed": true
-            },
-            {
-              "id": "company_id",
-              "displayName": "company_id",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "number",
-              "canBeUsedToMatch": true,
-              "removed": false
-            }
-          ],
-          "attemptToConvertTypes": false,
-          "convertFieldsToString": false
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.postgres",
-      "typeVersion": 2.6,
-      "position": [
-        10320,
-        -240
-      ],
-      "id": "b2be9a68-4d5c-4dd1-85c7-4d71ce034518",
-      "name": "Insert minus words",
-      "credentials": {
-        "postgres": {
-          "id": "Hx2VFmUi5WO2K4QX",
-          "name": "Postgres account 2"
-        }
-      }
     },
     {
       "parameters": {
@@ -1056,7 +931,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        8848,
+        8608,
         -352
       ],
       "id": "32bea20b-bd2e-4a99-83b0-e9dce5af9140",
@@ -1734,8 +1609,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        9872,
-        -240
+        9184,
+        -256
       ],
       "id": "2f169d1d-9f54-4e14-8d57-39373804f250",
       "name": "map_minus_words"
@@ -1961,6 +1836,92 @@
           "name": "Postgres account 2"
         }
       }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.openai.com/v1/embeddings",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "openAiApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{$json}}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        9728,
+        -224
+      ],
+      "id": "423755a8-79d5-4e97-8b3e-dfa845ed5154",
+      "name": "Get embedding",
+      "retryOnFail": true,
+      "credentials": {
+        "openAiApi": {
+          "id": "V8R8KiZKXscJQ1sL",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO public.minus_words\n  (minus_word_embedding, minus_word, key_word_id, company_id, comment, weight)\nVALUES\n  ($1::vector, $2, $3, $4, $5, $6)\nON CONFLICT (company_id, minus_word) DO UPDATE\nSET weight = COALESCE(minus_words.weight, 0) + COALESCE(EXCLUDED.weight, 0)\nRETURNING id;",
+        "options": {
+          "queryReplacement": "=[\n  { \"value\": \"={{'[' + $json.data[0].embedding.map(e => Number(e)).join(',') + ']'}}\" },\n  { \"value\": \"={{ $('Code').last().json.minus_word }}\" },\n  { \"value\": \"={{$('create prompt').last().json.key_word_id}}\" },\n  { \"value\": \"={{ $('create prompt').last().json.company_id }}\" },\n  { \"value\": \"={{'tokens used:'+ ($('HTTP Request').last().json.usage.total_tokens + $('HTTP Request1').last().json.usage.total_tokens) }}\" }\n]"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        10032,
+        -176
+      ],
+      "id": "962f418d-b31e-4b98-9bb5-1d1df41b4534",
+      "name": "Insert minus words1",
+      "credentials": {
+        "postgres": {
+          "id": "4YkdFJcdTgzo9hkz",
+          "name": "PGvector"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "return [{\n  json: {\n  \"model\": \"text-embedding-3-small\",\n  \"input\": $json.minus_word\n}\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        9472,
+        -240
+      ],
+      "id": "f068e410-e03b-4a05-b110-546c0fa908b3",
+      "name": "Set API JSON2"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO minus_words_origin(\n\tminus_word_id, list_id, origin_weight)\n\tVALUES ($1, $2, $3);",
+        "options": {
+          "queryReplacement": "=[{{ $json.id }},{{  }},{{  }}]"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        10256,
+        -176
+      ],
+      "id": "885246fc-6be8-46c1-ab9c-6371a36ba425",
+      "name": "Execute a SQL query",
+      "credentials": {
+        "postgres": {
+          "id": "Hx2VFmUi5WO2K4QX",
+          "name": "Postgres account 2"
+        }
+      }
     }
   ],
   "connections": {
@@ -1976,17 +1937,6 @@
         [
           {
             "node": "пословное соответствие?",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Insert minus words": {
-      "main": [
-        [
-          {
-            "node": "no relevant",
             "type": "main",
             "index": 0
           }
@@ -2494,7 +2444,7 @@
       "main": [
         [
           {
-            "node": "Insert minus words",
+            "node": "Set API JSON2",
             "type": "main",
             "index": 0
           }
@@ -2567,6 +2517,50 @@
           }
         ]
       ]
+    },
+    "Get embedding": {
+      "main": [
+        [
+          {
+            "node": "Insert minus words1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set API JSON2": {
+      "main": [
+        [
+          {
+            "node": "Get embedding",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Insert minus words1": {
+      "main": [
+        [
+          {
+            "node": "Execute a SQL query",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute a SQL query": {
+      "main": [
+        [
+          {
+            "node": "update",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
@@ -2609,7 +2603,7 @@
       }
     ]
   },
-  "versionId": "a39fb032-3d3b-444b-96fb-7bb07eb9bf1f",
+  "versionId": "d170bbf7-68eb-45e6-9079-78d5729dcff0",
   "triggerCount": 0,
   "shared": [
     {
