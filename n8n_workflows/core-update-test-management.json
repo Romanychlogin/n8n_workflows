@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-10-06T13:25:33.741Z",
-  "updatedAt": "2025-10-07T16:51:18.078Z",
+  "updatedAt": "2025-10-07T17:12:41.168Z",
   "id": "tbijdiaKB74Iaf6O",
   "name": "core update test management",
   "active": true,
@@ -354,182 +354,11 @@
     },
     {
       "parameters": {
-        "operation": "update",
-        "schema": {
-          "__rl": true,
-          "mode": "list",
-          "value": "public"
-        },
-        "table": {
-          "__rl": true,
-          "value": "business_processes_states",
-          "mode": "list",
-          "cachedResultName": "business_processes_states"
-        },
-        "columns": {
-          "mappingMode": "defineBelow",
-          "value": {
-            "business_process_state_id": "={{ $json.business_process_state_id }}",
-            "finished": "={{ null }}"
-          },
-          "matchingColumns": [
-            "business_process_state_id"
-          ],
-          "schema": [
-            {
-              "id": "business_process_state_id",
-              "displayName": "business_process_state_id",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "number",
-              "canBeUsedToMatch": true,
-              "removed": false
-            },
-            {
-              "id": "business_process_id",
-              "displayName": "business_process_id",
-              "required": true,
-              "defaultMatch": false,
-              "display": true,
-              "type": "number",
-              "canBeUsedToMatch": true,
-              "removed": true
-            },
-            {
-              "id": "started",
-              "displayName": "started",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "dateTime",
-              "canBeUsedToMatch": true,
-              "removed": true
-            },
-            {
-              "id": "finished",
-              "displayName": "finished",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "dateTime",
-              "canBeUsedToMatch": true
-            },
-            {
-              "id": "error_message",
-              "displayName": "error_message",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true,
-              "removed": true
-            },
-            {
-              "id": "tokens_used",
-              "displayName": "tokens_used",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "number",
-              "canBeUsedToMatch": true,
-              "removed": true
-            },
-            {
-              "id": "tokens_used_type",
-              "displayName": "tokens_used_type",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true,
-              "removed": true
-            },
-            {
-              "id": "steps_total",
-              "displayName": "steps_total",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "number",
-              "canBeUsedToMatch": true,
-              "removed": true
-            },
-            {
-              "id": "steps_passed",
-              "displayName": "steps_passed",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "number",
-              "canBeUsedToMatch": true,
-              "removed": true
-            },
-            {
-              "id": "company_id",
-              "displayName": "company_id",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "number",
-              "canBeUsedToMatch": true,
-              "removed": true
-            },
-            {
-              "id": "error_happened",
-              "displayName": "error_happened",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "dateTime",
-              "canBeUsedToMatch": true,
-              "removed": false
-            },
-            {
-              "id": "n8n_workflow_execution_id",
-              "displayName": "n8n_workflow_execution_id",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "number",
-              "canBeUsedToMatch": true,
-              "removed": true
-            },
-            {
-              "id": "n8n_workflow_root_execution_id",
-              "displayName": "n8n_workflow_root_execution_id",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "number",
-              "canBeUsedToMatch": true,
-              "removed": true
-            },
-            {
-              "id": "error_processed",
-              "displayName": "error_processed",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "boolean",
-              "canBeUsedToMatch": true,
-              "removed": true
-            },
-            {
-              "id": "to_terminate",
-              "displayName": "to_terminate",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "boolean",
-              "canBeUsedToMatch": true,
-              "removed": true
-            }
-          ],
-          "attemptToConvertTypes": false,
-          "convertFieldsToString": false
-        },
-        "options": {}
+        "operation": "executeQuery",
+        "query": "update  business_processes_states set error_happened=finished, finished=null where business_process_state_id=$1",
+        "options": {
+          "queryReplacement": "={{ $json.business_process_state_id }}"
+        }
       },
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
@@ -971,16 +800,9 @@
     },
     {
       "parameters": {
-        "formFields": {
-          "values": [
-            {
-              "fieldLabel": "Test data found, are you ready to reset it?",
-              "fieldType": "textarea",
-              "placeholder": "={{ 'Found ' +$input.all().length+ ' records' }}"
-            }
-          ]
-        },
-        "options": {}
+        "options": {
+          "formDescription": "={{ 'Found ' +$input.all().length+ ' records' }}"
+        }
       },
       "type": "n8n-nodes-base.form",
       "typeVersion": 2.3,
@@ -1321,7 +1143,7 @@
       }
     ]
   },
-  "versionId": "ecfe733c-05bb-422f-ac8c-2bb71a7edc39",
+  "versionId": "a0aa0b4a-84a8-4db2-9eb2-1d92458d54e9",
   "triggerCount": 1,
   "shared": [
     {
