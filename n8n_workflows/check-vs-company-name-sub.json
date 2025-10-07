@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-01T16:15:28.703Z",
-  "updatedAt": "2025-09-29T06:53:06.788Z",
+  "updatedAt": "2025-10-07T08:31:16.078Z",
   "id": "xKP6S9XsCeVSgebo",
   "name": "Check VS company name SUB",
   "active": false,
@@ -249,7 +249,7 @@
       }
     ]
   },
-  "versionId": "fc8bfbb2-0e1a-4090-b33a-8350c51f0080",
+  "versionId": "f275a3cf-11a3-4de8-872b-85ae10afe9e2",
   "triggerCount": 1,
   "shared": [
     {
@@ -260,5 +260,12 @@
       "projectId": "spKmbJLU4mvACXIB"
     }
   ],
-  "tags": []
+  "tags": [
+    {
+      "createdAt": "2025-10-07T08:31:00.329Z",
+      "updatedAt": "2025-10-07T08:31:00.329Z",
+      "id": "mr0GomgPqPG1HJmt",
+      "name": "core management"
+    }
+  ]
 }
