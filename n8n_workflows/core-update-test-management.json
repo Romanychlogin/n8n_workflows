@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-10-06T13:25:33.741Z",
-  "updatedAt": "2025-10-07T06:39:41.835Z",
+  "updatedAt": "2025-10-07T06:43:45.106Z",
   "id": "tbijdiaKB74Iaf6O",
   "name": "core update test management",
   "active": false,
@@ -45,6 +45,9 @@
                   },
                   {
                     "option": "Reset core update test data for report"
+                  },
+                  {
+                    "option": "Stop running process"
                   }
                 ]
               }
@@ -56,7 +59,7 @@
       "type": "n8n-nodes-base.formTrigger",
       "typeVersion": 2.3,
       "position": [
-        -624,
+        -848,
         -192
       ],
       "id": "35df9164-20fc-4133-9a8b-199af5e35691",
@@ -87,7 +90,9 @@
                   }
                 ],
                 "combinator": "and"
-              }
+              },
+              "renameOutput": true,
+              "outputKey": "Reset status for all running core update business processes"
             },
             {
               "conditions": {
@@ -110,7 +115,9 @@
                   }
                 ],
                 "combinator": "and"
-              }
+              },
+              "renameOutput": true,
+              "outputKey": "Reset core update steps for the last execution"
             },
             {
               "conditions": {
@@ -133,7 +140,34 @@
                   }
                 ],
                 "combinator": "and"
-              }
+              },
+              "renameOutput": true,
+              "outputKey": "Reset core update test data for report"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "550b2fd3-fb19-40a7-9fa5-569697d222fc",
+                    "leftValue": "={{ $json[\"Please select\"] }}",
+                    "rightValue": "Stop running process",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Stop running process"
             }
           ]
         },
@@ -142,7 +176,7 @@
       "type": "n8n-nodes-base.switch",
       "typeVersion": 3.3,
       "position": [
-        -400,
+        -656,
         -224
       ],
       "id": "cc1f0760-29f9-46dc-86af-e6394e591b68",
@@ -297,6 +331,7 @@
             "index": 0
           }
         ],
+        [],
         []
       ]
     },
@@ -352,8 +387,18 @@
   "meta": {
     "templateCredsSetupCompleted": true
   },
-  "pinData": {},
-  "versionId": "cb64092f-e9af-4837-8042-89f83984d27a",
+  "pinData": {
+    "On form submission": [
+      {
+        "json": {
+          "Please select": "Reset core update steps for the last execution",
+          "submittedAt": "2025-10-07T09:39:51.676+03:00",
+          "formMode": "test"
+        }
+      }
+    ]
+  },
+  "versionId": "7fc28b13-ac8d-4815-b639-bd15f5314a6c",
   "triggerCount": 1,
   "shared": [
     {
