@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-22T14:01:12.675Z",
-  "updatedAt": "2025-10-07T20:56:49.966Z",
+  "updatedAt": "2025-10-07T21:06:01.574Z",
   "id": "BKfU7GhWdir6g3Ib",
   "name": "Anton's test",
   "active": true,
@@ -24,7 +24,7 @@
     },
     {
       "parameters": {
-        "jsCode": "// Вход: webhook отправил payload в виде строки JSON\nconst data = JSON.parse($json.body);\n\n// Разложим по отдельным полям\nreturn [\n  {\n    json: {\n      utm_source: data.utm_source || '',\n      utm_medium: data.utm_medium || '',\n      utm_campaign: data.utm_campaign || '',\n      utm_term: data.utm_term || '',\n      utm_content: data.utm_content || '',\n      etext: data.etext || '',\n      yclid: data.yclid || '',\n      gclid: data.gclid || '',\n      fbclid: data.fbclid || '',\n      msclkid: data.msclkid || '',\n      referrer: data.referrer || '',\n      page_url: data.page_url || '',\n      page_title: data.page_title || '',\n      is_yandex_direct: data.is_yandex_direct || false,\n      yandex_reason: data.yandex_reason || '',\n      decided_source_id: data.decided_source_id || '',\n      ts: data.ts || ''\n    }\n  }\n];"
+        "jsCode": "// 1) Берём данные: body может быть строкой (urlencoded \"payload\") или уже объектом\nlet data = $json;\nif (typeof data.body === 'string') {\n  try {\n    data = JSON.parse(data.body);  // твой payload\n  } catch (e) {\n    // если приходят как form fields ?payload=...\n    const p = JSON.parse(($json.payload || '{}'));\n    data = p;\n  }\n}\n\n// 2) Нормализуем и плоско мапим только нужные ключи (все как строки)\nconst get = (o, k) => (o && o[k] != null ? String(o[k]) : '');\n\nreturn [\n  {\n    json: {\n      // UTM\n      utm_source:  get(data, 'utm_source'),\n      utm_medium:  get(data, 'utm_medium'),\n      utm_campaign:get(data, 'utm_campaign'),\n      utm_term:    get(data, 'utm_term'),\n      utm_content: get(data, 'utm_content'),\n      // clids\n      yclid:       get(data, 'yclid'),\n      gclid:       get(data, 'gclid'),\n      fbclid:      get(data, 'fbclid'),\n      msclkid:     get(data, 'msclkid'),\n      // спец\n      etext:       get(data, 'etext'),\n      // контекст\n      referrer:    get(data, 'referrer'),\n      page_url:    get(data, 'page_url'),\n      page_title:  get(data, 'page_title'),\n      // наша логика\n      is_yandex_direct: get(data, 'is_yandex_direct'),\n      yandex_reason:    get(data, 'yandex_reason'),\n      decision_mode:    get(data, 'decision_mode'),\n      decided_source_id:get(data, 'decided_source_id'),\n      ts:               get(data, 'ts')\n    }\n  }\n];"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -37,23 +37,12 @@
     },
     {
       "parameters": {
-        "jsCode": "// вход тот самый body, который ты уже парсишь\nconst data = typeof $json.body === 'string' ? JSON.parse($json.body) : $json;\n\n// полезно захватить IP/UA для дополнительной корреляции\nconst headers = $json.headers || {};\nconst ip = headers['x-forwarded-for'] || headers['cf-connecting-ip'] || headers['x-real-ip'] || '';\nconst ua = headers['user-agent'] || '';\n\nconst now = Date.now();\n\nreturn [{\n  json: {\n    status: 'pending',\n    ts_site: now,                    // timestamp прихода с сайта (ms)\n    yclid: data.yclid || '',\n    etext: data.etext || '',\n    utm_source: data.utm_source || '',\n    utm_medium: data.utm_medium || '',\n    utm_campaign: data.utm_campaign || '',\n    referrer: data.referrer || '',\n    page_url: data.page_url || '',\n    ip,\n    ua,\n    raw_site: data                    // сохраняем всё целиком на всякий случай\n  }\n}];"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        496,
-        240
-      ],
-      "id": "99b98e53-24df-4c59-98e8-0b6d3120d8f3",
-      "name": "Code in JavaScript1"
-    },
-    {
-      "parameters": {
         "dataTableId": {
           "__rl": true,
+          "value": "wKRM5hL5MfpAIOSI",
           "mode": "list",
-          "value": ""
+          "cachedResultName": "site_leads",
+          "cachedResultUrl": "/projects/spKmbJLU4mvACXIB/datatables/wKRM5hL5MfpAIOSI"
         },
         "columns": {
           "mappingMode": "defineBelow",
@@ -68,7 +57,7 @@
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1,
       "position": [
-        704,
+        496,
         240
       ],
       "id": "7eb21cf2-3466-431a-ae78-31ccbaeca46e",
@@ -91,17 +80,6 @@
       "main": [
         [
           {
-            "node": "Code in JavaScript1",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Code in JavaScript1": {
-      "main": [
-        [
-          {
             "node": "Insert row",
             "type": "main",
             "index": 0
@@ -118,7 +96,7 @@
     "templateCredsSetupCompleted": true
   },
   "pinData": {},
-  "versionId": "1fc340f3-78c4-4aff-9039-b55dd24e62b5",
+  "versionId": "0222b501-f377-4e85-b5c9-e092fedbaf25",
   "triggerCount": 1,
   "shared": [
     {
