@@ -1,0 +1,29 @@
+{
+  "createdAt": "2025-10-07T21:30:12.820Z",
+  "updatedAt": "2025-10-07T21:30:12.820Z",
+  "id": "d4D0Fp4pO6Ch7S7C",
+  "name": "Receive CRM data",
+  "active": false,
+  "isArchived": false,
+  "nodes": [],
+  "connections": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": {},
+  "versionId": "1d8c8798-bceb-4694-a223-1ed54f3af77b",
+  "triggerCount": 0,
+  "shared": [
+    {
+      "createdAt": "2025-10-07T21:30:12.820Z",
+      "updatedAt": "2025-10-07T21:30:12.820Z",
+      "role": "workflow:owner",
+      "workflowId": "d4D0Fp4pO6Ch7S7C",
+      "projectId": "spKmbJLU4mvACXIB"
+    }
+  ],
+  "tags": [],
+  "file_name": "receive-crm-data.json"
+}
