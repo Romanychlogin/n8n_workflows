@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-25T13:33:58.106Z",
-  "updatedAt": "2025-10-06T13:06:55.730Z",
+  "updatedAt": "2025-10-07T07:10:33.732Z",
   "id": "0J5cvuaSz3IhDS99",
   "name": "campaign core update",
   "active": false,
@@ -64,8 +64,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        2720,
-        1440
+        2896,
+        1376
       ],
       "id": "b17b1715-9e42-463a-8c41-afd0be86f727",
       "name": "Mark_workflow_completed",
@@ -1458,6 +1458,19 @@
       ],
       "id": "992312e1-11bd-45d3-b766-06f4ee4b8c5b",
       "name": "ADV_campaign_get_service"
+    },
+    {
+      "parameters": {
+        "errorMessage": "completed without marked finished"
+      },
+      "type": "n8n-nodes-base.stopAndError",
+      "typeVersion": 1,
+      "position": [
+        2720,
+        1552
+      ],
+      "id": "af518fd0-3a02-4857-a768-497cebeb3ed9",
+      "name": "Stop and Error"
     }
   ],
   "connections": {
@@ -1803,7 +1816,13 @@
     },
     "update workflow tokens usage2": {
       "main": [
-        []
+        [
+          {
+            "node": "Stop and Error",
+            "type": "main",
+            "index": 0
+          }
+        ]
       ]
     },
     "get company_id from lust succeed report ": {
@@ -2053,7 +2072,9 @@
     }
   },
   "settings": {
-    "executionOrder": "v1"
+    "executionOrder": "v1",
+    "callerPolicy": "workflowsFromSameOwner",
+    "errorWorkflow": "v2Z32ISEUzsFYnZw"
   },
   "staticData": null,
   "meta": {
@@ -2066,7 +2087,7 @@
       }
     ]
   },
-  "versionId": "3b7588ab-27be-440c-a5fd-7a8fd5bc5e4c",
+  "versionId": "a06731ac-ebee-457c-8422-4ac957133d9e",
   "triggerCount": 0,
   "shared": [
     {
@@ -2077,12 +2098,5 @@
       "projectId": "spKmbJLU4mvACXIB"
     }
   ],
-  "tags": [
-    {
-      "createdAt": "2025-10-06T13:06:54.644Z",
-      "updatedAt": "2025-10-06T13:06:54.644Z",
-      "id": "DBEf57wUDunVJUG6",
-      "name": "campaign update"
-    }
-  ]
+  "tags": []
 }
