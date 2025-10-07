@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-07-18T08:31:54.459Z",
-  "updatedAt": "2025-10-07T13:10:48.829Z",
+  "updatedAt": "2025-10-07T18:12:56.451Z",
   "id": "wZGLxMCCmOnDJZ1o",
   "name": "ADV_campaign_analysis",
   "active": false,
@@ -1985,6 +1985,19 @@
       ],
       "id": "8eaa9362-716d-4865-86fd-b8fe47cf7390",
       "name": "reset first_item"
+    },
+    {
+      "parameters": {
+        "content": "add step for minus_words!!!"
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        2464,
+        -112
+      ],
+      "id": "62d94be7-eee9-440e-941d-2ea4507845a3",
+      "name": "Sticky Note7"
     }
   ],
   "connections": {
@@ -2700,7 +2713,7 @@
       }
     ]
   },
-  "versionId": "93075b39-119b-4a7f-b489-81201cc6a307",
+  "versionId": "f52b23ef-bfca-4116-95b8-cd8e3e925abc",
   "triggerCount": 0,
   "shared": [
     {
