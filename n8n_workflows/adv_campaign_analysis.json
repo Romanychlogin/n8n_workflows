@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-07-18T08:31:54.459Z",
-  "updatedAt": "2025-10-07T12:20:53.873Z",
+  "updatedAt": "2025-10-07T12:46:57.153Z",
   "id": "wZGLxMCCmOnDJZ1o",
   "name": "ADV_campaign_analysis",
   "active": false,
@@ -297,7 +297,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        10800,
+        11008,
         -1696
       ],
       "id": "233a9fb2-ccfc-4fbd-a2af-5630a61c7a22",
@@ -513,7 +513,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        10752,
+        10960,
         -480
       ],
       "id": "8200d389-0be7-463e-b356-76cf1a2d659f",
@@ -793,7 +793,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        9984,
+        10192,
         -1488
       ],
       "id": "e95a4440-545c-4788-a36f-4a8649b6dcf9",
@@ -869,7 +869,7 @@
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1.2,
       "position": [
-        7904,
+        8112,
         -352
       ],
       "id": "5d7ed225-61eb-40cf-86f8-cf487e481e1c",
@@ -915,7 +915,7 @@
           "conditions": [
             {
               "id": "0b8b9cb2-368a-4ef4-b4b4-560b030f71f4",
-              "leftValue": "={{ $json.minus_words }}",
+              "leftValue": "={{ $json.non_matches }}",
               "rightValue": "",
               "operator": {
                 "type": "array",
@@ -1087,7 +1087,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        12080,
+        12288,
         -48
       ],
       "id": "56bff92d-817b-4fb5-bf93-e3fd6d772376",
@@ -1102,12 +1102,12 @@
     },
     {
       "parameters": {
-        "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nconst workflowData = $getWorkflowStaticData('global');\nworkflowData.steps_passed = workflowData.steps_passed+1; // update steps counter\nlet step_tokens_used = 0;// безопасное чтение данных другой ноды\n\nfunction safeAll(nodeName) {\n  try {\n    return $(nodeName).all();        // вернёт массив items этой ноды\n  } catch (_e) {\n    return [];                       // нода не исполнялась — вернём пусто\n  }\n}\n\n// пример для HTTP Request1 — если нода не выполнялась, токены = 0\nconst httpItems = safeAll('HTTP Request');\nconst httpItems1 = safeAll('HTTP Request1');\nstep_tokens_used = httpItems.length\n  ? (httpItems[0]?.json?.usage?.total_tokens ?? 0)\n  : 0;\nstep_tokens_used = + httpItems1.length\n  ? (httpItems1[0]?.json?.usage?.total_tokens ?? 0)\n  : 0;\n //set used tokens here!!!!\nworkflowData.tokens_used = workflowData.tokens_used+step_tokens_used;\nfor (const item of $input.all()) {\n  item.json.steps_passed = workflowData.steps_passed;\n  item.json.tokens_used = workflowData.tokens_used\n}\n\nreturn $input.all();"
+        "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nconst workflowData = $getWorkflowStaticData('global');\nworkflowData.steps_passed = workflowData.steps_passed+1; // update steps counter\nlet step_tokens_used = 0;// безопасное чтение данных другой ноды\n\nfunction safeAll(nodeName) {\n  try {\n    return $(nodeName).all();        // вернёт массив items этой ноды\n  } catch (_e) {\n    return [];                       // нода не исполнялась — вернём пусто\n  }\n}\n\n// пример для HTTP Request1 — если нода не выполнялась, токены = 0\nconst httpItems = safeAll('HTTP Request');\n//const httpItems1 = safeAll('HTTP Request1');\nstep_tokens_used = httpItems.length\n  ? (httpItems[0]?.json?.usage?.total_tokens ?? 0)\n  : 0;\n\n //set used tokens here!!!!\nworkflowData.tokens_used = workflowData.tokens_used+step_tokens_used;\nfor (const item of $input.all()) {\n  item.json.steps_passed = workflowData.steps_passed;\n  item.json.tokens_used = workflowData.tokens_used\n}\n\nreturn $input.all();"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        11840,
+        12048,
         -32
       ],
       "id": "7a3d33ad-9f12-4f6f-9b09-6d67a00e76a8",
@@ -1140,7 +1140,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        12464,
+        12672,
         -16
       ],
       "id": "9114c887-564f-4e0f-b89d-99a381a7bdde",
@@ -1153,7 +1153,7 @@
       "type": "n8n-nodes-base.stopAndError",
       "typeVersion": 1,
       "position": [
-        12704,
+        12912,
         -144
       ],
       "id": "fdab4be5-884f-4a7f-97b4-8c7ae8b22898",
@@ -1187,7 +1187,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        12288,
+        12496,
         -48
       ],
       "id": "3b984213-9b8c-4d82-8b9f-38dcc24fcdc1",
@@ -1273,13 +1273,13 @@
             {
               "id": "bb72a340-789e-459b-80c9-f1c2b454ed57",
               "name": "resolution",
-              "value": "={{\"no relevant, minuses: \"+$('minus_words_array').last().json.minus_words.map(String).join(', ')}}",
+              "value": "={{\"no relevant, minuses: \"+$json.non_matches.map(String).join(', ')}}",
               "type": "string"
             },
             {
               "id": "2f7246f7-a167-46be-9212-edc599a35ff3",
               "name": "total_tokens",
-              "value": "={{ $('HTTP Request1').last().json.usage.total_tokens+$('HTTP Request').last().json.usage.total_tokens }}",
+              "value": "={{$('HTTP Request').last().json.usage.total_tokens }}",
               "type": "number"
             }
           ]
@@ -1290,7 +1290,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        10528,
+        10736,
         -368
       ],
       "id": "6bf663d1-4db2-412c-aa73-d7943501ee9f",
@@ -1457,7 +1457,7 @@
       "typeVersion": 2,
       "position": [
         8112,
-        -352
+        -32
       ],
       "id": "391c2166-e3d3-4f7d-b266-03511d308753",
       "name": "prepare for SQL"
@@ -1474,7 +1474,7 @@
       "typeVersion": 2.6,
       "position": [
         8320,
-        -352
+        -32
       ],
       "id": "f25eddc8-852a-4b9e-ba74-d205c9cc2de1",
       "name": "filter by existing minus words",
@@ -1604,13 +1604,13 @@
     },
     {
       "parameters": {
-        "jsCode": "// Достаём массив competitors\n\n\n// Разворачиваем каждый объект в отдельный item\nreturn $json.minus_words.map((c, index) => ({\n  json: {\n    index,\n    minus_word: c.toLowerCase(),\n    list_id:$('Loop Over Items').last().json.list_id    \n  }\n}));"
+        "jsCode": "// Достаём массив competitors\n\n\n// Разворачиваем каждый объект в отдельный item\nreturn $json.non_matches.map((c, index) => ({\n  json: {\n    index,\n    minus_word: c.toLowerCase(),\n    list_id:$('Loop Over Items').last().json.list_id    \n  }\n}));"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        9184,
-        -256
+        9008,
+        -288
       ],
       "id": "2f169d1d-9f54-4e14-8d57-39373804f250",
       "name": "map_minus_words"
@@ -1622,8 +1622,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        9296,
-        -64
+        9216,
+        16
       ],
       "id": "f9009c6a-6a7e-4c66-b8a2-c41c8b83d941",
       "name": "minus_words_array"
@@ -1635,7 +1635,7 @@
       "type": "n8n-nodes-base.merge",
       "typeVersion": 3.2,
       "position": [
-        10480,
+        10688,
         -1040
       ],
       "id": "e513fecc-579d-47a2-9a2b-aaac244d7f15",
@@ -1754,7 +1754,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        9968,
+        10176,
         -1232
       ],
       "id": "05ffb772-d578-42fc-9520-f57c65b6ff00",
@@ -1851,7 +1851,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        9728,
+        9936,
         -224
       ],
       "id": "423755a8-79d5-4e97-8b3e-dfa845ed5154",
@@ -1875,7 +1875,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        10032,
+        10240,
         -176
       ],
       "id": "962f418d-b31e-4b98-9bb5-1d1df41b4534",
@@ -1894,8 +1894,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        9472,
-        -240
+        9728,
+        -192
       ],
       "id": "f068e410-e03b-4a05-b110-546c0fa908b3",
       "name": "Set API JSON2"
@@ -1911,7 +1911,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        10256,
+        10464,
         -176
       ],
       "id": "885246fc-6be8-46c1-ab9c-6371a36ba425",
@@ -1922,6 +1922,69 @@
           "name": "Postgres account 2"
         }
       }
+    },
+    {
+      "parameters": {
+        "options": {
+          "reset": "={{ $json.is_first }}"
+        }
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        9392,
+        -256
+      ],
+      "id": "b3afb7b9-8747-4a4a-bc16-db74e225c497",
+      "name": "Loop Over Items1"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "ebafa31d-edf7-41c0-a06e-e884ad9595ea",
+              "name": "is_first",
+              "value": "=true",
+              "type": "boolean"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        9200,
+        -272
+      ],
+      "id": "01b08a50-3401-4bd7-a074-f4ea0a2f0d44",
+      "name": "set first_item1"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "ebafa31d-edf7-41c0-a06e-e884ad9595ea",
+              "name": "is_first",
+              "value": "=false",
+              "type": "boolean"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        9552,
+        -144
+      ],
+      "id": "8eaa9362-716d-4865-86fd-b8fe47cf7390",
+      "name": "reset first_item"
     }
   ],
   "connections": {
@@ -2094,7 +2157,7 @@
       "main": [
         [
           {
-            "node": "prepare for SQL",
+            "node": "If minuses array is empty",
             "type": "main",
             "index": 0
           }
@@ -2382,13 +2445,7 @@
     },
     "filter by existing minus words": {
       "main": [
-        [
-          {
-            "node": "If minuses array is empty",
-            "type": "main",
-            "index": 0
-          }
-        ]
+        []
       ]
     },
     "Set API JSON1": {
@@ -2444,7 +2501,7 @@
       "main": [
         [
           {
-            "node": "Set API JSON2",
+            "node": "set first_item1",
             "type": "main",
             "index": 0
           }
@@ -2555,7 +2612,47 @@
       "main": [
         [
           {
-            "node": "update",
+            "node": "Loop Over Items1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items1": {
+      "main": [
+        [
+          {
+            "node": "no relevant",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "reset first_item",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "set first_item1": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "reset first_item": {
+      "main": [
+        [
+          {
+            "node": "Set API JSON2",
             "type": "main",
             "index": 0
           }
@@ -2595,7 +2692,7 @@
       {
         "json": {
           "id": "wZGLxMCCmOnDJZ1o",
-          "root_execution_id": 47278,
+          "root_execution_id": 71262,
           "company_id": 1,
           "threshhold": "0.79",
           "import_id": 5
@@ -2603,7 +2700,7 @@
       }
     ]
   },
-  "versionId": "d170bbf7-68eb-45e6-9079-78d5729dcff0",
+  "versionId": "f1fe59b4-3408-4c51-ae1f-42d0f9c4daf1",
   "triggerCount": 0,
   "shared": [
     {
