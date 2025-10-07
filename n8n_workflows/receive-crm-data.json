@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-10-07T21:30:12.820Z",
-  "updatedAt": "2025-10-07T21:55:59.069Z",
+  "updatedAt": "2025-10-07T22:10:19.908Z",
   "id": "d4D0Fp4pO6Ch7S7C",
   "name": "Receive CRM data",
   "active": true,
@@ -44,6 +44,14 @@
           "mode": "list",
           "cachedResultName": "site leads",
           "cachedResultUrl": "/projects/spKmbJLU4mvACXIB/datatables/XlfQhVUBPeep3gvZ"
+        },
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "pending",
+              "condition": "isTrue"
+            }
+          ]
         }
       },
       "type": "n8n-nodes-base.dataTable",
@@ -54,6 +62,167 @@
       ],
       "id": "78fd246c-1fe1-47a3-981d-237c516e655e",
       "name": "Get row(s)"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "dataTableId": {
+          "__rl": true,
+          "value": "XlfQhVUBPeep3gvZ",
+          "mode": "list",
+          "cachedResultName": "site leads",
+          "cachedResultUrl": "/projects/spKmbJLU4mvACXIB/datatables/XlfQhVUBPeep3gvZ"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "pending": "={{ false }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "utm_source",
+              "displayName": "utm_source",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "utm_medium",
+              "displayName": "utm_medium",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "utm_campaign",
+              "displayName": "utm_campaign",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "utm_term",
+              "displayName": "utm_term",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "utm_content",
+              "displayName": "utm_content",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "yclid",
+              "displayName": "yclid",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "etext",
+              "displayName": "etext",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "referrer",
+              "displayName": "referrer",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "page_url",
+              "displayName": "page_url",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "page_title",
+              "displayName": "page_title",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "ts_site_iso",
+              "displayName": "ts_site_iso",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "ts_site",
+              "displayName": "ts_site",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "pending",
+              "displayName": "pending",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "boolean",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1,
+      "position": [
+        592,
+        0
+      ],
+      "id": "9bf6585d-2a49-4b7a-953a-e45d873bc6d4",
+      "name": "Update row(s)"
     }
   ],
   "connections": {
@@ -70,7 +239,13 @@
     },
     "Code in JavaScript": {
       "main": [
-        []
+        [
+          {
+            "node": "Update row(s)",
+            "type": "main",
+            "index": 0
+          }
+        ]
       ]
     },
     "Get row(s)": {
@@ -91,7 +266,7 @@
   "staticData": null,
   "meta": null,
   "pinData": {},
-  "versionId": "3cd3389d-8482-4654-b6bb-2257c131b87f",
+  "versionId": "3cc91e36-9f0d-4140-b0ca-d4227906c58d",
   "triggerCount": 1,
   "shared": [
     {
