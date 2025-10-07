@@ -1,0 +1,223 @@
+{
+  "createdAt": "2025-09-22T14:01:12.675Z",
+  "updatedAt": "2025-10-07T21:29:48.776Z",
+  "id": "BKfU7GhWdir6g3Ib",
+  "name": "Receive wizard data",
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "f82269ff-704f-4478-95d1-f1678f82b1f2",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        80,
+        240
+      ],
+      "id": "25b3119f-f038-43f2-aecf-bfb6dd75516b",
+      "name": "Webhook для анкеты на сайте",
+      "webhookId": "f82269ff-704f-4478-95d1-f1678f82b1f2"
+    },
+    {
+      "parameters": {
+        "jsCode": "// 1) Берём данные: body может быть строкой (urlencoded \"payload\") или уже объектом\nlet data = $json;\nif (typeof data.body === 'string') {\n  try {\n    data = JSON.parse(data.body);  // твой payload\n  } catch (e) {\n    // если приходят как form fields ?payload=...\n    const p = JSON.parse(($json.payload || '{}'));\n    data = p;\n  }\n}\n\n// 2) Нормализуем и плоско мапим только нужные ключи (все как строки)\nconst get = (o, k) => (o && o[k] != null ? String(o[k]) : '');\n\nreturn [\n  {\n    json: {\n      // UTM\n      utm_source:  get(data, 'utm_source'),\n      utm_medium:  get(data, 'utm_medium'),\n      utm_campaign:get(data, 'utm_campaign'),\n      utm_term:    get(data, 'utm_term'),\n      utm_content: get(data, 'utm_content'),\n      // clids\n      yclid:       get(data, 'yclid'),\n     // gclid:       get(data, 'gclid'),\n     // fbclid:      get(data, 'fbclid'),\n     // msclkid:     get(data, 'msclkid'),\n      // спец\n      etext:       get(data, 'etext'),\n      // контекст\n      referrer:    get(data, 'referrer'),\n      page_url:    get(data, 'page_url'),\n      page_title:  get(data, 'page_title'),\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        288,
+        240
+      ],
+      "id": "a5ce8961-8e00-4ffa-b9ed-115560f25de7",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "dataTableId": {
+          "__rl": true,
+          "value": "XlfQhVUBPeep3gvZ",
+          "mode": "list",
+          "cachedResultName": "site leads",
+          "cachedResultUrl": "/projects/spKmbJLU4mvACXIB/datatables/XlfQhVUBPeep3gvZ"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "utm_source",
+              "displayName": "utm_source",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "utm_medium",
+              "displayName": "utm_medium",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "utm_campaign",
+              "displayName": "utm_campaign",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "utm_term",
+              "displayName": "utm_term",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "utm_content",
+              "displayName": "utm_content",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "yclid",
+              "displayName": "yclid",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "etext",
+              "displayName": "etext",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "referrer",
+              "displayName": "referrer",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "page_url",
+              "displayName": "page_url",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "page_title",
+              "displayName": "page_title",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "is_yandex_direct",
+              "displayName": "is_yandex_direct",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1,
+      "position": [
+        496,
+        240
+      ],
+      "id": "e254c502-cf6c-4001-8928-80bc4122d443",
+      "name": "Insert row"
+    }
+  ],
+  "connections": {
+    "Webhook для анкеты на сайте": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Insert row",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "08a7c05a-81a8-4729-a70e-2a154577200d",
+  "triggerCount": 1,
+  "shared": [
+    {
+      "createdAt": "2025-09-22T14:01:12.675Z",
+      "updatedAt": "2025-09-22T14:01:12.675Z",
+      "role": "workflow:owner",
+      "workflowId": "BKfU7GhWdir6g3Ib",
+      "projectId": "spKmbJLU4mvACXIB"
+    }
+  ],
+  "tags": [],
+  "file_name": "receive-wizard-data.json"
+}
