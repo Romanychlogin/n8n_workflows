@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-25T13:33:58.106Z",
-  "updatedAt": "2025-10-07T17:22:49.233Z",
+  "updatedAt": "2025-10-07T18:15:33.228Z",
   "id": "0J5cvuaSz3IhDS99",
   "name": "campaign core update",
   "active": false,
@@ -84,7 +84,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        2144,
+        2352,
         -288
       ],
       "id": "9552a2ab-303b-4308-a515-72feaf01397c",
@@ -273,6 +273,12 @@
               "name": "threshhold",
               "value": 0.79,
               "type": "number"
+            },
+            {
+              "id": "da89c9d1-35e4-43af-a686-0fb39952aec2",
+              "name": "report_id",
+              "value": "",
+              "type": "string"
             }
           ]
         },
@@ -298,7 +304,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        2224,
+        2432,
         880
       ],
       "id": "e5189338-9803-47e1-9337-544a1779709a",
@@ -318,7 +324,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1984,
+        2192,
         720
       ],
       "id": "5d593d2f-0a71-4666-bc59-28afc9293938",
@@ -379,7 +385,7 @@
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1.2,
       "position": [
-        1744,
+        1952,
         880
       ],
       "id": "bf91914e-9db5-4b03-b247-39e129fb5f80",
@@ -500,7 +506,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        2512,
+        2720,
         -208
       ],
       "id": "71a7db0e-57a1-4d38-8f5b-de955e3e46f3",
@@ -554,7 +560,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        2432,
+        2640,
         880
       ],
       "id": "6d161fb8-4b77-443a-b50e-4ca5af6f3e98",
@@ -578,7 +584,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        2320,
+        2528,
         -208
       ],
       "id": "99d71d6e-cfe3-4dec-b061-9b2ebf3ffeab",
@@ -616,7 +622,7 @@
     },
     {
       "parameters": {
-        "content": "В dropbox ссылке поменять в конце 0 на 1 !!!!!",
+        "content": "В dropbox ссылке поменять в конце 0 на 1 !!!!! \nзадать report_id только если нужно обработать записи не последнего загруженного отчета, без загрузки!!! ",
         "height": 256,
         "width": 336
       },
@@ -624,7 +630,7 @@
       "typeVersion": 1,
       "position": [
         -848,
-        -320
+        -336
       ],
       "id": "e8363564-3e28-495a-bc8e-430372ffc94f",
       "name": "Sticky Note4"
@@ -640,7 +646,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        2224,
+        2432,
         1456
       ],
       "id": "feabefef-183e-48ad-acce-d1828102bf75",
@@ -660,7 +666,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1984,
+        2192,
         1296
       ],
       "id": "01e927fa-5ff2-4740-add4-2378c3d3c04f",
@@ -721,7 +727,7 @@
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1.2,
       "position": [
-        1744,
+        1952,
         1456
       ],
       "id": "b8c312e7-03e7-4b24-90b3-3107c60887bc",
@@ -842,7 +848,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        2416,
+        2624,
         1456
       ],
       "id": "33cd5c2e-e5aa-4763-a8b1-51d90939d298",
@@ -917,7 +923,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        1920,
+        2192,
         -288
       ],
       "id": "3ed57cde-7bf2-46b5-97fa-dcf269af9ef0",
@@ -1197,7 +1203,7 @@
     },
     {
       "parameters": {
-        "content": "Осталсь доделать!!!\n1)минус слова из временных таблиц в постоянные. При этом если там есть новые синонимы конкурентов то в конкурентов продублировать\n2)рекламны объявления из временых таблиц в постоянные \n3)Выгрузка рекламы  файл + минус слоа к списку в заголовке(см. шаблон Яндекса)",
+        "content": "Осталсь доделать!!!\n1)выгрузка минус слов в Яндекс по статистике!\n2)анализ всей накопленной статистики по фразам и брать их в кавычки!!!\n3)названия конкурентов перенос\n4)рекламны объявления из временых таблиц в постоянные \n5)Выгрузка рекламы  файл + минус слоа к списку в заголовке(см. шаблон Яндекса)",
         "height": 288,
         "width": 320
       },
@@ -1221,7 +1227,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        2240,
+        2448,
         352
       ],
       "id": "311aaafe-5b17-4212-8288-6d9ae8728cc4",
@@ -1241,7 +1247,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        2000,
+        2208,
         192
       ],
       "id": "e7688588-5c7d-4c41-858c-f9f8267bb528",
@@ -1302,7 +1308,7 @@
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1.2,
       "position": [
-        1760,
+        1968,
         352
       ],
       "id": "fd332e20-e27e-4b96-a967-11d1de67885e",
@@ -1423,7 +1429,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        2448,
+        2656,
         352
       ],
       "id": "5dbc90ff-71f9-4f78-8d1f-def3df2cdeb4",
@@ -1483,7 +1489,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        2704,
+        2912,
         1360
       ],
       "id": "dccaa22d-4515-4559-a59c-5b403bf02d10",
@@ -1495,6 +1501,70 @@
           "name": "PGvector"
         }
       }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "d2f57e53-4fdb-4cda-ba54-625ed2e91e80",
+              "leftValue": "={{ $('Set variables').item.json.report_id }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1856,
+        -320
+      ],
+      "id": "7ac1bcaf-e957-4501-b3c0-f6cc7de93ecd",
+      "name": "If report_id manually set"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "9d0812dd-afb7-4a56-843f-97736d5766d2",
+              "name": "",
+              "value": "",
+              "type": "string"
+            },
+            {
+              "id": "e7e14827-e3bc-43d2-913e-39c68158f227",
+              "name": "import_id",
+              "value": "={{ $('Set variables').item.json.report_id }}",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2016,
+        -384
+      ],
+      "id": "90585baf-cb61-45e9-bdb3-3f55d0893e4b",
+      "name": "override report_id"
     }
   ],
   "connections": {
@@ -1575,7 +1645,7 @@
       "main": [
         [
           {
-            "node": "company_record_id",
+            "node": "If report_id manually set",
             "type": "main",
             "index": 0
           }
@@ -1853,7 +1923,7 @@
       "main": [
         [
           {
-            "node": "company_record_id",
+            "node": "If report_id manually set",
             "type": "main",
             "index": 0
           }
@@ -2093,6 +2163,35 @@
           }
         ]
       ]
+    },
+    "If report_id manually set": {
+      "main": [
+        [
+          {
+            "node": "override report_id",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "company_record_id",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "override report_id": {
+      "main": [
+        [
+          {
+            "node": "company_record_id",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
@@ -2109,7 +2208,7 @@
       }
     ]
   },
-  "versionId": "9a370b90-3bf4-4c07-9b74-0dbcc088136f",
+  "versionId": "babef537-d032-4dae-a21b-efc9a0300257",
   "triggerCount": 0,
   "shared": [
     {
