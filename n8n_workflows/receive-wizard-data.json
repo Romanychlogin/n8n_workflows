@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-22T14:01:12.675Z",
-  "updatedAt": "2025-10-07T21:29:48.776Z",
+  "updatedAt": "2025-10-07T22:07:44.433Z",
   "id": "BKfU7GhWdir6g3Ib",
   "name": "Receive wizard data",
   "active": true,
@@ -24,7 +24,7 @@
     },
     {
       "parameters": {
-        "jsCode": "// 1) Берём данные: body может быть строкой (urlencoded \"payload\") или уже объектом\nlet data = $json;\nif (typeof data.body === 'string') {\n  try {\n    data = JSON.parse(data.body);  // твой payload\n  } catch (e) {\n    // если приходят как form fields ?payload=...\n    const p = JSON.parse(($json.payload || '{}'));\n    data = p;\n  }\n}\n\n// 2) Нормализуем и плоско мапим только нужные ключи (все как строки)\nconst get = (o, k) => (o && o[k] != null ? String(o[k]) : '');\n\nreturn [\n  {\n    json: {\n      // UTM\n      utm_source:  get(data, 'utm_source'),\n      utm_medium:  get(data, 'utm_medium'),\n      utm_campaign:get(data, 'utm_campaign'),\n      utm_term:    get(data, 'utm_term'),\n      utm_content: get(data, 'utm_content'),\n      // clids\n      yclid:       get(data, 'yclid'),\n     // gclid:       get(data, 'gclid'),\n     // fbclid:      get(data, 'fbclid'),\n     // msclkid:     get(data, 'msclkid'),\n      // спец\n      etext:       get(data, 'etext'),\n      // контекст\n      referrer:    get(data, 'referrer'),\n      page_url:    get(data, 'page_url'),\n      page_title:  get(data, 'page_title'),\n    }\n  }\n];"
+        "jsCode": "// 1) Берём данные: body может быть строкой (urlencoded \"payload\") или уже объектом\nlet data = $json;\nif (typeof data.body === 'string') {\n  try { data = JSON.parse(data.body); }\n  catch {\n    const p = JSON.parse(($json.payload || '{}'));\n    data = p;\n  }\n}\n\n// 2) Нормализуем и плоско мапим только нужные ключи\nconst get = (o, k) => (o && o[k] != null ? String(o[k]) : '');\n\n// 3) Явная метка времени визита (число миллисекунд) + ISO для чтения глазами\nconst nowMs  = Date.now();\nconst nowISO = new Date(nowMs).toISOString();\n\nreturn [{\n  json: {\n    // UTM\n    utm_source:   get(data, 'utm_source'),\n    utm_medium:   get(data, 'utm_medium'),\n    utm_campaign: get(data, 'utm_campaign'),\n    utm_term:     get(data, 'utm_term'),\n    utm_content:  get(data, 'utm_content'),\n    // clids\n    yclid:        get(data, 'yclid'),\n    // спец\n    etext:        get(data, 'etext'),\n    // контекст\n    referrer:     get(data, 'referrer'),\n    page_url:     get(data, 'page_url'),\n    page_title:   get(data, 'page_title'),\n    // ➕ время визита\n    ts_site:      nowMs,   // <— числом\n    ts_site_iso:  nowISO   // <— строкой (удобно в таблице)\n    pending:      true\n  }\n}];"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -207,7 +207,7 @@
     "templateCredsSetupCompleted": true
   },
   "pinData": {},
-  "versionId": "08a7c05a-81a8-4729-a70e-2a154577200d",
+  "versionId": "b3b066c1-08e0-4306-b66e-9b84e6226f60",
   "triggerCount": 1,
   "shared": [
     {
