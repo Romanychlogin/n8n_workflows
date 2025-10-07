@@ -1,9 +1,9 @@
 {
   "createdAt": "2025-10-06T13:25:33.741Z",
-  "updatedAt": "2025-10-07T07:58:54.670Z",
+  "updatedAt": "2025-10-07T08:08:53.192Z",
   "id": "tbijdiaKB74Iaf6O",
   "name": "core update test management",
-  "active": false,
+  "active": true,
   "isArchived": false,
   "nodes": [
     {
@@ -62,7 +62,7 @@
                     "option": "Reset core update test data for report"
                   },
                   {
-                    "option": "Stop running process"
+                    "option": "Terminate running process"
                   }
                 ]
               }
@@ -171,7 +171,7 @@
                   {
                     "id": "550b2fd3-fb19-40a7-9fa5-569697d222fc",
                     "leftValue": "={{ $json[\"Please select\"] }}",
-                    "rightValue": "Stop running process",
+                    "rightValue": "Terminate running process",
                     "operator": {
                       "type": "string",
                       "operation": "equals",
@@ -182,7 +182,7 @@
                 "combinator": "and"
               },
               "renameOutput": true,
-              "outputKey": "Stop running process"
+              "outputKey": "Terminate running process"
             }
           ]
         },
@@ -536,6 +536,293 @@
           "name": "PGvector"
         }
       }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "select b.* from business_processes_states bs,business_processes b  where bs.n8n_workflow_root_execution_id is not null and bs.finished is null and bs.error_happened is null and bs.business_process_id=b.business_process_id and bs.company_id=$1",
+        "options": {
+          "queryReplacement": "={{ $('On form submission').item.json['Select company id'] }}"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -448,
+        -16
+      ],
+      "id": "70550b94-02d8-45fa-a47f-91eb644299f1",
+      "name": "Execute a SQL query1",
+      "credentials": {
+        "postgres": {
+          "id": "4YkdFJcdTgzo9hkz",
+          "name": "PGvector"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "defineForm": "json",
+        "jsonOutput": "=[\n{{\n(() => {\n  const values = $input.all().map(r => ({\n    option: String(r.json.n8n_process_name)   // текст пункта\n  }));\n  return {\n    fieldLabel: \"Checkboxes\",\n    fieldType: \"checkbox\",\n    fieldOptions: {\n      values\n    }\n  };\n})()\n}}\n \n]\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.form",
+      "typeVersion": 2.3,
+      "position": [
+        -208,
+        16
+      ],
+      "id": "65620b46-2b17-4361-82c0-3115196a293c",
+      "name": "select processes1",
+      "webhookId": "84b35fba-718d-46b1-9244-cb4f259ac53a"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        48,
+        64
+      ],
+      "id": "9c85b1a1-5efa-4439-bedb-50c07a8986b0",
+      "name": "Loop Over Items1"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "WITH cutoff AS (\n  SELECT MAX(st2.started) AS last_finished_started\n  FROM public.business_processes_states st2\n  JOIN public.business_processes bp2\n    ON bp2.business_process_id = st2.business_process_id\n  WHERE bp2.n8n_process_name = 'campaign core update'\n   AND st2.finished IS NOT NULL\n  AND st2.company_id=$2\n),\nmain AS (\n  SELECT st.*\n  FROM public.business_processes_states st\n  JOIN public.business_processes bp\n    ON bp.business_process_id = st.business_process_id\n  CROSS JOIN cutoff c\n  WHERE bp.n8n_process_name = 'campaign core update'\n    AND st.company_id=$2\n    AND st.finished IS NULL\n    AND (c.last_finished_started IS NULL OR st.started > c.last_finished_started)\n)\nSELECT\n  s.business_process_state_id,\n  s.business_process_id,\n  s.started,\n  s.finished,\n  s.error_message,\n  s.n8n_workflow_execution_id,\n  s.n8n_workflow_root_execution_id\nFROM main m\nJOIN public.business_processes_states s\n  ON s.n8n_workflow_root_execution_id = m.n8n_workflow_execution_id\nJOIN public.business_processes p\n  ON p.business_process_id = s.business_process_id\nWHERE p.n8n_process_name = $1\nORDER BY s.started desc LIMIT 1;",
+        "options": {
+          "queryReplacement": "=[{{ $json.Checkboxes[0] }},{{ $('On form submission').item.json['Select company id'] }}]"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        288,
+        144
+      ],
+      "id": "d4d42672-f43b-4b89-9169-4ef13fa2c5dd",
+      "name": "Select last execution1",
+      "credentials": {
+        "postgres": {
+          "id": "4YkdFJcdTgzo9hkz",
+          "name": "PGvector"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "business_processes_states",
+          "mode": "list",
+          "cachedResultName": "business_processes_states"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "business_process_state_id": "={{ $json.business_process_state_id }}",
+            "to_terminate": true
+          },
+          "matchingColumns": [
+            "business_process_state_id"
+          ],
+          "schema": [
+            {
+              "id": "business_process_state_id",
+              "displayName": "business_process_state_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "business_process_id",
+              "displayName": "business_process_id",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "started",
+              "displayName": "started",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "finished",
+              "displayName": "finished",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "error_message",
+              "displayName": "error_message",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "tokens_used",
+              "displayName": "tokens_used",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "tokens_used_type",
+              "displayName": "tokens_used_type",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "steps_total",
+              "displayName": "steps_total",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "steps_passed",
+              "displayName": "steps_passed",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "company_id",
+              "displayName": "company_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "error_happened",
+              "displayName": "error_happened",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "n8n_workflow_execution_id",
+              "displayName": "n8n_workflow_execution_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "n8n_workflow_root_execution_id",
+              "displayName": "n8n_workflow_root_execution_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "error_processed",
+              "displayName": "error_processed",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "boolean",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "to_terminate",
+              "displayName": "to_terminate",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "boolean",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        496,
+        176
+      ],
+      "id": "6208ea58-2dc2-4166-8589-3143aebe8992",
+      "name": "update selected execution1",
+      "credentials": {
+        "postgres": {
+          "id": "4YkdFJcdTgzo9hkz",
+          "name": "PGvector"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "completion",
+        "completionTitle": "Selected processes called to terminate",
+        "completionMessage": "Selected processes called to terminate",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.form",
+      "typeVersion": 2.3,
+      "position": [
+        304,
+        -16
+      ],
+      "id": "0262612d-96b2-4fd7-8afe-64338f9adb4e",
+      "name": "Form1",
+      "webhookId": "30a26b1b-db07-4aad-8f8e-07396bcbea16"
     }
   ],
   "connections": {
@@ -578,7 +865,13 @@
           }
         ],
         [],
-        []
+        [
+          {
+            "node": "Execute a SQL query1",
+            "type": "main",
+            "index": 0
+          }
+        ]
       ]
     },
     "Edit Fields": {
@@ -664,6 +957,68 @@
           }
         ]
       ]
+    },
+    "Execute a SQL query1": {
+      "main": [
+        [
+          {
+            "node": "select processes1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items1": {
+      "main": [
+        [
+          {
+            "node": "Form1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Select last execution1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Select last execution1": {
+      "main": [
+        [
+          {
+            "node": "update selected execution1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "update selected execution1": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "select processes1": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
@@ -674,7 +1029,7 @@
     "templateCredsSetupCompleted": true
   },
   "pinData": {},
-  "versionId": "8a83f854-9780-4422-a023-63830bf0b967",
+  "versionId": "48a13b12-dfa2-4d8b-8750-ae0c836555ad",
   "triggerCount": 1,
   "shared": [
     {
