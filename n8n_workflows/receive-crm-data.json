@@ -1,11 +1,27 @@
 {
   "createdAt": "2025-10-07T21:30:12.820Z",
-  "updatedAt": "2025-10-07T21:30:12.820Z",
+  "updatedAt": "2025-10-07T21:31:39.751Z",
   "id": "d4D0Fp4pO6Ch7S7C",
   "name": "Receive CRM data",
-  "active": false,
+  "active": true,
   "isArchived": false,
-  "nodes": [],
+  "nodes": [
+    {
+      "parameters": {
+        "path": "c11cd095-1060-4c9c-87df-2a3c9d34deab",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "6b11411b-3ee6-4590-977a-3dbbd005d09a",
+      "name": "Webhook",
+      "webhookId": "c11cd095-1060-4c9c-87df-2a3c9d34deab"
+    }
+  ],
   "connections": {},
   "settings": {
     "executionOrder": "v1"
@@ -13,8 +29,8 @@
   "staticData": null,
   "meta": null,
   "pinData": {},
-  "versionId": "1d8c8798-bceb-4694-a223-1ed54f3af77b",
-  "triggerCount": 0,
+  "versionId": "13489fb2-7b6b-433e-b9b6-3545a174170b",
+  "triggerCount": 1,
   "shared": [
     {
       "createdAt": "2025-10-07T21:30:12.820Z",
@@ -24,6 +40,5 @@
       "projectId": "spKmbJLU4mvACXIB"
     }
   ],
-  "tags": [],
-  "file_name": "receive-crm-data.json"
+  "tags": []
 }
