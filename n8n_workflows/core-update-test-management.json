@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-10-06T13:25:33.741Z",
-  "updatedAt": "2025-10-07T08:08:53.192Z",
+  "updatedAt": "2025-10-07T08:14:46.472Z",
   "id": "tbijdiaKB74Iaf6O",
   "name": "core update test management",
   "active": true,
@@ -553,6 +553,7 @@
       ],
       "id": "70550b94-02d8-45fa-a47f-91eb644299f1",
       "name": "Execute a SQL query1",
+      "alwaysOutputData": true,
       "credentials": {
         "postgres": {
           "id": "4YkdFJcdTgzo9hkz",
@@ -569,7 +570,7 @@
       "type": "n8n-nodes-base.form",
       "typeVersion": 2.3,
       "position": [
-        -208,
+        0,
         16
       ],
       "id": "65620b46-2b17-4361-82c0-3115196a293c",
@@ -583,7 +584,7 @@
       "type": "n8n-nodes-base.splitInBatches",
       "typeVersion": 3,
       "position": [
-        48,
+        256,
         64
       ],
       "id": "9c85b1a1-5efa-4439-bedb-50c07a8986b0",
@@ -600,7 +601,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        288,
+        496,
         144
       ],
       "id": "d4d42672-f43b-4b89-9169-4ef13fa2c5dd",
@@ -795,7 +796,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        496,
+        704,
         176
       ],
       "id": "6208ea58-2dc2-4166-8589-3143aebe8992",
@@ -817,12 +818,63 @@
       "type": "n8n-nodes-base.form",
       "typeVersion": 2.3,
       "position": [
-        304,
+        512,
         -16
       ],
       "id": "0262612d-96b2-4fd7-8afe-64338f9adb4e",
       "name": "Form1",
       "webhookId": "30a26b1b-db07-4aad-8f8e-07396bcbea16"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "853a96f7-4fc6-496a-bba6-a8c43c4c18f1",
+              "leftValue": "={{ $input.first().json }}",
+              "rightValue": "0",
+              "operator": {
+                "type": "object",
+                "operation": "empty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -240,
+        -16
+      ],
+      "id": "2a16ccd3-5361-46d1-ab97-9201c3340c66",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "operation": "completion",
+        "completionTitle": "No active running processes found",
+        "completionMessage": "No active running processes found",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.form",
+      "typeVersion": 2.3,
+      "position": [
+        -112,
+        176
+      ],
+      "id": "975db984-d2c6-4a93-a6af-dfa6eca6e8be",
+      "name": "Form3",
+      "webhookId": "380a7dc0-609b-4f06-866a-09a8231ad824"
     }
   ],
   "connections": {
@@ -962,7 +1014,7 @@
       "main": [
         [
           {
-            "node": "select processes1",
+            "node": "If",
             "type": "main",
             "index": 0
           }
@@ -1019,6 +1071,24 @@
           }
         ]
       ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Form3",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "select processes1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
@@ -1028,8 +1098,19 @@
   "meta": {
     "templateCredsSetupCompleted": true
   },
-  "pinData": {},
-  "versionId": "48a13b12-dfa2-4d8b-8750-ae0c836555ad",
+  "pinData": {
+    "On form submission": [
+      {
+        "json": {
+          "Select company id": "1",
+          "Please select": "Terminate running process",
+          "submittedAt": "2025-10-07T11:12:51.280+03:00",
+          "formMode": "production"
+        }
+      }
+    ]
+  },
+  "versionId": "1b4c39a1-8182-46ed-96ff-4eb14d026c6a",
   "triggerCount": 1,
   "shared": [
     {
