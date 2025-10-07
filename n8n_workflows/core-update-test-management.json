@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-10-06T13:25:33.741Z",
-  "updatedAt": "2025-10-07T08:30:04.989Z",
+  "updatedAt": "2025-10-07T16:47:22.317Z",
   "id": "tbijdiaKB74Iaf6O",
   "name": "core update test management",
   "active": true,
@@ -483,7 +483,7 @@
               "display": true,
               "type": "dateTime",
               "canBeUsedToMatch": true,
-              "removed": true
+              "removed": false
             },
             {
               "id": "n8n_workflow_execution_id",
@@ -579,8 +579,8 @@
       "type": "n8n-nodes-base.form",
       "typeVersion": 2.3,
       "position": [
-        0,
-        16
+        208,
+        176
       ],
       "id": "65620b46-2b17-4361-82c0-3115196a293c",
       "name": "select processes1",
@@ -593,8 +593,8 @@
       "type": "n8n-nodes-base.splitInBatches",
       "typeVersion": 3,
       "position": [
-        256,
-        64
+        464,
+        224
       ],
       "id": "9c85b1a1-5efa-4439-bedb-50c07a8986b0",
       "name": "Loop Over Items1"
@@ -610,8 +610,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        496,
-        144
+        704,
+        304
       ],
       "id": "d4d42672-f43b-4b89-9169-4ef13fa2c5dd",
       "name": "Select last execution1",
@@ -805,8 +805,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        704,
-        176
+        912,
+        336
       ],
       "id": "6208ea58-2dc2-4166-8589-3143aebe8992",
       "name": "update selected execution1",
@@ -827,8 +827,8 @@
       "type": "n8n-nodes-base.form",
       "typeVersion": 2.3,
       "position": [
-        512,
-        -16
+        720,
+        144
       ],
       "id": "0262612d-96b2-4fd7-8afe-64338f9adb4e",
       "name": "Form1",
@@ -884,6 +884,149 @@
       "id": "975db984-d2c6-4a93-a6af-dfa6eca6e8be",
       "name": "Form3",
       "webhookId": "380a7dc0-609b-4f06-866a-09a8231ad824"
+    },
+    {
+      "parameters": {
+        "operation": "select",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "test_executions",
+          "mode": "list",
+          "cachedResultName": "test_executions"
+        },
+        "returnAll": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -544,
+        400
+      ],
+      "id": "68e95e8c-772c-42b8-80b9-3fc1d8580879",
+      "name": "Select rows from a table",
+      "credentials": {
+        "postgres": {
+          "id": "Hx2VFmUi5WO2K4QX",
+          "name": "Postgres account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "853a96f7-4fc6-496a-bba6-a8c43c4c18f1",
+              "leftValue": "={{ $input.first().json }}",
+              "rightValue": "0",
+              "operator": {
+                "type": "object",
+                "operation": "empty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -336,
+        416
+      ],
+      "id": "22ebdbd5-541e-4993-9ce0-ce72f4781dce",
+      "name": "If1"
+    },
+    {
+      "parameters": {
+        "operation": "completion",
+        "completionTitle": "No active test data found",
+        "completionMessage": "test_executions table is empty",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.form",
+      "typeVersion": 2.3,
+      "position": [
+        -48,
+        368
+      ],
+      "id": "4e9ec738-3019-4647-aba1-b97853011b26",
+      "name": "Form4",
+      "webhookId": "380a7dc0-609b-4f06-866a-09a8231ad824"
+    },
+    {
+      "parameters": {
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "Test data found, are you ready to reset it?",
+              "placeholder": "={{ 'Found ' +$input.all().length+ ' records' }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.form",
+      "typeVersion": 2.3,
+      "position": [
+        -96,
+        544
+      ],
+      "id": "8d2bba0e-cedf-4896-9081-f03d58344bf4",
+      "name": "Form5",
+      "webhookId": "251f28d8-0b66-4097-8457-452ba3821620"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "BEGIN;\n\nWITH ids AS (\n    -- Все уникальные list_id, подлежащие обработке\n    SELECT DISTINCT list_id FROM test_executions\n),\n\n-- 1) Вычитаем сумму origin_weight по каждому minus_word_id\ndeduct AS (\n    UPDATE minus_words m\n    SET weight = m.weight - a.delta\n    FROM (\n        SELECT o.minus_word_id, SUM(o.origin_weight)::integer AS delta\n        FROM minus_words_origin o\n        WHERE EXISTS (SELECT 1 FROM ids i WHERE i.list_id = o.list_id)\n        GROUP BY o.minus_word_id\n    ) a\n    WHERE m.id = a.minus_word_id\n    RETURNING m.id\n),\n\n-- 2) Удаляем строки из minus_words с weight = 0\ndel_mw AS (\n    DELETE FROM minus_words m\n    WHERE m.weight = 0\n    RETURNING m.id\n),\n\n-- 3) Удаляем строки из minus_words_origin по собранным list_id\ndel_mwo AS (\n    DELETE FROM minus_words_origin o\n    USING ids i\n    WHERE o.list_id = i.list_id\n    RETURNING o.minus_word_id\n),\n\n-- 4) Чистим test_executions\nclear_te AS (\n    DELETE FROM test_executions\n    RETURNING list_id\n)\n\n-- 5) Сводка\nSELECT\n  (SELECT count(*) FROM ids)      AS input_list_ids,\n  (SELECT count(*) FROM deduct)   AS updated_minus_words,\n  (SELECT count(*) FROM del_mw)   AS deleted_minus_words_zero_weight,\n  (SELECT count(*) FROM del_mwo)  AS deleted_origin_rows,\n  (SELECT count(*) FROM clear_te) AS cleared_test_executions_rows;\n\nCOMMIT;",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        112,
+        544
+      ],
+      "id": "4985162f-e4c9-40b4-a8f2-8c188cb173ee",
+      "name": "Execute a SQL query2",
+      "credentials": {
+        "postgres": {
+          "id": "Hx2VFmUi5WO2K4QX",
+          "name": "Postgres account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "completion",
+        "completionTitle": "Test data reset executed",
+        "completionMessage": "Test data reset executed",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.form",
+      "typeVersion": 2.3,
+      "position": [
+        320,
+        544
+      ],
+      "id": "bdb5dcb4-c8e0-4b65-82c7-4fc23d992e31",
+      "name": "Form6",
+      "webhookId": "30a26b1b-db07-4aad-8f8e-07396bcbea16"
     }
   ],
   "connections": {
@@ -925,7 +1068,13 @@
             "index": 0
           }
         ],
-        [],
+        [
+          {
+            "node": "Select rows from a table",
+            "type": "main",
+            "index": 0
+          }
+        ],
         [
           {
             "node": "Execute a SQL query1",
@@ -1098,6 +1247,57 @@
           }
         ]
       ]
+    },
+    "Select rows from a table": {
+      "main": [
+        [
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "Form4",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Form5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Form5": {
+      "main": [
+        [
+          {
+            "node": "Execute a SQL query2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute a SQL query2": {
+      "main": [
+        [
+          {
+            "node": "Form6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
@@ -1112,14 +1312,14 @@
       {
         "json": {
           "Select company id": "1",
-          "Please select": "Terminate running process",
-          "submittedAt": "2025-10-07T11:12:51.280+03:00",
+          "Please select": "Reset core update test data for report",
+          "submittedAt": "2025-10-07T19:43:55.977+03:00",
           "formMode": "production"
         }
       }
     ]
   },
-  "versionId": "313ef620-0565-4869-b8a1-760b60d33c0f",
+  "versionId": "d31c8834-3cae-47d4-9ac8-0cd176c6b18b",
   "triggerCount": 1,
   "shared": [
     {
