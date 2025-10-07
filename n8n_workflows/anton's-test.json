@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-22T14:01:12.675Z",
-  "updatedAt": "2025-10-07T20:38:00.989Z",
+  "updatedAt": "2025-10-07T20:56:49.966Z",
   "id": "BKfU7GhWdir6g3Ib",
   "name": "Anton's test",
   "active": true,
@@ -37,18 +37,42 @@
     },
     {
       "parameters": {
-        "path": "2677a294-d2c6-4727-9afc-10649b0eeeec",
+        "jsCode": "// вход тот самый body, который ты уже парсишь\nconst data = typeof $json.body === 'string' ? JSON.parse($json.body) : $json;\n\n// полезно захватить IP/UA для дополнительной корреляции\nconst headers = $json.headers || {};\nconst ip = headers['x-forwarded-for'] || headers['cf-connecting-ip'] || headers['x-real-ip'] || '';\nconst ua = headers['user-agent'] || '';\n\nconst now = Date.now();\n\nreturn [{\n  json: {\n    status: 'pending',\n    ts_site: now,                    // timestamp прихода с сайта (ms)\n    yclid: data.yclid || '',\n    etext: data.etext || '',\n    utm_source: data.utm_source || '',\n    utm_medium: data.utm_medium || '',\n    utm_campaign: data.utm_campaign || '',\n    referrer: data.referrer || '',\n    page_url: data.page_url || '',\n    ip,\n    ua,\n    raw_site: data                    // сохраняем всё целиком на всякий случай\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        496,
+        240
+      ],
+      "id": "99b98e53-24df-4c59-98e8-0b6d3120d8f3",
+      "name": "Code in JavaScript1"
+    },
+    {
+      "parameters": {
+        "dataTableId": {
+          "__rl": true,
+          "mode": "list",
+          "value": ""
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
         "options": {}
       },
-      "type": "n8n-nodes-base.webhook",
-      "typeVersion": 2.1,
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1,
       "position": [
-        272,
-        464
+        704,
+        240
       ],
-      "id": "e51f6707-c240-4f79-8a84-671e21879040",
-      "name": "Webhook",
-      "webhookId": "2677a294-d2c6-4727-9afc-10649b0eeeec"
+      "id": "7eb21cf2-3466-431a-ae78-31ccbaeca46e",
+      "name": "Insert row"
     }
   ],
   "connections": {
@@ -57,6 +81,28 @@
         [
           {
             "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript1": {
+      "main": [
+        [
+          {
+            "node": "Insert row",
             "type": "main",
             "index": 0
           }
@@ -72,8 +118,8 @@
     "templateCredsSetupCompleted": true
   },
   "pinData": {},
-  "versionId": "b58c5380-995c-4463-b228-1abaae0c3370",
-  "triggerCount": 2,
+  "versionId": "1fc340f3-78c4-4aff-9039-b55dd24e62b5",
+  "triggerCount": 1,
   "shared": [
     {
       "createdAt": "2025-09-22T14:01:12.675Z",
