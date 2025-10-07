@@ -1,0 +1,36 @@
+{
+  "createdAt": "2025-10-07T08:32:21.426Z",
+  "updatedAt": "2025-10-07T08:32:24.706Z",
+  "id": "kqyTJoKlpkIe99A2",
+  "name": "company names variants post processing",
+  "active": false,
+  "isArchived": false,
+  "nodes": [],
+  "connections": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": {},
+  "versionId": "fd5eecae-7a40-461a-95bd-7b905965dbae",
+  "triggerCount": 0,
+  "shared": [
+    {
+      "createdAt": "2025-10-07T08:32:21.426Z",
+      "updatedAt": "2025-10-07T08:32:21.426Z",
+      "role": "workflow:owner",
+      "workflowId": "kqyTJoKlpkIe99A2",
+      "projectId": "spKmbJLU4mvACXIB"
+    }
+  ],
+  "tags": [
+    {
+      "createdAt": "2025-10-07T08:31:00.329Z",
+      "updatedAt": "2025-10-07T08:31:00.329Z",
+      "id": "mr0GomgPqPG1HJmt",
+      "name": "core management"
+    }
+  ],
+  "file_name": "company-names-variants-post-processing.json"
+}
