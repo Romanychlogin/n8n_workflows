@@ -1,49 +1,11 @@
 {
   "createdAt": "2025-09-22T14:01:12.675Z",
-  "updatedAt": "2025-10-01T22:08:37.154Z",
+  "updatedAt": "2025-10-07T20:38:00.989Z",
   "id": "BKfU7GhWdir6g3Ib",
   "name": "Anton's test",
   "active": true,
   "isArchived": false,
   "nodes": [
-    {
-      "parameters": {
-        "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nfor (const item of $input.all()) {\n  item.json.myNewField = 1;\n}\n\nreturn $input.all();"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        464,
-        96
-      ],
-      "id": "f755019e-f8cf-437d-9ad2-ddb323c9aabf",
-      "name": "отправить конверсию в ЯМ"
-    },
-    {
-      "parameters": {},
-      "type": "n8n-nodes-base.merge",
-      "typeVersion": 3.2,
-      "position": [
-        272,
-        112
-      ],
-      "id": "c3353c05-1b78-4eeb-9cdf-ca9134967b68",
-      "name": "Merge"
-    },
-    {
-      "parameters": {
-        "unit": "minutes"
-      },
-      "type": "n8n-nodes-base.wait",
-      "typeVersion": 1.1,
-      "position": [
-        368,
-        448
-      ],
-      "id": "a2e24bfe-457e-4065-a6d8-5410c6dd7329",
-      "name": "Wait",
-      "webhookId": "54d5c414-68c9-4d08-9633-21a068fc57ae"
-    },
     {
       "parameters": {
         "httpMethod": "POST",
@@ -53,31 +15,48 @@
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2.1,
       "position": [
-        160,
-        448
+        80,
+        240
       ],
       "id": "25b3119f-f038-43f2-aecf-bfb6dd75516b",
       "name": "Webhook для анкеты на сайте",
       "webhookId": "f82269ff-704f-4478-95d1-f1678f82b1f2"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Вход: webhook отправил payload в виде строки JSON\nconst data = JSON.parse($json.body);\n\n// Разложим по отдельным полям\nreturn [\n  {\n    json: {\n      utm_source: data.utm_source || '',\n      utm_medium: data.utm_medium || '',\n      utm_campaign: data.utm_campaign || '',\n      utm_term: data.utm_term || '',\n      utm_content: data.utm_content || '',\n      etext: data.etext || '',\n      yclid: data.yclid || '',\n      gclid: data.gclid || '',\n      fbclid: data.fbclid || '',\n      msclkid: data.msclkid || '',\n      referrer: data.referrer || '',\n      page_url: data.page_url || '',\n      page_title: data.page_title || '',\n      is_yandex_direct: data.is_yandex_direct || false,\n      yandex_reason: data.yandex_reason || '',\n      decided_source_id: data.decided_source_id || '',\n      ts: data.ts || ''\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        288,
+        240
+      ],
+      "id": "a5ce8961-8e00-4ffa-b9ed-115560f25de7",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "path": "2677a294-d2c6-4727-9afc-10649b0eeeec",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        272,
+        464
+      ],
+      "id": "e51f6707-c240-4f79-8a84-671e21879040",
+      "name": "Webhook",
+      "webhookId": "2677a294-d2c6-4727-9afc-10649b0eeeec"
     }
   ],
   "connections": {
-    "Merge": {
-      "main": [
-        [
-          {
-            "node": "отправить конверсию в ЯМ",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Webhook для анкеты на сайте": {
       "main": [
         [
           {
-            "node": "Wait",
+            "node": "Code in JavaScript",
             "type": "main",
             "index": 0
           }
@@ -93,8 +72,8 @@
     "templateCredsSetupCompleted": true
   },
   "pinData": {},
-  "versionId": "f59426eb-2816-4a90-a94e-9128c326d7c4",
-  "triggerCount": 1,
+  "versionId": "b58c5380-995c-4463-b228-1abaae0c3370",
+  "triggerCount": 2,
   "shared": [
     {
       "createdAt": "2025-09-22T14:01:12.675Z",
