@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-10-06T13:25:33.741Z",
-  "updatedAt": "2025-10-07T08:14:46.472Z",
+  "updatedAt": "2025-10-07T08:30:04.989Z",
   "id": "tbijdiaKB74Iaf6O",
   "name": "core update test management",
   "active": true,
@@ -29,7 +29,8 @@
     },
     {
       "parameters": {
-        "formTitle": "Test data management",
+        "authentication": "basicAuth",
+        "formTitle": "Test data management for the core updates",
         "formFields": {
           "values": [
             {
@@ -69,7 +70,9 @@
             }
           ]
         },
-        "options": {}
+        "options": {
+          "appendAttribution": false
+        }
       },
       "type": "n8n-nodes-base.formTrigger",
       "typeVersion": 2.3,
@@ -79,7 +82,13 @@
       ],
       "id": "35df9164-20fc-4133-9a8b-199af5e35691",
       "name": "On form submission",
-      "webhookId": "275771f9-df29-4b85-b49d-9aec026e6b2f"
+      "webhookId": "275771f9-df29-4b85-b49d-9aec026e6b2f",
+      "credentials": {
+        "httpBasicAuth": {
+          "id": "2iefbzJmmrr61cRi",
+          "name": "admin_creds"
+        }
+      }
     },
     {
       "parameters": {
@@ -1110,7 +1119,7 @@
       }
     ]
   },
-  "versionId": "1b4c39a1-8182-46ed-96ff-4eb14d026c6a",
+  "versionId": "313ef620-0565-4869-b8a1-760b60d33c0f",
   "triggerCount": 1,
   "shared": [
     {
@@ -1121,5 +1130,12 @@
       "projectId": "spKmbJLU4mvACXIB"
     }
   ],
-  "tags": []
+  "tags": [
+    {
+      "createdAt": "2025-10-06T13:05:59.145Z",
+      "updatedAt": "2025-10-06T13:05:59.145Z",
+      "id": "Fu9Wfx1UCGLuvAf0",
+      "name": "test data"
+    }
+  ]
 }
