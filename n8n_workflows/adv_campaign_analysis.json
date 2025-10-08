@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-07-18T08:31:54.459Z",
-  "updatedAt": "2025-10-08T09:53:40.271Z",
+  "updatedAt": "2025-10-08T11:27:36.179Z",
   "id": "wZGLxMCCmOnDJZ1o",
   "name": "ADV_campaign_analysis",
   "active": false,
@@ -1527,68 +1527,6 @@
     },
     {
       "parameters": {
-        "resource": "file",
-        "operation": "get",
-        "owner": {
-          "__rl": true,
-          "value": "Romanychlogin",
-          "mode": "name"
-        },
-        "repository": {
-          "__rl": true,
-          "value": "n8n_prompts",
-          "mode": "list",
-          "cachedResultName": "n8n_prompts",
-          "cachedResultUrl": "https://github.com/Romanychlogin/n8n_prompts"
-        },
-        "filePath": "minus_words_list_narrow_down.txt",
-        "additionalParameters": {}
-      },
-      "type": "n8n-nodes-base.github",
-      "typeVersion": 1.1,
-      "position": [
-        160,
-        -608
-      ],
-      "id": "f6ca719d-ea97-4fb1-a468-dd69389ce2dc",
-      "name": "Get a file1",
-      "webhookId": "77e7d794-90e5-4e94-94bd-1b637cecf31b",
-      "credentials": {
-        "githubApi": {
-          "id": "JQAFAcMNS9Ylyb0V",
-          "name": "GitHub account"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "operation": "text",
-        "options": {}
-      },
-      "type": "n8n-nodes-base.extractFromFile",
-      "typeVersion": 1,
-      "position": [
-        368,
-        -608
-      ],
-      "id": "d4a0a8ed-9c3d-4921-9fd5-b31ea38e9f2f",
-      "name": "Extract from File"
-    },
-    {
-      "parameters": {
-        "jsCode": "// Function-Node (Run Once)\nconst workflowData = $getWorkflowStaticData('global');\nworkflowData.my_prompt_minus = items[0].json;\nreturn items;"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        576,
-        -608
-      ],
-      "id": "a5a8ff36-5943-474f-8d7e-0dff776dddfd",
-      "name": "Code2"
-    },
-    {
-      "parameters": {
         "jsCode": "// Достаём массив competitors\n\n\n// Разворачиваем каждый объект в отдельный item\nreturn $json.non_matches.map((c, index) => ({\n  json: {\n    index,\n    minus_word: c.toLowerCase(),\n    list_id:$('Loop Over Items').last().json.list_id    \n  }\n}));"
       },
       "type": "n8n-nodes-base.code",
@@ -2407,11 +2345,6 @@
             "node": "Mark_workwlow_started",
             "type": "main",
             "index": 0
-          },
-          {
-            "node": "Get a file1",
-            "type": "main",
-            "index": 0
           }
         ]
       ]
@@ -2644,28 +2577,6 @@
         [
           {
             "node": "Set API JSON1",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Get a file1": {
-      "main": [
-        [
-          {
-            "node": "Extract from File",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Extract from File": {
-      "main": [
-        [
-          {
-            "node": "Code2",
             "type": "main",
             "index": 0
           }
@@ -2938,7 +2849,7 @@
       }
     ]
   },
-  "versionId": "df7dfb89-457d-47bd-b860-4cf39f299dc4",
+  "versionId": "cd70aed4-941f-4bab-ac6d-144ce7beb11e",
   "triggerCount": 0,
   "shared": [
     {
