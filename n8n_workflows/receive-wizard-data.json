@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-22T14:01:12.675Z",
-  "updatedAt": "2025-10-07T22:18:36.936Z",
+  "updatedAt": "2025-10-08T08:46:13.749Z",
   "id": "BKfU7GhWdir6g3Ib",
   "name": "Receive wizard data",
   "active": true,
@@ -173,6 +173,21 @@
       ],
       "id": "e254c502-cf6c-4001-8928-80bc4122d443",
       "name": "Insert row"
+    },
+    {
+      "parameters": {
+        "content": "## website visitor процесс\nСлушает webhook, который отправляется при открытии визарда записи (добавлен при помощи тег менеджера). Получает все данные ЯД посетителя (либо понимает, что их нет) и сохраняет их в базу Site leads ",
+        "height": 192,
+        "width": 400
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        48,
+        16
+      ],
+      "typeVersion": 1,
+      "id": "89e8cc60-be1d-4168-b653-ff0f5ce1ad93",
+      "name": "Sticky Note"
     }
   ],
   "connections": {
@@ -207,7 +222,7 @@
     "templateCredsSetupCompleted": true
   },
   "pinData": {},
-  "versionId": "1c02c2bd-6e19-415b-b883-ab85f89f70c1",
+  "versionId": "99a5f8b4-b52c-4fbe-af5b-9a6660bba110",
   "triggerCount": 1,
   "shared": [
     {
