@@ -1,0 +1,52 @@
+{
+  "createdAt": "2025-10-08T11:54:45.682Z",
+  "updatedAt": "2025-10-08T11:58:32.063Z",
+  "id": "0JY4BXCUoUM4RzPE",
+  "name": "Check if keyword need to be restricted",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "content": "Следующая логика:\nСмотрим по всем загруженным отчетам клиента га момент и не помеченным словам. Если было больше 20 запросов где было показано это слово (used_keyword) и больше 80% нерелевантные слова то 1)берем слово в кавычки в Яндекс Директ - нужно API\n2)помечаем у себя(отдельная таблица)?",
+        "height": 208,
+        "width": 352
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -1552,
+        -608
+      ],
+      "id": "c9886e56-b3f7-4c26-961e-95cf0942472b",
+      "name": "Sticky Note"
+    }
+  ],
+  "connections": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": {},
+  "versionId": "c6e2e30c-c3a9-46b1-9cba-9ea6f604d484",
+  "triggerCount": 0,
+  "shared": [
+    {
+      "createdAt": "2025-10-08T11:54:45.682Z",
+      "updatedAt": "2025-10-08T11:54:45.682Z",
+      "role": "workflow:owner",
+      "workflowId": "0JY4BXCUoUM4RzPE",
+      "projectId": "spKmbJLU4mvACXIB"
+    }
+  ],
+  "tags": [
+    {
+      "createdAt": "2025-10-08T11:53:55.048Z",
+      "updatedAt": "2025-10-08T11:53:55.048Z",
+      "id": "bfaXXdoIW5NToPfb",
+      "name": "post procesing"
+    }
+  ],
+  "file_name": "check-if-keyword-need-to-be-restricted.json"
+}
