@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-07-18T08:31:54.459Z",
-  "updatedAt": "2025-10-08T06:53:04.294Z",
+  "updatedAt": "2025-10-08T07:11:39.486Z",
   "id": "wZGLxMCCmOnDJZ1o",
   "name": "ADV_campaign_analysis",
   "active": false,
@@ -297,8 +297,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        10400,
-        -1664
+        9024,
+        -1696
       ],
       "id": "233a9fb2-ccfc-4fbd-a2af-5630a61c7a22",
       "name": "Помечаем что ключ совпадает",
@@ -513,8 +513,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        10000,
-        -768
+        9024,
+        -672
       ],
       "id": "8200d389-0be7-463e-b356-76cf1a2d659f",
       "name": "update",
@@ -553,8 +553,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        7408,
-        -464
+        6288,
+        -144
       ],
       "id": "78d0f369-bc02-4a48-84af-389ac2c2f8cf",
       "name": "Обработка ответа AI"
@@ -793,8 +793,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        9680,
-        -1488
+        8304,
+        -1520
       ],
       "id": "e95a4440-545c-4788-a36f-4a8649b6dcf9",
       "name": "Помечаем что найден конкурент",
@@ -812,8 +812,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        6448,
-        -96
+        5600,
+        -32
       ],
       "id": "1fe77e75-c3f7-45c6-9745-7d60d1a87ec1",
       "name": "Set API JSON"
@@ -832,8 +832,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        6656,
-        -112
+        5808,
+        -48
       ],
       "id": "5e99e27e-8a7f-4aa5-9bf8-ac03d750250f",
       "name": "HTTP Request",
@@ -869,8 +869,8 @@
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1.2,
       "position": [
-        8112,
-        -352
+        7184,
+        -16
       ],
       "id": "5d7ed225-61eb-40cf-86f8-cf487e481e1c",
       "name": "Execute Workflow"
@@ -931,8 +931,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        8608,
-        -352
+        7472,
+        -32
       ],
       "id": "32bea20b-bd2e-4a99-83b0-e9dce5af9140",
       "name": "If minuses array is empty"
@@ -965,6 +965,12 @@
               "name": "threshhold",
               "value": "={{ $json.threshhold }}",
               "type": "number"
+            },
+            {
+              "id": "3450e533-6daf-4160-b015-542138424177",
+              "name": "report_id",
+              "value": "={{ $json.import_id }}",
+              "type": "string"
             }
           ]
         },
@@ -1087,8 +1093,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        11520,
-        48
+        10432,
+        272
       ],
       "id": "56bff92d-817b-4fb5-bf93-e3fd6d772376",
       "name": "Mark_workflow_passed_steps",
@@ -1107,8 +1113,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        11280,
-        64
+        10192,
+        288
       ],
       "id": "7a3d33ad-9f12-4f6f-9b09-6d67a00e76a8",
       "name": "Get current step and tokens saved"
@@ -1140,8 +1146,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        11904,
-        80
+        10816,
+        304
       ],
       "id": "9114c887-564f-4e0f-b89d-99a381a7bdde",
       "name": "If"
@@ -1153,8 +1159,8 @@
       "type": "n8n-nodes-base.stopAndError",
       "typeVersion": 1,
       "position": [
-        12144,
-        -48
+        11056,
+        176
       ],
       "id": "fdab4be5-884f-4a7f-97b4-8c7ae8b22898",
       "name": "Stop and Error"
@@ -1187,8 +1193,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        11728,
-        48
+        10640,
+        272
       ],
       "id": "3b984213-9b8c-4d82-8b9f-38dcc24fcdc1",
       "name": "check if termination is requested",
@@ -1290,8 +1296,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        9712,
-        -464
+        8368,
+        -288
       ],
       "id": "6bf663d1-4db2-412c-aa73-d7943501ee9f",
       "name": "no relevant",
@@ -1321,34 +1327,36 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        8688,
-        -960
+        8032,
+        -912
       ],
       "id": "e75eef70-59a7-4697-8b04-373c54883a70",
       "name": "mark to add"
     },
     {
       "parameters": {
-        "jsCode": "const workflowData = $getWorkflowStaticData('global');\nlet my_prompt = workflowData.my_prompt.data;\n\nfor (const item of $input.all()) {\n  item.json.my_prompt = my_prompt.replaceAll(\"{{service_description}}\",item.json.service_name +' ' + item.json.service_description).replaceAll(\"{{key_word}}\", $('Loop Over Items').last().json.key_word).replaceAll(\"{{company_name}}\", item.json.company_name);\n}\n\nreturn $input.all();"
+        "jsCode": "const workflowData = $getWorkflowStaticData('global');\nlet my_prompt = workflowData.my_prompt.data;\n\nfor (const item of $input.all()) {\n  item.json.my_prompt = my_prompt.replaceAll(\"{{service_description}}\",$('Loop Over Items').last().json.service_name +' ' + $('Loop Over Items').last().json.service_description).replaceAll(\"{{key_word}}\", $('Loop Over Items').last().json.key_word).replaceAll(\"{{company_name}}\", $('Loop Over Items').last().json.company_name);\n}\n\nreturn $input.all();"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        6256,
-        -80
+        5408,
+        -16
       ],
       "id": "65af494d-9402-4aab-abec-c8f3050500ac",
       "name": "Set prompt"
     },
     {
       "parameters": {
-        "content": "add company id"
+        "content": "ASK AI if the phrase is relevant",
+        "height": 288,
+        "width": 1056
       },
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        5840,
-        208
+        5088,
+        -128
       ],
       "id": "e4d61d2a-8f5d-4a77-be30-8d8fcbc6d395",
       "name": "Sticky Note6"
@@ -1369,9 +1377,9 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "select * from current_list where report_id=(select max(import_id) from report_import where company_id=$1) and resolution is null\n",
+        "query": "select lst.*,c.company_name,cs.service_name, cs.service_description \nfrom current_list lst,companies c, company_services cs \nwhere lst.report_id=$1 and lst.service_id=cs.service_id and lst.company_id = cs.company_id and c.company_id=cs.company_id and lst.resolution is null\n",
         "options": {
-          "queryReplacement": "={{ $('set variables').item.json.company_id }}"
+          "queryReplacement": "={{ $('set variables').item.json.report_id }}"
         }
       },
       "type": "n8n-nodes-base.postgres",
@@ -1419,8 +1427,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        7664,
-        -368
+        6816,
+        -16
       ],
       "id": "828b3288-b068-4d7e-8518-4fb483913b3e",
       "name": "set input params"
@@ -1432,8 +1440,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        8112,
-        -32
+        4928,
+        960
       ],
       "id": "391c2166-e3d3-4f7d-b266-03511d308753",
       "name": "prepare for SQL"
@@ -1449,8 +1457,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        8320,
-        -32
+        5136,
+        960
       ],
       "id": "f25eddc8-852a-4b9e-ba74-d205c9cc2de1",
       "name": "filter by existing minus words",
@@ -1468,8 +1476,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        8800,
-        -64
+        5616,
+        928
       ],
       "id": "04a89737-a544-41b1-9595-5bf87fd07fb5",
       "name": "Set API JSON1"
@@ -1488,8 +1496,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        9024,
-        -64
+        5840,
+        928
       ],
       "id": "32c90372-c72f-4ccb-857d-c989ec8918a3",
       "name": "HTTP Request1",
@@ -1510,8 +1518,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        8608,
-        -64
+        5424,
+        928
       ],
       "id": "b215a0dc-2fdd-4a42-a694-42e94a46d34c",
       "name": "Set prompt1"
@@ -1585,8 +1593,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        9008,
-        -288
+        7744,
+        64
       ],
       "id": "2f169d1d-9f54-4e14-8d57-39373804f250",
       "name": "map_minus_words"
@@ -1598,8 +1606,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        9216,
-        16
+        6032,
+        1008
       ],
       "id": "f9009c6a-6a7e-4c66-b8a2-c41c8b83d941",
       "name": "minus_words_array"
@@ -1611,8 +1619,8 @@
       "type": "n8n-nodes-base.merge",
       "typeVersion": 3.2,
       "position": [
-        10400,
-        -1072
+        9024,
+        -1104
       ],
       "id": "e513fecc-579d-47a2-9a2b-aaac244d7f15",
       "name": "Merge1"
@@ -1730,8 +1738,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        9728,
-        -1264
+        8352,
+        -1296
       ],
       "id": "05ffb772-d578-42fc-9520-f57c65b6ff00",
       "name": "Insert minus words from Competitors",
@@ -1770,48 +1778,11 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        9008,
-        -1232
+        7632,
+        -1264
       ],
       "id": "d39e81ed-4fb4-493a-b400-dee069a12b96",
       "name": "if not exact competitor match"
-    },
-    {
-      "parameters": {
-        "includeOtherFields": true,
-        "options": {}
-      },
-      "type": "n8n-nodes-base.set",
-      "typeVersion": 3.4,
-      "position": [
-        5984,
-        -64
-      ],
-      "id": "bd1dae7e-1eb7-4c72-b91a-c3fd1aaefec4",
-      "name": "Set service parameters"
-    },
-    {
-      "parameters": {
-        "operation": "executeQuery",
-        "query": "select c.company_name,cs.service_name, cs.service_description from companies c, company_services cs where  cs.service_id=$1 and cs.company_id=$2 and c.company_id=$2",
-        "options": {
-          "queryReplacement": "=[{{$('Loop Over Items').last().json.service_id}},{{$('Loop Over Items').last().json.company_id}}]"
-        }
-      },
-      "type": "n8n-nodes-base.postgres",
-      "typeVersion": 2.6,
-      "position": [
-        5616,
-        -64
-      ],
-      "id": "53be7ee3-e874-48f6-8f6a-019e70e9006c",
-      "name": "get service data",
-      "credentials": {
-        "postgres": {
-          "id": "Hx2VFmUi5WO2K4QX",
-          "name": "Postgres account 2"
-        }
-      }
     },
     {
       "parameters": {
@@ -1827,8 +1798,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        9984,
-        -176
+        8768,
+        48
       ],
       "id": "423755a8-79d5-4e97-8b3e-dfa845ed5154",
       "name": "Get embedding",
@@ -1851,8 +1822,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        10240,
-        -176
+        9024,
+        48
       ],
       "id": "962f418d-b31e-4b98-9bb5-1d1df41b4534",
       "name": "Insert minus words1",
@@ -1870,8 +1841,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        9776,
-        -176
+        8560,
+        48
       ],
       "id": "f068e410-e03b-4a05-b110-546c0fa908b3",
       "name": "Set API JSON2"
@@ -1887,8 +1858,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        10464,
-        -176
+        9248,
+        48
       ],
       "id": "885246fc-6be8-46c1-ab9c-6371a36ba425",
       "name": "Execute a SQL query",
@@ -1908,8 +1879,8 @@
       "type": "n8n-nodes-base.splitInBatches",
       "typeVersion": 3,
       "position": [
-        9392,
-        -256
+        8176,
+        -32
       ],
       "id": "b3afb7b9-8747-4a4a-bc16-db74e225c497",
       "name": "Loop Over Items1"
@@ -1932,8 +1903,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        9200,
-        -272
+        7984,
+        -48
       ],
       "id": "01b08a50-3401-4bd7-a074-f4ea0a2f0d44",
       "name": "set first_item1"
@@ -1956,21 +1927,23 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        9584,
-        -176
+        8368,
+        48
       ],
       "id": "8eaa9362-716d-4865-86fd-b8fe47cf7390",
       "name": "reset first_item"
     },
     {
       "parameters": {
-        "content": "add step for minus_words!!!"
+        "content": "Check vs minus words",
+        "height": 352,
+        "width": 624
       },
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        2464,
-        -112
+        3232,
+        -224
       ],
       "id": "62d94be7-eee9-440e-941d-2ea4507845a3",
       "name": "Sticky Note7"
@@ -2108,6 +2081,66 @@
       ],
       "id": "db6e3563-dd82-4416-b389-f1af5609931f",
       "name": "set input"
+    },
+    {
+      "parameters": {
+        "content": "Check vs competitors",
+        "height": 352,
+        "width": 624
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        4064,
+        -208
+      ],
+      "id": "21e76d24-b895-4efb-a714-5b46327f62e7",
+      "name": "Sticky Note8"
+    },
+    {
+      "parameters": {
+        "content": "For the future reusse",
+        "height": 672,
+        "width": 1664
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        4688,
+        624
+      ],
+      "id": "fa699dc5-c045-4709-8a03-6b8ea7926957",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "content": "get possible minus words filtered by the content",
+        "height": 304,
+        "width": 784
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        6624,
+        -96
+      ],
+      "id": "ac949b77-9d7a-4054-a66b-d2caad3c75f8",
+      "name": "Sticky Note4"
+    },
+    {
+      "parameters": {
+        "content": "save minus words data",
+        "height": 496,
+        "width": 1936
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        7712,
+        -128
+      ],
+      "id": "ec7e97a5-c8ee-4dfd-bcbd-c20a9e665c18",
+      "name": "Sticky Note5"
     }
   ],
   "connections": {
@@ -2448,7 +2481,7 @@
       "main": [
         [
           {
-            "node": "get service data",
+            "node": "Set prompt",
             "type": "main",
             "index": 0
           }
@@ -2665,28 +2698,6 @@
         ]
       ]
     },
-    "Set service parameters": {
-      "main": [
-        [
-          {
-            "node": "Set prompt",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "get service data": {
-      "main": [
-        [
-          {
-            "node": "Set service parameters",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Get embedding": {
       "main": [
         [
@@ -2874,7 +2885,7 @@
       }
     ]
   },
-  "versionId": "17510d9f-6923-4eca-9895-a7db18f5fd1b",
+  "versionId": "d464acd6-90bd-450b-bec6-920cb227057f",
   "triggerCount": 0,
   "shared": [
     {
