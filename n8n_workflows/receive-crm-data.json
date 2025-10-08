@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-10-07T21:30:12.820Z",
-  "updatedAt": "2025-10-07T22:45:00.073Z",
+  "updatedAt": "2025-10-08T08:39:04.101Z",
   "id": "d4D0Fp4pO6Ch7S7C",
   "name": "Receive CRM data",
   "active": true,
@@ -58,8 +58,8 @@
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1,
       "position": [
-        208,
-        160
+        176,
+        0
       ],
       "id": "78fd246c-1fe1-47a3-981d-237c516e655e",
       "name": "Get row(s)"
@@ -244,8 +244,8 @@
           "conditions": [
             {
               "id": "b0dfc800-13f4-472f-aef1-ebd612ae2789",
-              "leftValue": "",
-              "rightValue": "",
+              "leftValue": "matched",
+              "rightValue": "true",
               "operator": {
                 "type": "string",
                 "operation": "equals",
@@ -319,7 +319,7 @@
   "staticData": null,
   "meta": null,
   "pinData": {},
-  "versionId": "61ee617a-2cbd-4296-9afa-72dcc39dbb1d",
+  "versionId": "389635f9-13cc-41e0-a64f-07e1cc93d071",
   "triggerCount": 1,
   "shared": [
     {
