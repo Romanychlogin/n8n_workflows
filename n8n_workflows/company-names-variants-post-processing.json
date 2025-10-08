@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-10-07T08:32:21.426Z",
-  "updatedAt": "2025-10-07T08:32:24.706Z",
+  "updatedAt": "2025-10-08T11:54:17.913Z",
   "id": "kqyTJoKlpkIe99A2",
   "name": "company names variants post processing",
   "active": false,
@@ -13,7 +13,7 @@
   "staticData": null,
   "meta": null,
   "pinData": {},
-  "versionId": "fd5eecae-7a40-461a-95bd-7b905965dbae",
+  "versionId": "709cc964-29d4-4bda-9b23-65a596822e5e",
   "triggerCount": 0,
   "shared": [
     {
@@ -26,10 +26,10 @@
   ],
   "tags": [
     {
-      "createdAt": "2025-10-07T08:31:00.329Z",
-      "updatedAt": "2025-10-07T08:31:00.329Z",
-      "id": "mr0GomgPqPG1HJmt",
-      "name": "core management"
+      "createdAt": "2025-10-08T11:53:55.048Z",
+      "updatedAt": "2025-10-08T11:53:55.048Z",
+      "id": "bfaXXdoIW5NToPfb",
+      "name": "post procesing"
     }
   ]
 }
