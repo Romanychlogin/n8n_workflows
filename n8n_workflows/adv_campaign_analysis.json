@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-07-18T08:31:54.459Z",
-  "updatedAt": "2025-10-08T12:08:45.023Z",
+  "updatedAt": "2025-10-08T12:16:14.031Z",
   "id": "wZGLxMCCmOnDJZ1o",
   "name": "ADV_campaign_analysis",
   "active": false,
@@ -2077,13 +2077,13 @@
     },
     {
       "parameters": {
-        "content": "Добавить еще сохранение в  competitor_name_variants.\nА надо? Для переиспользования в других клиентах надо\n"
+        "content": "Добавить еще сохранение в  competitor_name_variants.\nА надо? Для переиспользования в других клиентах надо\nДля этого надо добавить возврат competitor_id в Check VS company name SUB"
       },
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        8736,
-        -1424
+        8816,
+        -1360
       ],
       "id": "1210da56-1449-4a58-a664-1e2884ae393b",
       "name": "Sticky Note9"
@@ -2855,7 +2855,7 @@
       }
     ]
   },
-  "versionId": "6049c149-6e35-43b4-a4aa-333e174acd39",
+  "versionId": "d14d46d5-6b70-4fac-96d1-106089af031b",
   "triggerCount": 0,
   "shared": [
     {
