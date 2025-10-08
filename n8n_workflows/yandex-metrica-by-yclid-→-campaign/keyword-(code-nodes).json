@@ -1,0 +1,158 @@
+{
+  "createdAt": "2025-10-08T09:08:30.208Z",
+  "updatedAt": "2025-10-08T09:08:30.208Z",
+  "id": "NtVjY3CUxz0Ogiyo",
+  "name": "Yandex Metrica by yclid → campaign/keyword (Code nodes)",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "d07a4e08-2457-47b6-b162-52dec6aa994b",
+      "name": "Manual Trigger",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "fields": {
+          "values": [
+            {
+              "name": "yclid",
+              "type": "numberValue"
+            },
+            {
+              "name": "MetricaID",
+              "type": "numberValue",
+              "numberValue": "85745759"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "2ed91478-d20b-4f97-a7cd-176fabea15f5",
+      "name": "Set • Input",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3,
+      "position": [
+        224,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Разворачиваем массив yclid в отдельные items\nconst y = $json.yclid;\nif (Array.isArray(y)) {\n  return y.map(v => ({ json: { yclid: String(v), counter_id: $json.counter_id, oauth_token: $json.oauth_token } }));\n}\nreturn [{ json: { yclid: String($json.yclid), counter_id: $json.counter_id, oauth_token: $json.oauth_token } }];"
+      },
+      "id": "69c3769b-c4c0-4bb3-a0b1-f62f4692afd1",
+      "name": "Code • Expand yclid",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        448,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://api-metrika.yandex.net/stat/v1/data",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {}
+          ]
+        },
+        "options": {}
+      },
+      "id": "3dbf9a3e-29b1-4010-a8ee-82e3590c9a47",
+      "name": "HTTP Request • Metrica Reports",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        688,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Плоский результат из Reports API\nconst yclid = $json.yclid;\nconst status = $json.statusCode;\nconst body = $json.body;\n\nif (status !== 200) {\n  return [{ json: { yclid, error: true, status, body } }];\n}\n\nconst rows = (body && body.data) ? body.data : [];\nif (!rows.length) {\n  return [{ json: { yclid, found: false } }];\n}\n\nreturn rows.map(row => {\n  const dims = row.dimensions || [];\n  const map = {};\n  for (const d of dims) {\n    const key = d.dimension?.name || d.name || d.id;\n    map[key] = d.name || d.id || null;\n  }\n  return {\n    json: {\n      yclid,\n      found: true,\n      trafficSource: map['ym:s:lastTrafficSource'] ?? null,\n      orderName: map['ym:s:lastDirectClickOrder'] ?? null,\n      campaignName: map['ym:s:lastDirectClickCampaign'] ?? null,\n      banner: map['ym:s:lastDirectClickBanner'] ?? null,\n      keyword: map['ym:s:lastDirectClickQuery'] ?? null,\n      raw: row\n    }\n  };\n});"
+      },
+      "id": "68219e0c-971b-44ee-be9c-b9d34e3554f0",
+      "name": "Code • Flatten Result",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        944,
+        0
+      ]
+    }
+  ],
+  "connections": {
+    "Manual Trigger": {
+      "main": [
+        [
+          {
+            "node": "Set • Input",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set • Input": {
+      "main": [
+        [
+          {
+            "node": "Code • Expand yclid",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code • Expand yclid": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request • Metrica Reports",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request • Metrica Reports": {
+      "main": [
+        [
+          {
+            "node": "Code • Flatten Result",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": {},
+  "versionId": "77bb84f8-15ef-467b-aaf9-a4b99ec1fd20",
+  "triggerCount": 0,
+  "shared": [
+    {
+      "createdAt": "2025-10-08T09:08:30.208Z",
+      "updatedAt": "2025-10-08T09:08:30.208Z",
+      "role": "workflow:owner",
+      "workflowId": "NtVjY3CUxz0Ogiyo",
+      "projectId": "spKmbJLU4mvACXIB"
+    }
+  ],
+  "tags": [],
+  "file_name": "yandex-metrica-by-yclid-→-campaign/keyword-(code-nodes).json"
+}
