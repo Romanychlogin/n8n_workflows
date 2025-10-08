@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-07-18T08:31:54.459Z",
-  "updatedAt": "2025-10-08T08:09:18.049Z",
+  "updatedAt": "2025-10-08T09:53:40.271Z",
   "id": "wZGLxMCCmOnDJZ1o",
   "name": "ADV_campaign_analysis",
   "active": false,
@@ -1368,7 +1368,7 @@
       "type": "n8n-nodes-base.merge",
       "typeVersion": 3.2,
       "position": [
-        816,
+        720,
         -80
       ],
       "id": "3bc57ebf-abb7-4e0e-a850-dbc5ea2a6ea0",
@@ -1390,6 +1390,7 @@
       ],
       "id": "297d2aa0-7b31-4c3e-9cc9-356f906de7f7",
       "name": "get last import not processed records",
+      "alwaysOutputData": true,
       "credentials": {
         "postgres": {
           "id": "Hx2VFmUi5WO2K4QX",
@@ -2141,6 +2142,40 @@
       ],
       "id": "ec7e97a5-c8ee-4dfd-bcbd-c20a9e665c18",
       "name": "Sticky Note5"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "d27bd43b-9c58-4c64-87ba-c82c2ccd45d1",
+              "leftValue": "={{ $input.first().json }}",
+              "rightValue": "",
+              "operator": {
+                "type": "object",
+                "operation": "empty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        976,
+        -112
+      ],
+      "id": "ebf037d0-ae07-492a-a194-54bc7e901702",
+      "name": "If anything to analise"
     }
   ],
   "connections": {
@@ -2537,7 +2572,7 @@
       "main": [
         [
           {
-            "node": "Loop Over Items",
+            "node": "If anything to analise",
             "type": "main",
             "index": 0
           }
@@ -2843,6 +2878,24 @@
           }
         ]
       ]
+    },
+    "If anything to analise": {
+      "main": [
+        [
+          {
+            "node": "Mark_workflow_completed",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
@@ -2877,7 +2930,7 @@
       {
         "json": {
           "id": "wZGLxMCCmOnDJZ1o",
-          "root_execution_id": 71320,
+          "root_execution_id": 73988,
           "company_id": 1,
           "threshhold": "0.79",
           "import_id": 5
@@ -2885,7 +2938,7 @@
       }
     ]
   },
-  "versionId": "d37ca346-4877-4699-96f3-250aedb059f9",
+  "versionId": "df7dfb89-457d-47bd-b860-4cf39f299dc4",
   "triggerCount": 0,
   "shared": [
     {
