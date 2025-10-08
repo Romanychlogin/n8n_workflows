@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-10-06T13:25:33.741Z",
-  "updatedAt": "2025-10-08T10:50:04.407Z",
+  "updatedAt": "2025-10-08T10:58:19.308Z",
   "id": "tbijdiaKB74Iaf6O",
   "name": "core update test management",
   "active": true,
@@ -251,23 +251,6 @@
       ],
       "id": "d66b5bff-eafd-4407-bc82-818668c91c2a",
       "name": "Edit Fields"
-    },
-    {
-      "parameters": {
-        "operation": "completion",
-        "completionTitle": "Selected processes marked",
-        "completionMessage": "Selected processes marked",
-        "options": {}
-      },
-      "type": "n8n-nodes-base.form",
-      "typeVersion": 2.3,
-      "position": [
-        1296,
-        -336
-      ],
-      "id": "98337c15-422d-49a3-a7d4-2991ce3e4581",
-      "name": "Form2",
-      "webhookId": "09202ed5-0342-4ac0-b07f-0dd8fa096dc9"
     },
     {
       "parameters": {
@@ -631,23 +614,6 @@
     },
     {
       "parameters": {
-        "operation": "completion",
-        "completionTitle": "Selected processes called to terminate",
-        "completionMessage": "Selected processes called to terminate",
-        "options": {}
-      },
-      "type": "n8n-nodes-base.form",
-      "typeVersion": 2.3,
-      "position": [
-        720,
-        144
-      ],
-      "id": "0262612d-96b2-4fd7-8afe-64338f9adb4e",
-      "name": "Form1",
-      "webhookId": "30a26b1b-db07-4aad-8f8e-07396bcbea16"
-    },
-    {
-      "parameters": {
         "conditions": {
           "options": {
             "caseSensitive": true,
@@ -679,23 +645,6 @@
       ],
       "id": "2a16ccd3-5361-46d1-ab97-9201c3340c66",
       "name": "If"
-    },
-    {
-      "parameters": {
-        "operation": "completion",
-        "completionTitle": "No active running processes found",
-        "completionMessage": "No active running processes found",
-        "options": {}
-      },
-      "type": "n8n-nodes-base.form",
-      "typeVersion": 2.3,
-      "position": [
-        -112,
-        176
-      ],
-      "id": "975db984-d2c6-4a93-a6af-dfa6eca6e8be",
-      "name": "Form3",
-      "webhookId": "380a7dc0-609b-4f06-866a-09a8231ad824"
     },
     {
       "parameters": {
@@ -766,23 +715,6 @@
     },
     {
       "parameters": {
-        "operation": "completion",
-        "completionTitle": "No active test data found",
-        "completionMessage": "test_executions table is empty",
-        "options": {}
-      },
-      "type": "n8n-nodes-base.form",
-      "typeVersion": 2.3,
-      "position": [
-        -48,
-        368
-      ],
-      "id": "4e9ec738-3019-4647-aba1-b97853011b26",
-      "name": "Form4",
-      "webhookId": "380a7dc0-609b-4f06-866a-09a8231ad824"
-    },
-    {
-      "parameters": {
         "options": {
           "formDescription": "={{ 'Found ' +$input.all().length+ ' records' }}"
         }
@@ -790,8 +722,8 @@
       "type": "n8n-nodes-base.form",
       "typeVersion": 2.3,
       "position": [
-        -96,
-        544
+        -112,
+        560
       ],
       "id": "8d2bba0e-cedf-4896-9081-f03d58344bf4",
       "name": "Form5",
@@ -806,8 +738,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        112,
-        544
+        96,
+        576
       ],
       "id": "4985162f-e4c9-40b4-a8f2-8c188cb173ee",
       "name": "Execute a SQL query2",
@@ -817,23 +749,6 @@
           "name": "Postgres account 2"
         }
       }
-    },
-    {
-      "parameters": {
-        "operation": "completion",
-        "completionTitle": "Test data reset executed",
-        "completionMessage": "Test data reset executed",
-        "options": {}
-      },
-      "type": "n8n-nodes-base.form",
-      "typeVersion": 2.3,
-      "position": [
-        320,
-        544
-      ],
-      "id": "bdb5dcb4-c8e0-4b65-82c7-4fc23d992e31",
-      "name": "Form6",
-      "webhookId": "30a26b1b-db07-4aad-8f8e-07396bcbea16"
     },
     {
       "parameters": {
@@ -858,6 +773,131 @@
       ],
       "id": "2bd651bd-ffc1-4f7b-8795-2e6a5864fbbd",
       "name": "Thank you page",
+      "webhookId": "5ab9112f-8f3e-4a28-8529-70da769be4f0"
+    },
+    {
+      "parameters": {
+        "formFields": {
+          "values": [
+            {
+              "fieldType": "html",
+              "html": "<a href=\"https://n8n-main-production-4310.up.railway.app/form/275771f9-df29-4b85-b49d-9aec026e6b2f\" title=\"Return to the first page\">\n  Return to the first page\n</a>\n"
+            }
+          ]
+        },
+        "options": {
+          "formDescription": "Selected processes marked",
+          "buttonLabel": "Close"
+        }
+      },
+      "type": "n8n-nodes-base.form",
+      "typeVersion": 2.3,
+      "position": [
+        1232,
+        -272
+      ],
+      "id": "7f7ec35c-a93b-411e-aaae-6e1381b3abac",
+      "name": "Thank you page1",
+      "webhookId": "5ab9112f-8f3e-4a28-8529-70da769be4f0"
+    },
+    {
+      "parameters": {
+        "formFields": {
+          "values": [
+            {
+              "fieldType": "html",
+              "html": "<a href=\"https://n8n-main-production-4310.up.railway.app/form/275771f9-df29-4b85-b49d-9aec026e6b2f\" title=\"Return to the first page\">\n  Return to the first page\n</a>\n"
+            }
+          ]
+        },
+        "options": {
+          "formDescription": "Selected processes called to terminate",
+          "buttonLabel": "Close"
+        }
+      },
+      "type": "n8n-nodes-base.form",
+      "typeVersion": 2.3,
+      "position": [
+        800,
+        144
+      ],
+      "id": "1c94bc00-1ce0-4a1e-a05a-96f4e2159d5a",
+      "name": "Thank you page2",
+      "webhookId": "5ab9112f-8f3e-4a28-8529-70da769be4f0"
+    },
+    {
+      "parameters": {
+        "formFields": {
+          "values": [
+            {
+              "fieldType": "html",
+              "html": "<a href=\"https://n8n-main-production-4310.up.railway.app/form/275771f9-df29-4b85-b49d-9aec026e6b2f\" title=\"Return to the first page\">\n  Return to the first page\n</a>\n"
+            }
+          ]
+        },
+        "options": {
+          "formDescription": "No active running processes found",
+          "buttonLabel": "Close"
+        }
+      },
+      "type": "n8n-nodes-base.form",
+      "typeVersion": 2.3,
+      "position": [
+        64,
+        -16
+      ],
+      "id": "8ccef073-96cc-416b-abeb-687dd7fb8b8d",
+      "name": "Thank you page3",
+      "webhookId": "5ab9112f-8f3e-4a28-8529-70da769be4f0"
+    },
+    {
+      "parameters": {
+        "formFields": {
+          "values": [
+            {
+              "fieldType": "html",
+              "html": "<a href=\"https://n8n-main-production-4310.up.railway.app/form/275771f9-df29-4b85-b49d-9aec026e6b2f\" title=\"Return to the first page\">\n  Return to the first page\n</a>\n"
+            }
+          ]
+        },
+        "options": {
+          "formDescription": "test_executions table is empty",
+          "buttonLabel": "Close"
+        }
+      },
+      "type": "n8n-nodes-base.form",
+      "typeVersion": 2.3,
+      "position": [
+        -48,
+        352
+      ],
+      "id": "4f2a72b0-c9f1-462a-b379-c0e7df0d7a37",
+      "name": "Thank you page4",
+      "webhookId": "5ab9112f-8f3e-4a28-8529-70da769be4f0"
+    },
+    {
+      "parameters": {
+        "formFields": {
+          "values": [
+            {
+              "fieldType": "html",
+              "html": "<a href=\"https://n8n-main-production-4310.up.railway.app/form/275771f9-df29-4b85-b49d-9aec026e6b2f\" title=\"Return to the first page\">\n  Return to the first page\n</a>\n"
+            }
+          ]
+        },
+        "options": {
+          "formDescription": "Test data reset executed",
+          "buttonLabel": "Close"
+        }
+      },
+      "type": "n8n-nodes-base.form",
+      "typeVersion": 2.3,
+      "position": [
+        288,
+        576
+      ],
+      "id": "d03e0b9d-fa8a-4d22-a3b0-4301255dd5c2",
+      "name": "Thank you page5",
       "webhookId": "5ab9112f-8f3e-4a28-8529-70da769be4f0"
     }
   ],
@@ -964,7 +1004,7 @@
       "main": [
         [
           {
-            "node": "Form2",
+            "node": "Thank you page1",
             "type": "main",
             "index": 0
           }
@@ -1015,7 +1055,7 @@
       "main": [
         [
           {
-            "node": "Form1",
+            "node": "Thank you page2",
             "type": "main",
             "index": 0
           }
@@ -1066,7 +1106,7 @@
       "main": [
         [
           {
-            "node": "Form3",
+            "node": "Thank you page3",
             "type": "main",
             "index": 0
           }
@@ -1095,7 +1135,7 @@
       "main": [
         [
           {
-            "node": "Form4",
+            "node": "Thank you page4",
             "type": "main",
             "index": 0
           }
@@ -1124,7 +1164,7 @@
       "main": [
         [
           {
-            "node": "Form6",
+            "node": "Thank you page5",
             "type": "main",
             "index": 0
           }
@@ -1144,19 +1184,8 @@
   "meta": {
     "templateCredsSetupCompleted": true
   },
-  "pinData": {
-    "On form submission": [
-      {
-        "json": {
-          "Select company id": "1",
-          "Please select": "Reset core update test data for report",
-          "submittedAt": "2025-10-07T19:49:37.715+03:00",
-          "formMode": "production"
-        }
-      }
-    ]
-  },
-  "versionId": "6e269025-35ab-49b3-91c3-fc48e13ae3d9",
+  "pinData": {},
+  "versionId": "dbdf4a41-e40d-4a13-8119-768b104145de",
   "triggerCount": 1,
   "shared": [
     {
