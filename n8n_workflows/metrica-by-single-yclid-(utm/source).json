@@ -1,0 +1,139 @@
+{
+  "createdAt": "2025-10-08T09:08:30.208Z",
+  "updatedAt": "2025-10-08T14:23:40.949Z",
+  "id": "NtVjY3CUxz0Ogiyo",
+  "name": "Metrica by single yclid (UTM/Source)",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "fields": {
+          "values": [
+            {
+              "name": "counter_id",
+              "type": "numberValue",
+              "numberValue": "85745759"
+            },
+            {
+              "name": "oauth_token",
+              "stringValue": "3234234"
+            },
+            {
+              "name": "yclid",
+              "type": "numberValue",
+              "numberValue": "10713516624003203071"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "8aa18c20-5aca-42c9-8067-651e6521b12c",
+      "name": "Set • Input",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3,
+      "position": [
+        64,
+        -240
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "743c57e2-16f2-4ba3-8097-bbaf166adb1d",
+      "name": "Manual Trigger",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -160,
+        -240
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Плоский результат из Reports API для одного yclid\nconst yclid = $json.yclid;\nconst status = $json.statusCode;\nconst body = $json.body;\n\nif (status !== 200) {\n  return [{ json: { yclid, error: true, status, body } }];\n}\n\nconst rows = (body && body.data) ? body.data : [];\nif (!rows.length) {\n  return [{ json: { yclid, found: false } }];\n}\n\nconst row = rows[0];\nconst dims = row.dimensions || [];\nconst map = {};\nfor (const d of dims) {\n  const key = d.dimension?.name || d.name || d.id;\n  map[key] = d.name || d.id || null;\n}\n\nreturn [{\n  json: {\n    yclid,\n    found: true,\n    trafficSource: map['ym:s:lastTrafficSource'] ?? null,\n    orderName: map['ym:s:lastDirectClickOrder'] ?? null,\n    campaignName: map['ym:s:lastDirectClickCampaign'] ?? null,\n    banner: map['ym:s:lastDirectClickBanner'] ?? null,\n    keyword: map['ym:s:lastDirectClickQuery'] ?? null,\n    raw: row\n  }\n}];"
+      },
+      "id": "39a9b217-d77b-492b-854b-7f37701393fe",
+      "name": "Code • Flatten Result",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        576,
+        -240
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://api-metrika.yandex.net/stat/v1/data",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {}
+          ]
+        },
+        "options": {}
+      },
+      "id": "9b5cd468-bf49-4616-8677-a6c68a04f392",
+      "name": "HTTP Request • Metrica Reports",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        304,
+        -240
+      ]
+    }
+  ],
+  "connections": {
+    "Set • Input": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request • Metrica Reports",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Manual Trigger": {
+      "main": [
+        [
+          {
+            "node": "Set • Input",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request • Metrica Reports": {
+      "main": [
+        [
+          {
+            "node": "Code • Flatten Result",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": {},
+  "versionId": "4eeb6443-31ff-451f-9f34-9b98f0c81df5",
+  "triggerCount": 0,
+  "shared": [
+    {
+      "createdAt": "2025-10-08T09:08:30.208Z",
+      "updatedAt": "2025-10-08T09:08:30.208Z",
+      "role": "workflow:owner",
+      "workflowId": "NtVjY3CUxz0Ogiyo",
+      "projectId": "spKmbJLU4mvACXIB"
+    }
+  ],
+  "tags": [],
+  "file_name": "metrica-by-single-yclid-(utm/source).json"
+}
