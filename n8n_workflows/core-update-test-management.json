@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-10-06T13:25:33.741Z",
-  "updatedAt": "2025-10-07T17:12:41.168Z",
+  "updatedAt": "2025-10-08T10:50:04.407Z",
   "id": "tbijdiaKB74Iaf6O",
   "name": "core update test management",
   "active": true,
@@ -251,23 +251,6 @@
       ],
       "id": "d66b5bff-eafd-4407-bc82-818668c91c2a",
       "name": "Edit Fields"
-    },
-    {
-      "parameters": {
-        "operation": "completion",
-        "completionTitle": "All running processes marked as finished",
-        "completionMessage": "All running processes marked as finished",
-        "options": {}
-      },
-      "type": "n8n-nodes-base.form",
-      "typeVersion": 2.3,
-      "position": [
-        416,
-        -352
-      ],
-      "id": "cd846e0b-63d4-441c-a211-457505def0f4",
-      "name": "Form",
-      "webhookId": "c7a720d7-8a59-4cb3-9929-34dc8dabf5fb"
     },
     {
       "parameters": {
@@ -851,6 +834,31 @@
       "id": "bdb5dcb4-c8e0-4b65-82c7-4fc23d992e31",
       "name": "Form6",
       "webhookId": "30a26b1b-db07-4aad-8f8e-07396bcbea16"
+    },
+    {
+      "parameters": {
+        "formFields": {
+          "values": [
+            {
+              "fieldType": "html",
+              "html": "<a href=\"https://n8n-main-production-4310.up.railway.app/form/275771f9-df29-4b85-b49d-9aec026e6b2f\" title=\"Return to the first page\">\n  Return to the first page\n</a>\n"
+            }
+          ]
+        },
+        "options": {
+          "formDescription": "All running processes marked as finished",
+          "buttonLabel": "Close"
+        }
+      },
+      "type": "n8n-nodes-base.form",
+      "typeVersion": 2.3,
+      "position": [
+        416,
+        -352
+      ],
+      "id": "2bd651bd-ffc1-4f7b-8795-2e6a5864fbbd",
+      "name": "Thank you page",
+      "webhookId": "5ab9112f-8f3e-4a28-8529-70da769be4f0"
     }
   ],
   "connections": {
@@ -923,7 +931,7 @@
       "main": [
         [
           {
-            "node": "Form",
+            "node": "Thank you page",
             "type": "main",
             "index": 0
           }
@@ -1122,6 +1130,11 @@
           }
         ]
       ]
+    },
+    "Thank you page": {
+      "main": [
+        []
+      ]
     }
   },
   "settings": {
@@ -1143,7 +1156,7 @@
       }
     ]
   },
-  "versionId": "a0aa0b4a-84a8-4db2-9eb2-1d92458d54e9",
+  "versionId": "6e269025-35ab-49b3-91c3-fc48e13ae3d9",
   "triggerCount": 1,
   "shared": [
     {
