@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-07-18T08:31:54.459Z",
-  "updatedAt": "2025-10-08T11:43:36.583Z",
+  "updatedAt": "2025-10-08T12:08:45.023Z",
   "id": "wZGLxMCCmOnDJZ1o",
   "name": "ADV_campaign_analysis",
   "active": false,
@@ -2074,6 +2074,19 @@
           "name": "PGvector"
         }
       }
+    },
+    {
+      "parameters": {
+        "content": "Добавить еще сохранение в  competitor_name_variants.\nА надо? Для переиспользования в других клиентах надо\n"
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        8736,
+        -1424
+      ],
+      "id": "1210da56-1449-4a58-a664-1e2884ae393b",
+      "name": "Sticky Note9"
     }
   ],
   "connections": {
@@ -2842,7 +2855,7 @@
       }
     ]
   },
-  "versionId": "ff717141-7bab-47a8-a0e0-a4fc7ca313a9",
+  "versionId": "6049c149-6e35-43b4-a4aa-333e174acd39",
   "triggerCount": 0,
   "shared": [
     {
