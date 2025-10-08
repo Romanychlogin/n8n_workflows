@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-10-07T21:30:12.820Z",
-  "updatedAt": "2025-10-08T08:39:04.101Z",
+  "updatedAt": "2025-10-08T08:42:38.184Z",
   "id": "d4D0Fp4pO6Ch7S7C",
   "name": "Receive CRM data",
   "active": true,
@@ -21,48 +21,6 @@
       "id": "6b11411b-3ee6-4590-977a-3dbbd005d09a",
       "name": "Webhook",
       "webhookId": "c11cd095-1060-4c9c-87df-2a3c9d34deab"
-    },
-    {
-      "parameters": {
-        "jsCode": "// ---------- helpers ----------\nfunction tryGetItems(nodeName) {\n  try { const arr = $items(nodeName, 0, 0); return Array.isArray(arr) ? arr : []; }\n  catch { return []; }\n}\n// универсальный парсер времени: число мс, строка с цифрами, ISO\nfunction toMs(v) {\n  if (v == null) return 0;\n  if (typeof v === 'number' && Number.isFinite(v)) return v;\n  if (typeof v === 'string') {\n    const s = v.trim();\n    if (/^\\d+$/.test(s)) {              // \"1728391023456\"\n      const n = parseInt(s, 10);\n      return Number.isFinite(n) ? n : 0;\n    }\n    const t = Date.parse(s);            // \"2025-10-08T00:27:00.123Z\"\n    return Number.isFinite(t) ? t : 0;\n  }\n  return 0;\n}\nfunction rowTs(row) {\n  // приоритет: ts_site (мс), иначе createdAt (ISO из Data Table)\n  return toMs(row.ts_site) || toMs(row.createdAt);\n}\nfunction iso(ms) { try { return new Date(ms).toISOString(); } catch { return null; } }\n\n// ---------- CRM payload ----------\nlet crm;\nconst wItems = tryGetItems('Webhook');  // переименуй, если нода называется иначе\nif (wItems.length) {\n  const w = wItems[0].json || {};\n  crm = typeof w.body === 'string' ? JSON.parse(w.body) : w;\n} else {\n  crm = typeof $json.body === 'string' ? JSON.parse($json.body) : $json;\n}\n\n// ---------- pending строки из Data Table ----------\nlet rows = tryGetItems('Get row(s)').map(i => i.json); // переименуй, если нужно\nif (!rows.length) rows = $input.all().map(i => i.json);\n\n// ---------- окно и выбор ----------\nconst now = Date.now();\nconst WINDOW_MS = 10 * 60 * 1000; // ±10 минут (можно временно увеличить до 30 мин для диагностики)\n\nconst decorated = rows.map(r => {\n  const t = rowTs(r);\n  return {\n    id: r.id,\n    ts_num: t,\n    ts_readable: iso(t),\n    createdAt: r.createdAt || null,\n    ts_site_raw: r.ts_site ?? null,\n    delta_ms: Math.abs(t - now),\n    page_url: r.page_url || null,\n    pending: r.pending\n  };\n}).filter(d => d.ts_num > 0)\n  .sort((a, b) => a.delta_ms - b.delta_ms);\n\nconst inWindow = decorated.filter(d => d.delta_ms <= WINDOW_MS);\nconst best = inWindow[0] || null;\n\n// ---------- результат ----------\nif (best) {\n  const siteRow = rows.find(r => r.id === best.id) || {};\n  return [{\n    json: {\n      matched: true,\n      id: best.id,\n      ts_site: best.ts_num,\n      delta_ms: best.delta_ms,\n      site: siteRow,\n      crm,\n      debug: {\n        now_iso: iso(now),\n        window_ms: WINDOW_MS,\n        candidates_total: rows.length,\n        in_window: inWindow.length,\n        top3: decorated.slice(0,3)   // ближайшие 3 для проверки\n      }\n    }\n  }];\n} else {\n  return [{\n    json: {\n      matched: false,\n      reason: 'no_candidate_in_window',\n      crm,\n      debug: {\n        now_iso: iso(now),\n        window_ms: WINDOW_MS,\n        candidates_total: rows.length,\n        top5: decorated.slice(0,5)   // покажет почему не попали в окно (обычно ts_num=0)\n      }\n    }\n  }];\n}"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        384,
-        0
-      ],
-      "id": "0280247b-21b3-403b-8366-050088c9a937",
-      "name": "Code in JavaScript"
-    },
-    {
-      "parameters": {
-        "operation": "get",
-        "dataTableId": {
-          "__rl": true,
-          "value": "XlfQhVUBPeep3gvZ",
-          "mode": "list",
-          "cachedResultName": "site leads",
-          "cachedResultUrl": "/projects/spKmbJLU4mvACXIB/datatables/XlfQhVUBPeep3gvZ"
-        },
-        "filters": {
-          "conditions": [
-            {
-              "keyName": "pending",
-              "condition": "isTrue"
-            }
-          ]
-        },
-        "limit": 10
-      },
-      "type": "n8n-nodes-base.dataTable",
-      "typeVersion": 1,
-      "position": [
-        176,
-        0
-      ],
-      "id": "78fd246c-1fe1-47a3-981d-237c516e655e",
-      "name": "Get row(s)"
     },
     {
       "parameters": {
@@ -265,6 +223,63 @@
       ],
       "id": "f88b36e2-2d12-4410-a1bd-1b77e05ae514",
       "name": "If"
+    },
+    {
+      "parameters": {
+        "jsCode": "// ---------- helpers ----------\nfunction tryGetItems(nodeName) {\n  try { const arr = $items(nodeName, 0, 0); return Array.isArray(arr) ? arr : []; }\n  catch { return []; }\n}\n// универсальный парсер времени: число мс, строка с цифрами, ISO\nfunction toMs(v) {\n  if (v == null) return 0;\n  if (typeof v === 'number' && Number.isFinite(v)) return v;\n  if (typeof v === 'string') {\n    const s = v.trim();\n    if (/^\\d+$/.test(s)) {              // \"1728391023456\"\n      const n = parseInt(s, 10);\n      return Number.isFinite(n) ? n : 0;\n    }\n    const t = Date.parse(s);            // \"2025-10-08T00:27:00.123Z\"\n    return Number.isFinite(t) ? t : 0;\n  }\n  return 0;\n}\nfunction rowTs(row) {\n  // приоритет: ts_site (мс), иначе createdAt (ISO из Data Table)\n  return toMs(row.ts_site) || toMs(row.createdAt);\n}\nfunction iso(ms) { try { return new Date(ms).toISOString(); } catch { return null; } }\n\n// ---------- CRM payload ----------\nlet crm;\nconst wItems = tryGetItems('Webhook');  // переименуй, если нода называется иначе\nif (wItems.length) {\n  const w = wItems[0].json || {};\n  crm = typeof w.body === 'string' ? JSON.parse(w.body) : w;\n} else {\n  crm = typeof $json.body === 'string' ? JSON.parse($json.body) : $json;\n}\n\n// ---------- pending строки из Data Table ----------\nlet rows = tryGetItems('Get visitors').map(i => i.json); // переименуй, если нужно\nif (!rows.length) rows = $input.all().map(i => i.json);\n\n// ---------- окно и выбор ----------\nconst now = Date.now();\nconst WINDOW_MS = 10 * 60 * 1000; // ±10 минут (можно временно увеличить до 30 мин для диагностики)\n\nconst decorated = rows.map(r => {\n  const t = rowTs(r);\n  return {\n    id: r.id,\n    ts_num: t,\n    ts_readable: iso(t),\n    createdAt: r.createdAt || null,\n    ts_site_raw: r.ts_site ?? null,\n    delta_ms: Math.abs(t - now),\n    page_url: r.page_url || null,\n    pending: r.pending\n  };\n}).filter(d => d.ts_num > 0)\n  .sort((a, b) => a.delta_ms - b.delta_ms);\n\nconst inWindow = decorated.filter(d => d.delta_ms <= WINDOW_MS);\nconst best = inWindow[0] || null;\n\n// ---------- результат ----------\nif (best) {\n  const siteRow = rows.find(r => r.id === best.id) || {};\n  return [{\n    json: {\n      matched: true,\n      id: best.id,\n      ts_site: best.ts_num,\n      delta_ms: best.delta_ms,\n      site: siteRow,\n      crm,\n      debug: {\n        now_iso: iso(now),\n        window_ms: WINDOW_MS,\n        candidates_total: rows.length,\n        in_window: inWindow.length,\n        top3: decorated.slice(0,3)   // ближайшие 3 для проверки\n      }\n    }\n  }];\n} else {\n  return [{\n    json: {\n      matched: false,\n      reason: 'no_candidate_in_window',\n      crm,\n      debug: {\n        now_iso: iso(now),\n        window_ms: WINDOW_MS,\n        candidates_total: rows.length,\n        top5: decorated.slice(0,5)   // покажет почему не попали в окно (обычно ts_num=0)\n      }\n    }\n  }];\n}"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        384,
+        0
+      ],
+      "id": "0280247b-21b3-403b-8366-050088c9a937",
+      "name": "Compare the lead with last visitor"
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "dataTableId": {
+          "__rl": true,
+          "value": "XlfQhVUBPeep3gvZ",
+          "mode": "list",
+          "cachedResultName": "site leads",
+          "cachedResultUrl": "/projects/spKmbJLU4mvACXIB/datatables/XlfQhVUBPeep3gvZ"
+        },
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "pending",
+              "condition": "isTrue"
+            }
+          ]
+        },
+        "limit": 10
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1,
+      "position": [
+        176,
+        0
+      ],
+      "id": "78fd246c-1fe1-47a3-981d-237c516e655e",
+      "name": "Get visitors"
+    },
+    {
+      "parameters": {
+        "content": "## CRM lead процесс\nСлушает вебхуки из CRM, при появлении нового лида - считывает последние 10 строк данных о посетителях и матчит с ближайшим по времени. \n\nTODO - сообщить в аналитику и обновить данные в CRM",
+        "height": 208,
+        "width": 496
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -16,
+        -256
+      ],
+      "typeVersion": 1,
+      "id": "be6a9327-4ca3-4d9c-bd0f-15b8304becf7",
+      "name": "Sticky Note"
     }
   ],
   "connections": {
@@ -272,29 +287,7 @@
       "main": [
         [
           {
-            "node": "Get row(s)",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Code in JavaScript": {
-      "main": [
-        [
-          {
-            "node": "If",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Get row(s)": {
-      "main": [
-        [
-          {
-            "node": "Code in JavaScript",
+            "node": "Get visitors",
             "type": "main",
             "index": 0
           }
@@ -311,6 +304,28 @@
           }
         ]
       ]
+    },
+    "Compare the lead with last visitor": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get visitors": {
+      "main": [
+        [
+          {
+            "node": "Compare the lead with last visitor",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
@@ -319,7 +334,7 @@
   "staticData": null,
   "meta": null,
   "pinData": {},
-  "versionId": "389635f9-13cc-41e0-a64f-07e1cc93d071",
+  "versionId": "a43047d5-012e-4fc2-b736-d449ceedc501",
   "triggerCount": 1,
   "shared": [
     {
