@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-07-18T08:31:54.459Z",
-  "updatedAt": "2025-10-08T07:11:39.486Z",
+  "updatedAt": "2025-10-08T08:09:18.049Z",
   "id": "wZGLxMCCmOnDJZ1o",
   "name": "ADV_campaign_analysis",
   "active": false,
@@ -553,8 +553,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        6288,
-        -144
+        6496,
+        -496
       ],
       "id": "78d0f369-bc02-4a48-84af-389ac2c2f8cf",
       "name": "Обработка ответа AI"
@@ -869,8 +869,8 @@
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1.2,
       "position": [
-        7184,
-        -16
+        7200,
+        -224
       ],
       "id": "5d7ed225-61eb-40cf-86f8-cf487e481e1c",
       "name": "Execute Workflow"
@@ -931,8 +931,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        7472,
-        -32
+        7488,
+        -240
       ],
       "id": "32bea20b-bd2e-4a99-83b0-e9dce5af9140",
       "name": "If minuses array is empty"
@@ -1427,8 +1427,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        6816,
-        -16
+        6832,
+        -224
       ],
       "id": "828b3288-b068-4d7e-8518-4fb483913b3e",
       "name": "set input params"
@@ -2121,8 +2121,8 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        6624,
-        -96
+        6640,
+        -304
       ],
       "id": "ac949b77-9d7a-4054-a66b-d2caad3c75f8",
       "name": "Sticky Note4"
@@ -2826,7 +2826,7 @@
         ],
         [
           {
-            "node": "update",
+            "node": "set input params",
             "type": "main",
             "index": 0
           }
@@ -2885,7 +2885,7 @@
       }
     ]
   },
-  "versionId": "d464acd6-90bd-450b-bec6-920cb227057f",
+  "versionId": "d37ca346-4877-4699-96f3-250aedb059f9",
   "triggerCount": 0,
   "shared": [
     {
