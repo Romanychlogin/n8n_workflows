@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-10-07T21:30:12.820Z",
-  "updatedAt": "2025-10-09T18:58:05.145Z",
+  "updatedAt": "2025-10-09T19:04:13.029Z",
   "id": "d4D0Fp4pO6Ch7S7C",
   "name": "CRM lead process",
   "active": true,
@@ -241,8 +241,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1248,
-        -80
+        1536,
+        -144
       ],
       "id": "f120cad5-2419-4568-b5e6-cdbf13ef4ee7",
       "name": "Code in JavaScript"
@@ -264,8 +264,6 @@
     },
     {
       "parameters": {
-        "mode": "raw",
-        "jsonOutput": "{\n  \"alfacrm\": {\n    \"host\": \"kiberonesaratov.s20.online\",\n    \"email\": \"antonkarzhavin1@yandex.ru\",\n    \"api_key\": \"656b9709-9547-11f0-b9b8-3cecefbdd1ae\",\n    \"branchId\": 1\n  }\n}",
         "options": {}
       },
       "id": "12a3f07a-975a-4259-8e9b-709c0cea2edf",
@@ -275,7 +273,8 @@
       "position": [
         1056,
         -80
-      ]
+      ],
+      "disabled": true
     },
     {
       "parameters": {
@@ -313,6 +312,22 @@
       ],
       "id": "0280247b-21b3-403b-8366-050088c9a937",
       "name": "Compare the lead with the visitor"
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "{\n  \"alfacrm\": {\n    \"host\": \"kiberonesaratov.s20.online\",\n    \"email\": \"antonkarzhavin1@yandex.ru\",\n    \"api_key\": \"656b9709-9547-11f0-b9b8-3cecefbdd1ae\",\n    \"branchId\": 1\n  }\n}",
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1312,
+        -96
+      ],
+      "id": "8d7cadfb-2633-4768-9165-abf9a8e2553a",
+      "name": "Edit Fields"
     }
   ],
   "connections": {
@@ -358,7 +373,7 @@
       "main": [
         [
           {
-            "node": "Code in JavaScript",
+            "node": "Edit Fields",
             "type": "main",
             "index": 0
           }
@@ -385,6 +400,17 @@
       "main": [
         []
       ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
@@ -392,8 +418,68 @@
   },
   "staticData": null,
   "meta": null,
-  "pinData": {},
-  "versionId": "41332fa6-3837-4552-8531-a38ae4ca9966",
+  "pinData": {
+    "Webhook": [
+      {
+        "json": {
+          "headers": {
+            "host": "n8n-main-production-4310.up.railway.app",
+            "user-agent": "GuzzleHttp/7",
+            "content-length": "618",
+            "content-type": "application/json",
+            "x-forwarded-for": "5.182.6.225",
+            "x-forwarded-host": "n8n-main-production-4310.up.railway.app",
+            "x-forwarded-proto": "https",
+            "x-railway-edge": "railway/europe-west4-drams3a",
+            "x-railway-request-id": "LH2E0N8iTk229ptrjUJq2g",
+            "x-real-ip": "5.182.6.225",
+            "x-request-start": "1760036331649",
+            "accept-encoding": "gzip"
+          },
+          "params": {},
+          "query": {},
+          "body": {
+            "branch_id": 1,
+            "event": "create",
+            "entity": "Customer",
+            "entity_id": 19369,
+            "fields_old": [],
+            "fields_new": {
+              "dob": "2009-10-29",
+              "name": "Artem",
+              "note": "",
+              "id_no": "",
+              "b_date": "2025-10-09 22:58:50",
+              "e_date": "2030-12-31",
+              "barcode": "",
+              "is_study": 0,
+              "id_issued": "",
+              "branch_ids": [
+                1
+              ],
+              "company_id": null,
+              "created_at": "2025-10-09 18:58:50",
+              "legal_name": "Webhook 8",
+              "legal_type": 1,
+              "lead_source_id": "8",
+              "lead_status_id": "",
+              "contact_contacts": [
+                "+36(637)637-367",
+                "ananan@anana.ru"
+              ],
+              "custom_value_json": "{\"16\":\"\",\"12\":\"\",\"13\":\"\",\"11\":\"\",\"14\":\"\",\"15\":\"\"}"
+            },
+            "fields_rel": [],
+            "user_id": null,
+            "datetime": "2025-10-09 22:58:50"
+          },
+          "webhookUrl": "https://n8n-main-production-4310.up.railway.app/webhook/c11cd095-1060-4c9c-87df-2a3c9d34deab",
+          "executionMode": "production"
+        }
+      }
+    ]
+  },
+  "versionId": "6d671a15-36e4-4f86-a06b-d3352cbd3b91",
   "triggerCount": 1,
   "shared": [
     {
