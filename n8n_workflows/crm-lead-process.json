@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-10-07T21:30:12.820Z",
-  "updatedAt": "2025-10-09T14:01:14.134Z",
+  "updatedAt": "2025-10-09T14:23:17.609Z",
   "id": "d4D0Fp4pO6Ch7S7C",
   "name": "CRM lead process",
   "active": true,
@@ -15,7 +15,7 @@
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2.1,
       "position": [
-        16,
+        -32,
         0
       ],
       "id": "6b11411b-3ee6-4590-977a-3dbbd005d09a",
@@ -184,7 +184,7 @@
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1,
       "position": [
-        816,
+        880,
         -80
       ],
       "id": "9bf6585d-2a49-4b7a-953a-e45d873bc6d4",
@@ -218,25 +218,12 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        592,
+        656,
         0
       ],
       "id": "f88b36e2-2d12-4410-a1bd-1b77e05ae514",
       "name": "If",
       "disabled": true
-    },
-    {
-      "parameters": {
-        "jsCode": "// ---------- helpers ----------\nfunction tryGetItems(nodeName) {\n  try { const arr = $items(nodeName, 0, 0); return Array.isArray(arr) ? arr : []; }\n  catch { return []; }\n}\n// универсальный парсер времени: число мс, строка с цифрами, ISO\nfunction toMs(v) {\n  if (v == null) return 0;\n  if (typeof v === 'number' && Number.isFinite(v)) return v;\n  if (typeof v === 'string') {\n    const s = v.trim();\n    if (/^\\d+$/.test(s)) {              // \"1728391023456\"\n      const n = parseInt(s, 10);\n      return Number.isFinite(n) ? n : 0;\n    }\n    const t = Date.parse(s);            // \"2025-10-08T00:27:00.123Z\"\n    return Number.isFinite(t) ? t : 0;\n  }\n  return 0;\n}\nfunction rowTs(row) {\n  // приоритет: ts_site (мс), иначе createdAt (ISO из Data Table)\n  return toMs(row.ts_site) || toMs(row.createdAt);\n}\nfunction iso(ms) { try { return new Date(ms).toISOString(); } catch { return null; } }\n\n// ---------- CRM payload ----------\nlet crm;\nconst wItems = tryGetItems('Webhook');  // переименуй, если нода называется иначе\nif (wItems.length) {\n  const w = wItems[0].json || {};\n  crm = typeof w.body === 'string' ? JSON.parse(w.body) : w;\n} else {\n  crm = typeof $json.body === 'string' ? JSON.parse($json.body) : $json;\n}\n\n// ---------- pending строки из Data Table ----------\nlet rows = tryGetItems('Get visitors').map(i => i.json); // переименуй, если нужно\nif (!rows.length) rows = $input.all().map(i => i.json);\n\n// ---------- окно и выбор ----------\nconst now = Date.now();\nconst WINDOW_MS = 10 * 60 * 1000; // ±10 минут (можно временно увеличить до 30 мин для диагностики)\n\nconst decorated = rows.map(r => {\n  const t = rowTs(r);\n  return {\n    id: r.id,\n    ts_num: t,\n    ts_readable: iso(t),\n    createdAt: r.createdAt || null,\n    ts_site_raw: r.ts_site ?? null,\n    delta_ms: Math.abs(t - now),\n    page_url: r.page_url || null,\n    pending: r.pending\n  };\n}).filter(d => d.ts_num > 0)\n  .sort((a, b) => a.delta_ms - b.delta_ms);\n\nconst inWindow = decorated.filter(d => d.delta_ms <= WINDOW_MS);\nconst best = inWindow[0] || null;\n\n// ---------- результат ----------\nif (best) {\n  const siteRow = rows.find(r => r.id === best.id) || {};\n  return [{\n    json: {\n      matched: true,\n      id: best.id,\n      ts_site: best.ts_num,\n      delta_ms: best.delta_ms,\n      site: siteRow,\n      crm,\n      debug: {\n        now_iso: iso(now),\n        window_ms: WINDOW_MS,\n        candidates_total: rows.length,\n        in_window: inWindow.length,\n        top3: decorated.slice(0,3)   // ближайшие 3 для проверки\n      }\n    }\n  }];\n} else {\n  return [{\n    json: {\n      matched: false,\n      reason: 'no_candidate_in_window',\n      crm,\n      debug: {\n        now_iso: iso(now),\n        window_ms: WINDOW_MS,\n        candidates_total: rows.length,\n        top5: decorated.slice(0,5)   // покажет почему не попали в окно (обычно ts_num=0)\n      }\n    }\n  }];\n}"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        384,
-        0
-      ],
-      "id": "0280247b-21b3-403b-8366-050088c9a937",
-      "name": "Compare the lead with last visitor"
     },
     {
       "parameters": {
@@ -256,12 +243,12 @@
             }
           ]
         },
-        "limit": 5
+        "returnAll": true
       },
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1,
       "position": [
-        176,
+        128,
         0
       ],
       "id": "78fd246c-1fe1-47a3-981d-237c516e655e",
@@ -289,8 +276,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1312,
-        80
+        1248,
+        -80
       ],
       "id": "f120cad5-2419-4568-b5e6-cdbf13ef4ee7",
       "name": "Code in JavaScript"
@@ -322,8 +309,34 @@
       "typeVersion": 3,
       "position": [
         1056,
-        64
+        -80
       ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Берем массив всех pending\nconst items = $input.all();\n\n// Сортируем по id (или по createdAt, если есть)\nitems.sort((a, b) => b.json.id - a.json.id);\n\n// Возвращаем только самую свежую\nreturn [items[0]];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        288,
+        0
+      ],
+      "id": "ca0796b3-422f-41d6-800c-6e9059b0dfb2",
+      "name": "Get the last visitor"
+    },
+    {
+      "parameters": {
+        "jsCode": "// ---------- helpers ----------\nfunction tryGetItems(nodeName) {\n  try { const arr = $items(nodeName, 0, 0); return Array.isArray(arr) ? arr : []; }\n  catch { return []; }\n}\n// универсальный парсер времени: число мс, строка с цифрами, ISO\nfunction toMs(v) {\n  if (v == null) return 0;\n  if (typeof v === 'number' && Number.isFinite(v)) return v;\n  if (typeof v === 'string') {\n    const s = v.trim();\n    if (/^\\d+$/.test(s)) {              // \"1728391023456\"\n      const n = parseInt(s, 10);\n      return Number.isFinite(n) ? n : 0;\n    }\n    const t = Date.parse(s);            // \"2025-10-08T00:27:00.123Z\"\n    return Number.isFinite(t) ? t : 0;\n  }\n  return 0;\n}\nfunction rowTs(row) {\n  // приоритет: ts_site (мс), иначе createdAt (ISO из Data Table)\n  return toMs(row.ts_site) || toMs(row.createdAt);\n}\nfunction iso(ms) { try { return new Date(ms).toISOString(); } catch { return null; } }\n\n// ---------- CRM payload ----------\nlet crm;\nconst wItems = tryGetItems('Webhook');  // переименуй, если нода называется иначе\nif (wItems.length) {\n  const w = wItems[0].json || {};\n  crm = typeof w.body === 'string' ? JSON.parse(w.body) : w;\n} else {\n  crm = typeof $json.body === 'string' ? JSON.parse($json.body) : $json;\n}\n\n// ---------- pending строки из Data Table ----------\nlet rows = tryGetItems('Get visitors').map(i => i.json); // переименуй, если нужно\nif (!rows.length) rows = $input.all().map(i => i.json);\n\n// ---------- окно и выбор ----------\nconst now = Date.now();\nconst WINDOW_MS = 10 * 60 * 1000; // ±10 минут (можно временно увеличить до 30 мин для диагностики)\n\nconst decorated = rows.map(r => {\n  const t = rowTs(r);\n  return {\n    id: r.id,\n    ts_num: t,\n    ts_readable: iso(t),\n    createdAt: r.createdAt || null,\n    ts_site_raw: r.ts_site ?? null,\n    delta_ms: Math.abs(t - now),\n    page_url: r.page_url || null,\n    pending: r.pending\n  };\n}).filter(d => d.ts_num > 0)\n  .sort((a, b) => a.delta_ms - b.delta_ms);\n\nconst inWindow = decorated.filter(d => d.delta_ms <= WINDOW_MS);\nconst best = inWindow[0] || null;\n\n// ---------- результат ----------\nif (best) {\n  const siteRow = rows.find(r => r.id === best.id) || {};\n  return [{\n    json: {\n      matched: true,\n      id: best.id,\n      ts_site: best.ts_num,\n      delta_ms: best.delta_ms,\n      site: siteRow,\n      crm,\n      debug: {\n        now_iso: iso(now),\n        window_ms: WINDOW_MS,\n        candidates_total: rows.length,\n        in_window: inWindow.length,\n        top3: decorated.slice(0,3)   // ближайшие 3 для проверки\n      }\n    }\n  }];\n} else {\n  return [{\n    json: {\n      matched: false,\n      reason: 'no_candidate_in_window',\n      crm,\n      debug: {\n        now_iso: iso(now),\n        window_ms: WINDOW_MS,\n        candidates_total: rows.length,\n        top5: decorated.slice(0,5)   // покажет почему не попали в окно (обычно ts_num=0)\n      }\n    }\n  }];\n}"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        448,
+        0
+      ],
+      "id": "0280247b-21b3-403b-8366-050088c9a937",
+      "name": "Compare the lead with the visitor"
     }
   ],
   "connections": {
@@ -350,22 +363,11 @@
         []
       ]
     },
-    "Compare the lead with last visitor": {
-      "main": [
-        [
-          {
-            "node": "If",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Get visitors": {
       "main": [
         [
           {
-            "node": "Compare the lead with last visitor",
+            "node": "Get the last visitor",
             "type": "main",
             "index": 0
           }
@@ -398,6 +400,28 @@
           }
         ]
       ]
+    },
+    "Get the last visitor": {
+      "main": [
+        [
+          {
+            "node": "Compare the lead with the visitor",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Compare the lead with the visitor": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
@@ -406,7 +430,7 @@
   "staticData": null,
   "meta": null,
   "pinData": {},
-  "versionId": "1924dc7c-1806-45c3-8484-e357f31acd04",
+  "versionId": "d6b1bfda-d4be-4bda-a22e-26a18c2e997a",
   "triggerCount": 1,
   "shared": [
     {
