@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-10-07T21:30:12.820Z",
-  "updatedAt": "2025-10-09T19:04:13.029Z",
+  "updatedAt": "2025-10-09T19:21:05.030Z",
   "id": "d4D0Fp4pO6Ch7S7C",
   "name": "CRM lead process",
   "active": true,
@@ -213,7 +213,7 @@
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1,
       "position": [
-        144,
+        416,
         0
       ],
       "id": "78fd246c-1fe1-47a3-981d-237c516e655e",
@@ -242,39 +242,10 @@
       "typeVersion": 2,
       "position": [
         1536,
-        -144
+        -64
       ],
       "id": "f120cad5-2419-4568-b5e6-cdbf13ef4ee7",
       "name": "Code in JavaScript"
-    },
-    {
-      "parameters": {
-        "mode": "raw",
-        "jsonOutput": "{\n  \"alfacrm\": {\n    \"host\": \"kiberonesaratov.s20.online\",\n    \"email\": \"antonkarzhavin1@yandex.ru\",\n    \"api_key\": \"656b9709-9547-11f0-b9b8-3cecefbdd1ae\",\n    \"branchId\": 1\n  },\n  \"update\": {\n    \"lead_source_id\": 8,\n    \"note_append\": \"test update from n8n\",\n    \"custom_plain\": { \"custom_yclid\": \"test1\" },\n    \"custom_value_json\": {\n      \"16\": \"\",\n      \"12\": \"\",\n      \"13\": \"\",\n      \"11\": \"\",\n      \"14\": \"\",\n      \"15\": \"test2\"\n    }\n  }\n}",
-        "options": {}
-      },
-      "id": "7b2a737f-00fa-4e6e-abcd-b9794b9ac66d",
-      "name": "Set • Input",
-      "type": "n8n-nodes-base.set",
-      "typeVersion": 3,
-      "position": [
-        1056,
-        384
-      ]
-    },
-    {
-      "parameters": {
-        "options": {}
-      },
-      "id": "12a3f07a-975a-4259-8e9b-709c0cea2edf",
-      "name": "Set credentials",
-      "type": "n8n-nodes-base.set",
-      "typeVersion": 3,
-      "position": [
-        1056,
-        -80
-      ],
-      "disabled": true
     },
     {
       "parameters": {
@@ -283,22 +254,11 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        320,
+        624,
         0
       ],
       "id": "ca0796b3-422f-41d6-800c-6e9059b0dfb2",
       "name": "Get the last visitor"
-    },
-    {
-      "parameters": {},
-      "type": "n8n-nodes-base.manualTrigger",
-      "typeVersion": 1,
-      "position": [
-        -64,
-        272
-      ],
-      "id": "2988b07e-7028-41fe-b913-b7559e4bda59",
-      "name": "When clicking ‘Execute workflow’"
     },
     {
       "parameters": {
@@ -316,7 +276,7 @@
     {
       "parameters": {
         "mode": "raw",
-        "jsonOutput": "{\n  \"alfacrm\": {\n    \"host\": \"kiberonesaratov.s20.online\",\n    \"email\": \"antonkarzhavin1@yandex.ru\",\n    \"api_key\": \"656b9709-9547-11f0-b9b8-3cecefbdd1ae\",\n    \"branchId\": 1\n  }\n}",
+        "jsonOutput": "{\n  \"alfacrm\": {\n    \"host\": \"kiberonesaratov.s20.online\",\n    \"email\": \"antonkarzhavin1@yandex.ru\",\n    \"api_key\": \"656b9709-9547-11f0-b9b8-3cecefbdd1ae\",\n  }\n}",
         "includeOtherFields": true,
         "options": {}
       },
@@ -324,10 +284,21 @@
       "typeVersion": 3.4,
       "position": [
         1312,
-        -96
+        -64
       ],
       "id": "8d7cadfb-2633-4768-9165-abf9a8e2553a",
       "name": "Edit Fields"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        1088,
+        -64
+      ],
+      "id": "e7a7a798-e66a-43cd-839e-c1a9ac97de8a",
+      "name": "Merge"
     }
   ],
   "connections": {
@@ -336,6 +307,11 @@
         [
           {
             "node": "Get visitors",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge",
             "type": "main",
             "index": 0
           }
@@ -357,25 +333,9 @@
       "main": [
         [
           {
-            "node": "Set credentials",
+            "node": "Merge",
             "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Set • Input": {
-      "main": [
-        []
-      ]
-    },
-    "Set credentials": {
-      "main": [
-        [
-          {
-            "node": "Edit Fields",
-            "type": "main",
-            "index": 0
+            "index": 1
           }
         ]
       ]
@@ -391,11 +351,6 @@
         ]
       ]
     },
-    "When clicking ‘Execute workflow’": {
-      "main": [
-        []
-      ]
-    },
     "Compare the lead with the visitor": {
       "main": [
         []
@@ -406,6 +361,22 @@
         [
           {
             "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        []
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
             "type": "main",
             "index": 0
           }
@@ -479,7 +450,7 @@
       }
     ]
   },
-  "versionId": "6d671a15-36e4-4f86-a06b-d3352cbd3b91",
+  "versionId": "5d9feded-48f5-49d7-b403-f515240514ba",
   "triggerCount": 1,
   "shared": [
     {
