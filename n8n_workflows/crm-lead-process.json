@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-10-07T21:30:12.820Z",
-  "updatedAt": "2025-10-09T21:07:00.983Z",
+  "updatedAt": "2025-10-09T21:17:45.509Z",
   "id": "d4D0Fp4pO6Ch7S7C",
   "name": "CRM lead process",
   "active": true,
@@ -15,7 +15,7 @@
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2.1,
       "position": [
-        -32,
+        192,
         0
       ],
       "id": "6b11411b-3ee6-4590-977a-3dbbd005d09a",
@@ -222,8 +222,8 @@
     {
       "parameters": {
         "content": "## CRM lead процесс\nСлушает вебхуки из CRM, при появлении нового лида - считывает последние 10 строк данных о посетителях и матчит с ближайшим по времени. \n\nTODO - сообщить в аналитику, обогатить данные по yclid и отправить обратно обновленные данные в CRM",
-        "height": 208,
-        "width": 736
+        "height": 128,
+        "width": 1712
       },
       "type": "n8n-nodes-base.stickyNote",
       "position": [
@@ -454,7 +454,7 @@
       }
     ]
   },
-  "versionId": "f5c957ea-6b89-4b5f-86a4-c34ec8b03967",
+  "versionId": "f30f9868-8331-47b8-980a-517079843357",
   "triggerCount": 1,
   "shared": [
     {
