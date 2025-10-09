@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-10-07T21:30:12.820Z",
-  "updatedAt": "2025-10-09T13:47:04.666Z",
+  "updatedAt": "2025-10-09T13:58:15.382Z",
   "id": "d4D0Fp4pO6Ch7S7C",
   "name": "CRM lead process",
   "active": true,
@@ -297,7 +297,7 @@
     {
       "parameters": {
         "mode": "raw",
-        "jsonOutput": "{\n  \"alfacrm\": {\n    \"host\": \"kiberonesaratov.s20.online\",\n    \"email\": \"antonkarzhavin1@yandex.ru\",\n    \"api_key\": \"656b9709-9547-11f0-b9b8-3cecefbdd1ae\",\n    \"branchId\": 1\n  },\n  \"update\": {\n    \"lead_source_id\": 8,\n    \"note_append\": \"test update from n8n\"\n//    \"custom_plain\": { \"custom_yclid\": \"test1\" },\n//    \"custom_value_json\": {\n//      \"16\": \"\",\n//      \"12\": \"\",\n//      \"13\": \"\",\n//      \"11\": \"\",\n//      \"14\": \"\",\n//      \"15\": \"test2\"\n//    },\n//    \"note_append\": \"set yclid via both\"\n  }\n}\n\n",
+        "jsonOutput": "{\n  \"alfacrm\": {\n    \"host\": \"kiberonesaratov.s20.online\",\n    \"email\": \"antonkarzhavin1@yandex.ru\",\n    \"api_key\": \"656b9709-9547-11f0-b9b8-3cecefbdd1ae\",\n    \"branchId\": 1\n  },\n  \"update\": {\n    \"lead_source_id\": 8,\n    \"note_append\": \"test update from n8n\",\n    \"custom_plain\": { \"custom_yclid\": \"test1\" },\n    \"custom_value_json\": {\n      \"16\": \"\",\n      \"12\": \"\",\n      \"13\": \"\",\n      \"11\": \"\",\n      \"14\": \"\",\n      \"15\": \"test2\"\n    }\n  }\n}",
         "options": {}
       },
       "id": "7b2a737f-00fa-4e6e-abcd-b9794b9ac66d",
@@ -379,7 +379,7 @@
   "staticData": null,
   "meta": null,
   "pinData": {},
-  "versionId": "bbe04e78-735f-4a30-96a1-738ff8c72fc1",
+  "versionId": "1a70f762-5645-4432-b1b6-47981d102781",
   "triggerCount": 1,
   "shared": [
     {
