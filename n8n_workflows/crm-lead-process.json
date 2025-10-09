@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-10-07T21:30:12.820Z",
-  "updatedAt": "2025-10-09T21:32:42.555Z",
+  "updatedAt": "2025-10-09T22:02:22.058Z",
   "id": "d4D0Fp4pO6Ch7S7C",
   "name": "CRM lead process",
   "active": true,
@@ -290,7 +290,7 @@
     },
     {
       "parameters": {
-        "jsCode": "/**\n * n8n \"Code (JavaScript)\" node\n * Готовит CSV для загрузки offline конверсии в Я.Метрику и кладёт его в binary \"file\"\n */\n\nfunction toUnixSeconds(dt) {\n  if (dt === undefined || dt === null || String(dt).trim() === '') {\n    return Math.floor(Date.now() / 1000);\n  }\n  const s = String(dt).trim();\n  // если число — считаем что это уже Unix seconds\n  if (/^\\d+$/.test(s)) return Number(s);\n  // иначе парсим как дату\n  const t = Date.parse(s);\n  if (Number.isFinite(t)) return Math.floor(t / 1000);\n  // fallback: сейчас\n  return Math.floor(Date.now() / 1000);\n}\n\nconst input = $json || {};\nconst counterId = input.counterId;         // number, используется в следующей ноде (в URL)\nconst target    = String(input.target || '').trim(); // goal id / code\nconst yclid     = String(input.yclid  || input.yclid_id || '').trim();\nconst etext     = String(input.etext  || '').trim();  // опционально\nconst dateUnix  = toUnixSeconds(input.datetime);\n\n// базовая валидация\nif (!counterId)  throw new Error('counterId is required');\nif (!target)     throw new Error('target (goal id/code) is required');\nif (!yclid)      throw new Error('yclid is required');\n\n// CSV (минимум требуемых колонок). Дополнительно можно добавить Price,Currency,OrderId и т.п.\nconst headers = ['Yclid','Target','DateTime'];\nconst row = [yclid, target, String(dateUnix)];\nconst csv = headers.join(',') + '\\n' + row.map(v => `\"${String(v).replace(/\"/g,'\"\"')}\"`).join(',');\n\n// Положим CSV в binary \"file\", а etext/counterId — в json для следующей ноды\nconst data = Buffer.from(csv, 'utf8').toString('base64');\n\nreturn [\n  {\n    json: {\n      counterId,\n      comment: etext ? `etl:${etext}` : undefined\n    },\n    binary: {\n      file: {\n        data,\n        fileName: 'offline-conv.csv',\n        mimeType: 'text/csv',\n      }\n    }\n  }\n];"
+        "jsCode": "function toUnixSeconds(dt) {\n  const s = String(dt ?? '').trim();\n  if (!s) return Math.floor(Date.now() / 1000);\n  if (/^\\d+$/.test(s)) return Number(s);\n  const t = Date.parse(s);\n  return Number.isFinite(t)\n    ? Math.floor(t / 1000)\n    : Math.floor(Date.now() / 1000);\n}\n\nfunction toDigitsString(v) {\n  const s = String(v ?? '').trim();\n  if (!s) return '';\n  // используем только цифры, исключаем всё остальное\n  return s.replace(/\\D/g, '');\n}\n\nconst input = $json || {};\nconst counterId = input.counterId;\nconst target = String(input.target ?? '').trim();\nconst yclidRaw = input.yclid ?? input.yclid_id;\nconst etext = String(input.etext ?? '').trim();\n\nif (!counterId) throw new Error('counterId is required');\nif (!target) throw new Error('target is required');\n\nconst yclid = toDigitsString(yclidRaw);\nif (!yclid) throw new Error('yclid is required and must be digits only');\n\n// здесь обновлено: гарантируем целые секунды\nconst dateUnix = Math.floor(Number(input.datetime || Date.now() / 1000));\n\n// CSV\nconst headers = ['Yclid', 'Target', 'DateTime'];\nconst row = [yclid, target, String(dateUnix)];\nconst csv =\n  headers.join(',') +\n  '\\n' +\n  row.map((v) => `\"${String(v).replace(/\"/g, '\"\"')}\"`).join(',');\n\nconst data = Buffer.from(csv, 'utf8').toString('base64');\n\nreturn [\n  {\n    json: {\n      counterId,\n      comment: etext ? `etl:${etext}` : undefined,\n    },\n    binary: {\n      file: {\n        data,\n        fileName: 'offline-conv.csv',\n        mimeType: 'text/csv',\n      },\n    },\n  },\n];"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -346,6 +346,30 @@
       ],
       "id": "c986603b-a0b6-4101-b682-3b315accbb79",
       "name": "Set Metrica data"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://api-metrika.yandex.net/management/v1/counter/{{$json.counterId}}/offline_conversions/upload{{$json.comment ? '?comment=' + encodeURIComponent($json.comment) : ''}}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "OAuth y0__xCI47u1CBiq4zog0YyG0hR1z7e64gJ-hZLEalVNHnDN1VhYUQ"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1760,
+        208
+      ],
+      "id": "8e322616-82e5-4920-8bf7-2b6697192fc2",
+      "name": "HTTP Request"
     }
   ],
   "connections": {
@@ -412,7 +436,7 @@
       "main": [
         [
           {
-            "node": "Set Metrica data",
+            "node": "Set CRM data",
             "type": "main",
             "index": 0
           }
@@ -435,6 +459,17 @@
         [
           {
             "node": "Code in JavaScript1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript1": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
             "type": "main",
             "index": 0
           }
@@ -506,9 +541,155 @@
           "executionMode": "production"
         }
       }
+    ],
+    "Update row(s)": [
+      {
+        "json": {
+          "id": 38,
+          "createdAt": "2025-10-09T18:58:22.106Z",
+          "updatedAt": "2025-10-09T19:14:27.167Z",
+          "utm_source": "",
+          "utm_medium": "",
+          "utm_campaign": "",
+          "utm_term": "",
+          "utm_content": "",
+          "yclid": "10713516624003203071",
+          "etext": "2202.G4kc2nnWttz3H8DWdILwW3wpSLrgpH-7qQx_ynD2nAtQr0rgweSNmFOGnoJnsEb7z7hUYSi41VzYTpfd7u1pmu0oC8W-xcaTQmjNvVdwbdxsb3V1dnp3eHViZGZmdnl3.126083e535921c7a944759ae334959fc6df6f293",
+          "referrer": "https://ya.ru/",
+          "page_url": "https://saratov-okt.kiber-one.com/?etext=2202.G4kc2nnWttz3H8DWdILwW3wpSLrgpH-7qQx_ynD2nAtQr0rgweSNmFOGnoJnsEb7z7hUYSi41VzYTpfd7u1pmu0oC8W-xcaTQmjNvVdwbdxsb3V1dnp3eHViZGZmdnl3.126083e535921c7a944759ae334959fc6df6f293&yclid=10713516624003203071",
+          "page_title": "KIBERone — IT-школа программирования для детей в Саратове",
+          "ts_site_iso": "2025-10-09T18:58:22.081Z",
+          "ts_site": 1760036302081,
+          "pending": false
+        }
+      }
+    ],
+    "Get the last visitor": [
+      {
+        "json": {
+          "id": 38,
+          "createdAt": "2025-10-09T18:58:22.106Z",
+          "updatedAt": "2025-10-09T18:58:22.106Z",
+          "utm_source": "",
+          "utm_medium": "",
+          "utm_campaign": "",
+          "utm_term": "",
+          "utm_content": "",
+          "yclid": "10713516624003203071",
+          "etext": "2202.G4kc2nnWttz3H8DWdILwW3wpSLrgpH-7qQx_ynD2nAtQr0rgweSNmFOGnoJnsEb7z7hUYSi41VzYTpfd7u1pmu0oC8W-xcaTQmjNvVdwbdxsb3V1dnp3eHViZGZmdnl3.126083e535921c7a944759ae334959fc6df6f293",
+          "referrer": "https://ya.ru/",
+          "page_url": "https://saratov-okt.kiber-one.com/?etext=2202.G4kc2nnWttz3H8DWdILwW3wpSLrgpH-7qQx_ynD2nAtQr0rgweSNmFOGnoJnsEb7z7hUYSi41VzYTpfd7u1pmu0oC8W-xcaTQmjNvVdwbdxsb3V1dnp3eHViZGZmdnl3.126083e535921c7a944759ae334959fc6df6f293&yclid=10713516624003203071",
+          "page_title": "KIBERone — IT-школа программирования для детей в Саратове",
+          "ts_site_iso": "2025-10-09T18:58:22.081Z",
+          "ts_site": 1760036302081,
+          "pending": true
+        }
+      }
+    ],
+    "Get visitors": [
+      {
+        "json": {
+          "id": 34,
+          "createdAt": "2025-10-09T14:38:47.978Z",
+          "updatedAt": "2025-10-09T14:38:47.978Z",
+          "utm_source": "",
+          "utm_medium": "",
+          "utm_campaign": "",
+          "utm_term": "",
+          "utm_content": "",
+          "yclid": "10713516624003203071",
+          "etext": "2202.G4kc2nnWttz3H8DWdILwW3wpSLrgpH-7qQx_ynD2nAtQr0rgweSNmFOGnoJnsEb7z7hUYSi41VzYTpfd7u1pmu0oC8W-xcaTQmjNvVdwbdxsb3V1dnp3eHViZGZmdnl3.126083e535921c7a944759ae334959fc6df6f293",
+          "referrer": "https://ya.ru/",
+          "page_url": "https://saratov-okt.kiber-one.com/?etext=2202.G4kc2nnWttz3H8DWdILwW3wpSLrgpH-7qQx_ynD2nAtQr0rgweSNmFOGnoJnsEb7z7hUYSi41VzYTpfd7u1pmu0oC8W-xcaTQmjNvVdwbdxsb3V1dnp3eHViZGZmdnl3.126083e535921c7a944759ae334959fc6df6f293&yclid=10713516624003203071",
+          "page_title": "KIBERone — IT-школа программирования для детей в Саратове",
+          "ts_site_iso": "2025-10-09T14:38:47.959Z",
+          "ts_site": 1760020727959,
+          "pending": true
+        }
+      },
+      {
+        "json": {
+          "id": 21,
+          "createdAt": "2025-10-08T08:46:49.177Z",
+          "updatedAt": "2025-10-08T08:46:49.177Z",
+          "utm_source": "",
+          "utm_medium": "",
+          "utm_campaign": "",
+          "utm_term": "",
+          "utm_content": "",
+          "yclid": "10713516624003203071",
+          "etext": "2202.G4kc2nnWttz3H8DWdILwW3wpSLrgpH-7qQx_ynD2nAtQr0rgweSNmFOGnoJnsEb7z7hUYSi41VzYTpfd7u1pmu0oC8W-xcaTQmjNvVdwbdxsb3V1dnp3eHViZGZmdnl3.126083e535921c7a944759ae334959fc6df6f293",
+          "referrer": "https://ya.ru/",
+          "page_url": "https://saratov-okt.kiber-one.com/?etext=2202.G4kc2nnWttz3H8DWdILwW3wpSLrgpH-7qQx_ynD2nAtQr0rgweSNmFOGnoJnsEb7z7hUYSi41VzYTpfd7u1pmu0oC8W-xcaTQmjNvVdwbdxsb3V1dnp3eHViZGZmdnl3.126083e535921c7a944759ae334959fc6df6f293&yclid=10713516624003203071",
+          "page_title": "KIBERone — IT-школа программирования для детей в Саратове",
+          "ts_site_iso": "2025-10-08T08:46:49.114Z",
+          "ts_site": 1759913209114,
+          "pending": true
+        }
+      },
+      {
+        "json": {
+          "id": 30,
+          "createdAt": "2025-10-09T05:04:23.231Z",
+          "updatedAt": "2025-10-09T05:04:23.231Z",
+          "utm_source": "",
+          "utm_medium": "",
+          "utm_campaign": "",
+          "utm_term": "",
+          "utm_content": "",
+          "yclid": "12665599783792279551",
+          "etext": "",
+          "referrer": "https://yandex.ru/",
+          "page_url": "https://saratov-okt.kiber-one.com/?yclid=12665599783792279551",
+          "page_title": "KIBERone — IT-школа программирования для детей в Саратове",
+          "ts_site_iso": "2025-10-09T05:04:23.151Z",
+          "ts_site": 1759986263151,
+          "pending": true
+        }
+      },
+      {
+        "json": {
+          "id": 36,
+          "createdAt": "2025-10-09T14:41:40.997Z",
+          "updatedAt": "2025-10-09T14:41:40.997Z",
+          "utm_source": "",
+          "utm_medium": "",
+          "utm_campaign": "",
+          "utm_term": "",
+          "utm_content": "",
+          "yclid": "10713516624003203071",
+          "etext": "2202.G4kc2nnWttz3H8DWdILwW3wpSLrgpH-7qQx_ynD2nAtQr0rgweSNmFOGnoJnsEb7z7hUYSi41VzYTpfd7u1pmu0oC8W-xcaTQmjNvVdwbdxsb3V1dnp3eHViZGZmdnl3.126083e535921c7a944759ae334959fc6df6f293",
+          "referrer": "https://ya.ru/",
+          "page_url": "https://saratov-okt.kiber-one.com/?etext=2202.G4kc2nnWttz3H8DWdILwW3wpSLrgpH-7qQx_ynD2nAtQr0rgweSNmFOGnoJnsEb7z7hUYSi41VzYTpfd7u1pmu0oC8W-xcaTQmjNvVdwbdxsb3V1dnp3eHViZGZmdnl3.126083e535921c7a944759ae334959fc6df6f293&yclid=10713516624003203071",
+          "page_title": "KIBERone — IT-школа программирования для детей в Саратове",
+          "ts_site_iso": "2025-10-09T14:41:40.972Z",
+          "ts_site": 1760020900972,
+          "pending": true
+        }
+      },
+      {
+        "json": {
+          "id": 38,
+          "createdAt": "2025-10-09T18:58:22.106Z",
+          "updatedAt": "2025-10-09T18:58:22.106Z",
+          "utm_source": "",
+          "utm_medium": "",
+          "utm_campaign": "",
+          "utm_term": "",
+          "utm_content": "",
+          "yclid": "10713516624003203071",
+          "etext": "2202.G4kc2nnWttz3H8DWdILwW3wpSLrgpH-7qQx_ynD2nAtQr0rgweSNmFOGnoJnsEb7z7hUYSi41VzYTpfd7u1pmu0oC8W-xcaTQmjNvVdwbdxsb3V1dnp3eHViZGZmdnl3.126083e535921c7a944759ae334959fc6df6f293",
+          "referrer": "https://ya.ru/",
+          "page_url": "https://saratov-okt.kiber-one.com/?etext=2202.G4kc2nnWttz3H8DWdILwW3wpSLrgpH-7qQx_ynD2nAtQr0rgweSNmFOGnoJnsEb7z7hUYSi41VzYTpfd7u1pmu0oC8W-xcaTQmjNvVdwbdxsb3V1dnp3eHViZGZmdnl3.126083e535921c7a944759ae334959fc6df6f293&yclid=10713516624003203071",
+          "page_title": "KIBERone — IT-школа программирования для детей в Саратове",
+          "ts_site_iso": "2025-10-09T18:58:22.081Z",
+          "ts_site": 1760036302081,
+          "pending": true
+        }
+      }
     ]
   },
-  "versionId": "8b02a65e-79a0-44bd-9c32-0c90fa77589b",
+  "versionId": "b2dcfb42-37f5-4655-bc05-fae9e5d4cb7d",
   "triggerCount": 1,
   "shared": [
     {
