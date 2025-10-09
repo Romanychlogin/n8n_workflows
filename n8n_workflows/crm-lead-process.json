@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-10-07T21:30:12.820Z",
-  "updatedAt": "2025-10-09T21:17:45.509Z",
+  "updatedAt": "2025-10-09T21:30:11.062Z",
   "id": "d4D0Fp4pO6Ch7S7C",
   "name": "CRM lead process",
   "active": true,
@@ -275,22 +275,6 @@
     },
     {
       "parameters": {
-        "mode": "raw",
-        "jsonOutput": "{\n  \"alfacrm\": {\n    \"host\": \"kiberonesaratov.s20.online\",\n    \"email\": \"antonkarzhavin1@yandex.ru\",\n    \"api_key\": \"656b9709-9547-11f0-b9b8-3cecefbdd1ae\",\n  }\n}",
-        "includeOtherFields": true,
-        "options": {}
-      },
-      "type": "n8n-nodes-base.set",
-      "typeVersion": 3.4,
-      "position": [
-        1312,
-        -64
-      ],
-      "id": "8d7cadfb-2633-4768-9165-abf9a8e2553a",
-      "name": "Edit Fields"
-    },
-    {
-      "parameters": {
         "mode": "combine",
         "combineBy": "combineByPosition",
         "options": {}
@@ -303,6 +287,59 @@
       ],
       "id": "e7a7a798-e66a-43cd-839e-c1a9ac97de8a",
       "name": "Merge"
+    },
+    {
+      "parameters": {
+        "jsCode": "/**\n * n8n \"Code (JavaScript)\" node\n * Готовит CSV для загрузки offline конверсии в Я.Метрику и кладёт его в binary \"file\"\n */\n\nfunction toUnixSeconds(dt) {\n  if (dt === undefined || dt === null || String(dt).trim() === '') {\n    return Math.floor(Date.now() / 1000);\n  }\n  const s = String(dt).trim();\n  // если число — считаем что это уже Unix seconds\n  if (/^\\d+$/.test(s)) return Number(s);\n  // иначе парсим как дату\n  const t = Date.parse(s);\n  if (Number.isFinite(t)) return Math.floor(t / 1000);\n  // fallback: сейчас\n  return Math.floor(Date.now() / 1000);\n}\n\nconst input = $json || {};\nconst counterId = input.counterId;         // number, используется в следующей ноде (в URL)\nconst target    = String(input.target || '').trim(); // goal id / code\nconst yclid     = String(input.yclid  || input.yclid_id || '').trim();\nconst etext     = String(input.etext  || '').trim();  // опционально\nconst dateUnix  = toUnixSeconds(input.datetime);\n\n// базовая валидация\nif (!counterId)  throw new Error('counterId is required');\nif (!target)     throw new Error('target (goal id/code) is required');\nif (!yclid)      throw new Error('yclid is required');\n\n// CSV (минимум требуемых колонок). Дополнительно можно добавить Price,Currency,OrderId и т.п.\nconst headers = ['Yclid','Target','DateTime'];\nconst row = [yclid, target, String(dateUnix)];\nconst csv = headers.join(',') + '\\n' + row.map(v => `\"${String(v).replace(/\"/g,'\"\"')}\"`).join(',');\n\n// Положим CSV в binary \"file\", а etext/counterId — в json для следующей ноды\nconst data = Buffer.from(csv, 'utf8').toString('base64');\n\nreturn [\n  {\n    json: {\n      counterId,\n      comment: etext ? `etl:${etext}` : undefined\n    },\n    binary: {\n      file: {\n        data,\n        fileName: 'offline-conv.csv',\n        mimeType: 'text/csv',\n      }\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1552,
+        208
+      ],
+      "id": "2426a3d8-fec0-44c7-9a54-d174fd4e5e40",
+      "name": "Code in JavaScript1"
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "{\n  \"alfacrm\": {\n    \"host\": \"kiberonesaratov.s20.online\",\n    \"email\": \"antonkarzhavin1@yandex.ru\",\n    \"api_key\": \"656b9709-9547-11f0-b9b8-3cecefbdd1ae\",\n  }\n}",
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1312,
+        -64
+      ],
+      "id": "8d7cadfb-2633-4768-9165-abf9a8e2553a",
+      "name": "Set CRM data"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "7d2e6e6d-c3ec-459c-a0aa-60f6f1392bee",
+              "name": "counterId",
+              "value": "85745759",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1312,
+        208
+      ],
+      "id": "c986603b-a0b6-4101-b682-3b315accbb79",
+      "name": "Set Metrica data"
     }
   ],
   "connections": {
@@ -360,7 +397,28 @@
         []
       ]
     },
-    "Edit Fields": {
+    "Code in JavaScript": {
+      "main": [
+        []
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Set CRM data",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Set Metrica data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set CRM data": {
       "main": [
         [
           {
@@ -371,16 +429,11 @@
         ]
       ]
     },
-    "Code in JavaScript": {
-      "main": [
-        []
-      ]
-    },
-    "Merge": {
+    "Set Metrica data": {
       "main": [
         [
           {
-            "node": "Edit Fields",
+            "node": "Code in JavaScript1",
             "type": "main",
             "index": 0
           }
@@ -454,7 +507,7 @@
       }
     ]
   },
-  "versionId": "f30f9868-8331-47b8-980a-517079843357",
+  "versionId": "eb243bc3-974c-4325-acd4-0bbd52ae0a83",
   "triggerCount": 1,
   "shared": [
     {
