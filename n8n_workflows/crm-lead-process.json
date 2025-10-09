@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-10-07T21:30:12.820Z",
-  "updatedAt": "2025-10-09T19:21:05.030Z",
+  "updatedAt": "2025-10-09T21:07:00.983Z",
   "id": "d4D0Fp4pO6Ch7S7C",
   "name": "CRM lead process",
   "active": true,
@@ -290,7 +290,11 @@
       "name": "Edit Fields"
     },
     {
-      "parameters": {},
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
       "type": "n8n-nodes-base.merge",
       "typeVersion": 3.2,
       "position": [
@@ -450,7 +454,7 @@
       }
     ]
   },
-  "versionId": "5d9feded-48f5-49d7-b403-f515240514ba",
+  "versionId": "f5c957ea-6b89-4b5f-86a4-c34ec8b03967",
   "triggerCount": 1,
   "shared": [
     {
