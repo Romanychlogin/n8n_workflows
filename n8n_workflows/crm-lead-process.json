@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-10-07T21:30:12.820Z",
-  "updatedAt": "2025-10-09T21:30:11.062Z",
+  "updatedAt": "2025-10-09T21:32:42.555Z",
   "id": "d4D0Fp4pO6Ch7S7C",
   "name": "CRM lead process",
   "active": true,
@@ -326,6 +326,12 @@
               "name": "counterId",
               "value": "85745759",
               "type": "string"
+            },
+            {
+              "id": "d8562f2f-5e32-4d68-9899-f56f53f99e03",
+              "name": "target",
+              "value": "473672120",
+              "type": "string"
             }
           ]
         },
@@ -405,11 +411,6 @@
     "Merge": {
       "main": [
         [
-          {
-            "node": "Set CRM data",
-            "type": "main",
-            "index": 0
-          },
           {
             "node": "Set Metrica data",
             "type": "main",
@@ -507,7 +508,7 @@
       }
     ]
   },
-  "versionId": "eb243bc3-974c-4325-acd4-0bbd52ae0a83",
+  "versionId": "8b02a65e-79a0-44bd-9c32-0c90fa77589b",
   "triggerCount": 1,
   "shared": [
     {
