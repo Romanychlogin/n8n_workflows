@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-10-07T21:30:12.820Z",
-  "updatedAt": "2025-10-09T22:02:22.058Z",
+  "updatedAt": "2025-10-10T07:30:47.537Z",
   "id": "d4D0Fp4pO6Ch7S7C",
   "name": "CRM lead process",
   "active": true,
@@ -221,7 +221,7 @@
     },
     {
       "parameters": {
-        "content": "## CRM lead процесс\nСлушает вебхуки из CRM, при появлении нового лида - считывает последние 10 строк данных о посетителях и матчит с ближайшим по времени. \n\nTODO - сообщить в аналитику, обогатить данные по yclid и отправить обратно обновленные данные в CRM",
+        "content": "## CRM lead процесс\nСлушает вебхуки из CRM, при появлении нового лида - считывает последние 10 строк данных о посетителях и матчит с последней записью. Отсылает yclid_id и etext обратно в CRM\n\nTODO - сообщить в аналитику; сделать if если нет свежих записей; обогатить UTM-данными",
         "height": 128,
         "width": 1712
       },
@@ -482,214 +482,8 @@
   },
   "staticData": null,
   "meta": null,
-  "pinData": {
-    "Webhook": [
-      {
-        "json": {
-          "headers": {
-            "host": "n8n-main-production-4310.up.railway.app",
-            "user-agent": "GuzzleHttp/7",
-            "content-length": "618",
-            "content-type": "application/json",
-            "x-forwarded-for": "5.182.6.225",
-            "x-forwarded-host": "n8n-main-production-4310.up.railway.app",
-            "x-forwarded-proto": "https",
-            "x-railway-edge": "railway/europe-west4-drams3a",
-            "x-railway-request-id": "LH2E0N8iTk229ptrjUJq2g",
-            "x-real-ip": "5.182.6.225",
-            "x-request-start": "1760036331649",
-            "accept-encoding": "gzip"
-          },
-          "params": {},
-          "query": {},
-          "body": {
-            "branch_id": 1,
-            "event": "create",
-            "entity": "Customer",
-            "entity_id": 19369,
-            "fields_old": [],
-            "fields_new": {
-              "dob": "2009-10-29",
-              "name": "Artem",
-              "note": "",
-              "id_no": "",
-              "b_date": "2025-10-09 22:58:50",
-              "e_date": "2030-12-31",
-              "barcode": "",
-              "is_study": 0,
-              "id_issued": "",
-              "branch_ids": [
-                1
-              ],
-              "company_id": null,
-              "created_at": "2025-10-09 18:58:50",
-              "legal_name": "Webhook 8",
-              "legal_type": 1,
-              "lead_source_id": "8",
-              "lead_status_id": "",
-              "contact_contacts": [
-                "+36(637)637-367",
-                "ananan@anana.ru"
-              ],
-              "custom_value_json": "{\"16\":\"\",\"12\":\"\",\"13\":\"\",\"11\":\"\",\"14\":\"\",\"15\":\"\"}"
-            },
-            "fields_rel": [],
-            "user_id": null,
-            "datetime": "2025-10-09 22:58:50"
-          },
-          "webhookUrl": "https://n8n-main-production-4310.up.railway.app/webhook/c11cd095-1060-4c9c-87df-2a3c9d34deab",
-          "executionMode": "production"
-        }
-      }
-    ],
-    "Update row(s)": [
-      {
-        "json": {
-          "id": 38,
-          "createdAt": "2025-10-09T18:58:22.106Z",
-          "updatedAt": "2025-10-09T19:14:27.167Z",
-          "utm_source": "",
-          "utm_medium": "",
-          "utm_campaign": "",
-          "utm_term": "",
-          "utm_content": "",
-          "yclid": "10713516624003203071",
-          "etext": "2202.G4kc2nnWttz3H8DWdILwW3wpSLrgpH-7qQx_ynD2nAtQr0rgweSNmFOGnoJnsEb7z7hUYSi41VzYTpfd7u1pmu0oC8W-xcaTQmjNvVdwbdxsb3V1dnp3eHViZGZmdnl3.126083e535921c7a944759ae334959fc6df6f293",
-          "referrer": "https://ya.ru/",
-          "page_url": "https://saratov-okt.kiber-one.com/?etext=2202.G4kc2nnWttz3H8DWdILwW3wpSLrgpH-7qQx_ynD2nAtQr0rgweSNmFOGnoJnsEb7z7hUYSi41VzYTpfd7u1pmu0oC8W-xcaTQmjNvVdwbdxsb3V1dnp3eHViZGZmdnl3.126083e535921c7a944759ae334959fc6df6f293&yclid=10713516624003203071",
-          "page_title": "KIBERone — IT-школа программирования для детей в Саратове",
-          "ts_site_iso": "2025-10-09T18:58:22.081Z",
-          "ts_site": 1760036302081,
-          "pending": false
-        }
-      }
-    ],
-    "Get the last visitor": [
-      {
-        "json": {
-          "id": 38,
-          "createdAt": "2025-10-09T18:58:22.106Z",
-          "updatedAt": "2025-10-09T18:58:22.106Z",
-          "utm_source": "",
-          "utm_medium": "",
-          "utm_campaign": "",
-          "utm_term": "",
-          "utm_content": "",
-          "yclid": "10713516624003203071",
-          "etext": "2202.G4kc2nnWttz3H8DWdILwW3wpSLrgpH-7qQx_ynD2nAtQr0rgweSNmFOGnoJnsEb7z7hUYSi41VzYTpfd7u1pmu0oC8W-xcaTQmjNvVdwbdxsb3V1dnp3eHViZGZmdnl3.126083e535921c7a944759ae334959fc6df6f293",
-          "referrer": "https://ya.ru/",
-          "page_url": "https://saratov-okt.kiber-one.com/?etext=2202.G4kc2nnWttz3H8DWdILwW3wpSLrgpH-7qQx_ynD2nAtQr0rgweSNmFOGnoJnsEb7z7hUYSi41VzYTpfd7u1pmu0oC8W-xcaTQmjNvVdwbdxsb3V1dnp3eHViZGZmdnl3.126083e535921c7a944759ae334959fc6df6f293&yclid=10713516624003203071",
-          "page_title": "KIBERone — IT-школа программирования для детей в Саратове",
-          "ts_site_iso": "2025-10-09T18:58:22.081Z",
-          "ts_site": 1760036302081,
-          "pending": true
-        }
-      }
-    ],
-    "Get visitors": [
-      {
-        "json": {
-          "id": 34,
-          "createdAt": "2025-10-09T14:38:47.978Z",
-          "updatedAt": "2025-10-09T14:38:47.978Z",
-          "utm_source": "",
-          "utm_medium": "",
-          "utm_campaign": "",
-          "utm_term": "",
-          "utm_content": "",
-          "yclid": "10713516624003203071",
-          "etext": "2202.G4kc2nnWttz3H8DWdILwW3wpSLrgpH-7qQx_ynD2nAtQr0rgweSNmFOGnoJnsEb7z7hUYSi41VzYTpfd7u1pmu0oC8W-xcaTQmjNvVdwbdxsb3V1dnp3eHViZGZmdnl3.126083e535921c7a944759ae334959fc6df6f293",
-          "referrer": "https://ya.ru/",
-          "page_url": "https://saratov-okt.kiber-one.com/?etext=2202.G4kc2nnWttz3H8DWdILwW3wpSLrgpH-7qQx_ynD2nAtQr0rgweSNmFOGnoJnsEb7z7hUYSi41VzYTpfd7u1pmu0oC8W-xcaTQmjNvVdwbdxsb3V1dnp3eHViZGZmdnl3.126083e535921c7a944759ae334959fc6df6f293&yclid=10713516624003203071",
-          "page_title": "KIBERone — IT-школа программирования для детей в Саратове",
-          "ts_site_iso": "2025-10-09T14:38:47.959Z",
-          "ts_site": 1760020727959,
-          "pending": true
-        }
-      },
-      {
-        "json": {
-          "id": 21,
-          "createdAt": "2025-10-08T08:46:49.177Z",
-          "updatedAt": "2025-10-08T08:46:49.177Z",
-          "utm_source": "",
-          "utm_medium": "",
-          "utm_campaign": "",
-          "utm_term": "",
-          "utm_content": "",
-          "yclid": "10713516624003203071",
-          "etext": "2202.G4kc2nnWttz3H8DWdILwW3wpSLrgpH-7qQx_ynD2nAtQr0rgweSNmFOGnoJnsEb7z7hUYSi41VzYTpfd7u1pmu0oC8W-xcaTQmjNvVdwbdxsb3V1dnp3eHViZGZmdnl3.126083e535921c7a944759ae334959fc6df6f293",
-          "referrer": "https://ya.ru/",
-          "page_url": "https://saratov-okt.kiber-one.com/?etext=2202.G4kc2nnWttz3H8DWdILwW3wpSLrgpH-7qQx_ynD2nAtQr0rgweSNmFOGnoJnsEb7z7hUYSi41VzYTpfd7u1pmu0oC8W-xcaTQmjNvVdwbdxsb3V1dnp3eHViZGZmdnl3.126083e535921c7a944759ae334959fc6df6f293&yclid=10713516624003203071",
-          "page_title": "KIBERone — IT-школа программирования для детей в Саратове",
-          "ts_site_iso": "2025-10-08T08:46:49.114Z",
-          "ts_site": 1759913209114,
-          "pending": true
-        }
-      },
-      {
-        "json": {
-          "id": 30,
-          "createdAt": "2025-10-09T05:04:23.231Z",
-          "updatedAt": "2025-10-09T05:04:23.231Z",
-          "utm_source": "",
-          "utm_medium": "",
-          "utm_campaign": "",
-          "utm_term": "",
-          "utm_content": "",
-          "yclid": "12665599783792279551",
-          "etext": "",
-          "referrer": "https://yandex.ru/",
-          "page_url": "https://saratov-okt.kiber-one.com/?yclid=12665599783792279551",
-          "page_title": "KIBERone — IT-школа программирования для детей в Саратове",
-          "ts_site_iso": "2025-10-09T05:04:23.151Z",
-          "ts_site": 1759986263151,
-          "pending": true
-        }
-      },
-      {
-        "json": {
-          "id": 36,
-          "createdAt": "2025-10-09T14:41:40.997Z",
-          "updatedAt": "2025-10-09T14:41:40.997Z",
-          "utm_source": "",
-          "utm_medium": "",
-          "utm_campaign": "",
-          "utm_term": "",
-          "utm_content": "",
-          "yclid": "10713516624003203071",
-          "etext": "2202.G4kc2nnWttz3H8DWdILwW3wpSLrgpH-7qQx_ynD2nAtQr0rgweSNmFOGnoJnsEb7z7hUYSi41VzYTpfd7u1pmu0oC8W-xcaTQmjNvVdwbdxsb3V1dnp3eHViZGZmdnl3.126083e535921c7a944759ae334959fc6df6f293",
-          "referrer": "https://ya.ru/",
-          "page_url": "https://saratov-okt.kiber-one.com/?etext=2202.G4kc2nnWttz3H8DWdILwW3wpSLrgpH-7qQx_ynD2nAtQr0rgweSNmFOGnoJnsEb7z7hUYSi41VzYTpfd7u1pmu0oC8W-xcaTQmjNvVdwbdxsb3V1dnp3eHViZGZmdnl3.126083e535921c7a944759ae334959fc6df6f293&yclid=10713516624003203071",
-          "page_title": "KIBERone — IT-школа программирования для детей в Саратове",
-          "ts_site_iso": "2025-10-09T14:41:40.972Z",
-          "ts_site": 1760020900972,
-          "pending": true
-        }
-      },
-      {
-        "json": {
-          "id": 38,
-          "createdAt": "2025-10-09T18:58:22.106Z",
-          "updatedAt": "2025-10-09T18:58:22.106Z",
-          "utm_source": "",
-          "utm_medium": "",
-          "utm_campaign": "",
-          "utm_term": "",
-          "utm_content": "",
-          "yclid": "10713516624003203071",
-          "etext": "2202.G4kc2nnWttz3H8DWdILwW3wpSLrgpH-7qQx_ynD2nAtQr0rgweSNmFOGnoJnsEb7z7hUYSi41VzYTpfd7u1pmu0oC8W-xcaTQmjNvVdwbdxsb3V1dnp3eHViZGZmdnl3.126083e535921c7a944759ae334959fc6df6f293",
-          "referrer": "https://ya.ru/",
-          "page_url": "https://saratov-okt.kiber-one.com/?etext=2202.G4kc2nnWttz3H8DWdILwW3wpSLrgpH-7qQx_ynD2nAtQr0rgweSNmFOGnoJnsEb7z7hUYSi41VzYTpfd7u1pmu0oC8W-xcaTQmjNvVdwbdxsb3V1dnp3eHViZGZmdnl3.126083e535921c7a944759ae334959fc6df6f293&yclid=10713516624003203071",
-          "page_title": "KIBERone — IT-школа программирования для детей в Саратове",
-          "ts_site_iso": "2025-10-09T18:58:22.081Z",
-          "ts_site": 1760036302081,
-          "pending": true
-        }
-      }
-    ]
-  },
-  "versionId": "b2dcfb42-37f5-4655-bc05-fae9e5d4cb7d",
+  "pinData": {},
+  "versionId": "e2cc8fff-5959-467e-9504-2e8d0b50c9bd",
   "triggerCount": 1,
   "shared": [
     {
