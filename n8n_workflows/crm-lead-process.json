@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-10-07T21:30:12.820Z",
-  "updatedAt": "2025-10-11T17:48:59.613Z",
+  "updatedAt": "2025-10-11T17:59:13.873Z",
   "id": "d4D0Fp4pO6Ch7S7C",
   "name": "CRM lead process",
   "active": true,
@@ -295,8 +295,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        384,
-        496
+        1360,
+        432
       ],
       "id": "2426a3d8-fec0-44c7-9a54-d174fd4e5e40",
       "name": "Code in JavaScript1"
@@ -369,8 +369,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        816,
-        496
+        1568,
+        432
       ],
       "id": "8e322616-82e5-4920-8bf7-2b6697192fc2",
       "name": "HTTP Request"
@@ -382,15 +382,16 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        576,
-        496
+        1552,
+        592
       ],
       "id": "13d31b80-c2a5-4226-8a39-b8a5a78d4f09",
       "name": "Code in JavaScript2"
     },
     {
       "parameters": {
-        "url": "=https://mc.yandex.ru/watch/{{$json.counterId}}?page-url={{$json.page_url}}&browser-info=et:custom;rn={{Date.now()}};site-info=goal:CRM_lead",
+        "method": "POST",
+        "url": "=https://mc.yandex.ru/watch/{{$json.counterId}}?page-url={{$json.page_url}}&browser-info=et:custom;rn={{Date.now()}};site-info=goal:crm_lead",
         "options": {}
       },
       "type": "n8n-nodes-base.httpRequest",
@@ -500,7 +501,7 @@
       "main": [
         [
           {
-            "node": "Code in JavaScript2",
+            "node": "HTTP Request",
             "type": "main",
             "index": 0
           }
@@ -509,13 +510,7 @@
     },
     "Code in JavaScript2": {
       "main": [
-        [
-          {
-            "node": "HTTP Request",
-            "type": "main",
-            "index": 0
-          }
-        ]
+        []
       ]
     }
   },
@@ -805,7 +800,7 @@
       }
     ]
   },
-  "versionId": "1d4abd9d-e174-40bd-82ed-530825cac388",
+  "versionId": "3178747b-9020-479c-ac6d-16ed38de3077",
   "triggerCount": 1,
   "shared": [
     {
