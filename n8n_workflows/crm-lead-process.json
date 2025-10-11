@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-10-07T21:30:12.820Z",
-  "updatedAt": "2025-10-11T18:03:19.079Z",
+  "updatedAt": "2025-10-11T18:27:49.423Z",
   "id": "d4D0Fp4pO6Ch7S7C",
   "name": "CRM lead process",
   "active": true,
@@ -326,6 +326,12 @@
               "name": "counterId",
               "value": "85745759",
               "type": "string"
+            },
+            {
+              "id": "133b3309-fde4-4154-9af7-a710b86e3162",
+              "name": "target",
+              "value": "473672120",
+              "type": "string"
             }
           ]
         },
@@ -335,8 +341,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        1312,
-        208
+        1232,
+        144
       ],
       "id": "c986603b-a0b6-4101-b682-3b315accbb79",
       "name": "Set Metrica data"
@@ -355,9 +361,12 @@
           ]
         },
         "sendBody": true,
-        "contentType": "raw",
-        "rawContentType": "=multipart/form-data; boundary={{$json.boundary}}",
-        "body": "={{ Buffer.from($item(0).binary.payload.data, 'base64') }}",
+        "contentType": "=multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {}
+          ]
+        },
         "options": {}
       },
       "type": "n8n-nodes-base.httpRequest",
@@ -484,7 +493,7 @@
       "main": [
         [
           {
-            "node": "HTTP Request1",
+            "node": "Code in JavaScript1",
             "type": "main",
             "index": 0
           }
@@ -794,7 +803,7 @@
       }
     ]
   },
-  "versionId": "a034f304-16e0-429d-9cda-44a4be43159b",
+  "versionId": "2efd5cc2-bc94-414d-b8c8-3845fa11dcd3",
   "triggerCount": 1,
   "shared": [
     {
