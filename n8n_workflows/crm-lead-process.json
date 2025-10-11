@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-10-07T21:30:12.820Z",
-  "updatedAt": "2025-10-11T17:59:13.873Z",
+  "updatedAt": "2025-10-11T18:03:19.079Z",
   "id": "d4D0Fp4pO6Ch7S7C",
   "name": "CRM lead process",
   "active": true,
@@ -325,12 +325,6 @@
               "id": "7d2e6e6d-c3ec-459c-a0aa-60f6f1392bee",
               "name": "counterId",
               "value": "85745759",
-              "type": "string"
-            },
-            {
-              "id": "d8562f2f-5e32-4d68-9899-f56f53f99e03",
-              "name": "target",
-              "value": "473672120",
               "type": "string"
             }
           ]
@@ -800,7 +794,7 @@
       }
     ]
   },
-  "versionId": "3178747b-9020-479c-ac6d-16ed38de3077",
+  "versionId": "a034f304-16e0-429d-9cda-44a4be43159b",
   "triggerCount": 1,
   "shared": [
     {
