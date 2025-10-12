@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-10-07T21:30:12.820Z",
-  "updatedAt": "2025-10-12T14:31:03.911Z",
+  "updatedAt": "2025-10-12T15:01:24.609Z",
   "id": "d4D0Fp4pO6Ch7S7C",
   "name": "CRM lead process",
   "active": true,
@@ -341,8 +341,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        1344,
-        432
+        1312,
+        208
       ],
       "id": "c986603b-a0b6-4101-b682-3b315accbb79",
       "name": "Set Metrica data"
@@ -393,9 +393,24 @@
     },
     {
       "parameters": {
-        "method": "POST",
-        "url": "=https://mc.yandex.ru/watch/{{$json.counterId}}?page-url={{$json.page_url}}&browser-info=et:custom;rn={{Date.now()}};site-info=goal:crm_lead",
-        "options": {}
+        "url": "=https://mc.yandex.ru/watch/{{$json.counterId}}?page-url={{$json.page_url}}&browser-info=et:custom;rn={{$json.createdAt || Date.now()}};site-info=goal:crm_lead",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "User-Agent",
+              "value": "n8n-offline-conversion"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "responseFormat": "text"
+            }
+          }
+        }
       },
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
@@ -493,7 +508,7 @@
       "main": [
         [
           {
-            "node": "Code in JavaScript1",
+            "node": "HTTP Request1",
             "type": "main",
             "index": 0
           }
@@ -512,6 +527,11 @@
       ]
     },
     "Code in JavaScript2": {
+      "main": [
+        []
+      ]
+    },
+    "HTTP Request1": {
       "main": [
         []
       ]
@@ -803,7 +823,7 @@
       }
     ]
   },
-  "versionId": "70f2f823-386a-4489-b3d8-a791795a2138",
+  "versionId": "f7dced85-0b06-4eba-afa7-ce4d847baa38",
   "triggerCount": 1,
   "shared": [
     {
