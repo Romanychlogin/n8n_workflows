@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-10-07T21:30:12.820Z",
-  "updatedAt": "2025-10-11T18:27:49.423Z",
+  "updatedAt": "2025-10-12T14:31:03.911Z",
   "id": "d4D0Fp4pO6Ch7S7C",
   "name": "CRM lead process",
   "active": true,
@@ -295,7 +295,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1360,
+        1536,
         432
       ],
       "id": "2426a3d8-fec0-44c7-9a54-d174fd4e5e40",
@@ -341,8 +341,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        1232,
-        144
+        1344,
+        432
       ],
       "id": "c986603b-a0b6-4101-b682-3b315accbb79",
       "name": "Set Metrica data"
@@ -372,7 +372,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        1568,
+        1728,
         432
       ],
       "id": "8e322616-82e5-4920-8bf7-2b6697192fc2",
@@ -803,7 +803,7 @@
       }
     ]
   },
-  "versionId": "2efd5cc2-bc94-414d-b8c8-3845fa11dcd3",
+  "versionId": "70f2f823-386a-4489-b3d8-a791795a2138",
   "triggerCount": 1,
   "shared": [
     {
