@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-10-07T21:30:12.820Z",
-  "updatedAt": "2025-10-13T18:47:39.215Z",
+  "updatedAt": "2025-10-13T19:01:14.399Z",
   "id": "d4D0Fp4pO6Ch7S7C",
   "name": "CRM lead process",
   "active": true,
@@ -236,42 +236,16 @@
     },
     {
       "parameters": {
-        "jsCode": "/**\n * AlfaCRM update by entity_id (n8n \"Code (JavaScript)\" node)\n * — логин → (опционально) чтение клиента → апдейт клиента\n */\n\n// ---------- helpers ----------\nconst toNum = (v) => {\n  if (v === undefined || v === null) return undefined;\n  const n = Number(String(v).trim());\n  return Number.isFinite(n) ? n : undefined;\n};\nfunction first(...vals) {\n  for (const v of vals) {\n    if (v !== undefined && v !== null && String(v).trim() !== '') return String(v).trim();\n  }\n  return undefined;\n}\nfunction asObj(maybe) {\n  if (!maybe) return {};\n  if (typeof maybe === 'object') return maybe;\n  if (typeof maybe === 'string') {\n    try { return JSON.parse(maybe); } catch { return {}; }\n  }\n  return {};\n}\n// Достаём JSON из другого узла (работает в режиме \"Run Once For All Items\")\nfunction fromNode(nodeName) {\n  try { return $items(nodeName, 0, 0)?.json ?? {}; } catch { return {}; }\n}\n\nasync function http(req) { return await this.helpers.httpRequest(req); }\n\nasync function login(self, { host, email, api_key, x_app_key }) {\n  const headers = { 'Accept': 'application/json', 'Content-Type': 'application/json' };\n  if (x_app_key) headers['X-APP-KEY'] = x_app_key;\n  const res = await http.call(self, {\n    method: 'POST',\n    url: `https://${host}/v2api/auth/login`,\n    headers,\n    body: { email, api_key },\n    json: true, gzip: true, timeout: 15000,\n  });\n  if (!res?.token) throw new Error('AlfaCRM: no token in auth response');\n  return res.token;\n}\n\nasync function getCustomer(self, { host, token, branchId, entity_id, x_app_key }) {\n  const headers = {\n    'Accept': 'application/json',\n    'Content-Type': 'application/json',\n    'X-ALFACRM-TOKEN': token,\n  };\n  if (x_app_key) headers['X-APP-KEY'] = x_app_key;\n  const res = await http.call(self, {\n    method: 'POST',\n    url: `https://${host}/v2api/${branchId}/customer/index`,\n    headers,\n    body: { id: entity_id, page: 0 },\n    json: true, gzip: true, timeout: 15000,\n  });\n  return Array.isArray(res?.items) ? res.items.find(i => Number(i.id) === Number(entity_id)) : null;\n}\n\nasync function updateCustomer(self, { host, token, branchId, entity_id, payload, x_app_key }) {\n  const headers = {\n    'Accept': 'application/json',\n    'Content-Type': 'application/json',\n    'X-ALFACRM-TOKEN': token,\n  };\n  if (x_app_key) headers['X-APP-KEY'] = x_app_key;\n  return await http.call(self, {\n    method: 'POST',\n    url: `https://${host}/v2api/${branchId}/customer/update`,\n    qs: { id: entity_id },\n    headers,\n    body: payload,\n    json: true, gzip: true, timeout: 20000,\n  });\n}\n\nfunction buildPayload(update, currentNote) {\n  const payload = {};\n  if (Array.isArray(update.lead_status_ids)) payload.lead_status_ids = update.lead_status_ids;\n  if (typeof update.lead_source_id === 'number') payload.lead_source_id = update.lead_source_id;\n\n  // custom_value_json — всегда строкой\n  if (update.custom_value_json && typeof update.custom_value_json === 'object') {\n    payload.custom_value_json = JSON.stringify(update.custom_value_json);\n  } else if (typeof update.custom_value_json === 'string') {\n    payload.custom_value_json = update.custom_value_json;\n  }\n\n  // только custom_* и как строки\n  if (update.custom_plain && typeof update.custom_plain === 'object') {\n    for (const [k, v] of Object.entries(update.custom_plain)) {\n      if (v === undefined || v === null) continue;\n      if (!k.startsWith('custom_')) continue;\n      if (payload[k] === undefined) payload[k] = String(v);\n    }\n  }\n\n  if (update.note_append) {\n    payload.note = (currentNote || '') + (currentNote ? '\\n' : '') + String(update.note_append);\n  }\n  return payload;\n}\n\n// ---------- input normalization ----------\nconst input = $json;\nif (!input?.alfacrm?.host || !input?.alfacrm?.email || !input?.alfacrm?.api_key) {\n  throw new Error('Provide alfacrm.host, alfacrm.email, alfacrm.api_key');\n}\n\n// распарсим возможные строки\nconst bodyObj   = asObj(input.body);\nconst paramsObj = asObj(input.params);\nconst queryObj  = asObj(input.query);\n\n// плюс попробуем достать из других нод\nconst jWebhook      = fromNode('Webhook');\nconst jVisitors     = fromNode('Get visitors');\nconst jLastVisitor  = fromNode('Get the last visitor');\nconst jUpdateRows   = fromNode('Update row(s)');\nconst jCredentials  = fromNode('Set credentials');\n\n// branchId: из текущего item, либо из webhook/body\nconst branchId =\n  toNum(input.alfacrm.branchId) ??\n  toNum(input.branch_id) ??\n  toNum(bodyObj.branch_id) ??\n  toNum(asObj(jWebhook.body).branch_id);\n\nif (!branchId) throw new Error('Provide alfacrm.branchId or body.branch_id');\n\n// entity_id: из текущего item + из других нод\nconst entity_id = \n  toNum(input.entity_id) ??\n  toNum(input.customerId) ??\n  toNum(bodyObj.entity_id) ??\n  toNum(paramsObj.entity_id) ??\n  toNum(queryObj.entity_id) ??\n  // из Webhook (часто здесь)\n  toNum(asObj(jWebhook.body).entity_id) ??\n  toNum(jWebhook.entity_id) ??\n  // вдруг где-то лежит просто id\n  toNum(bodyObj.id) ?? toNum(paramsObj.id) ?? toNum(queryObj.id) ??\n  toNum(jUpdateRows.entity_id) ??\n  toNum(jLastVisitor.entity_id) ??\n  toNum(jVisitors.entity_id) ??\n  toNum(jCredentials.entity_id);\n\nif (!entity_id) {\n  console.log('ENTITY_ID CANDIDATES:', {\n    'input.entity_id': input.entity_id,\n    'input.customerId': input.customerId,\n    'body.entity_id': bodyObj.entity_id,\n    'params.entity_id': paramsObj.entity_id,\n    'query.entity_id': queryObj.entity_id,\n    'webhook.body.entity_id': asObj(jWebhook.body).entity_id,\n    'webhook.entity_id': jWebhook.entity_id,\n    'updateRows.entity_id': jUpdateRows.entity_id,\n    'lastVisitor.entity_id': jLastVisitor.entity_id,\n    'visitors.entity_id': jVisitors.entity_id,\n    'credentials.entity_id': jCredentials.entity_id,\n  });\n  throw new Error('Provide numeric entity_id');\n}\n\nconst { host, email, api_key, x_app_key } = input.alfacrm;\nconst update = input.update || {};\n\n// ---------- inferred yclid/etext ----------\nconst inferred_yclid = first(\n  update?.custom_plain?.custom_yclid,\n  input.custom_yclid, input.yclid,\n  bodyObj.custom_yclid, bodyObj.yclid,\n  asObj(jWebhook.body).custom_yclid, asObj(jWebhook.body).yclid\n);\nconst inferred_etext = first(\n  update?.custom_plain?.custom_etext,\n  input.custom_etext, input.etext,\n  bodyObj.custom_etext, bodyObj.etext,\n  asObj(jWebhook.body).custom_etext, asObj(jWebhook.body).etext\n);\nupdate.custom_plain = Object.assign({}, update.custom_plain);\nif (inferred_yclid && !update.custom_plain.custom_yclid) update.custom_plain.custom_yclid = inferred_yclid;\nif (inferred_etext && !update.custom_plain.custom_etext) update.custom_plain.custom_etext = inferred_etext;\n\n// ---------- flow ----------\nlet token = await login(this, { host, email, api_key, x_app_key });\n\nlet existing = null;\ntry { existing = await getCustomer(this, { host, token, branchId, entity_id, x_app_key }); } catch {}\n\nconst payload = buildPayload(update, existing?.note);\n\ntry {\n  const res = await updateCustomer(this, { host, token, branchId, entity_id, payload, x_app_key });\n  return [{ json: { success: true, response: res, sent: payload, entity_id, branchId } }];\n} catch (err) {\n  const status = err?.statusCode || err?.response?.statusCode;\n  if (status === 401) {\n    token = await login(this, { host, email, api_key, x_app_key });\n    const res2 = await updateCustomer(this, { host, token, branchId, entity_id, payload, x_app_key });\n    return [{ json: { success: true, response: res2, sent: payload, entity_id, branchId, retried: true } }];\n  }\n  throw new Error(`AlfaCRM update failed: ${JSON.stringify(err?.response?.body || err)}`);\n}"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        1536,
-        -64
-      ],
-      "id": "f120cad5-2419-4568-b5e6-cdbf13ef4ee7",
-      "name": "Code in JavaScript"
-    },
-    {
-      "parameters": {
         "jsCode": "// Берем массив всех pending\nconst items = $input.all();\n\n// Сортируем по id (или по createdAt, если есть)\nitems.sort((a, b) => b.json.id - a.json.id);\n\n// Возвращаем только самую свежую\nreturn [items[0]];"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        624,
+        592,
         0
       ],
       "id": "ca0796b3-422f-41d6-800c-6e9059b0dfb2",
       "name": "Get the last visitor"
-    },
-    {
-      "parameters": {
-        "jsCode": "// ---------- helpers ----------\nfunction tryGetItems(nodeName) {\n  try { const arr = $items(nodeName, 0, 0); return Array.isArray(arr) ? arr : []; }\n  catch { return []; }\n}\n// универсальный парсер времени: число мс, строка с цифрами, ISO\nfunction toMs(v) {\n  if (v == null) return 0;\n  if (typeof v === 'number' && Number.isFinite(v)) return v;\n  if (typeof v === 'string') {\n    const s = v.trim();\n    if (/^\\d+$/.test(s)) {              // \"1728391023456\"\n      const n = parseInt(s, 10);\n      return Number.isFinite(n) ? n : 0;\n    }\n    const t = Date.parse(s);            // \"2025-10-08T00:27:00.123Z\"\n    return Number.isFinite(t) ? t : 0;\n  }\n  return 0;\n}\nfunction rowTs(row) {\n  // приоритет: ts_site (мс), иначе createdAt (ISO из Data Table)\n  return toMs(row.ts_site) || toMs(row.createdAt);\n}\nfunction iso(ms) { try { return new Date(ms).toISOString(); } catch { return null; } }\n\n// ---------- CRM payload ----------\nlet crm;\nconst wItems = tryGetItems('Webhook');  // переименуй, если нода называется иначе\nif (wItems.length) {\n  const w = wItems[0].json || {};\n  crm = typeof w.body === 'string' ? JSON.parse(w.body) : w;\n} else {\n  crm = typeof $json.body === 'string' ? JSON.parse($json.body) : $json;\n}\n\n// ---------- pending строки из Data Table ----------\nlet rows = tryGetItems('Get visitors').map(i => i.json); // переименуй, если нужно\nif (!rows.length) rows = $input.all().map(i => i.json);\n\n// ---------- окно и выбор ----------\nconst now = Date.now();\nconst WINDOW_MS = 10 * 60 * 1000; // ±10 минут (можно временно увеличить до 30 мин для диагностики)\n\nconst decorated = rows.map(r => {\n  const t = rowTs(r);\n  return {\n    id: r.id,\n    ts_num: t,\n    ts_readable: iso(t),\n    createdAt: r.createdAt || null,\n    ts_site_raw: r.ts_site ?? null,\n    delta_ms: Math.abs(t - now),\n    page_url: r.page_url || null,\n    pending: r.pending\n  };\n}).filter(d => d.ts_num > 0)\n  .sort((a, b) => a.delta_ms - b.delta_ms);\n\nconst inWindow = decorated.filter(d => d.delta_ms <= WINDOW_MS);\nconst best = inWindow[0] || null;\n\n// ---------- результат ----------\nif (best) {\n  const siteRow = rows.find(r => r.id === best.id) || {};\n  return [{\n    json: {\n      matched: true,\n      id: best.id,\n      ts_site: best.ts_num,\n      delta_ms: best.delta_ms,\n      site: siteRow,\n      crm,\n      debug: {\n        now_iso: iso(now),\n        window_ms: WINDOW_MS,\n        candidates_total: rows.length,\n        in_window: inWindow.length,\n        top3: decorated.slice(0,3)   // ближайшие 3 для проверки\n      }\n    }\n  }];\n} else {\n  return [{\n    json: {\n      matched: false,\n      reason: 'no_candidate_in_window',\n      crm,\n      debug: {\n        now_iso: iso(now),\n        window_ms: WINDOW_MS,\n        candidates_total: rows.length,\n        top5: decorated.slice(0,5)   // покажет почему не попали в окно (обычно ts_num=0)\n      }\n    }\n  }];\n}"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        496,
-        192
-      ],
-      "id": "0280247b-21b3-403b-8366-050088c9a937",
-      "name": "Compare the lead with the visitor"
     },
     {
       "parameters": {
@@ -433,6 +407,32 @@
       ],
       "id": "d8035638-ba96-4f19-b296-99ab252e1563",
       "name": "check 5 min"
+    },
+    {
+      "parameters": {
+        "jsCode": "/**\n * AlfaCRM update by entity_id (n8n \"Code (JavaScript)\" node)\n * — логин → (опционально) чтение клиента → апдейт клиента\n */\n\n// ---------- helpers ----------\nconst toNum = (v) => {\n  if (v === undefined || v === null) return undefined;\n  const n = Number(String(v).trim());\n  return Number.isFinite(n) ? n : undefined;\n};\nfunction first(...vals) {\n  for (const v of vals) {\n    if (v !== undefined && v !== null && String(v).trim() !== '') return String(v).trim();\n  }\n  return undefined;\n}\nfunction asObj(maybe) {\n  if (!maybe) return {};\n  if (typeof maybe === 'object') return maybe;\n  if (typeof maybe === 'string') {\n    try { return JSON.parse(maybe); } catch { return {}; }\n  }\n  return {};\n}\n// Достаём JSON из другого узла (работает в режиме \"Run Once For All Items\")\nfunction fromNode(nodeName) {\n  try { return $items(nodeName, 0, 0)?.json ?? {}; } catch { return {}; }\n}\n\nasync function http(req) { return await this.helpers.httpRequest(req); }\n\nasync function login(self, { host, email, api_key, x_app_key }) {\n  const headers = { 'Accept': 'application/json', 'Content-Type': 'application/json' };\n  if (x_app_key) headers['X-APP-KEY'] = x_app_key;\n  const res = await http.call(self, {\n    method: 'POST',\n    url: `https://${host}/v2api/auth/login`,\n    headers,\n    body: { email, api_key },\n    json: true, gzip: true, timeout: 15000,\n  });\n  if (!res?.token) throw new Error('AlfaCRM: no token in auth response');\n  return res.token;\n}\n\nasync function getCustomer(self, { host, token, branchId, entity_id, x_app_key }) {\n  const headers = {\n    'Accept': 'application/json',\n    'Content-Type': 'application/json',\n    'X-ALFACRM-TOKEN': token,\n  };\n  if (x_app_key) headers['X-APP-KEY'] = x_app_key;\n  const res = await http.call(self, {\n    method: 'POST',\n    url: `https://${host}/v2api/${branchId}/customer/index`,\n    headers,\n    body: { id: entity_id, page: 0 },\n    json: true, gzip: true, timeout: 15000,\n  });\n  return Array.isArray(res?.items) ? res.items.find(i => Number(i.id) === Number(entity_id)) : null;\n}\n\nasync function updateCustomer(self, { host, token, branchId, entity_id, payload, x_app_key }) {\n  const headers = {\n    'Accept': 'application/json',\n    'Content-Type': 'application/json',\n    'X-ALFACRM-TOKEN': token,\n  };\n  if (x_app_key) headers['X-APP-KEY'] = x_app_key;\n  return await http.call(self, {\n    method: 'POST',\n    url: `https://${host}/v2api/${branchId}/customer/update`,\n    qs: { id: entity_id },\n    headers,\n    body: payload,\n    json: true, gzip: true, timeout: 20000,\n  });\n}\n\nfunction buildPayload(update, currentNote) {\n  const payload = {};\n  if (Array.isArray(update.lead_status_ids)) payload.lead_status_ids = update.lead_status_ids;\n  if (typeof update.lead_source_id === 'number') payload.lead_source_id = update.lead_source_id;\n\n  // custom_value_json — всегда строкой\n  if (update.custom_value_json && typeof update.custom_value_json === 'object') {\n    payload.custom_value_json = JSON.stringify(update.custom_value_json);\n  } else if (typeof update.custom_value_json === 'string') {\n    payload.custom_value_json = update.custom_value_json;\n  }\n\n  // только custom_* и как строки\n  if (update.custom_plain && typeof update.custom_plain === 'object') {\n    for (const [k, v] of Object.entries(update.custom_plain)) {\n      if (v === undefined || v === null) continue;\n      if (!k.startsWith('custom_')) continue;\n      if (payload[k] === undefined) payload[k] = String(v);\n    }\n  }\n\n  if (update.note_append) {\n    payload.note = (currentNote || '') + (currentNote ? '\\n' : '') + String(update.note_append);\n  }\n  return payload;\n}\n\n// ---------- input normalization ----------\nconst input = $json;\nif (!input?.alfacrm?.host || !input?.alfacrm?.email || !input?.alfacrm?.api_key) {\n  throw new Error('Provide alfacrm.host, alfacrm.email, alfacrm.api_key');\n}\n\n// распарсим возможные строки\nconst bodyObj   = asObj(input.body);\nconst paramsObj = asObj(input.params);\nconst queryObj  = asObj(input.query);\n\n// плюс попробуем достать из других нод\nconst jWebhook      = fromNode('Webhook');\nconst jVisitors     = fromNode('Get visitors');\nconst jLastVisitor  = fromNode('Get the last visitor');\nconst jUpdateRows   = fromNode('Update row(s)');\nconst jCredentials  = fromNode('Set credentials');\n\n// branchId: из текущего item, либо из webhook/body\nconst branchId =\n  toNum(input.alfacrm.branchId) ??\n  toNum(input.branch_id) ??\n  toNum(bodyObj.branch_id) ??\n  toNum(asObj(jWebhook.body).branch_id);\n\nif (!branchId) throw new Error('Provide alfacrm.branchId or body.branch_id');\n\n// entity_id: из текущего item + из других нод\nconst entity_id = \n  toNum(input.entity_id) ??\n  toNum(input.customerId) ??\n  toNum(bodyObj.entity_id) ??\n  toNum(paramsObj.entity_id) ??\n  toNum(queryObj.entity_id) ??\n  // из Webhook (часто здесь)\n  toNum(asObj(jWebhook.body).entity_id) ??\n  toNum(jWebhook.entity_id) ??\n  // вдруг где-то лежит просто id\n  toNum(bodyObj.id) ?? toNum(paramsObj.id) ?? toNum(queryObj.id) ??\n  toNum(jUpdateRows.entity_id) ??\n  toNum(jLastVisitor.entity_id) ??\n  toNum(jVisitors.entity_id) ??\n  toNum(jCredentials.entity_id);\n\nif (!entity_id) {\n  console.log('ENTITY_ID CANDIDATES:', {\n    'input.entity_id': input.entity_id,\n    'input.customerId': input.customerId,\n    'body.entity_id': bodyObj.entity_id,\n    'params.entity_id': paramsObj.entity_id,\n    'query.entity_id': queryObj.entity_id,\n    'webhook.body.entity_id': asObj(jWebhook.body).entity_id,\n    'webhook.entity_id': jWebhook.entity_id,\n    'updateRows.entity_id': jUpdateRows.entity_id,\n    'lastVisitor.entity_id': jLastVisitor.entity_id,\n    'visitors.entity_id': jVisitors.entity_id,\n    'credentials.entity_id': jCredentials.entity_id,\n  });\n  throw new Error('Provide numeric entity_id');\n}\n\nconst { host, email, api_key, x_app_key } = input.alfacrm;\nconst update = input.update || {};\n\n// ---------- inferred yclid/etext ----------\nconst inferred_yclid = first(\n  update?.custom_plain?.custom_yclid,\n  input.custom_yclid, input.yclid,\n  bodyObj.custom_yclid, bodyObj.yclid,\n  asObj(jWebhook.body).custom_yclid, asObj(jWebhook.body).yclid\n);\nconst inferred_etext = first(\n  update?.custom_plain?.custom_etext,\n  input.custom_etext, input.etext,\n  bodyObj.custom_etext, bodyObj.etext,\n  asObj(jWebhook.body).custom_etext, asObj(jWebhook.body).etext\n);\nupdate.custom_plain = Object.assign({}, update.custom_plain);\nif (inferred_yclid && !update.custom_plain.custom_yclid) update.custom_plain.custom_yclid = inferred_yclid;\nif (inferred_etext && !update.custom_plain.custom_etext) update.custom_plain.custom_etext = inferred_etext;\n\n// ---------- flow ----------\nlet token = await login(this, { host, email, api_key, x_app_key });\n\nlet existing = null;\ntry { existing = await getCustomer(this, { host, token, branchId, entity_id, x_app_key }); } catch {}\n\nconst payload = buildPayload(update, existing?.note);\n\ntry {\n  const res = await updateCustomer(this, { host, token, branchId, entity_id, payload, x_app_key });\n  return [{ json: { success: true, response: res, sent: payload, entity_id, branchId } }];\n} catch (err) {\n  const status = err?.statusCode || err?.response?.statusCode;\n  if (status === 401) {\n    token = await login(this, { host, email, api_key, x_app_key });\n    const res2 = await updateCustomer(this, { host, token, branchId, entity_id, payload, x_app_key });\n    return [{ json: { success: true, response: res2, sent: payload, entity_id, branchId, retried: true } }];\n  }\n  throw new Error(`AlfaCRM update failed: ${JSON.stringify(err?.response?.body || err)}`);\n}"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1728,
+        -64
+      ],
+      "id": "f120cad5-2419-4568-b5e6-cdbf13ef4ee7",
+      "name": "Send Lead data to CRM"
+    },
+    {
+      "parameters": {
+        "jsCode": "// n8n Code node (JavaScript)\n\n// Получаем входные данные\nconst item = $json;\n\n// Проверяем наличие yclidid\nconst yclid = item.yclidid || item.yclid || null;\n\n// Устанавливаем lead_source_id в зависимости от наличия yclid\nconst lead_source_id = yclid && String(yclid).trim() !== '' ? 8 : 3;\n\n// Возвращаем результат\nreturn {\n  ...item,\n  lead_source_id,\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1520,
+        -64
+      ],
+      "id": "0280247b-21b3-403b-8366-050088c9a937",
+      "name": "update lead_source_id"
     }
   ],
   "connections": {
@@ -485,16 +485,6 @@
         ]
       ]
     },
-    "Compare the lead with the visitor": {
-      "main": [
-        []
-      ]
-    },
-    "Code in JavaScript": {
-      "main": [
-        []
-      ]
-    },
     "Merge": {
       "main": [
         [
@@ -510,7 +500,7 @@
       "main": [
         [
           {
-            "node": "Code in JavaScript",
+            "node": "update lead_source_id",
             "type": "main",
             "index": 0
           }
@@ -559,6 +549,22 @@
           }
         ]
       ]
+    },
+    "Send Lead data to CRM": {
+      "main": [
+        []
+      ]
+    },
+    "update lead_source_id": {
+      "main": [
+        [
+          {
+            "node": "Send Lead data to CRM",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
@@ -567,7 +573,7 @@
   "staticData": null,
   "meta": null,
   "pinData": {},
-  "versionId": "71f19d6d-b38a-436f-b1b4-743c10491448",
+  "versionId": "a6b49635-bdb3-48d6-a89d-625f2f16ac08",
   "triggerCount": 1,
   "shared": [
     {
