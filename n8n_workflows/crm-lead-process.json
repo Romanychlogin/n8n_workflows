@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-10-07T21:30:12.820Z",
-  "updatedAt": "2025-10-12T15:01:24.609Z",
+  "updatedAt": "2025-10-13T18:15:50.306Z",
   "id": "d4D0Fp4pO6Ch7S7C",
   "name": "CRM lead process",
   "active": true,
@@ -380,7 +380,7 @@
     },
     {
       "parameters": {
-        "jsCode": "// Берём первый входной item\nconst item = $input.first();\n\n// Проверяем, что есть бинарь под ключом \"file\"\nif (!item.binary || !item.binary.file) {\n  throw new Error('Нет бинаря \"file\" на входе. Проверь цепочку и имя бинарного свойства.');\n}\n\nconst b = item.binary.file;\nconst filename = b.fileName || 'offline-conv.csv';\nconst mime = b.mimeType || 'text/csv';\nconst fileBuf = Buffer.from(b.data, 'base64');\n\n// Генерим boundary и части тела\nconst boundary = '----n8nFormBoundary' + Date.now();\nconst pre = Buffer.from(\n  `--${boundary}\\r\\n` +\n  `Content-Disposition: form-data; name=\"file\"; filename=\"${filename}\"\\r\\n` +\n  `Content-Type: ${mime}\\r\\n\\r\\n`,\n  'utf8'\n);\nconst post = Buffer.from(`\\r\\n--${boundary}--\\r\\n`, 'utf8');\n\n// Финальное тело\nconst bodyBuf = Buffer.concat([pre, fileBuf, post]);\n\nreturn [\n  {\n    json: { boundary },     // передадим в следующую ноду\n    binary: {\n      payload: {\n        data: bodyBuf.toString('base64'),\n        fileName: 'multipart.bin',\n        mimeType: 'application/octet-stream',\n      }\n    }\n  }\n];"
+        "jsCode": "const counterId = 85745759;\nconst goalName = 'crm_lead';\nconst randomNum = Math.random();\n\nconst params = `browser-info=ar:1:pv:1:rn:${randomNum}&page-url=https://saratov-okt.kiber-one.com/goal/${goalName}&ut=noindex`;\n\nconst url = `https://mc.yandex.ru/watch/${counterId}?${params}`;\n\nconst response = await this.helpers.httpRequest({\n  method: 'GET',\n  url: url,\n});\n\nreturn [{\n  json: {\n    success: true,\n    url: url\n  }\n}];"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -508,7 +508,7 @@
       "main": [
         [
           {
-            "node": "HTTP Request1",
+            "node": "Code in JavaScript2",
             "type": "main",
             "index": 0
           }
@@ -823,7 +823,7 @@
       }
     ]
   },
-  "versionId": "f7dced85-0b06-4eba-afa7-ce4d847baa38",
+  "versionId": "5a75a801-0066-4ebd-b22a-9964c561c45e",
   "triggerCount": 1,
   "shared": [
     {
