@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-10-07T21:30:12.820Z",
-  "updatedAt": "2025-10-13T18:31:29.679Z",
+  "updatedAt": "2025-10-13T18:47:39.215Z",
   "id": "d4D0Fp4pO6Ch7S7C",
   "name": "CRM lead process",
   "active": true,
@@ -184,7 +184,7 @@
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1,
       "position": [
-        816,
+        784,
         0
       ],
       "id": "9bf6585d-2a49-4b7a-953a-e45d873bc6d4",
@@ -282,8 +282,8 @@
       "type": "n8n-nodes-base.merge",
       "typeVersion": 3.2,
       "position": [
-        1088,
-        -64
+        944,
+        -112
       ],
       "id": "e7a7a798-e66a-43cd-839e-c1a9ac97de8a",
       "name": "Merge"
@@ -420,6 +420,19 @@
       ],
       "id": "a606f22d-0a86-48d6-b94a-5ae3fc982b46",
       "name": "HTTP Request1"
+    },
+    {
+      "parameters": {
+        "jsCode": "/**\n * n8n Code node: check if createdAt older than 5 minutes\n */\n\nconst FIVE_MINUTES = 5 * 60 * 1000; // 5 минут в миллисекундах\n\n// Берем createdAt из входных данных (например, из предыдущей ноды)\nconst createdAt = $json.createdAt;\n\nif (!createdAt) {\n  throw new Error(\"createdAt field is missing\");\n}\n\n// Преобразуем в timestamp\nconst createdTime = new Date(createdAt).getTime();\nif (isNaN(createdTime)) {\n  throw new Error(\"Invalid createdAt date format\");\n}\n\nconst now = Date.now();\nconst diff = now - createdTime;\n\n// Проверяем разницу\nif (diff > FIVE_MINUTES) {\n  throw new Error(`Process stopped: createdAt is older than 5 minutes (${Math.floor(diff / 1000)}s ago)`);\n}\n\n// Если все ок — пропускаем дальше\nreturn $input.all();"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1120,
+        -80
+      ],
+      "id": "d8035638-ba96-4f19-b296-99ab252e1563",
+      "name": "check 5 min"
     }
   ],
   "connections": {
@@ -486,7 +499,7 @@
       "main": [
         [
           {
-            "node": "Set CRM data",
+            "node": "check 5 min",
             "type": "main",
             "index": 0
           }
@@ -535,6 +548,17 @@
       "main": [
         []
       ]
+    },
+    "check 5 min": {
+      "main": [
+        [
+          {
+            "node": "Set CRM data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
@@ -542,288 +566,8 @@
   },
   "staticData": null,
   "meta": null,
-  "pinData": {
-    "Webhook": [
-      {
-        "json": {
-          "headers": {
-            "host": "n8n-main-production-4310.up.railway.app",
-            "user-agent": "GuzzleHttp/7",
-            "content-length": "604",
-            "content-type": "application/json",
-            "x-forwarded-for": "5.182.6.225",
-            "x-forwarded-host": "n8n-main-production-4310.up.railway.app",
-            "x-forwarded-proto": "https",
-            "x-railway-edge": "railway/europe-west4-drams3a",
-            "x-railway-request-id": "bHKqXKbGSASnHzGqYqdHTg",
-            "x-real-ip": "5.182.6.225",
-            "x-request-start": "1760081972455",
-            "accept-encoding": "gzip"
-          },
-          "params": {},
-          "query": {},
-          "body": {
-            "branch_id": 1,
-            "event": "create",
-            "entity": "Customer",
-            "entity_id": 19377,
-            "fields_old": [],
-            "fields_new": {
-              "dob": "2020-10-29",
-              "name": "Webhook",
-              "note": "",
-              "id_no": "",
-              "b_date": "2025-10-10 11:39:30",
-              "e_date": "2030-12-31",
-              "barcode": "",
-              "is_study": 0,
-              "id_issued": "",
-              "branch_ids": [
-                1
-              ],
-              "company_id": null,
-              "created_at": "2025-10-10 07:39:30",
-              "legal_name": "webhook 15",
-              "legal_type": 1,
-              "lead_source_id": "8",
-              "lead_status_id": "",
-              "contact_contacts": [
-                "+7(867)856-86-58"
-              ],
-              "custom_value_json": "{\"16\":\"\",\"12\":\"\",\"13\":\"\",\"11\":\"\",\"14\":\"\",\"15\":\"\"}"
-            },
-            "fields_rel": [],
-            "user_id": null,
-            "datetime": "2025-10-10 11:39:30"
-          },
-          "webhookUrl": "https://n8n-main-production-4310.up.railway.app/webhook/c11cd095-1060-4c9c-87df-2a3c9d34deab",
-          "executionMode": "production"
-        }
-      }
-    ],
-    "Get visitors": [
-      {
-        "json": {
-          "id": 34,
-          "createdAt": "2025-10-09T14:38:47.978Z",
-          "updatedAt": "2025-10-09T14:38:47.978Z",
-          "utm_source": "",
-          "utm_medium": "",
-          "utm_campaign": "",
-          "utm_term": "",
-          "utm_content": "",
-          "yclid": "10713516624003203071",
-          "etext": "2202.G4kc2nnWttz3H8DWdILwW3wpSLrgpH-7qQx_ynD2nAtQr0rgweSNmFOGnoJnsEb7z7hUYSi41VzYTpfd7u1pmu0oC8W-xcaTQmjNvVdwbdxsb3V1dnp3eHViZGZmdnl3.126083e535921c7a944759ae334959fc6df6f293",
-          "referrer": "https://ya.ru/",
-          "page_url": "https://saratov-okt.kiber-one.com/?etext=2202.G4kc2nnWttz3H8DWdILwW3wpSLrgpH-7qQx_ynD2nAtQr0rgweSNmFOGnoJnsEb7z7hUYSi41VzYTpfd7u1pmu0oC8W-xcaTQmjNvVdwbdxsb3V1dnp3eHViZGZmdnl3.126083e535921c7a944759ae334959fc6df6f293&yclid=10713516624003203071",
-          "page_title": "KIBERone — IT-школа программирования для детей в Саратове",
-          "ts_site_iso": "2025-10-09T14:38:47.959Z",
-          "ts_site": 1760020727959,
-          "pending": true
-        }
-      },
-      {
-        "json": {
-          "id": 21,
-          "createdAt": "2025-10-08T08:46:49.177Z",
-          "updatedAt": "2025-10-08T08:46:49.177Z",
-          "utm_source": "",
-          "utm_medium": "",
-          "utm_campaign": "",
-          "utm_term": "",
-          "utm_content": "",
-          "yclid": "10713516624003203071",
-          "etext": "2202.G4kc2nnWttz3H8DWdILwW3wpSLrgpH-7qQx_ynD2nAtQr0rgweSNmFOGnoJnsEb7z7hUYSi41VzYTpfd7u1pmu0oC8W-xcaTQmjNvVdwbdxsb3V1dnp3eHViZGZmdnl3.126083e535921c7a944759ae334959fc6df6f293",
-          "referrer": "https://ya.ru/",
-          "page_url": "https://saratov-okt.kiber-one.com/?etext=2202.G4kc2nnWttz3H8DWdILwW3wpSLrgpH-7qQx_ynD2nAtQr0rgweSNmFOGnoJnsEb7z7hUYSi41VzYTpfd7u1pmu0oC8W-xcaTQmjNvVdwbdxsb3V1dnp3eHViZGZmdnl3.126083e535921c7a944759ae334959fc6df6f293&yclid=10713516624003203071",
-          "page_title": "KIBERone — IT-школа программирования для детей в Саратове",
-          "ts_site_iso": "2025-10-08T08:46:49.114Z",
-          "ts_site": 1759913209114,
-          "pending": true
-        }
-      },
-      {
-        "json": {
-          "id": 30,
-          "createdAt": "2025-10-09T05:04:23.231Z",
-          "updatedAt": "2025-10-09T05:04:23.231Z",
-          "utm_source": "",
-          "utm_medium": "",
-          "utm_campaign": "",
-          "utm_term": "",
-          "utm_content": "",
-          "yclid": "12665599783792279551",
-          "etext": "",
-          "referrer": "https://yandex.ru/",
-          "page_url": "https://saratov-okt.kiber-one.com/?yclid=12665599783792279551",
-          "page_title": "KIBERone — IT-школа программирования для детей в Саратове",
-          "ts_site_iso": "2025-10-09T05:04:23.151Z",
-          "ts_site": 1759986263151,
-          "pending": true
-        }
-      },
-      {
-        "json": {
-          "id": 36,
-          "createdAt": "2025-10-09T14:41:40.997Z",
-          "updatedAt": "2025-10-09T14:41:40.997Z",
-          "utm_source": "",
-          "utm_medium": "",
-          "utm_campaign": "",
-          "utm_term": "",
-          "utm_content": "",
-          "yclid": "10713516624003203071",
-          "etext": "2202.G4kc2nnWttz3H8DWdILwW3wpSLrgpH-7qQx_ynD2nAtQr0rgweSNmFOGnoJnsEb7z7hUYSi41VzYTpfd7u1pmu0oC8W-xcaTQmjNvVdwbdxsb3V1dnp3eHViZGZmdnl3.126083e535921c7a944759ae334959fc6df6f293",
-          "referrer": "https://ya.ru/",
-          "page_url": "https://saratov-okt.kiber-one.com/?etext=2202.G4kc2nnWttz3H8DWdILwW3wpSLrgpH-7qQx_ynD2nAtQr0rgweSNmFOGnoJnsEb7z7hUYSi41VzYTpfd7u1pmu0oC8W-xcaTQmjNvVdwbdxsb3V1dnp3eHViZGZmdnl3.126083e535921c7a944759ae334959fc6df6f293&yclid=10713516624003203071",
-          "page_title": "KIBERone — IT-школа программирования для детей в Саратове",
-          "ts_site_iso": "2025-10-09T14:41:40.972Z",
-          "ts_site": 1760020900972,
-          "pending": true
-        }
-      },
-      {
-        "json": {
-          "id": 47,
-          "createdAt": "2025-10-10T07:39:21.068Z",
-          "updatedAt": "2025-10-10T07:39:21.068Z",
-          "utm_source": "",
-          "utm_medium": "",
-          "utm_campaign": "",
-          "utm_term": "",
-          "utm_content": "",
-          "yclid": "10713516624003203071",
-          "etext": "2202.G4kc2nnWttz3H8DWdILwW3wpSLrgpH-7qQx_ynD2nAtQr0rgweSNmFOGnoJnsEb7z7hUYSi41VzYTpfd7u1pmu0oC8W-xcaTQmjNvVdwbdxsb3V1dnp3eHViZGZmdnl3.126083e535921c7a944759ae334959fc6df6f293",
-          "referrer": "https://ya.ru/",
-          "page_url": "https://saratov-okt.kiber-one.com/?etext=2202.G4kc2nnWttz3H8DWdILwW3wpSLrgpH-7qQx_ynD2nAtQr0rgweSNmFOGnoJnsEb7z7hUYSi41VzYTpfd7u1pmu0oC8W-xcaTQmjNvVdwbdxsb3V1dnp3eHViZGZmdnl3.126083e535921c7a944759ae334959fc6df6f293&yclid=10713516624003203071",
-          "page_title": "KIBERone — IT-школа программирования для детей в Саратове",
-          "ts_site_iso": "2025-10-10T07:39:21.034Z",
-          "ts_site": 1760081961034,
-          "pending": true
-        }
-      }
-    ],
-    "Get the last visitor": [
-      {
-        "json": {
-          "id": 47,
-          "createdAt": "2025-10-10T07:39:21.068Z",
-          "updatedAt": "2025-10-10T07:39:21.068Z",
-          "utm_source": "",
-          "utm_medium": "",
-          "utm_campaign": "",
-          "utm_term": "",
-          "utm_content": "",
-          "yclid": "10713516624003203071",
-          "etext": "2202.G4kc2nnWttz3H8DWdILwW3wpSLrgpH-7qQx_ynD2nAtQr0rgweSNmFOGnoJnsEb7z7hUYSi41VzYTpfd7u1pmu0oC8W-xcaTQmjNvVdwbdxsb3V1dnp3eHViZGZmdnl3.126083e535921c7a944759ae334959fc6df6f293",
-          "referrer": "https://ya.ru/",
-          "page_url": "https://saratov-okt.kiber-one.com/?etext=2202.G4kc2nnWttz3H8DWdILwW3wpSLrgpH-7qQx_ynD2nAtQr0rgweSNmFOGnoJnsEb7z7hUYSi41VzYTpfd7u1pmu0oC8W-xcaTQmjNvVdwbdxsb3V1dnp3eHViZGZmdnl3.126083e535921c7a944759ae334959fc6df6f293&yclid=10713516624003203071",
-          "page_title": "KIBERone — IT-школа программирования для детей в Саратове",
-          "ts_site_iso": "2025-10-10T07:39:21.034Z",
-          "ts_site": 1760081961034,
-          "pending": true
-        }
-      }
-    ],
-    "Update row(s)": [
-      {
-        "json": {
-          "id": 47,
-          "createdAt": "2025-10-10T07:39:21.068Z",
-          "updatedAt": "2025-10-10T07:39:32.997Z",
-          "utm_source": "",
-          "utm_medium": "",
-          "utm_campaign": "",
-          "utm_term": "",
-          "utm_content": "",
-          "yclid": "10713516624003203071",
-          "etext": "2202.G4kc2nnWttz3H8DWdILwW3wpSLrgpH-7qQx_ynD2nAtQr0rgweSNmFOGnoJnsEb7z7hUYSi41VzYTpfd7u1pmu0oC8W-xcaTQmjNvVdwbdxsb3V1dnp3eHViZGZmdnl3.126083e535921c7a944759ae334959fc6df6f293",
-          "referrer": "https://ya.ru/",
-          "page_url": "https://saratov-okt.kiber-one.com/?etext=2202.G4kc2nnWttz3H8DWdILwW3wpSLrgpH-7qQx_ynD2nAtQr0rgweSNmFOGnoJnsEb7z7hUYSi41VzYTpfd7u1pmu0oC8W-xcaTQmjNvVdwbdxsb3V1dnp3eHViZGZmdnl3.126083e535921c7a944759ae334959fc6df6f293&yclid=10713516624003203071",
-          "page_title": "KIBERone — IT-школа программирования для детей в Саратове",
-          "ts_site_iso": "2025-10-10T07:39:21.034Z",
-          "ts_site": 1760081961034,
-          "pending": false
-        }
-      }
-    ],
-    "Merge": [
-      {
-        "json": {
-          "headers": {
-            "host": "n8n-main-production-4310.up.railway.app",
-            "user-agent": "GuzzleHttp/7",
-            "content-length": "604",
-            "content-type": "application/json",
-            "x-forwarded-for": "5.182.6.225",
-            "x-forwarded-host": "n8n-main-production-4310.up.railway.app",
-            "x-forwarded-proto": "https",
-            "x-railway-edge": "railway/europe-west4-drams3a",
-            "x-railway-request-id": "bHKqXKbGSASnHzGqYqdHTg",
-            "x-real-ip": "5.182.6.225",
-            "x-request-start": "1760081972455",
-            "accept-encoding": "gzip"
-          },
-          "params": {},
-          "query": {},
-          "body": {
-            "branch_id": 1,
-            "event": "create",
-            "entity": "Customer",
-            "entity_id": 19377,
-            "fields_old": [],
-            "fields_new": {
-              "dob": "2020-10-29",
-              "name": "Webhook",
-              "note": "",
-              "id_no": "",
-              "b_date": "2025-10-10 11:39:30",
-              "e_date": "2030-12-31",
-              "barcode": "",
-              "is_study": 0,
-              "id_issued": "",
-              "branch_ids": [
-                1
-              ],
-              "company_id": null,
-              "created_at": "2025-10-10 07:39:30",
-              "legal_name": "webhook 15",
-              "legal_type": 1,
-              "lead_source_id": "8",
-              "lead_status_id": "",
-              "contact_contacts": [
-                "+7(867)856-86-58"
-              ],
-              "custom_value_json": "{\"16\":\"\",\"12\":\"\",\"13\":\"\",\"11\":\"\",\"14\":\"\",\"15\":\"\"}"
-            },
-            "fields_rel": [],
-            "user_id": null,
-            "datetime": "2025-10-10 11:39:30"
-          },
-          "webhookUrl": "https://n8n-main-production-4310.up.railway.app/webhook/c11cd095-1060-4c9c-87df-2a3c9d34deab",
-          "executionMode": "production",
-          "id": 47,
-          "createdAt": "2025-10-10T07:39:21.068Z",
-          "updatedAt": "2025-10-10T07:39:32.997Z",
-          "utm_source": "",
-          "utm_medium": "",
-          "utm_campaign": "",
-          "utm_term": "",
-          "utm_content": "",
-          "yclid": "10713516624003203071",
-          "etext": "2202.G4kc2nnWttz3H8DWdILwW3wpSLrgpH-7qQx_ynD2nAtQr0rgweSNmFOGnoJnsEb7z7hUYSi41VzYTpfd7u1pmu0oC8W-xcaTQmjNvVdwbdxsb3V1dnp3eHViZGZmdnl3.126083e535921c7a944759ae334959fc6df6f293",
-          "referrer": "https://ya.ru/",
-          "page_url": "https://saratov-okt.kiber-one.com/?etext=2202.G4kc2nnWttz3H8DWdILwW3wpSLrgpH-7qQx_ynD2nAtQr0rgweSNmFOGnoJnsEb7z7hUYSi41VzYTpfd7u1pmu0oC8W-xcaTQmjNvVdwbdxsb3V1dnp3eHViZGZmdnl3.126083e535921c7a944759ae334959fc6df6f293&yclid=10713516624003203071",
-          "page_title": "KIBERone — IT-школа программирования для детей в Саратове",
-          "ts_site_iso": "2025-10-10T07:39:21.034Z",
-          "ts_site": 1760081961034,
-          "pending": false
-        },
-        "binary": {}
-      }
-    ]
-  },
-  "versionId": "60a55d2a-817c-409c-bef4-11fcf86bb16e",
+  "pinData": {},
+  "versionId": "71f19d6d-b38a-436f-b1b4-743c10491448",
   "triggerCount": 1,
   "shared": [
     {
