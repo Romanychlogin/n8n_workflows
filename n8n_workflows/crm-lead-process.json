@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-10-07T21:30:12.820Z",
-  "updatedAt": "2025-10-13T18:15:50.306Z",
+  "updatedAt": "2025-10-13T18:31:29.679Z",
   "id": "d4D0Fp4pO6Ch7S7C",
   "name": "CRM lead process",
   "active": true,
@@ -486,7 +486,7 @@
       "main": [
         [
           {
-            "node": "Set Metrica data",
+            "node": "Set CRM data",
             "type": "main",
             "index": 0
           }
@@ -823,7 +823,7 @@
       }
     ]
   },
-  "versionId": "5a75a801-0066-4ebd-b22a-9964c561c45e",
+  "versionId": "60a55d2a-817c-409c-bef4-11fcf86bb16e",
   "triggerCount": 1,
   "shared": [
     {
