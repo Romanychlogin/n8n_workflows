@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-10-07T08:30:30.743Z",
-  "updatedAt": "2025-10-14T13:36:53.988Z",
+  "updatedAt": "2025-10-14T13:52:38.571Z",
   "id": "W3unG2eSSwWcYUG0",
   "name": "minus words post processing",
   "active": false,
@@ -170,7 +170,7 @@
         "operation": "executeQuery",
         "query": "update minus_words set export_to_yandex=false where company_id=$1",
         "options": {
-          "queryReplacement": "={{ $('When Executed by Another Workflow').item.json.company_id }}"
+          "queryReplacement": "={{ $('When Executed by Another Workflow').last().json.company_id }}"
         }
       },
       "type": "n8n-nodes-base.postgres",
@@ -185,8 +185,8 @@
       "alwaysOutputData": true,
       "credentials": {
         "postgres": {
-          "id": "Hx2VFmUi5WO2K4QX",
-          "name": "Postgres account 2"
+          "id": "4YkdFJcdTgzo9hkz",
+          "name": "PGvector"
         }
       }
     },
@@ -208,8 +208,8 @@
       "name": "Mark exported to yandex",
       "credentials": {
         "postgres": {
-          "id": "Hx2VFmUi5WO2K4QX",
-          "name": "Postgres account 2"
+          "id": "4YkdFJcdTgzo9hkz",
+          "name": "PGvector"
         }
       }
     },
@@ -228,7 +228,7 @@
     },
     {
       "parameters": {
-        "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nconst out = [];\nfor (const item of $in$('generate minus words list').first().json.minus_word_ids) {\n  out.push({ json: { minus_word_id: item } }); \n}\n\nreturn out;"
+        "jsCode": "// Берём массив minus_words_ids из узла \"generate minus words list\" (первый item)\nconst ids = $('generate minus words list').first().json.minus_words_ids || [];\n\n// Возвращаем по одному item на каждый id\nreturn ids.map(id => ({ json: { minus_word_id: id } }));"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -361,7 +361,7 @@
       }
     ]
   },
-  "versionId": "3ebd2bd0-5936-4bbb-b8b2-8877040089c7",
+  "versionId": "3aa94803-f2fb-40ca-8331-f1f0b7da4537",
   "triggerCount": 0,
   "shared": [
     {
