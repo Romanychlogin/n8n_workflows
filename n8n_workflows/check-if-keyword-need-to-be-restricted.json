@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-10-08T11:54:45.682Z",
-  "updatedAt": "2025-10-08T11:58:32.063Z",
+  "updatedAt": "2025-10-14T13:12:17.090Z",
   "id": "0JY4BXCUoUM4RzPE",
   "name": "Check if keyword need to be restricted",
   "active": false,
@@ -15,21 +15,254 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        -1552,
-        -608
+        -1968,
+        -816
       ],
       "id": "c9886e56-b3f7-4c26-961e-95cf0942472b",
       "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "inputSource": "passthrough"
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -2688,
+        -400
+      ],
+      "id": "659be90d-ee8f-4207-b61e-31e2809c9541",
+      "name": "When Executed by Another Workflow"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "update business_processes_states set finished=NOW(),tokens_used=0,steps_passed=1,steps_total=1 where business_process_id=(select MAX(business_process_id) from business_processes where n8n_process_name=$1) and n8n_workflow_execution_id=$2",
+        "options": {
+          "queryReplacement": "=[{{$workflow.name}},{{$execution.id}}]"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -1392,
+        -400
+      ],
+      "id": "08259515-874a-4fc8-8c2b-2bd0cde61fbb",
+      "name": "Mark_workflow_completed",
+      "executeOnce": true,
+      "credentials": {
+        "postgres": {
+          "id": "4YkdFJcdTgzo9hkz",
+          "name": "PGvector"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "Get first base minus words, than all other ordered by weight"
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -2272,
+        -816
+      ],
+      "id": "c7597c92-bd49-4590-b41d-280fff39b4dd",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO business_processes_states (business_process_id, company_id,n8n_workflow_execution_id,n8n_workflow_root_execution_id, started)\nSELECT MAX(business_process_id), $2,$3,$4, NOW()\nFROM public.business_processes\nWHERE n8n_process_name = $1;",
+        "options": {
+          "queryReplacement": "=[{{$workflow.name}},{{$json.company_id}},{{$execution.id}},{{ $('When Executed by Another Workflow').item.json.root_execution_id }}]"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -2416,
+        -400
+      ],
+      "id": "8fdc0deb-03b3-490e-91cb-e65e13f04ce9",
+      "name": "Mark_workwlow_started",
+      "credentials": {
+        "postgres": {
+          "id": "4YkdFJcdTgzo9hkz",
+          "name": "PGvector"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Function-Node (Run Once)\nconst workflowData = $getWorkflowStaticData('global');\nworkflowData.steps_passed = 0;\nworkflowData.tokens_used = 0;\nworkflowData.step = 0;\nreturn $input.all();\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1840,
+        -400
+      ],
+      "id": "315df9d6-a59c-4ec1-8b5d-f20dfc1aa493",
+      "name": "Init total counter"
+    },
+    {
+      "parameters": {
+        "jsCode": "const LIMIT = 20000; // общий лимит, включая скобки\n\nconst items = $input.all();\nlet parts = [];\nlet currentLen = 2; // учтём \"(\" и \")\"\n\nfor (const it of items) {\n  const word = String(it.json?.minus_word ?? '').trim();\n  if (!word) continue;\n\n  const token = '-' + word; // формат \"-word\"\n  const addLen = (parts.length ? 1 : 0) + token.length; // пробел перед токеном (кроме первого) + длина токена\n\n  if (currentLen + addLen > LIMIT) break;\n\n  parts.push(token);\n  currentLen += addLen;\n}\n\nconst result =  parts.join(' ') ;\n\nreturn [\n  {\n    json: {\n      result,\n      token_count: parts.length,\n      length: result.length,\n    },\n  },\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1616,
+        -400
+      ],
+      "id": "18ee5f98-dbe0-4104-9888-3caed957a3ae",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "e7a291b9-4915-4184-96a2-062b799244f0",
+              "name": "minus_words",
+              "value": "={{ $('Code in JavaScript').item.json.result }}",
+              "type": "string"
+            },
+            {
+              "id": "fa903b85-9a59-49d8-ba2b-6895d7a94213",
+              "name": "words_count",
+              "value": "={{ $('Code in JavaScript').item.json.token_count }}",
+              "type": "string"
+            },
+            {
+              "id": "12294144-b8e2-4834-8c1d-8bdbcf3055ac",
+              "name": "length",
+              "value": "={{ $('Code in JavaScript').item.json.length }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -1136,
+        -416
+      ],
+      "id": "533607eb-8416-4422-ae04-aae05bd26293",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "WITH grouped AS (\n  SELECT\n    NULLIF(trim(split_part(used_keyword, ' -', 1)), '') as used_keyword, ads_header,\n\tSUM(count_convetions) as count_convetions,\n    SUM(count_views) AS views_total,\n    SUM(\n      CASE\n        WHEN resolution NOT IN ('same key', 'to add') OR resolution IS NULL\n          THEN count_views\n        ELSE 0\n      END\n    ) AS views_other\n  FROM current_list\n  WHERE company_id = $1\n  GROUP BY used_keyword,ads_header\n)\nSELECT\n  used_keyword,ads_header,\n  views_total,\n  views_other,\n  ROUND(views_other::numeric / NULLIF(views_total,0), 4) AS share_other\nFROM grouped\nWHERE views_total > 20\n  AND views_other::numeric / NULLIF(views_total, 0) >= 0.5\n  AND used_keyword NOT LIKE '\"%'\n  AND count_convetions =0 \nORDER BY share_other DESC, views_total DESC;",
+        "options": {
+          "queryReplacement": "={{ $('When Executed by Another Workflow').item.json.company_id }}"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -2112,
+        -416
+      ],
+      "id": "839315e4-88ed-47cb-8567-43cedd3b6a59",
+      "name": "Get suspected key words",
+      "credentials": {
+        "postgres": {
+          "id": "Hx2VFmUi5WO2K4QX",
+          "name": "Postgres account 2"
+        }
+      }
     }
   ],
-  "connections": {},
+  "connections": {
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "Mark_workwlow_started",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mark_workflow_completed": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mark_workwlow_started": {
+      "main": [
+        [
+          {
+            "node": "Get suspected key words",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Init total counter": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Mark_workflow_completed",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get suspected key words": {
+      "main": [
+        [
+          {
+            "node": "Init total counter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
   "settings": {
     "executionOrder": "v1"
   },
   "staticData": null,
   "meta": null,
-  "pinData": {},
-  "versionId": "c6e2e30c-c3a9-46b1-9cba-9ea6f604d484",
+  "pinData": {
+    "When Executed by Another Workflow": [
+      {
+        "json": {
+          "company_id": 1,
+          "root_execution_id": 74293
+        }
+      }
+    ]
+  },
+  "versionId": "5f99e0fb-7c4b-4b2c-87d7-41cb71e50871",
   "triggerCount": 0,
   "shared": [
     {
