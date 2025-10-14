@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-10-08T11:54:45.682Z",
-  "updatedAt": "2025-10-14T13:52:32.285Z",
+  "updatedAt": "2025-10-14T14:02:06.426Z",
   "id": "0JY4BXCUoUM4RzPE",
   "name": "Check if keyword need to be restricted",
   "active": false,
@@ -101,7 +101,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -1504,
+        -1408,
         -400
       ],
       "id": "315df9d6-a59c-4ec1-8b5d-f20dfc1aa493",
@@ -141,11 +141,47 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        -1808,
-        -400
+        -1776,
+        -416
       ],
       "id": "4f582051-3ab2-454a-b889-f38f6f13f6a0",
       "name": "update ads_list",
+      "credentials": {
+        "postgres": {
+          "id": "Hx2VFmUi5WO2K4QX",
+          "name": "Postgres account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "chooseBranch"
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        -1600,
+        -352
+      ],
+      "id": "c920aa78-3e8b-40da-8713-a0d8e6ed7974",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "UPDATE current_ads_list\n\tSET key_word='\"' || $2 || '\"' WHERE key_word=$2 and company_id=$1;\n",
+        "options": {
+          "queryReplacement": "={{ $('When Executed by Another Workflow').item.json.company_id }},{{$json.used_keyword }}"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -1776,
+        -240
+      ],
+      "id": "f118f564-a55c-4ba8-8c97-dcdcc04278e1",
+      "name": "update current_ads_list",
       "credentials": {
         "postgres": {
           "id": "Hx2VFmUi5WO2K4QX",
@@ -200,6 +236,11 @@
             "node": "update ads_list",
             "type": "main",
             "index": 0
+          },
+          {
+            "node": "update current_ads_list",
+            "type": "main",
+            "index": 0
           }
         ]
       ]
@@ -208,9 +249,31 @@
       "main": [
         [
           {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
             "node": "Init total counter",
             "type": "main",
             "index": 0
+          }
+        ]
+      ]
+    },
+    "update current_ads_list": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
           }
         ]
       ]
@@ -236,7 +299,7 @@
       }
     ]
   },
-  "versionId": "efdd6395-1208-4a72-9f65-0fa94044b007",
+  "versionId": "53c3baf4-f79c-4d9f-99c3-4ae395bd11d4",
   "triggerCount": 0,
   "shared": [
     {
