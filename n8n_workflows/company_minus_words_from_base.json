@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-15T16:12:00.035Z",
-  "updatedAt": "2025-10-14T08:55:37.162Z",
+  "updatedAt": "2025-10-14T09:08:10.095Z",
   "id": "o5L3i8eq9JK9oLwL",
   "name": "company_minus_words_from_base",
   "active": false,
@@ -184,7 +184,8 @@
           "id": "4YkdFJcdTgzo9hkz",
           "name": "PGvector"
         }
-      }
+      },
+      "disabled": true
     },
     {
       "parameters": {
@@ -207,7 +208,8 @@
           "id": "Hx2VFmUi5WO2K4QX",
           "name": "Postgres account 2"
         }
-      }
+      },
+      "disabled": true
     },
     {
       "parameters": {
@@ -228,8 +230,8 @@
       "executeOnce": true,
       "credentials": {
         "postgres": {
-          "id": "hNuVeLeeeSX0vLBj",
-          "name": "n8n service"
+          "id": "Hx2VFmUi5WO2K4QX",
+          "name": "Postgres account 2"
         }
       }
     },
@@ -307,7 +309,7 @@
     },
     {
       "parameters": {
-        "jsCode": "// Настройте имена полей под себя:\nconst INPUT_FIELD  = 'yandex_region'; // где лежит исходная строка\nconst OUTPUT_FIELD = 'region';     // куда записать массив\n\nfunction parseCsvLine(line) {\n  const out = [];\n  let cur = '';\n  let inQuotes = false;\n\n  for (let i = 0; i < line.length; i++) {\n    const ch = line[i];\n    if (ch === '\"') {\n      // двойные кавычки внутри кавычек -> одна кавычка\n      if (inQuotes && line[i + 1] === '\"') { cur += '\"'; i++; }\n      else { inQuotes = !inQuotes; }\n    } else if (ch === ',' && !inQuotes) {\n      out.push(cur);\n      cur = '';\n    } else {\n      cur += ch;\n    }\n  }\n  out.push(cur);\n\n  // trim + убрать пустые\n  return out.map(s => s.trim()).filter(s => s.length > 0);\n}\n\nconst out = $input.all().map(item => {\n  const raw = String(item.json?.[INPUT_FIELD] ?? '').trim();\n  const arr = raw ? parseCsvLine(raw) : [];\n  return { json: { ...item.json, [OUTPUT_FIELD]: arr } };\n});\n\nreturn out;"
+        "jsCode": "// Настройте имена полей под себя:\nconst INPUT_FIELD  = 'yandex_region'; // исходная строка с регионами\nconst OUTPUT_FIELD = 'region';         // имя поля в выходных элементах\n\nfunction parseCsvLine(line) {\n  const out = [];\n  let cur = '';\n  let inQuotes = false;\n\n  for (let i = 0; i < line.length; i++) {\n    const ch = line[i];\n    if (ch === '\"') {\n      if (inQuotes && line[i + 1] === '\"') { cur += '\"'; i++; }\n      else { inQuotes = !inQuotes; }\n    } else if (ch === ',' && !inQuotes) {\n      out.push(cur);\n      cur = '';\n    } else {\n      cur += ch;\n    }\n  }\n  out.push(cur);\n\n  return out.map(s => s.trim()).filter(s => s.length > 0);\n}\n\nconst out = [];\nfor (const item of $input.all()) {\n  const raw = String(item.json?.[INPUT_FIELD] ?? '').trim();\n  if (!raw) continue;\n\n  // приводим исходную строку к нижнему регистру\n  const rawLower = raw.toLowerCase();\n\n  const values = parseCsvLine(rawLower);\n  for (const v of values) {\n    out.push({ json: { [OUTPUT_FIELD]: v } });\n  }\n}\n\nreturn out;"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -629,7 +631,7 @@
       }
     ]
   },
-  "versionId": "2f9f3f5b-9f49-4c7f-ab72-ad7712cb94f8",
+  "versionId": "a60d172a-ba61-426a-9133-eacb76c29fe5",
   "triggerCount": 0,
   "shared": [
     {
