@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-10-07T08:30:30.743Z",
-  "updatedAt": "2025-10-14T07:49:56.544Z",
+  "updatedAt": "2025-10-14T09:34:45.354Z",
   "id": "W3unG2eSSwWcYUG0",
   "name": "minus words post processing",
   "active": false,
@@ -61,7 +61,7 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "SELECT mw.minus_word, mw.weight\nFROM minus_words AS mw\nJOIN minus_words_origin AS org\n  ON org.minus_word_id = mw.id\nWHERE mw.company_id = $1\nORDER BY\n  CASE WHEN org.key_word_id = 0 THEN 0 ELSE 1 END,            -- сначала key_word_id = 0\n  CASE WHEN org.key_word_id <> 0 THEN mw.weight END DESC NULLS LAST;  -- внутри «вторых» — по weight DESC",
+        "query": "WITH agg AS (\n  SELECT\n    mw.id,\n    mw.minus_word,\n    mw.weight,\n    BOOL_OR(org.key_word_id = 0) AS has_zero\n  FROM minus_words AS mw\n  JOIN minus_words_origin AS org\n    ON org.minus_word_id = mw.id\n  WHERE mw.company_id = $1\n  GROUP BY mw.id, mw.minus_word, mw.weight\n)\nSELECT minus_word, weight\nFROM agg\nORDER BY\n  CASE WHEN has_zero THEN 0 ELSE 1 END,  -- сначала те, у кого есть key_word_id = 0\n  weight DESC NULLS LAST;                -- затем по weight DESC",
         "options": {
           "queryReplacement": "={{ $('When Executed by Another Workflow').item.json.company_id }}"
         }
@@ -151,6 +151,18 @@
               "id": "e7a291b9-4915-4184-96a2-062b799244f0",
               "name": "minus_words",
               "value": "={{ $('Code in JavaScript').item.json.result }}",
+              "type": "string"
+            },
+            {
+              "id": "fa903b85-9a59-49d8-ba2b-6895d7a94213",
+              "name": "words_count",
+              "value": "={{ $('Code in JavaScript').item.json.token_count }}",
+              "type": "string"
+            },
+            {
+              "id": "12294144-b8e2-4834-8c1d-8bdbcf3055ac",
+              "name": "length",
+              "value": "={{ $('Code in JavaScript').item.json.length }}",
               "type": "string"
             }
           ]
@@ -252,7 +264,7 @@
       }
     ]
   },
-  "versionId": "94b80da7-ac45-496e-bf6f-c49d230de0fa",
+  "versionId": "836e420f-132a-45c0-9dc6-e8f084b4ac21",
   "triggerCount": 0,
   "shared": [
     {
