@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-15T16:12:00.035Z",
-  "updatedAt": "2025-10-14T08:19:56.431Z",
+  "updatedAt": "2025-10-14T08:39:26.129Z",
   "id": "o5L3i8eq9JK9oLwL",
   "name": "company_minus_words_from_base",
   "active": false,
@@ -45,12 +45,14 @@
     },
     {
       "parameters": {
-        "content": "тех долг - автоматическая обработка и удаление своих регионов"
+        "content": "автоматическая обработка и удаление своих регионов ( в которых рекламируемся)",
+        "height": 544,
+        "width": 2208
       },
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        -512,
+        16,
         -640
       ],
       "id": "5cd1b29c-7c8e-491d-9202-7121e81a5c02",
@@ -103,8 +105,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        512,
-        -560
+        992,
+        -416
       ],
       "id": "ba3ac614-4ba3-4017-830e-ff6b9481665c",
       "name": "Mark_workflow_completed",
@@ -233,41 +235,13 @@
     },
     {
       "parameters": {
-        "jsCode": "// === Code: normalize_and_ngrams ===\n// INPUT:  HTTP Webhook body { phrase: string, threshold?: number }\n// OUTPUT: { threshold: number, candidates: string[], tokens: string[] }\n// PURPOSE:\n//   1) Normalize the phrase (lowercase, keep letters/digits/underscore and - + #)\n//   2) Remove Russian prepositions as separate words (not touching - + #)\n//   3) Tokenize and build 1..3-gram unique candidates preserving order\n//   4) Provide threshold (default 0.88) downstream\n\n// Input JSON: { company_name, text, threshold? }\nconst body = $json;\nconst prepositions = [\n  \"в\",\"без\",\"до\",\"из\",\"к\",\"и\",\"на\",\"по\",\"о\",\"от\",\"перед\",\"при\",\n  \"через\",\"с\",\"у\",\"за\",\"над\",\"об\",\"под\",\"про\",\"для\",\"между\"\n];\n\n// Нормализуем регистр\nlet text = String(body.args.phrase ?? \"\").toLowerCase();\n\n// Экранируем спецсимволы\nconst escape = s => s.replace(/[.*+?^${}()|[\\]\\\\]/g, \"\\\\$&\");\nconst alts = prepositions.map(escape).join(\"|\");\n\n// Разрешаем буквы, цифры, подчёркивание, а также - + #\nconst re = new RegExp(\n  `(^|[^\\\\p{L}\\\\p{N}_\\\\-+#])(?:${alts})(?=$|[^\\\\p{L}\\\\p{N}_\\\\-+#])`,\n  \"giu\"\n);\n\n// Удаляем предлоги, сохраняя левый разделитель\ntext = text.replace(re, \"$1\");\n\n// Чистим пробелы\ntext = text.replace(/\\s+/g, \" \").trim();\n//const company = body.company_name;\nconst threshold = Math.min(Math.max(\n  Number(String(body?.args?.threshold ?? 0.88).replace(',', '.').trim()) || 0.88\n, 0), 1);\n\nconst tokens = (text.match(/[A-Za-zА-Яа-яЁё0-9][A-Za-zА-Яа-яЁё0-9&.\\-]{0,}/g) || [])\n  .map(s => s.trim())\n  .filter(Boolean);\n\nconst MAX_N = 3;\nconst set = new Set();\nfor (let i = 0; i < tokens.length; i++) {\n  for (let n = 1; n <= MAX_N && i + n <= tokens.length; n++) {\n    const phrase = tokens.slice(i, i+n).join(' ');\n    set.add(phrase);\n  }\n}\nlet candidates = Array.from(set);\n// если пусто — добавляем пустую строку\nif (candidates.length === 0) {\n  candidates = [\"\"];\n}\n\nreturn [{ json: { threshold, candidates,MAX_N } }];\n"
-      },
-      "id": "b20d5915-2f1c-4bf8-8269-0c638aae3658",
-      "name": "Code: normalize_and_ngrams",
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        560,
-        -272
-      ],
-      "notes": "Normalize phrase, strip Russian prepositions (keeping - + #), tokenize, and produce 1..3-grams."
-    },
-    {
-      "parameters": {
-        "jsCode": "// === Code: explode_candidates ===\n// INPUT:  { threshold, candidates[] }\n// OUTPUT: array of items: { candidate, threshold }\n// PURPOSE: fan-out each n-gram into its own item for embedding + DB lookup\n\nconst { threshold, candidates } = $json;\n\nreturn candidates.map(c => ({ json: { candidate: c, threshold } }));"
-      },
-      "id": "072e18a3-c6fe-4fb1-ae66-8d6aa310c9d1",
-      "name": "Code: explode_candidates",
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        752,
-        -240
-      ],
-      "notes": "Explode the array of n-gram candidates into one item per candidate."
-    },
-    {
-      "parameters": {
         "method": "POST",
         "url": "https://api.openai.com/v1/embeddings",
         "authentication": "predefinedCredentialType",
         "nodeCredentialType": "openAiApi",
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "={\n  \"model\": \"text-embedding-3-small\",\n  \"input\": \"{{$json.candidate}}\"\n}",
+        "jsonBody": "={\n  \"model\": \"text-embedding-3-small\",\n  \"input\": \"{{$json.region}}\"\n}",
         "options": {
           "redirect": {
             "redirect": {}
@@ -280,8 +254,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4,
       "position": [
-        992,
-        -240
+        928,
+        -224
       ],
       "retryOnFail": true,
       "waitBetweenTries": 5000,
@@ -295,24 +269,24 @@
     },
     {
       "parameters": {
-        "jsCode": "// === Code: build_vector_literal ===\n// INPUT:  HTTP response(s) from OpenAI embeddings (one per candidate)\n// OUTPUT: items: { vector: \"[float,...]\", idx, candidate, threshold }\n// PURPOSE: Convert embedding array into a Postgres vector literal string and\n//          carry candidate + threshold forward for alignment\n\nconst sourceAll = $('Code: explode_candidates').all();\n\nconst out = $input.all().map((r, i) => {\n  // OpenAI HTTP node may put data in r.json.body.data or r.json.data depending on version\n  const emb = r.json?.body?.data?.[0]?.embedding ?? r.json?.data?.[0]?.embedding;\n  if (!Array.isArray(emb) || emb.length === 0) {\n    throw new Error('Embedding not found for item #' + i);\n  }\n  const vector = '[' + emb.map(Number).join(',') + ']';\n  const candidate = sourceAll[i]?.json?.candidate;\n  const threshold = sourceAll[i]?.json?.threshold;\n  return { json: { vector, idx: i, candidate, threshold,company_id:$('When Executed by Another Workflow').first().json.args.company_id } };\n});\n\nreturn out;"
+        "jsCode": "// === Code: build_vector_literal ===\n// INPUT:  HTTP response(s) from OpenAI embeddings (one per candidate)\n// OUTPUT: items: { vector: \"[float,...]\", idx, candidate, threshold }\n// PURPOSE: Convert embedding array into a Postgres vector literal string and\n//          carry candidate + threshold forward for alignment\n\nconst sourceAll = $('Loop Over Items1').all();\n\nconst out = $input.all().map((r, i) => {\n  // OpenAI HTTP node may put data in r.json.body.data or r.json.data depending on version\n  const emb = r.json?.body?.data?.[0]?.embedding ?? r.json?.data?.[0]?.embedding;\n  if (!Array.isArray(emb) || emb.length === 0) {\n    throw new Error('Embedding not found for item #' + i);\n  }\n  const vector = '[' + emb.map(Number).join(',') + ']';\n  const candidate = sourceAll[i]?.json?.region;\n  const threshold = sourceAll[i]?.json?.threshold;\n  return { json: { vector, idx: i, candidate, threshold,company_id:$('When Executed by Another Workflow').first().json.company_id } };\n});\n\nreturn out;"
       },
       "id": "e265dcd1-3de9-4c98-b51d-0fa5801ec68b",
       "name": "Code: build_vector_literal",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1248,
-        -240
+        1152,
+        -208
       ],
       "notes": "Convert embedding arrays into a pgvector literal (e.g., \"[0.1,0.2,...]\")."
     },
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "SELECT v.phrase,  0 - (v.phrase_embedding <#> $1::vector) AS similarity FROM company_content v where company_id=$2\n  ORDER BY v.phrase_embedding <#> $1::vector LIMIT 1;",
+        "query": "SELECT v.id,  0 - (v.minus_word_embedding <#> $1::vector) AS similarity FROM minus_words v where company_id=$2 and 0 - (v.minus_word_embedding <#> $1::vector) > $3;",
         "options": {
-          "queryReplacement": "={{$json.vector}},{{$json.company_id}}"
+          "queryReplacement": "={{$json.vector}},{{$json.company_id}},{{$json.threshold}}"
         }
       },
       "id": "579e8eb5-e7df-401c-8b27-55c65df770d3",
@@ -320,8 +294,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2,
       "position": [
-        1520,
-        -240
+        1376,
+        -208
       ],
       "credentials": {
         "postgres": {
@@ -333,35 +307,7 @@
     },
     {
       "parameters": {
-        "jsCode": "// === Code: threshold_flag ===\n// INPUT:  Postgres results (top-1 row per candidate)\n// OUTPUT: items: { candidate, matched, similarity, pass }\n// PURPOSE: Compare best similarity to threshold and flag whether it passes\n\nconst ctx = $('Code: normalize_and_ngrams').first().json; // { threshold, candidates, tokens }\nconst exploded = $('Code: explode_candidates').all();\n\nconst out = $input.all().map((row, i) => {\n  const best = row.json || {};\n  const candidate = exploded[i]?.json?.candidate;\n  const similarity = typeof best.similarity === 'number' ? best.similarity : -1;\n  const pass = similarity >= (ctx.threshold ?? 0.88);\n  return { json: { candidate, matched: best.phrase, similarity, pass } };\n});\n\nreturn out;"
-      },
-      "id": "aa9471c9-d897-445f-b163-77c0dfb43a43",
-      "name": "Code: threshold_flag",
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        1776,
-        -240
-      ],
-      "notes": "Compares nearest match similarity with the threshold and marks pass/fail."
-    },
-    {
-      "parameters": {
-        "jsCode": "// === Code: collect_non_matches ===\n// INPUT:  { candidate, matched, similarity, pass }\n// OUTPUT: single item: { non_matches: string[], meta: {...} }\n// PURPOSE: Keep only candidates that did NOT pass threshold (i.e., non-matches)\n\nconst ctx = $('Code: normalize_and_ngrams').first().json; // for threshold & counts\n\nconst failed = $input.all()\n  .map(i => i.json)\n  .filter(j => !j.pass);\n\nreturn [{\n  json: {\n    non_matches: failed.map(x => x.candidate),\n    meta: {\n      threshold: ctx.threshold,\n      candidates_total: ctx.candidates.length,\n      checked_ngrams: '1..'+ctx.MAX_N\n    }\n  }\n}];"
-      },
-      "id": "1ac4bdc9-5d03-41ea-bee8-3409dcef2f7a",
-      "name": "Code: collect_non_matches",
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        2032,
-        -240
-      ],
-      "notes": "Produces the final response for the Webhook: list of n-grams that have no strong match."
-    },
-    {
-      "parameters": {
-        "jsCode": "// Настройте имена полей под себя:\nconst INPUT_FIELD  = 'yandex_region'; // где лежит исходная строка\nconst OUTPUT_FIELD = 'regions';     // куда записать массив\n\nfunction parseCsvLine(line) {\n  const out = [];\n  let cur = '';\n  let inQuotes = false;\n\n  for (let i = 0; i < line.length; i++) {\n    const ch = line[i];\n    if (ch === '\"') {\n      // двойные кавычки внутри кавычек -> одна кавычка\n      if (inQuotes && line[i + 1] === '\"') { cur += '\"'; i++; }\n      else { inQuotes = !inQuotes; }\n    } else if (ch === ',' && !inQuotes) {\n      out.push(cur);\n      cur = '';\n    } else {\n      cur += ch;\n    }\n  }\n  out.push(cur);\n\n  // trim + убрать пустые\n  return out.map(s => s.trim()).filter(s => s.length > 0);\n}\n\nconst out = $input.all().map(item => {\n  const raw = String(item.json?.[INPUT_FIELD] ?? '').trim();\n  const arr = raw ? parseCsvLine(raw) : [];\n  return { json: { ...item.json, [OUTPUT_FIELD]: arr } };\n});\n\nreturn out;"
+        "jsCode": "// Настройте имена полей под себя:\nconst INPUT_FIELD  = 'yandex_region'; // где лежит исходная строка\nconst OUTPUT_FIELD = 'region';     // куда записать массив\n\nfunction parseCsvLine(line) {\n  const out = [];\n  let cur = '';\n  let inQuotes = false;\n\n  for (let i = 0; i < line.length; i++) {\n    const ch = line[i];\n    if (ch === '\"') {\n      // двойные кавычки внутри кавычек -> одна кавычка\n      if (inQuotes && line[i + 1] === '\"') { cur += '\"'; i++; }\n      else { inQuotes = !inQuotes; }\n    } else if (ch === ',' && !inQuotes) {\n      out.push(cur);\n      cur = '';\n    } else {\n      cur += ch;\n    }\n  }\n  out.push(cur);\n\n  // trim + убрать пустые\n  return out.map(s => s.trim()).filter(s => s.length > 0);\n}\n\nconst out = $input.all().map(item => {\n  const raw = String(item.json?.[INPUT_FIELD] ?? '').trim();\n  const arr = raw ? parseCsvLine(raw) : [];\n  return { json: { ...item.json, [OUTPUT_FIELD]: arr } };\n});\n\nreturn out;"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -386,6 +332,57 @@
       ],
       "id": "02898096-6425-4124-9550-04f93afda46e",
       "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        688,
+        -288
+      ],
+      "id": "a9d4d457-bc6d-486b-ab9c-126fb030c536",
+      "name": "Loop Over Items1"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "51e0acc4-f0bc-4c52-95c7-f6cae4a1159d",
+              "name": "threshold",
+              "value": 0.88,
+              "type": "number"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        480,
+        -288
+      ],
+      "id": "f02ec305-7e73-4779-8b6d-59fe6b4cc363",
+      "name": "set threshold"
+    },
+    {
+      "parameters": {
+        "jsCode": "const workflowData = $getWorkflowStaticData('global');\nif (!Array.isArray(workflowData.ids)) workflowData.ids = [];\n\nconst added = [];\nfor (const item of $input.all()) {\n  if (item?.json?.id !== undefined && item?.json?.id !== null) {\n    workflowData.ids.push(item.json.id);\n    added.push(item.json.id);\n  }\n}\n\n// Строка вида ([...]) — безопасно формируем через JSON.stringify для строк/чисел\nconst resultString = '(' + JSON.stringify(added) + ')';\n\n// Возвращаем один элемент с полем result (строка)\nreturn [{ json: { ids_to_remove: resultString } }];"
+      },
+      "id": "aa9471c9-d897-445f-b163-77c0dfb43a43",
+      "name": "collect ids",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1648,
+        -208
+      ],
+      "notes": "Compares nearest match similarity with the threshold and marks pass/fail."
     }
   ],
   "connections": {
@@ -495,28 +492,6 @@
         ]
       ]
     },
-    "Code: normalize_and_ngrams": {
-      "main": [
-        [
-          {
-            "node": "Code: explode_candidates",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Code: explode_candidates": {
-      "main": [
-        [
-          {
-            "node": "HTTP: OpenAI Embeddings",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "HTTP: OpenAI Embeddings": {
       "main": [
         [
@@ -543,18 +518,58 @@
       "main": [
         [
           {
-            "node": "Code: threshold_flag",
+            "node": "collect ids",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Code: threshold_flag": {
+    "get array of regions": {
       "main": [
         [
           {
-            "node": "Code: collect_non_matches",
+            "node": "set threshold",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items1": {
+      "main": [
+        [
+          {
+            "node": "Mark_workflow_completed",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "HTTP: OpenAI Embeddings",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "set threshold": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "collect ids": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items1",
             "type": "main",
             "index": 0
           }
@@ -579,7 +594,7 @@
       }
     ]
   },
-  "versionId": "b60e762e-ec94-4402-903b-ae0c1cb1672c",
+  "versionId": "ccead920-7efc-40eb-b115-abaae45bcbcb",
   "triggerCount": 0,
   "shared": [
     {
