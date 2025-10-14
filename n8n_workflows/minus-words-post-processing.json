@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-10-07T08:30:30.743Z",
-  "updatedAt": "2025-10-14T07:40:02.592Z",
+  "updatedAt": "2025-10-14T07:49:56.544Z",
   "id": "W3unG2eSSwWcYUG0",
   "name": "minus words post processing",
   "active": false,
@@ -145,6 +145,16 @@
     },
     {
       "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "e7a291b9-4915-4184-96a2-062b799244f0",
+              "name": "minus_words",
+              "value": "={{ $('Code in JavaScript').item.json.result }}",
+              "type": "string"
+            }
+          ]
+        },
         "options": {}
       },
       "type": "n8n-nodes-base.set",
@@ -242,7 +252,7 @@
       }
     ]
   },
-  "versionId": "a68f3f87-551e-487c-82d7-58fc0b4aece7",
+  "versionId": "94b80da7-ac45-496e-bf6f-c49d230de0fa",
   "triggerCount": 0,
   "shared": [
     {
