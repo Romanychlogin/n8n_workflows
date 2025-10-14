@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-15T16:12:00.035Z",
-  "updatedAt": "2025-10-14T09:08:10.095Z",
+  "updatedAt": "2025-10-14T09:19:40.668Z",
   "id": "o5L3i8eq9JK9oLwL",
   "name": "company_minus_words_from_base",
   "active": false,
@@ -105,8 +105,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        992,
-        -416
+        1408,
+        -448
       ],
       "id": "ba3ac614-4ba3-4017-830e-ff6b9481665c",
       "name": "Mark_workflow_completed",
@@ -256,7 +256,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4,
       "position": [
-        928,
+        1136,
         -224
       ],
       "retryOnFail": true,
@@ -278,7 +278,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1152,
+        1360,
         -208
       ],
       "notes": "Convert embedding arrays into a pgvector literal (e.g., \"[0.1,0.2,...]\")."
@@ -296,7 +296,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2,
       "position": [
-        1376,
+        1584,
         -208
       ],
       "credentials": {
@@ -355,7 +355,7 @@
             {
               "id": "51e0acc4-f0bc-4c52-95c7-f6cae4a1159d",
               "name": "threshold",
-              "value": 0.88,
+              "value": 0.8,
               "type": "number"
             }
           ]
@@ -381,34 +381,46 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1648,
+        1808,
         -208
       ],
       "notes": "Compares nearest match similarity with the threshold and marks pass/fail."
     },
     {
       "parameters": {
+        "jsCode": "const workflowData = $getWorkflowStaticData('global');\n\nreturn [{ json: { ids: workflowData.ids } }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        896,
+        -384
+      ],
+      "id": "85d22d6e-db0d-496c-acd9-2541682b07d8",
+      "name": "get records to delete"
+    },
+    {
+      "parameters": {
         "operation": "executeQuery",
         "query": "WITH del_child AS (\n  DELETE FROM minus_words_origin\n  WHERE minus_word_id = ANY($1::bigint[])   -- $1 = массив id (bigint[])\n  RETURNING minus_word_id\n),\ndel_parent AS (\n  DELETE FROM minus_words\n  WHERE id = ANY($1::bigint[])\n  RETURNING id\n)\nSELECT\n  (SELECT count(*) FROM del_child)  AS deleted_from_minus_words_origin,\n  (SELECT count(*) FROM del_parent) AS deleted_from_minus_words;",
         "options": {
-          "queryReplacement": ""
+          "queryReplacement": "={{ $json.ids }}"
         }
       },
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        1856,
-        -208
+        1168,
+        -448
       ],
-      "id": "e75898c9-8de0-4ea6-9d13-7faeb8d3997b",
+      "id": "f5c53e55-1259-43c1-bda0-6e77ad062954",
       "name": "delete records",
       "credentials": {
         "postgres": {
           "id": "Hx2VFmUi5WO2K4QX",
           "name": "Postgres account 2"
         }
-      },
-      "disabled": true
+      }
     }
   ],
   "connections": {
@@ -566,7 +578,7 @@
       "main": [
         [
           {
-            "node": "Mark_workflow_completed",
+            "node": "get records to delete",
             "type": "main",
             "index": 0
           }
@@ -595,6 +607,17 @@
       "main": [
         [
           {
+            "node": "Loop Over Items1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "get records to delete": {
+      "main": [
+        [
+          {
             "node": "delete records",
             "type": "main",
             "index": 0
@@ -606,7 +629,7 @@
       "main": [
         [
           {
-            "node": "Loop Over Items1",
+            "node": "Mark_workflow_completed",
             "type": "main",
             "index": 0
           }
@@ -631,7 +654,7 @@
       }
     ]
   },
-  "versionId": "a60d172a-ba61-426a-9133-eacb76c29fe5",
+  "versionId": "13cde4fa-c12f-4679-882d-14ade65f5df2",
   "triggerCount": 0,
   "shared": [
     {
