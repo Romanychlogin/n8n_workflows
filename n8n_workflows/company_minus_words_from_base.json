@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-15T16:12:00.035Z",
-  "updatedAt": "2025-10-14T08:50:55.342Z",
+  "updatedAt": "2025-10-14T08:55:37.162Z",
   "id": "o5L3i8eq9JK9oLwL",
   "name": "company_minus_words_from_base",
   "active": false,
@@ -166,7 +166,7 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "INSERT INTO minus_words (minus_word_embedding, company_id, minus_word)\nVALUES ($1::vector, $2, $3) RETURNING id AS minus_word_id;",
+        "query": "INSERT INTO minus_words (minus_word_embedding, company_id, minus_word)\nVALUES ($1::vector, $2, $3) \n  ON CONFLICT (company_id, minus_word) DO UPDATE\nSET minus_word = EXCLUDED.minus_word\n  RETURNING id AS minus_word_id;",
         "options": {
           "queryReplacement": "=[\n  { \"value\": \"={{'[' + JSON.parse($json.minus_word_embedding).map(e => Number(e)).join(',') + ']'}}\" },\n  { \"value\": \"={{$json.company_id}}\" },\n  { \"value\": \"={{$json.minus_word}}\" }\n]"
         }
@@ -629,7 +629,7 @@
       }
     ]
   },
-  "versionId": "6655d627-630e-4fc7-85ee-4b3c5081e2f6",
+  "versionId": "2f9f3f5b-9f49-4c7f-ab72-ad7712cb94f8",
   "triggerCount": 0,
   "shared": [
     {
