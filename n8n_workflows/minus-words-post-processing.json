@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-10-07T08:30:30.743Z",
-  "updatedAt": "2025-10-08T12:05:43.797Z",
+  "updatedAt": "2025-10-14T07:40:02.592Z",
   "id": "W3unG2eSSwWcYUG0",
   "name": "minus words post processing",
   "active": false,
@@ -15,21 +15,234 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        0,
-        0
+        -112,
+        -192
       ],
       "id": "6cdfae3f-f08e-4ccd-a85a-c348faec3743",
       "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "inputSource": "passthrough"
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -1088,
+        224
+      ],
+      "id": "626f037d-bf2a-4ef6-b4b3-e1d8e3e464fd",
+      "name": "When Executed by Another Workflow"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "update business_processes_states set finished=NOW(),tokens_used=0,steps_passed=1,steps_total=1 where business_process_id=(select MAX(business_process_id) from business_processes where n8n_process_name=$1) and n8n_workflow_execution_id=$2",
+        "options": {
+          "queryReplacement": "=[{{$workflow.name}},{{$execution.id}}]"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        208,
+        224
+      ],
+      "id": "6cf98fa3-fdd8-4102-bc21-b37e7077a7b9",
+      "name": "Mark_workflow_completed",
+      "executeOnce": true,
+      "credentials": {
+        "postgres": {
+          "id": "4YkdFJcdTgzo9hkz",
+          "name": "PGvector"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT mw.minus_word, mw.weight\nFROM minus_words AS mw\nJOIN minus_words_origin AS org\n  ON org.minus_word_id = mw.id\nWHERE mw.company_id = $1\nORDER BY\n  CASE WHEN org.key_word_id = 0 THEN 0 ELSE 1 END,            -- сначала key_word_id = 0\n  CASE WHEN org.key_word_id <> 0 THEN mw.weight END DESC NULLS LAST;  -- внутри «вторых» — по weight DESC",
+        "options": {
+          "queryReplacement": "={{ $('When Executed by Another Workflow').item.json.company_id }}"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -448,
+        224
+      ],
+      "id": "7b77e81d-c943-4650-8cb5-af9d708d1d8d",
+      "name": "Get minus_words",
+      "credentials": {
+        "postgres": {
+          "id": "Hx2VFmUi5WO2K4QX",
+          "name": "Postgres account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "Get first base minus words, than all other ordered by weight"
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -528,
+        144
+      ],
+      "id": "d679bc5c-27ea-4669-a26c-a519e2136f74",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO business_processes_states (business_process_id, company_id,n8n_workflow_execution_id,n8n_workflow_root_execution_id, started)\nSELECT MAX(business_process_id), $2,$3,$4, NOW()\nFROM public.business_processes\nWHERE n8n_process_name = $1;",
+        "options": {
+          "queryReplacement": "=[{{$workflow.name}},{{$json.company_id}},{{$execution.id}},{{ $('When Executed by Another Workflow').item.json.root_execution_id }}]"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -816,
+        224
+      ],
+      "id": "0fbf7be6-7eb9-4baa-bf17-051fb0754b1f",
+      "name": "Mark_workwlow_started",
+      "credentials": {
+        "postgres": {
+          "id": "4YkdFJcdTgzo9hkz",
+          "name": "PGvector"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Function-Node (Run Once)\nconst workflowData = $getWorkflowStaticData('global');\nworkflowData.steps_passed = 0;\nworkflowData.tokens_used = 0;\nworkflowData.step = 0;\nreturn $input.all();\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -240,
+        224
+      ],
+      "id": "f12c3a8a-db94-412e-a86b-f9079799f86f",
+      "name": "Init total counter"
+    },
+    {
+      "parameters": {
+        "jsCode": "const LIMIT = 20000; // общий лимит, включая скобки\n\nconst items = $input.all();\nlet parts = [];\nlet currentLen = 2; // учтём \"(\" и \")\"\n\nfor (const it of items) {\n  const word = String(it.json?.minus_word ?? '').trim();\n  if (!word) continue;\n\n  const token = '-' + word; // формат \"-word\"\n  const addLen = (parts.length ? 1 : 0) + token.length; // пробел перед токеном (кроме первого) + длина токена\n\n  if (currentLen + addLen > LIMIT) break;\n\n  parts.push(token);\n  currentLen += addLen;\n}\n\nconst result =  parts.join(' ') ;\n\nreturn [\n  {\n    json: {\n      result,\n      token_count: parts.length,\n      length: result.length,\n    },\n  },\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -16,
+        224
+      ],
+      "id": "08262b86-aa48-48ab-a1a0-d4656bff7ba5",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        464,
+        208
+      ],
+      "id": "db846178-7db1-4a0f-a97b-609d9c673b52",
+      "name": "Edit Fields"
     }
   ],
-  "connections": {},
+  "connections": {
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "Mark_workwlow_started",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get minus_words": {
+      "main": [
+        [
+          {
+            "node": "Init total counter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mark_workwlow_started": {
+      "main": [
+        [
+          {
+            "node": "Get minus_words",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Init total counter": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Mark_workflow_completed",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mark_workflow_completed": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
   "settings": {
     "executionOrder": "v1"
   },
   "staticData": null,
-  "meta": null,
-  "pinData": {},
-  "versionId": "3356830a-af9e-401b-8ce2-6175dc09b863",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {
+    "When Executed by Another Workflow": [
+      {
+        "json": {
+          "company_id": 1,
+          "root_execution_id": 74293
+        }
+      }
+    ]
+  },
+  "versionId": "a68f3f87-551e-487c-82d7-58fc0b4aece7",
   "triggerCount": 0,
   "shared": [
     {
