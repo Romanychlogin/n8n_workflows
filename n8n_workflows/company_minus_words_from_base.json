@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-15T16:12:00.035Z",
-  "updatedAt": "2025-10-14T09:19:40.668Z",
+  "updatedAt": "2025-10-14T09:22:44.693Z",
   "id": "o5L3i8eq9JK9oLwL",
   "name": "company_minus_words_from_base",
   "active": false,
@@ -388,7 +388,7 @@
     },
     {
       "parameters": {
-        "jsCode": "const workflowData = $getWorkflowStaticData('global');\n\nreturn [{ json: { ids: workflowData.ids } }];"
+        "jsCode": "const workflowData = $getWorkflowStaticData('global');\n\nreturn workflowData.ids.map(minus_word_id => ({ json: { minus_word_id } }));"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -402,9 +402,9 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "WITH del_child AS (\n  DELETE FROM minus_words_origin\n  WHERE minus_word_id = ANY($1::bigint[])   -- $1 = массив id (bigint[])\n  RETURNING minus_word_id\n),\ndel_parent AS (\n  DELETE FROM minus_words\n  WHERE id = ANY($1::bigint[])\n  RETURNING id\n)\nSELECT\n  (SELECT count(*) FROM del_child)  AS deleted_from_minus_words_origin,\n  (SELECT count(*) FROM del_parent) AS deleted_from_minus_words;",
+        "query": "WITH del_child AS (\n  DELETE FROM minus_words_origin\n  WHERE minus_word_id = $1\n  RETURNING minus_word_id\n),\ndel_parent AS (\n  DELETE FROM minus_words\n  WHERE id = $1\n  RETURNING id\n)\nSELECT\n  (SELECT count(*) FROM del_child)  AS deleted_from_minus_words_origin,\n  (SELECT count(*) FROM del_parent) AS deleted_from_minus_words;",
         "options": {
-          "queryReplacement": "={{ $json.ids }}"
+          "queryReplacement": "={{ $json.minus_word_id }}"
         }
       },
       "type": "n8n-nodes-base.postgres",
@@ -654,7 +654,7 @@
       }
     ]
   },
-  "versionId": "13cde4fa-c12f-4679-882d-14ade65f5df2",
+  "versionId": "b8d24e17-9a6a-40ce-b4a7-b43fa7777a08",
   "triggerCount": 0,
   "shared": [
     {
