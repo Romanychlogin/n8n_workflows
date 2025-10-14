@@ -1,138 +1,43 @@
 {
-  "createdAt": "2025-10-06T13:25:33.741Z",
-  "updatedAt": "2025-10-06T13:38:11.327Z",
-  "id": "tbijdiaKB74Iaf6O",
+  "createdAt": "2025-10-14T15:49:40.674Z",
+  "updatedAt": "2025-10-14T15:49:40.674Z",
+  "id": "vqNhE9GAEPU0fzmr",
   "name": "My workflow 3",
-  "active": true,
+  "active": false,
   "isArchived": false,
   "nodes": [
     {
       "parameters": {
-        "operation": "executeQuery",
-        "query": "select n8n_process_name from business_processes where root_process_id=7 order by process_order ",
+        "httpMethod": "POST",
+        "path": "1e39e62d-b034-41d5-b2e2-c37ee79bab59",
         "options": {}
       },
-      "type": "n8n-nodes-base.postgres",
-      "typeVersion": 2.6,
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
       "position": [
-        -224,
-        -176
+        0,
+        0
       ],
-      "id": "0ec2e521-a470-4d15-822c-0a48d1ba9a93",
-      "name": "get list for updates",
-      "credentials": {
-        "postgres": {
-          "id": "4YkdFJcdTgzo9hkz",
-          "name": "PGvector"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "formFields": {
-          "values": [
-            {
-              "fieldLabel": "Select processes to reset completion",
-              "fieldType": "dropdown",
-              "fieldOptions": {
-                "values": [
-                  {
-                    "option": "={{ $input.all().map(r => ({\n  label: r.json.n8n_process_name,      // что видит пользователь\n  value: String(r.json.id ?? r.json.n8n_process_name) // что вернётся\n})) }}"
-                  }
-                ]
-              }
-            }
-          ]
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.form",
-      "typeVersion": 2.3,
-      "position": [
-        -32,
-        -160
-      ],
-      "id": "5aaf1c85-187b-4fc4-be37-cc02859ad24c",
-      "name": "Form",
-      "webhookId": "efc10f6b-77c8-4e73-92fe-bf87481f003c"
-    },
-    {
-      "parameters": {
-        "formTitle": "Test data management",
-        "formFields": {
-          "values": [
-            {
-              "fieldLabel": "Please select",
-              "fieldType": "radio",
-              "fieldOptions": {
-                "values": [
-                  {
-                    "option": "Reset all running business processes"
-                  },
-                  {
-                    "option": "Reset core update steps for the last execution"
-                  },
-                  {
-                    "option": "Reset core update test data for report"
-                  }
-                ]
-              }
-            }
-          ]
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.formTrigger",
-      "typeVersion": 2.3,
-      "position": [
-        -624,
-        -192
-      ],
-      "id": "35df9164-20fc-4133-9a8b-199af5e35691",
-      "name": "On form submission",
-      "webhookId": "275771f9-df29-4b85-b49d-9aec026e6b2f"
+      "id": "a5335b0f-e077-4503-afde-adf6a3a64c0c",
+      "name": "Webhook",
+      "webhookId": "1e39e62d-b034-41d5-b2e2-c37ee79bab59"
     }
   ],
-  "connections": {
-    "get list for updates": {
-      "main": [
-        [
-          {
-            "node": "Form",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "On form submission": {
-      "main": [
-        [
-          {
-            "node": "get list for updates",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    }
-  },
+  "connections": {},
   "settings": {
     "executionOrder": "v1"
   },
   "staticData": null,
-  "meta": {
-    "templateCredsSetupCompleted": true
-  },
+  "meta": null,
   "pinData": {},
-  "versionId": "26cae2d9-1158-45e2-9481-874eb61e30e8",
-  "triggerCount": 1,
+  "versionId": "d9cdd326-8480-407d-8870-004db139fb11",
+  "triggerCount": 0,
   "shared": [
     {
-      "createdAt": "2025-10-06T13:25:33.741Z",
-      "updatedAt": "2025-10-06T13:25:33.741Z",
+      "createdAt": "2025-10-14T15:49:40.674Z",
+      "updatedAt": "2025-10-14T15:49:40.674Z",
       "role": "workflow:owner",
-      "workflowId": "tbijdiaKB74Iaf6O",
+      "workflowId": "vqNhE9GAEPU0fzmr",
       "projectId": "spKmbJLU4mvACXIB"
     }
   ],
