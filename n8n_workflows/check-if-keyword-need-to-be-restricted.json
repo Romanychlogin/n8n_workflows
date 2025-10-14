@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-10-08T11:54:45.682Z",
-  "updatedAt": "2025-10-14T13:38:40.559Z",
+  "updatedAt": "2025-10-14T13:52:32.285Z",
   "id": "0JY4BXCUoUM4RzPE",
   "name": "Check if keyword need to be restricted",
   "active": false,
@@ -45,7 +45,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        -1392,
+        -1184,
         -400
       ],
       "id": "08259515-874a-4fc8-8c2b-2bd0cde61fbb",
@@ -101,46 +101,11 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -1776,
+        -1504,
         -400
       ],
       "id": "315df9d6-a59c-4ec1-8b5d-f20dfc1aa493",
       "name": "Init total counter"
-    },
-    {
-      "parameters": {
-        "assignments": {
-          "assignments": [
-            {
-              "id": "e7a291b9-4915-4184-96a2-062b799244f0",
-              "name": "minus_words",
-              "value": "={{ $('Code in JavaScript').item.json.result }}",
-              "type": "string"
-            },
-            {
-              "id": "fa903b85-9a59-49d8-ba2b-6895d7a94213",
-              "name": "words_count",
-              "value": "={{ $('Code in JavaScript').item.json.token_count }}",
-              "type": "string"
-            },
-            {
-              "id": "12294144-b8e2-4834-8c1d-8bdbcf3055ac",
-              "name": "length",
-              "value": "={{ $('Code in JavaScript').item.json.length }}",
-              "type": "string"
-            }
-          ]
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.set",
-      "typeVersion": 3.4,
-      "position": [
-        -1152,
-        -400
-      ],
-      "id": "533607eb-8416-4422-ae04-aae05bd26293",
-      "name": "Edit Fields"
     },
     {
       "parameters": {
@@ -164,6 +129,29 @@
           "name": "Postgres account 2"
         }
       }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "UPDATE ads_list\n\tSET key_word='\"' || $2 || '\"',update_required=true WHERE key_word=$2 and company_id=$1;\n",
+        "options": {
+          "queryReplacement": "={{ $('When Executed by Another Workflow').item.json.company_id }},{{$json.used_keyword }}"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -1808,
+        -400
+      ],
+      "id": "4f582051-3ab2-454a-b889-f38f6f13f6a0",
+      "name": "update ads_list",
+      "credentials": {
+        "postgres": {
+          "id": "Hx2VFmUi5WO2K4QX",
+          "name": "Postgres account 2"
+        }
+      }
     }
   ],
   "connections": {
@@ -180,13 +168,7 @@
     },
     "Mark_workflow_completed": {
       "main": [
-        [
-          {
-            "node": "Edit Fields",
-            "type": "main",
-            "index": 0
-          }
-        ]
+        []
       ]
     },
     "Mark_workwlow_started": {
@@ -215,6 +197,17 @@
       "main": [
         [
           {
+            "node": "update ads_list",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "update ads_list": {
+      "main": [
+        [
+          {
             "node": "Init total counter",
             "type": "main",
             "index": 0
@@ -230,7 +223,9 @@
     "errorWorkflow": "v2Z32ISEUzsFYnZw"
   },
   "staticData": null,
-  "meta": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
   "pinData": {
     "When Executed by Another Workflow": [
       {
@@ -241,7 +236,7 @@
       }
     ]
   },
-  "versionId": "f79c7ec3-472a-4456-9a88-9b1ec4f817d1",
+  "versionId": "efdd6395-1208-4a72-9f65-0fa94044b007",
   "triggerCount": 0,
   "shared": [
     {
