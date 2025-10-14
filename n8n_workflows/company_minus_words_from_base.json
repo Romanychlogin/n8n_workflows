@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-15T16:12:00.035Z",
-  "updatedAt": "2025-10-14T08:39:26.129Z",
+  "updatedAt": "2025-10-14T08:50:55.342Z",
   "id": "o5L3i8eq9JK9oLwL",
   "name": "company_minus_words_from_base",
   "active": false,
@@ -166,7 +166,7 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "INSERT INTO minus_words (minus_word_embedding, company_id, minus_word)\nVALUES ($1::vector, $2, $3);",
+        "query": "INSERT INTO minus_words (minus_word_embedding, company_id, minus_word)\nVALUES ($1::vector, $2, $3) RETURNING id AS minus_word_id;",
         "options": {
           "queryReplacement": "=[\n  { \"value\": \"={{'[' + JSON.parse($json.minus_word_embedding).map(e => Number(e)).join(',') + ']'}}\" },\n  { \"value\": \"={{$json.company_id}}\" },\n  { \"value\": \"={{$json.minus_word}}\" }\n]"
         }
@@ -191,7 +191,7 @@
         "operation": "executeQuery",
         "query": "INSERT INTO public.minus_words_origin(\n\tminus_word_id, key_word_id, origin_weight)\n\tVALUES ($1, 0, 1);",
         "options": {
-          "queryReplacement": "={{ $json.id }}"
+          "queryReplacement": "={{ $json.minus_word_id }}"
         }
       },
       "type": "n8n-nodes-base.postgres",
@@ -383,6 +383,30 @@
         -208
       ],
       "notes": "Compares nearest match similarity with the threshold and marks pass/fail."
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "WITH del_child AS (\n  DELETE FROM minus_words_origin\n  WHERE minus_word_id = ANY($1::bigint[])   -- $1 = массив id (bigint[])\n  RETURNING minus_word_id\n),\ndel_parent AS (\n  DELETE FROM minus_words\n  WHERE id = ANY($1::bigint[])\n  RETURNING id\n)\nSELECT\n  (SELECT count(*) FROM del_child)  AS deleted_from_minus_words_origin,\n  (SELECT count(*) FROM del_parent) AS deleted_from_minus_words;",
+        "options": {
+          "queryReplacement": ""
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        1856,
+        -208
+      ],
+      "id": "e75898c9-8de0-4ea6-9d13-7faeb8d3997b",
+      "name": "delete records",
+      "credentials": {
+        "postgres": {
+          "id": "Hx2VFmUi5WO2K4QX",
+          "name": "Postgres account 2"
+        }
+      },
+      "disabled": true
     }
   ],
   "connections": {
@@ -569,6 +593,17 @@
       "main": [
         [
           {
+            "node": "delete records",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "delete records": {
+      "main": [
+        [
+          {
             "node": "Loop Over Items1",
             "type": "main",
             "index": 0
@@ -594,7 +629,7 @@
       }
     ]
   },
-  "versionId": "ccead920-7efc-40eb-b115-abaae45bcbcb",
+  "versionId": "6655d627-630e-4fc7-85ee-4b3c5081e2f6",
   "triggerCount": 0,
   "shared": [
     {
