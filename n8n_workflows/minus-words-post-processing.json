@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-10-07T08:30:30.743Z",
-  "updatedAt": "2025-10-14T09:34:45.354Z",
+  "updatedAt": "2025-10-14T13:30:31.647Z",
   "id": "W3unG2eSSwWcYUG0",
   "name": "minus words post processing",
   "active": false,
@@ -45,8 +45,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        208,
-        224
+        736,
+        176
       ],
       "id": "6cf98fa3-fdd8-4102-bc21-b37e7077a7b9",
       "name": "Mark_workflow_completed",
@@ -61,7 +61,7 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "WITH agg AS (\n  SELECT\n    mw.id,\n    mw.minus_word,\n    mw.weight,\n    BOOL_OR(org.key_word_id = 0) AS has_zero\n  FROM minus_words AS mw\n  JOIN minus_words_origin AS org\n    ON org.minus_word_id = mw.id\n  WHERE mw.company_id = $1\n  GROUP BY mw.id, mw.minus_word, mw.weight\n)\nSELECT minus_word, weight\nFROM agg\nORDER BY\n  CASE WHEN has_zero THEN 0 ELSE 1 END,  -- сначала те, у кого есть key_word_id = 0\n  weight DESC NULLS LAST;                -- затем по weight DESC",
+        "query": "WITH agg AS (\n  SELECT\n    mw.id,\n    mw.minus_word,\n    mw.weight,\n    BOOL_OR(org.key_word_id = 0) AS has_zero\n  FROM minus_words AS mw\n  JOIN minus_words_origin AS org\n    ON org.minus_word_id = mw.id\n  WHERE mw.company_id = $1\n  GROUP BY mw.id, mw.minus_word, mw.weight\n)\nSELECT minus_word, weight,id as minus_word_id\nFROM agg\nORDER BY\n  CASE WHEN has_zero THEN 0 ELSE 1 END,  -- сначала те, у кого есть key_word_id = 0\n  weight DESC NULLS LAST;                -- затем по weight DESC",
         "options": {
           "queryReplacement": "={{ $('When Executed by Another Workflow').item.json.company_id }}"
         }
@@ -132,37 +132,24 @@
     },
     {
       "parameters": {
-        "jsCode": "const LIMIT = 20000; // общий лимит, включая скобки\n\nconst items = $input.all();\nlet parts = [];\nlet currentLen = 2; // учтём \"(\" и \")\"\n\nfor (const it of items) {\n  const word = String(it.json?.minus_word ?? '').trim();\n  if (!word) continue;\n\n  const token = '-' + word; // формат \"-word\"\n  const addLen = (parts.length ? 1 : 0) + token.length; // пробел перед токеном (кроме первого) + длина токена\n\n  if (currentLen + addLen > LIMIT) break;\n\n  parts.push(token);\n  currentLen += addLen;\n}\n\nconst result =  parts.join(' ') ;\n\nreturn [\n  {\n    json: {\n      result,\n      token_count: parts.length,\n      length: result.length,\n    },\n  },\n];"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        -16,
-        224
-      ],
-      "id": "08262b86-aa48-48ab-a1a0-d4656bff7ba5",
-      "name": "Code in JavaScript"
-    },
-    {
-      "parameters": {
         "assignments": {
           "assignments": [
             {
               "id": "e7a291b9-4915-4184-96a2-062b799244f0",
               "name": "minus_words",
-              "value": "={{ $('Code in JavaScript').item.json.result }}",
+              "value": "={{ $('generate minus words list').item.json.result }}",
               "type": "string"
             },
             {
               "id": "fa903b85-9a59-49d8-ba2b-6895d7a94213",
               "name": "words_count",
-              "value": "={{ $('Code in JavaScript').item.json.token_count }}",
+              "value": "={{ $('generate minus words list').item.json.token_count }}",
               "type": "string"
             },
             {
               "id": "12294144-b8e2-4834-8c1d-8bdbcf3055ac",
               "name": "length",
-              "value": "={{ $('Code in JavaScript').item.json.length }}",
+              "value": "={{ $('generate minus words list').item.json.length }}",
               "type": "string"
             }
           ]
@@ -172,11 +159,85 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        464,
-        208
+        912,
+        160
       ],
       "id": "db846178-7db1-4a0f-a97b-609d9c673b52",
       "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "update minus_words set export_to_yandex=false where company_id=$1",
+        "options": {
+          "queryReplacement": "={{ $('When Executed by Another Workflow').item.json.company_id }}"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        160,
+        240
+      ],
+      "id": "39b1226e-c031-400b-a4f9-a81790caad5e",
+      "name": "Reset export to yandex",
+      "executeOnce": true,
+      "alwaysOutputData": true,
+      "credentials": {
+        "postgres": {
+          "id": "Hx2VFmUi5WO2K4QX",
+          "name": "Postgres account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "update minus_words set export_to_yandex=true where id=$1",
+        "options": {
+          "queryReplacement": "={{$json.minus_word_id}}"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        512,
+        224
+      ],
+      "id": "f885c8ea-58e7-4728-ac88-e85d2790f5fc",
+      "name": "Mark exported to yandex",
+      "credentials": {
+        "postgres": {
+          "id": "Hx2VFmUi5WO2K4QX",
+          "name": "Postgres account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const LIMIT = 20000; // общий лимит, включая скобки\nlet minus_words_ids=[];\nconst items = $input.all();\nlet parts = [];\nlet currentLen = 2; // учтём \"(\" и \")\"\n\nfor (const it of items) {\n  const word = String(it.json?.minus_word ?? '').trim();\n  if (!word) continue;\n\n  const token = '-' + word; // формат \"-word\"\n  const addLen = (parts.length ? 1 : 0) + token.length; // пробел перед токеном (кроме первого) + длина токена\n\n  if (currentLen + addLen > LIMIT) break;\n   minus_words_ids.push(it.json?.minus_word_id);\n  parts.push(token);\n  currentLen += addLen;\n}\n\nconst result =  parts.join(' ') ;\n\nreturn [\n  {\n    json: {\n      result,\n      token_count: parts.length,\n      length: result.length,\n      minus_words_ids\n    },\n  },\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -16,
+        224
+      ],
+      "id": "08262b86-aa48-48ab-a1a0-d4656bff7ba5",
+      "name": "generate minus words list"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nconst out = [];\nfor (const item of $in$('generate minus words list').first().json.minus_word_ids) {\n  out.push({ json: { minus_word_id: item } }); \n}\n\nreturn out;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        320,
+        240
+      ],
+      "id": "efa4d60c-f179-4903-a2a8-fd299365bd48",
+      "name": "Code in JavaScript"
     }
   ],
   "connections": {
@@ -217,18 +278,7 @@
       "main": [
         [
           {
-            "node": "Code in JavaScript",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Code in JavaScript": {
-      "main": [
-        [
-          {
-            "node": "Mark_workflow_completed",
+            "node": "generate minus words list",
             "type": "main",
             "index": 0
           }
@@ -240,6 +290,50 @@
         [
           {
             "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Reset export to yandex": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mark exported to yandex": {
+      "main": [
+        [
+          {
+            "node": "Mark_workflow_completed",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "generate minus words list": {
+      "main": [
+        [
+          {
+            "node": "Reset export to yandex",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Mark exported to yandex",
             "type": "main",
             "index": 0
           }
@@ -264,7 +358,7 @@
       }
     ]
   },
-  "versionId": "836e420f-132a-45c0-9dc6-e8f084b4ac21",
+  "versionId": "3d4f1b5c-4bfb-420e-bee7-900c99078af4",
   "triggerCount": 0,
   "shared": [
     {
