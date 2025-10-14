@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-10-08T11:54:45.682Z",
-  "updatedAt": "2025-10-14T13:12:17.090Z",
+  "updatedAt": "2025-10-14T13:38:40.559Z",
   "id": "0JY4BXCUoUM4RzPE",
   "name": "Check if keyword need to be restricted",
   "active": false,
@@ -8,7 +8,7 @@
   "nodes": [
     {
       "parameters": {
-        "content": "Следующая логика:\nСмотрим по всем загруженным отчетам клиента га момент и не помеченным словам. Если было больше 20 запросов где было показано это слово (used_keyword) и больше 80% нерелевантные слова то 1)берем слово в кавычки в Яндекс Директ - нужно API\n2)помечаем у себя(отдельная таблица)?",
+        "content": "Следующая логика:\nСмотрим по всем загруженным отчетам клиента га момент и не помеченным словам. Если было больше 20 запросов где было показано это слово (used_keyword) и больше 50% нерелевантные слова то 1)берем слово в кавычки в Яндекс Директ - нужно API\n2)помечаем у себя(отдельная таблица)?",
         "height": 208,
         "width": 352
       },
@@ -101,24 +101,11 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -1840,
+        -1776,
         -400
       ],
       "id": "315df9d6-a59c-4ec1-8b5d-f20dfc1aa493",
       "name": "Init total counter"
-    },
-    {
-      "parameters": {
-        "jsCode": "const LIMIT = 20000; // общий лимит, включая скобки\n\nconst items = $input.all();\nlet parts = [];\nlet currentLen = 2; // учтём \"(\" и \")\"\n\nfor (const it of items) {\n  const word = String(it.json?.minus_word ?? '').trim();\n  if (!word) continue;\n\n  const token = '-' + word; // формат \"-word\"\n  const addLen = (parts.length ? 1 : 0) + token.length; // пробел перед токеном (кроме первого) + длина токена\n\n  if (currentLen + addLen > LIMIT) break;\n\n  parts.push(token);\n  currentLen += addLen;\n}\n\nconst result =  parts.join(' ') ;\n\nreturn [\n  {\n    json: {\n      result,\n      token_count: parts.length,\n      length: result.length,\n    },\n  },\n];"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        -1616,
-        -400
-      ],
-      "id": "18ee5f98-dbe0-4104-9888-3caed957a3ae",
-      "name": "Code in JavaScript"
     },
     {
       "parameters": {
@@ -149,8 +136,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        -1136,
-        -416
+        -1152,
+        -400
       ],
       "id": "533607eb-8416-4422-ae04-aae05bd26293",
       "name": "Edit Fields"
@@ -166,8 +153,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        -2112,
-        -416
+        -2096,
+        -400
       ],
       "id": "839315e4-88ed-47cb-8567-43cedd3b6a59",
       "name": "Get suspected key words",
@@ -217,17 +204,6 @@
       "main": [
         [
           {
-            "node": "Code in JavaScript",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Code in JavaScript": {
-      "main": [
-        [
-          {
             "node": "Mark_workflow_completed",
             "type": "main",
             "index": 0
@@ -248,7 +224,10 @@
     }
   },
   "settings": {
-    "executionOrder": "v1"
+    "executionOrder": "v1",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false,
+    "errorWorkflow": "v2Z32ISEUzsFYnZw"
   },
   "staticData": null,
   "meta": null,
@@ -262,7 +241,7 @@
       }
     ]
   },
-  "versionId": "5f99e0fb-7c4b-4b2c-87d7-41cb71e50871",
+  "versionId": "f79c7ec3-472a-4456-9a88-9b1ec4f817d1",
   "triggerCount": 0,
   "shared": [
     {
