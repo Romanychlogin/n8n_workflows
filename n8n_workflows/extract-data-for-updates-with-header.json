@@ -1,0 +1,475 @@
+{
+  "createdAt": "2025-09-30T17:56:19.098Z",
+  "updatedAt": "2025-10-14T19:39:45.936Z",
+  "id": "UUlsZU9GOCmdvDHg",
+  "name": "extract data for updates with header",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "name": "Replace Me",
+      "typeVersion": 1,
+      "position": [
+        4912,
+        0
+      ],
+      "id": "422a90e5-a9cd-4517-8da4-d3d0d881f080"
+    },
+    {
+      "parameters": {
+        "operation": "xlsx",
+        "options": {
+          "fileName": "output.xlsx",
+          "headerRow": true
+        }
+      },
+      "type": "n8n-nodes-base.convertToFile",
+      "typeVersion": 1.1,
+      "position": [
+        1040,
+        -80
+      ],
+      "id": "f01b45d2-eae8-43cf-826b-8e9fc600423b",
+      "name": "Convert to File"
+    },
+    {
+      "parameters": {
+        "path": "/ADS_startup",
+        "binaryData": true
+      },
+      "type": "n8n-nodes-base.dropbox",
+      "typeVersion": 1,
+      "position": [
+        1536,
+        -80
+      ],
+      "id": "b481d235-879e-4fb6-8731-744f3bc50137",
+      "name": "Upload a file",
+      "credentials": {
+        "dropboxApi": {
+          "id": "KgtvFdGsueqNuB0Z",
+          "name": "Dropbox account"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "e22ad154-2123-49fe-9e5a-c7fe836825f8",
+              "name": "add_adv",
+              "value": "={{ $json.add_adv }}",
+              "type": "string"
+            },
+            {
+              "id": "4262c0ff-c141-4fde-aebe-187481d9d0df",
+              "name": "ADV_type",
+              "value": "Текстово-графическое",
+              "type": "string"
+            },
+            {
+              "id": "a11661b9-dc1c-4750-b93f-ba5b74836562",
+              "name": "mob",
+              "value": "-",
+              "type": "string"
+            },
+            {
+              "id": "e1100e5c-4c72-456e-b2ec-55f0f536bff1",
+              "name": "group_uid",
+              "value": "",
+              "type": "string"
+            },
+            {
+              "id": "d9b1b21a-f230-41db-af85-b9bbcb554ee4",
+              "name": "group_name",
+              "value": "={{ $json.group_name }}",
+              "type": "string"
+            },
+            {
+              "id": "c0cb504d-2b55-4c1f-a628-80b7a369a078",
+              "name": "group_id",
+              "value": "=",
+              "type": "number"
+            },
+            {
+              "id": "5c643aae-d54d-4ad8-aee2-f5114f35f078",
+              "name": "id_phrase",
+              "value": " ",
+              "type": "string"
+            },
+            {
+              "id": "1df69495-ac3c-4f36-ac5d-5a014914feb0",
+              "name": "key_words",
+              "value": "={{ $json.key_word }}",
+              "type": "string"
+            },
+            {
+              "id": "4455b796-76dd-4789-b04d-51f793ae70f1",
+              "name": "id_adv",
+              "value": "",
+              "type": "string"
+            },
+            {
+              "id": "b308d9ca-9676-4837-a7b0-3512c73bf481",
+              "name": "ad_header",
+              "value": "={{ $json.ad_header }}",
+              "type": "string"
+            },
+            {
+              "id": "559ee132-e1dd-444b-9f9e-d87e5e8b1974",
+              "name": "ad_header2",
+              "value": "={{$json.cleaned_service_name}}",
+              "type": "string"
+            },
+            {
+              "id": "04f85c2c-a0b8-4ff8-9715-8ca7c329976e",
+              "name": "ad_text",
+              "value": "={{ $json.ad_text }}",
+              "type": "string"
+            },
+            {
+              "id": "4219b151-e444-4094-81c0-519c5352de8e",
+              "name": "empty_1",
+              "value": "",
+              "type": "string"
+            },
+            {
+              "id": "f18d9f2a-05a4-4294-be69-17504b51bacc",
+              "name": "empty_2",
+              "value": "",
+              "type": "string"
+            },
+            {
+              "id": "a312e417-8674-4cc4-84c2-efc3b997c5cc",
+              "name": "empty_3",
+              "value": "",
+              "type": "string"
+            },
+            {
+              "id": "61c57fa1-7755-4bf4-b39f-3369363114f6",
+              "name": "ad_url",
+              "value": "={{ $json.ad_url }}",
+              "type": "string"
+            },
+            {
+              "id": "e3a249d0-8ec2-4d1e-91c6-32affb8b0734",
+              "name": " display_url",
+              "value": "",
+              "type": "string"
+            },
+            {
+              "id": "c060b10e-692d-4334-8efa-6f7caf10a9f7",
+              "name": "company_id",
+              "value": "={{ $('select company data').first().json.yandex_id }}",
+              "type": "string"
+            },
+            {
+              "id": "8fe20bbd-a870-40f5-9798-4546e9ad1d5e",
+              "name": "empty_4",
+              "value": "",
+              "type": "string"
+            },
+            {
+              "id": "886783a2-ee5e-43c6-93ff-2e5c4f96fb8f",
+              "name": "region",
+              "value": "={{ $('select company data').first().json.yandex_region }}",
+              "type": "string"
+            },
+            {
+              "id": "c62dd54c-0098-4a3b-8d48-69e150b13099",
+              "name": "auto_bid",
+              "value": "={{ $json.service_bid}}",
+              "type": "string"
+            },
+            {
+              "id": "e7a8750e-09ea-46b6-8d5a-c38e3e4e46ca",
+              "name": "bid",
+              "value": "={{ $json.service_bid}}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        704,
+        -80
+      ],
+      "id": "53b9c994-d82d-4051-b03a-357724c272e3",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "5b3485a2-cb50-486a-932c-fc27de0a25da",
+              "name": "company_id",
+              "value": "1",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -320,
+        -80
+      ],
+      "id": "4a3d50e6-d09e-4db0-b06b-23ceefb8389e",
+      "name": "Set variables"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT ad.*, cs1.service_bid, regexp_replace(\n    cs1.service_name,\n    '[^a-zA-Zа-яА-ЯёЁ ]',\n    '',\n    'g'\n) AS cleaned_service_name,cs1.count_clics \nFROM current_ads_list AS ad\nLEFT JOIN LATERAL (\n    SELECT cs.service_bid,cs.service_name, COALESCE(kw.count_clics,0) as count_clics\n    FROM current_list kw\n    JOIN company_services cs\n      ON cs.service_id = kw.service_id\n     AND cs.company_id = ad.company_id       -- если есть привязка к компании — рекомендую\n    WHERE kw.key_word = ad.key_word  \n    ORDER BY cs.service_bid DESC NULLS LAST  -- критерий выбора ОДНОЙ записи\n    LIMIT 1\n) AS cs1 ON TRUE\nWHERE ad.company_id = $1 AND ad.need_check=false order by service_name,count_clics desc;",
+        "options": {
+          "queryReplacement": "={{ $json.company_id }}"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        224,
+        -80
+      ],
+      "id": "16819f54-d4a3-4020-994a-9cdba0646688",
+      "name": "select ads data",
+      "credentials": {
+        "postgres": {
+          "id": "Hx2VFmUi5WO2K4QX",
+          "name": "Postgres account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "select",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "companies",
+          "mode": "list",
+          "cachedResultName": "companies"
+        },
+        "returnAll": true,
+        "where": {
+          "values": [
+            {
+              "column": "company_id",
+              "value": "={{ $json.company_id }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -32,
+        -80
+      ],
+      "id": "96c57c21-ef6a-4ed7-87d3-2594efbb56f3",
+      "name": "select company data",
+      "credentials": {
+        "postgres": {
+          "id": "Hx2VFmUi5WO2K4QX",
+          "name": "Postgres account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// === настройки ===\nconst BATCH_SIZE = 50;\n\n// все входные элементы\nconst inputItems = $input.all();           // [{ json: {...} }, ...]\nconst rows = inputItems.map(i => i.json);\n\n// 1) группируем по cleaned_service_name (сохраняем порядок появления)\nconst byService = new Map();\nfor (const rec of rows) {\n  const key = rec.cleaned_service_name ?? '';\n  if (!byService.has(key)) byService.set(key, []);\n  byService.get(key).push(rec);\n}\n\nconst out = [];\n\n// 2) по каждой группе режем на пачки ≤ 50\nfor (const [serviceName, list] of byService.entries()) {\n  for (let offset = 0, batchNo = 1; offset < list.length; offset += BATCH_SIZE, batchNo++) {\n    const batch = list.slice(offset, offset + BATCH_SIZE);\n    if (batch.length === 0) continue;\n\n    const groupName = `${serviceName}_${batchNo}`;\n\n    // Берём шаблон из первой записи пачки\n    const first = batch[0] ?? {};\n    const templateHeader = first.ad_header;\n    const templateText   = first.ad_text;\n    const templateUrl    = first.ad_url;\n\n    // 2.1) ОРИГИНАЛЬНЫЕ записи пачки:\n    //     ad_header/ad_text/ad_url = из первой записи пачки\n    for (const rec of batch) {\n      out.push({\n        json: {\n          ...rec,\n          group_name: groupName,\n          ad_header: templateHeader,\n          ad_text:   templateText,\n          ad_url:    templateUrl,\n          add_adv:'-'\n        },\n      });\n    }\n\n    // 2.2) Дубликаты всех, КРОМЕ первой, с пустым key_word\n    for (let i = 1; i < batch.length; i++) {\n      out.push({\n        json: {\n          ...batch[i],\n          group_name: groupName,\n          key_words: '', // очищаем только key_words\n          add_adv:'+'\n        },\n      });\n    }\n  }\n}\n\nreturn out;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        432,
+        -80
+      ],
+      "id": "8a20bdc0-26f0-48a8-a962-4ff2b49c80bd",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "inputSource": "passthrough"
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -1008,
+        16
+      ],
+      "id": "8beb55ec-60d2-46a3-842d-2113e27efdab",
+      "name": "When Executed by Another Workflow"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO business_processes_states (business_process_id, company_id,n8n_workflow_execution_id,n8n_workflow_root_execution_id, started)\nSELECT MAX(business_process_id), $2,$3,$4, NOW()\nFROM public.business_processes\nWHERE n8n_process_name = $1;",
+        "options": {
+          "queryReplacement": "=[{{$workflow.name}},{{$json.company_id}},{{$execution.id}},{{ $('When Executed by Another Workflow').item.json.root_execution_id }}]"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -736,
+        -32
+      ],
+      "id": "ca2edbb3-ee5f-42c0-a8e6-71ee04fbfbd1",
+      "name": "Mark_workwlow_started",
+      "credentials": {
+        "postgres": {
+          "id": "4YkdFJcdTgzo9hkz",
+          "name": "PGvector"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Replace Me": {
+      "main": [
+        []
+      ]
+    },
+    "Convert to File": {
+      "main": [
+        [
+          {
+            "node": "Upload a file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Convert to File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set variables": {
+      "main": [
+        [
+          {
+            "node": "select company data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "select ads data": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "select company data": {
+      "main": [
+        [
+          {
+            "node": "select ads data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "Mark_workwlow_started",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mark_workwlow_started": {
+      "main": [
+        [
+          {
+            "node": "Set variables",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {
+    "When Executed by Another Workflow": [
+      {
+        "json": {
+          "company_id": 1,
+          "root_execution_id": 74293
+        }
+      }
+    ]
+  },
+  "versionId": "3b30f68e-0331-4433-a70e-cd56d6a3feb6",
+  "triggerCount": 0,
+  "shared": [
+    {
+      "createdAt": "2025-09-30T17:56:19.098Z",
+      "updatedAt": "2025-09-30T17:56:19.098Z",
+      "role": "workflow:owner",
+      "workflowId": "UUlsZU9GOCmdvDHg",
+      "projectId": "spKmbJLU4mvACXIB"
+    }
+  ],
+  "tags": [
+    {
+      "createdAt": "2025-10-06T13:06:54.644Z",
+      "updatedAt": "2025-10-06T13:06:54.644Z",
+      "id": "DBEf57wUDunVJUG6",
+      "name": "campaign update"
+    }
+  ],
+  "file_name": "extract-data-for-updates-with-header.json"
+}
