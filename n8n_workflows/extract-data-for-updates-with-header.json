@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-30T17:56:19.098Z",
-  "updatedAt": "2025-10-15T09:37:50.965Z",
+  "updatedAt": "2025-10-15T09:41:05.118Z",
   "id": "UUlsZU9GOCmdvDHg",
   "name": "extract data for updates with header",
   "active": false,
@@ -381,8 +381,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        896,
-        144
+        -624,
+        160
       ],
       "id": "1cde0995-75f3-4bee-949a-1ced75d68421",
       "name": "set template path"
@@ -592,7 +592,7 @@
       }
     ]
   },
-  "versionId": "be97e18e-db33-451a-ae68-c4dcba04c11c",
+  "versionId": "20859231-b6d5-46a2-a97f-1be1ca70d1f6",
   "triggerCount": 0,
   "shared": [
     {
