@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-30T17:56:19.098Z",
-  "updatedAt": "2025-10-15T15:10:05.045Z",
+  "updatedAt": "2025-10-15T16:34:09.895Z",
   "id": "UUlsZU9GOCmdvDHg",
   "name": "extract data for updates with header",
   "active": false,
@@ -17,7 +17,7 @@
       "type": "n8n-nodes-base.convertToFile",
       "typeVersion": 1.1,
       "position": [
-        1248,
+        1456,
         -80
       ],
       "id": "f01b45d2-eae8-43cf-826b-8e9fc600423b",
@@ -31,7 +31,7 @@
       "type": "n8n-nodes-base.dropbox",
       "typeVersion": 1,
       "position": [
-        2656,
+        2864,
         -48
       ],
       "id": "b481d235-879e-4fb6-8731-744f3bc50137",
@@ -178,6 +178,96 @@
               "name": "bid",
               "value": "={{ $json.service_bid}}",
               "type": "string"
+            },
+            {
+              "id": "709b74a4-3b63-4de3-a770-ec0a222fa1ca",
+              "name": "any_bid",
+              "value": "",
+              "type": "string"
+            },
+            {
+              "id": "a6323208-755b-448d-b758-6ac2468b219c",
+              "name": "status_adv",
+              "value": "",
+              "type": "string"
+            },
+            {
+              "id": "6544b633-314b-4bbd-9c03-cfdf0f3f6a42",
+              "name": "status_phrase",
+              "value": "",
+              "type": "string"
+            },
+            {
+              "id": "6cf0d95e-3466-40a9-a087-c391edbcb689",
+              "name": "ql_header",
+              "value": "",
+              "type": "string"
+            },
+            {
+              "id": "6fa5a4f7-6748-4308-947d-3ca9fff0d683",
+              "name": "ql_descr",
+              "value": "",
+              "type": "string"
+            },
+            {
+              "id": "68076cc7-a932-4ade-9fea-2bce6a746e1e",
+              "name": "ql_url",
+              "value": "",
+              "type": "string"
+            },
+            {
+              "id": "cf064340-5dcd-42ef-9bc1-daf936498182",
+              "name": "var1",
+              "value": "",
+              "type": "string"
+            },
+            {
+              "id": "70d673fa-5cb1-4572-b854-7d71fc66bbf9",
+              "name": "var2",
+              "value": "",
+              "type": "string"
+            },
+            {
+              "id": "8b33703f-dae2-4a13-8d3a-09a3747b6948",
+              "name": "marks",
+              "value": "",
+              "type": "string"
+            },
+            {
+              "id": "22514bdb-a687-4d6c-9d0b-26cf805f0ea9",
+              "name": "picture",
+              "value": "",
+              "type": "string"
+            },
+            {
+              "id": "05563fba-5435-4de8-aacb-325389522cd4",
+              "name": "creativity",
+              "value": "",
+              "type": "string"
+            },
+            {
+              "id": "c0549447-7497-418f-8330-3b49fb95408f",
+              "name": "moderation",
+              "value": "",
+              "type": "string"
+            },
+            {
+              "id": "aa74e979-1aed-47b6-b889-90869a6c810e",
+              "name": "callouts",
+              "value": "",
+              "type": "string"
+            },
+            {
+              "id": "a747f119-5c77-4a74-9553-2bf36105b7f9",
+              "name": "minus_words",
+              "value": "",
+              "type": "string"
+            },
+            {
+              "id": "13ebe78e-0360-4c8a-b98c-c9d8875ab5de",
+              "name": "age_limit",
+              "value": "6",
+              "type": "string"
             }
           ]
         },
@@ -186,7 +276,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        912,
+        1120,
         -80
       ],
       "id": "53b9c994-d82d-4051-b03a-357724c272e3",
@@ -203,7 +293,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        320,
+        240,
         -64
       ],
       "id": "16819f54-d4a3-4020-994a-9cdba0646688",
@@ -292,7 +382,7 @@
       "type": "n8n-nodes-base.merge",
       "typeVersion": 3.2,
       "position": [
-        1808,
+        2016,
         -48
       ],
       "id": "9aa4f336-7e95-4bdf-9fee-405847ce75b2",
@@ -347,7 +437,7 @@
       "type": "n8n-nodes-base.readWriteFile",
       "typeVersion": 1,
       "position": [
-        1456,
+        1664,
         -80
       ],
       "id": "ac2619a8-f9bb-4862-a2ed-ac37f73009d6",
@@ -380,7 +470,7 @@
       "type": "n8n-nodes-base.readWriteFile",
       "typeVersion": 1,
       "position": [
-        2224,
+        2432,
         -48
       ],
       "id": "67ba370d-0684-4fe6-8a84-a2a35e0f5ac0",
@@ -423,7 +513,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        3152,
+        3360,
         -48
       ],
       "id": "fd0c474e-3c85-49da-8b04-974c678d19c7",
@@ -443,7 +533,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        2928,
+        3136,
         -48
       ],
       "id": "ce44d4a7-1ea3-4902-b717-bc24301b7400",
@@ -456,7 +546,7 @@
       "type": "n8n-nodes-base.executeCommand",
       "typeVersion": 1,
       "position": [
-        2016,
+        2224,
         -48
       ],
       "id": "f6e7cc99-94ef-42fb-b65f-795c421487f9",
@@ -521,6 +611,67 @@
       ],
       "id": "c09dd066-4f5c-485c-b6ac-008bdba1cd48",
       "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT\n  string_agg(NULLIF(btrim(ql.link_header), ''),      '||' ORDER BY link_id) AS link_headers_text,\n  string_agg(NULLIF(btrim(ql.link_description), ''), '||' ORDER BY link_id) AS link_descriptions_text,\n  string_agg(NULLIF(btrim(ql.link_url), ''),         '||' ORDER BY link_id) AS link_urls_text\nFROM public.adv_campaign_quick_links ql  where ql.campaign_id==$1;",
+        "options": {
+          "queryReplacement": "={{ $json.campaign_id }}"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        544,
+        96
+      ],
+      "id": "85334352-4cf0-46d8-a7da-795b5cf1de0b",
+      "name": "Get quick links",
+      "executeOnce": true,
+      "credentials": {
+        "postgres": {
+          "id": "Hx2VFmUi5WO2K4QX",
+          "name": "Postgres account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT\n  string_agg(NULLIF(btrim(ql.callout_text), ''),      '||' ORDER BY link_id) AS link_callout_text\n  \nFROM adv_campaign_callouts ql  where ql.campaign_id==$1;",
+        "options": {
+          "queryReplacement": "={{ $json.campaign_id }}"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        736,
+        80
+      ],
+      "id": "491dd3b0-f29d-479b-a746-928176044731",
+      "name": "Get callouts",
+      "executeOnce": true,
+      "credentials": {
+        "postgres": {
+          "id": "Hx2VFmUi5WO2K4QX",
+          "name": "Postgres account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "chooseBranch"
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        912,
+        -48
+      ],
+      "id": "711c3041-cd6a-40a5-b357-5afd17462cf3",
+      "name": "Merge1"
     }
   ],
   "connections": {
@@ -553,6 +704,11 @@
             "node": "Code in JavaScript",
             "type": "main",
             "index": 0
+          },
+          {
+            "node": "Get quick links",
+            "type": "main",
+            "index": 0
           }
         ]
       ]
@@ -572,7 +728,7 @@
       "main": [
         [
           {
-            "node": "Edit Fields",
+            "node": "Merge1",
             "type": "main",
             "index": 0
           }
@@ -755,6 +911,39 @@
           }
         ]
       ]
+    },
+    "Get quick links": {
+      "main": [
+        [
+          {
+            "node": "Get callouts",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge1": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get callouts": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
     }
   },
   "settings": {
@@ -779,7 +968,7 @@
       }
     ]
   },
-  "versionId": "96f18149-5d0c-4b0f-aba2-5a28ef4f5bd2",
+  "versionId": "3f11c2d2-1e14-4c08-a0fc-85b79c21608f",
   "triggerCount": 0,
   "shared": [
     {
