@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-30T17:56:19.098Z",
-  "updatedAt": "2025-10-15T09:41:05.118Z",
+  "updatedAt": "2025-10-15T09:55:29.201Z",
   "id": "UUlsZU9GOCmdvDHg",
   "name": "extract data for updates with header",
   "active": false,
@@ -20,7 +20,6 @@
     {
       "parameters": {
         "operation": "xlsx",
-        "binaryPropertyName": "target.data",
         "options": {
           "fileName": "output.xlsx",
           "headerRow": true
@@ -43,7 +42,7 @@
       "type": "n8n-nodes-base.dropbox",
       "typeVersion": 1,
       "position": [
-        2128,
+        2336,
         -96
       ],
       "id": "b481d235-879e-4fb6-8731-744f3bc50137",
@@ -345,8 +344,8 @@
       "type": "n8n-nodes-base.merge",
       "typeVersion": 3.2,
       "position": [
-        1456,
-        -96
+        1600,
+        -48
       ],
       "id": "9aa4f336-7e95-4bdf-9fee-405847ce75b2",
       "name": "Merge"
@@ -358,7 +357,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1680,
+        1888,
         -80
       ],
       "id": "6331b990-c7d9-4e73-adcb-b93fced6a930",
@@ -391,7 +390,6 @@
       "parameters": {
         "url": "={{$json.path}}",
         "responseFormat": "file",
-        "dataPropertyName": "template.data",
         "options": {}
       },
       "id": "32181324-eb18-4007-9837-66c20cd1d736",
@@ -399,24 +397,57 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 2,
       "position": [
-        1136,
+        864,
         128
       ]
     },
     {
       "parameters": {
         "operation": "xlsx",
-        "binaryPropertyName": "template.data",
         "options": {}
       },
       "type": "n8n-nodes-base.extractFromFile",
       "typeVersion": 1,
       "position": [
-        1296,
+        1056,
         128
       ],
       "id": "fc8e7286-c614-443e-b155-d50951d9cc1b",
       "name": "Extract from File"
+    },
+    {
+      "parameters": {
+        "operation": "write",
+        "fileName": "target.xlsx",
+        "options": {
+          "append": false
+        }
+      },
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1,
+      "position": [
+        1248,
+        -80
+      ],
+      "id": "ac2619a8-f9bb-4862-a2ed-ac37f73009d6",
+      "name": "Read/Write Files from Disk"
+    },
+    {
+      "parameters": {
+        "operation": "write",
+        "fileName": "template.xlsx",
+        "options": {
+          "append": false
+        }
+      },
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1,
+      "position": [
+        1280,
+        112
+      ],
+      "id": "f908967b-84a2-4607-96ea-c5b14af7593c",
+      "name": "Read/Write Files from Disk1"
     }
   ],
   "connections": {
@@ -429,7 +460,7 @@
       "main": [
         [
           {
-            "node": "Merge",
+            "node": "Read/Write Files from Disk",
             "type": "main",
             "index": 0
           }
@@ -566,6 +597,28 @@
       "main": [
         [
           {
+            "node": "Read/Write Files from Disk1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read/Write Files from Disk": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read/Write Files from Disk1": {
+      "main": [
+        [
+          {
             "node": "Merge",
             "type": "main",
             "index": 1
@@ -592,7 +645,7 @@
       }
     ]
   },
-  "versionId": "20859231-b6d5-46a2-a97f-1be1ca70d1f6",
+  "versionId": "781a8a71-8666-430d-a89c-70ff3ece7746",
   "triggerCount": 0,
   "shared": [
     {
