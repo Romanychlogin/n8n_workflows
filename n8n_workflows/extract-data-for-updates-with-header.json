@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-30T17:56:19.098Z",
-  "updatedAt": "2025-10-15T14:46:56.828Z",
+  "updatedAt": "2025-10-15T14:53:51.701Z",
   "id": "UUlsZU9GOCmdvDHg",
   "name": "extract data for updates with header",
   "active": false,
@@ -462,7 +462,7 @@
     },
     {
       "parameters": {
-        "command": "=node xlsx_apply_template.js \\\n  template.xlsx \\\n  target.xlsx \\\n  output.xlsx \\\n  12 1 1 \\\n  \"{{ $('select ads data').last().json.campaign_yandex_id }}\" \\ \n  \"{{$('When Executed by Another Workflow').first().json.minus_words}}\" \\    \n  true"
+        "command": "=node xlsx_apply_template.js \\\n  template.xlsx \\\n  target.xlsx \\\n  output.xlsx \\\n  12 1 1 \\\n  \"{{ $('select ads data').last().json.campaign_yandex_id }}\" \\\n  \"{{$('When Executed by Another Workflow').first().json.minus_words}}\" \\\n  true"
       },
       "type": "n8n-nodes-base.executeCommand",
       "typeVersion": 1,
@@ -690,7 +690,7 @@
       }
     ]
   },
-  "versionId": "844baa28-b6ea-4c88-a754-86f5ccad08cd",
+  "versionId": "c049f73b-8c08-4e45-95ca-1c330c233e82",
   "triggerCount": 0,
   "shared": [
     {
