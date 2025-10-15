@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-30T17:56:19.098Z",
-  "updatedAt": "2025-10-15T13:00:52.514Z",
+  "updatedAt": "2025-10-15T13:09:19.524Z",
   "id": "UUlsZU9GOCmdvDHg",
   "name": "extract data for updates with header",
   "active": false,
@@ -36,7 +36,7 @@
     },
     {
       "parameters": {
-        "path": "/ADS_startup",
+        "path": "=/output_id{{ $('select company data').last().json.company_id }}_{{ $('select company data').last().json.start_date }}_{{ $('select company data').last().json.end_date }}.xlsx",
         "binaryData": true
       },
       "type": "n8n-nodes-base.dropbox",
@@ -703,7 +703,7 @@
       }
     ]
   },
-  "versionId": "49be31a9-a9e6-41cc-8dc7-2c3915b537ec",
+  "versionId": "adeb65be-05ae-4ac7-bbea-c079b21cf377",
   "triggerCount": 0,
   "shared": [
     {
