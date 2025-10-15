@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-30T17:56:19.098Z",
-  "updatedAt": "2025-10-15T11:17:56.690Z",
+  "updatedAt": "2025-10-15T12:49:32.453Z",
   "id": "UUlsZU9GOCmdvDHg",
   "name": "extract data for updates with header",
   "active": false,
@@ -206,29 +206,6 @@
     },
     {
       "parameters": {
-        "assignments": {
-          "assignments": [
-            {
-              "id": "5b3485a2-cb50-486a-932c-fc27de0a25da",
-              "name": "company_id",
-              "value": "1",
-              "type": "string"
-            }
-          ]
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.set",
-      "typeVersion": 3.4,
-      "position": [
-        -320,
-        -80
-      ],
-      "id": "4a3d50e6-d09e-4db0-b06b-23ceefb8389e",
-      "name": "Set variables"
-    },
-    {
-      "parameters": {
         "operation": "executeQuery",
         "query": "SELECT ad.*, cs1.service_bid, regexp_replace(\n    cs1.service_name,\n    '[^a-zA-Zа-яА-ЯёЁ ]',\n    '',\n    'g'\n) AS cleaned_service_name,cs1.count_clics \nFROM current_ads_list AS ad\nLEFT JOIN LATERAL (\n    SELECT cs.service_bid,cs.service_name, COALESCE(kw.count_clics,0) as count_clics\n    FROM current_list kw\n    JOIN company_services cs\n      ON cs.service_id = kw.service_id\n     AND cs.company_id = ad.company_id       -- если есть привязка к компании — рекомендую\n    WHERE kw.key_word = ad.key_word  \n    ORDER BY cs.service_bid DESC NULLS LAST  -- критерий выбора ОДНОЙ записи\n    LIMIT 1\n) AS cs1 ON TRUE\nWHERE ad.company_id = $1 AND ad.need_check=false order by service_name,count_clics desc;",
         "options": {
@@ -238,8 +215,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        224,
-        -80
+        112,
+        -64
       ],
       "id": "16819f54-d4a3-4020-994a-9cdba0646688",
       "name": "select ads data",
@@ -252,34 +229,17 @@
     },
     {
       "parameters": {
-        "operation": "select",
-        "schema": {
-          "__rl": true,
-          "mode": "list",
-          "value": "public"
-        },
-        "table": {
-          "__rl": true,
-          "value": "companies",
-          "mode": "list",
-          "cachedResultName": "companies"
-        },
-        "returnAll": true,
-        "where": {
-          "values": [
-            {
-              "column": "company_id",
-              "value": "={{ $json.company_id }}"
-            }
-          ]
-        },
-        "options": {}
+        "operation": "executeQuery",
+        "query": "select c.*, ri.start_date,ri.end_date from companies c, report_import ri where c.company_id=c.company_id and c.company_id=$1 and ri.import_id=$2",
+        "options": {
+          "queryReplacement": "={{ $('When Executed by Another Workflow').item.json.company_id }},{{ $('When Executed by Another Workflow').item.json.import_id }}"
+        }
       },
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        -32,
-        -80
+        -304,
+        -64
       ],
       "id": "96c57c21-ef6a-4ed7-87d3-2594efbb56f3",
       "name": "select company data",
@@ -292,13 +252,13 @@
     },
     {
       "parameters": {
-        "jsCode": "// === настройки ===\nconst BATCH_SIZE = 50;\n\n// все входные элементы\nconst inputItems = $input.all();           // [{ json: {...} }, ...]\nconst rows = inputItems.map(i => i.json);\n\n// 1) группируем по cleaned_service_name (сохраняем порядок появления)\nconst byService = new Map();\nfor (const rec of rows) {\n  const key = rec.cleaned_service_name ?? '';\n  if (!byService.has(key)) byService.set(key, []);\n  byService.get(key).push(rec);\n}\n\nconst out = [];\n\n// 2) по каждой группе режем на пачки ≤ 50\nfor (const [serviceName, list] of byService.entries()) {\n  for (let offset = 0, batchNo = 1; offset < list.length; offset += BATCH_SIZE, batchNo++) {\n    const batch = list.slice(offset, offset + BATCH_SIZE);\n    if (batch.length === 0) continue;\n\n    const groupName = `${serviceName}_${batchNo}`;\n\n    // Берём шаблон из первой записи пачки\n    const first = batch[0] ?? {};\n    const templateHeader = first.ad_header;\n    const templateText   = first.ad_text;\n    const templateUrl    = first.ad_url;\n\n    // 2.1) ОРИГИНАЛЬНЫЕ записи пачки:\n    //     ad_header/ad_text/ad_url = из первой записи пачки\n    for (const rec of batch) {\n      out.push({\n        json: {\n          ...rec,\n          group_name: groupName,\n          ad_header: templateHeader,\n          ad_text:   templateText,\n          ad_url:    templateUrl,\n          add_adv:'-'\n        },\n      });\n    }\n\n    // 2.2) Дубликаты всех, КРОМЕ первой, с пустым key_word\n    for (let i = 1; i < batch.length; i++) {\n      out.push({\n        json: {\n          ...batch[i],\n          group_name: groupName,\n          key_words: '', // очищаем только key_words\n          add_adv:'+'\n        },\n      });\n    }\n  }\n}\n\nreturn out;"
+        "jsCode": "// === настройки ===\nconst BATCH_SIZE = 50;\n\n// все входные элементы\nconst inputItems = $input.all();           // [{ json: {...} }, ...]\nconst rows = inputItems.map(i => i.json);\n\n// 1) группируем по cleaned_service_name (сохраняем порядок появления)\nconst byService = new Map();\nfor (const rec of rows) {\n  const key = rec.cleaned_service_name ?? '';\n  if (!byService.has(key)) byService.set(key, []);\n  byService.get(key).push(rec);\n}\n\nconst out = [];\n\n// 2) по каждой группе режем на пачки ≤ 50\nfor (const [serviceName, list] of byService.entries()) {\n  for (let offset = 0, batchNo = 1; offset < list.length; offset += BATCH_SIZE, batchNo++) {\n    const batch = list.slice(offset, offset + BATCH_SIZE);\n    if (batch.length === 0) continue;\n    const serviceNameDate=serviceName+'_'+$('select company data').first().json.start_date+'_'+$('select company data').first().json.end_date;\n    const groupName = `${serviceNameDate}_${batchNo}`;\n\n    // Берём шаблон из первой записи пачки\n    const first = batch[0] ?? {};\n    const templateHeader = first.ad_header;\n    const templateText   = first.ad_text;\n    const templateUrl    = first.ad_url;\n\n    // 2.1) ОРИГИНАЛЬНЫЕ записи пачки:\n    //     ad_header/ad_text/ad_url = из первой записи пачки\n    for (const rec of batch) {\n      out.push({\n        json: {\n          ...rec,\n          group_name: groupName,\n          ad_header: templateHeader,\n          ad_text:   templateText,\n          ad_url:    templateUrl,\n          add_adv:'-'\n        },\n      });\n    }\n\n    // 2.2) Дубликаты всех, КРОМЕ первой, с пустым key_word\n    for (let i = 1; i < batch.length; i++) {\n      out.push({\n        json: {\n          ...batch[i],\n          group_name: groupName,\n          key_words: '', // очищаем только key_words\n          add_adv:'+'\n        },\n      });\n    }\n  }\n}\n\nreturn out;"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        432,
-        -80
+        368,
+        -64
       ],
       "id": "8a20bdc0-26f0-48a8-a962-4ff2b49c80bd",
       "name": "Code in JavaScript"
@@ -390,20 +350,6 @@
     },
     {
       "parameters": {
-        "operation": "xlsx",
-        "options": {}
-      },
-      "type": "n8n-nodes-base.extractFromFile",
-      "typeVersion": 1,
-      "position": [
-        1088,
-        336
-      ],
-      "id": "fc8e7286-c614-443e-b155-d50951d9cc1b",
-      "name": "Extract from File"
-    },
-    {
-      "parameters": {
         "operation": "write",
         "fileName": "target.xlsx",
         "options": {
@@ -449,19 +395,6 @@
     },
     {
       "parameters": {
-        "command": "cat > xlsx_apply_template.js <<'EOF'\nconst ExcelJS = require('exceljs');\n\n/*\nЗапуск:\nnode xlsx_apply_template.js \\\n  /data/in/template.xlsx \\\n  /data/in/target.xlsx \\\n  /data/out/output_with_header.xlsx \\\n  12 1 1 \\\n  \"СТРОКА_ДЛЯ_E9\" \\\n  false\n\nАргументы:\n 2: templatePath\n 3: targetPath\n 4: outPath\n 5: HEADER_ROWS (по умолчанию 12 → данные начнутся со строки 13)\n 6: templateSheetIndex (1-based)\n 7: targetSheetIndex   (1-based)\n 8: e9Value\n 9: CLEAR_BELOW (optional: \"true\"/\"false\"; если true — перед вставкой очистит всё ниже шапки)\n*/\n\nconst templatePath = process.argv[2];\nconst targetPath   = process.argv[3];\nconst outPath      = process.argv[4];\nconst HEADER_ROWS  = parseInt(process.argv[5] || '12', 10);\nconst templateSheetIndex = parseInt(process.argv[6] || '1', 10);\nconst targetSheetIndex   = parseInt(process.argv[7] || '1', 10);\nconst e9Value     = process.argv[8] || '';\nconst CLEAR_BELOW = String(process.argv[9] || 'false').toLowerCase() === 'true';\n\n(async () => {\n  const wbTpl = new ExcelJS.Workbook();\n  await wbTpl.xlsx.readFile(templatePath);\n  const wsTpl = wbTpl.getWorksheet(templateSheetIndex);\n  if (!wsTpl) throw new Error('Template worksheet not found');\n\n  const wbSrc = new ExcelJS.Workbook();\n  await wbSrc.xlsx.readFile(targetPath);\n  const wsSrc = wbSrc.getWorksheet(targetSheetIndex);\n  if (!wsSrc) throw new Error('Target worksheet not found');\n\n  // где начинаем вставлять данные\n  const startRow = HEADER_ROWS + 1;\n\n  // опционально очищаем всё ниже шапки (чтобы не осталось старых данных в шаблоне)\n  if (CLEAR_BELOW) {\n    const toDelete = Math.max(0, (wsTpl.rowCount || 0) - HEADER_ROWS);\n    if (toDelete > 0) wsTpl.spliceRows(startRow, toDelete);\n  }\n\n  // определяем размер данных исходника\n  const maxRow = wsSrc.actualRowCount || wsSrc.rowCount || 0;\n  const maxCol = wsSrc.actualColumnCount || wsSrc.columnCount || 0;\n\n  // вставляем построчно значения (без стилей и без merge)\n  for (let r = 1; r <= maxRow; r++) {\n    const srcRow = wsSrc.getRow(r);\n    const dstRow = wsTpl.getRow(startRow + r - 1);\n\n    for (let c = 1; c <= maxCol; c++) {\n      const srcCell = srcRow.getCell(c);\n      const dstCell = dstRow.getCell(c);\n\n      dstCell.value = srcCell.value;       // копируем только value\n      if (srcCell.numFmt) {                // и формат числа, при наличии\n        dstCell.numFmt = srcCell.numFmt;\n      }\n    }\n    if (dstRow.commit) dstRow.commit();\n  }\n\n  // задаём E9 после вставки\n  wsTpl.getCell('E9').value = e9Value;\n\n  await wbTpl.xlsx.writeFile(outPath);\n  process.stdout.write(outPath);\n})().catch(e => { console.error(e); process.exit(1); });\nEOF"
-      },
-      "type": "n8n-nodes-base.executeCommand",
-      "typeVersion": 1,
-      "position": [
-        560,
-        624
-      ],
-      "id": "0da68622-f5d3-495d-8a4b-2dd87d61e499",
-      "name": "Execute Command"
-    },
-    {
-      "parameters": {
         "command": "=node xlsx_header.js \\\n  template.xlsx \\\n  target.xlsx \\\n  output_with_header.xlsx \\\n  12 1 1 \\\n  \"{{$('When Executed by Another Workflow').first().json.minus_words}}\""
       },
       "type": "n8n-nodes-base.executeCommand",
@@ -488,6 +421,32 @@
       ],
       "id": "67ba370d-0684-4fe6-8a84-a2a35e0f5ac0",
       "name": "Read/Write Files from Disk2"
+    },
+    {
+      "parameters": {
+        "command": "if [ ! -f package.json ]; then npm init -y >/dev/null 2>&1; fi\nif [ ! -d node_modules/exceljs ]; then npm i exceljs >/dev/null 2>&1; fi"
+      },
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        544,
+        816
+      ],
+      "id": "24acbe67-b547-4d6a-b1e5-c5d9eae3d48d",
+      "name": "Set package"
+    },
+    {
+      "parameters": {
+        "command": "cat > xlsx_apply_template.js <<'EOF'\nconst ExcelJS = require('exceljs');\n\n/*\nЗапуск:\nnode xlsx_apply_template.js \\\n  /data/in/template.xlsx \\\n  /data/in/target.xlsx \\\n  /data/out/output_with_header.xlsx \\\n  12 1 1 \\\n  \"СТРОКА_ДЛЯ_E9\" \\\n  false\n\nАргументы:\n 2: templatePath\n 3: targetPath\n 4: outPath\n 5: HEADER_ROWS (по умолчанию 12 → данные начнутся со строки 13)\n 6: templateSheetIndex (1-based)\n 7: targetSheetIndex   (1-based)\n 8: e9Value\n 9: CLEAR_BELOW (optional: \"true\"/\"false\"; если true — перед вставкой очистит всё ниже шапки)\n*/\n\nconst templatePath = process.argv[2];\nconst targetPath   = process.argv[3];\nconst outPath      = process.argv[4];\nconst HEADER_ROWS  = parseInt(process.argv[5] || '12', 10);\nconst templateSheetIndex = parseInt(process.argv[6] || '1', 10);\nconst targetSheetIndex   = parseInt(process.argv[7] || '1', 10);\nconst e9Value     = process.argv[8] || '';\nconst CLEAR_BELOW = String(process.argv[9] || 'false').toLowerCase() === 'true';\n\n(async () => {\n  const wbTpl = new ExcelJS.Workbook();\n  await wbTpl.xlsx.readFile(templatePath);\n  const wsTpl = wbTpl.getWorksheet(templateSheetIndex);\n  if (!wsTpl) throw new Error('Template worksheet not found');\n\n  const wbSrc = new ExcelJS.Workbook();\n  await wbSrc.xlsx.readFile(targetPath);\n  const wsSrc = wbSrc.getWorksheet(targetSheetIndex);\n  if (!wsSrc) throw new Error('Target worksheet not found');\n\n  // где начинаем вставлять данные\n  const startRow = HEADER_ROWS + 1;\n\n  // опционально очищаем всё ниже шапки (чтобы не осталось старых данных в шаблоне)\n  if (CLEAR_BELOW) {\n    const toDelete = Math.max(0, (wsTpl.rowCount || 0) - HEADER_ROWS);\n    if (toDelete > 0) wsTpl.spliceRows(startRow, toDelete);\n  }\n\n  // определяем размер данных исходника\n  const maxRow = wsSrc.actualRowCount || wsSrc.rowCount || 0;\n  const maxCol = wsSrc.actualColumnCount || wsSrc.columnCount || 0;\n\n  // вставляем построчно значения (без стилей и без merge)\n  for (let r = 1; r <= maxRow; r++) {\n    const srcRow = wsSrc.getRow(r);\n    const dstRow = wsTpl.getRow(startRow + r - 1);\n\n    for (let c = 1; c <= maxCol; c++) {\n      const srcCell = srcRow.getCell(c);\n      const dstCell = dstRow.getCell(c);\n\n      dstCell.value = srcCell.value;       // копируем только value\n      if (srcCell.numFmt) {                // и формат числа, при наличии\n        dstCell.numFmt = srcCell.numFmt;\n      }\n    }\n    if (dstRow.commit) dstRow.commit();\n  }\n\n  // задаём E9 после вставки\n  wsTpl.getCell('E9').value = e9Value;\n\n  await wbTpl.xlsx.writeFile(outPath);\n  process.stdout.write(outPath);\n})().catch(e => { console.error(e); process.exit(1); });\nEOF"
+      },
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        560,
+        624
+      ],
+      "id": "0da68622-f5d3-495d-8a4b-2dd87d61e499",
+      "name": "set script"
     }
   ],
   "connections": {
@@ -512,17 +471,6 @@
         [
           {
             "node": "Convert to File",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Set variables": {
-      "main": [
-        [
-          {
-            "node": "select company data",
             "type": "main",
             "index": 0
           }
@@ -582,7 +530,7 @@
       "main": [
         [
           {
-            "node": "Set variables",
+            "node": "select company data",
             "type": "main",
             "index": 0
           }
@@ -622,11 +570,6 @@
         ]
       ]
     },
-    "Extract from File": {
-      "main": [
-        []
-      ]
-    },
     "Read/Write Files from Disk": {
       "main": [
         [
@@ -653,7 +596,7 @@
       "main": [
         [
           {
-            "node": "Execute Command",
+            "node": "set script",
             "type": "main",
             "index": 0
           }
@@ -696,12 +639,13 @@
         "json": {
           "company_id": 1,
           "root_execution_id": 74293,
+          "import_id": 5,
           "minus_words": "-2018 -2025 -абакан -алматы -альметьевск -амур -ангарск -арзамас -армавир -архангельск -астрахани -ачинск -балаково -барнаул -батайск -беларуси -белгород -белоруссия -белорусский -березники -бесплатно -бийск -благовещенск -бобруйс -бобруйске -боровичи -братск -брянск -вакансии -великая -вк -владивосток -владикавказ -владимир -волгоград -волгодонск -волжском -вологда -волхова -воронеж -гатчине -геленджик -глазова -гомеле -грозный -дербент -дзержинск -димитровград -днепропетровск -днр -дону -дятьково -екатеринбург -елец -зеленодольск -златоуст -иваново -ижевск -илимск -иркутск -йошкар -казани -калининград -калуг -каменск -камчатская -камышин -канск -кемерово -киев -кирова -кирове -киселевск -кисловодск -ковров -комсомольск -копейск -кострома -край -краснодар -краснодарский -красноярск -крыму -кузнецк -кузнецкая -курган -курск -кызыл -ленинск -липецк -магнитогорск -майкоп -махачкала -междуреченск -миасс -минск -могилеве -мура -мурманск -муром -мурома -мытищи -набережные -назрани -нальчик -находка -невинномысск -нефтекамск -нефтеюганск -нижне -нижневартовск -нижнекамск -новгород -новокузнецк -новокуйбышевск -новомосковск -новороссийск -новосибирск -новотроицк -новочебоксарск -новочеркасск -новошахтинск -ногинску -норильск -одесса -октябрьская -омск -орела -оренбург -орск -оскол -пенза -первоуральск -перми -петербург -петрозаводск -питере -прокопьевск -псков -пятигорск -ростов -рубцовск -рыбинск -рязани -салават -самар -самарская -самому -самостоятельно -саранск -сарапул -сахалинск -севастополе -северодвинск -северск -симферополь -смоленск -смотреть -соликамск -сочи -спб -ставрополь -стерлитамак -сургут -сызрани -сыктывкар -таганрог -тагил -тамбов -твери -тобольска -тольятти -томск -тула -тюмени -удэ -украина -улан -ульяновск -уральская -уссурийск -усть -уфа -ухта -хабаровск -хасавюрт -чебоксар -челнах -челябинск -череповец -черкесск -чита -шахт -элиста -ютуб -якутск -ялте -ярославле -к -как -кого -кто -ли -может -не -нет -о -об -своими -у -чего -чем -что -это -бесплатная -бесплатные -бесплатный -вакансия -варианты -википедия -вконтакте -гост -график -зачем -значит -какая -какие -какими -какого -какое -какой -скачать -слушать -снится -сон -сонник -абакана -альметьевска -амура -амуре -ангарска -арзамаса -армавира -архангельска -архангельске -астрахань -ачинска -барнаула -барнауле -батайска -батайске -беларусь -белгорода -белгороде -белорусских -бийска -благовещенске -братска -брянска -брянске -брянски -великие -великий -великого -владивостока -владикавказа -владимира -владимире -волгограда -волгограде -волжская -волжские -волжский -волжских -волжского -волжское -волжской -волжскую -вологде -вологду -воронежа -воронеже -уфе -хабаровска -хасавюрта -чебоксары -челнов -челны -челябинска -челябинске -челябинску -череповца -череповце -читу -читы -шахта -шахту -шахты -якутска -ярославль -ярославля -чите -Апрелевка -Апрелевке -Балашиха -Балашихе -Бронницах -Бронницы -Видное -Волоколамск -Волоколамске -Воскресенск -Воскресенске -геленджике -глазов -глазовов -гомель -дзержинска -димитровграда -днепропетровске -екатеринбурга -екатеринбурге -екатеринбургу -зеленодольска -златоуста -ижевска -ижевске -ижевску -илимска -иркутска -иркутске -казань -калининграда -калининграде -калуга -калуге -калуги -калугу -каменска -каменски -камчатские -камчатский -камчатских -камчатского -камчатское -камчатской -камчатскую -камышина -камышинов -камышины -канска -канске -киеве -киров -киселевска -киселевске -кисловодска -комсомольска -комсомольске -костроме -кострому -костромы -краснодара -краснодаре -краснодару -красноярска -красноярске -кузнецкие -кузнецкое -кузнецкой -кузнецкую -кургана -кургане -курганы -курска -курске -ленинска -ленинске -липецка -липецке -липецки -магнитогорска -магнитогорске -майкопа -махачкале -махачкалу -махачкалы -миасса -миассов -миассы -Голицыно -Дмитров -Домодедово -Дубна -Дубне -Егорьевск -Егорьевске -железнодорожном -железнодорожный -жуковское -жуковском -Звенигород -Звенигороде -зеленоград -зеленограда -зеленограде -зуево -Ивантеевка -Ивантеевке -Истра -Истре -Кашира -Кашире -Клин -Клину -коломна -коломне -колпино -королев -королеве -Красногорск -Красногорске -Кубинка -Лобня -Луховицы -люберцах -люберцы -Можайск -Можайске -ногинск -ногинска -ногинске -обнинск -обнинска -обнинске -одинцово -орехово -Павловский -подольск -подольска -подольске -подольску -посад -посаде -минске -мур -мурманска -мурманске -мурому -набережных -назрань -нальчика -находки -находку -невинномысска -невинномысске -нефтекамска -нефтекамске -нефтеюганска -нефтеюганске -нижневартовска -нижневартовске -нижнего -нижнекамска -нижнекамске -нижнем -нижний -новгорода -новгороде -новгороду -новокузнецка -новокузнецке -новокуйбышевска -новокуйбышевске -новомосковска -новороссийска -новороссийске -новосибирска -новосибирске -новосибирску -новотроицка -новотроицки -новочебоксарска -новочебоксарске -новочеркасска -новочеркасске -новошахтинска -новошахтинске -норильска -норильске -октябрьские -октябрьский -ола -омска -омске -омску -орел -оренбурга -оренбурге -орла -орле -орска -орске -оскола -осколов -осколы -пензе -пензу -пензы -первоуральска -первоуральске -пермь -петербурга -петербурге -петербургу -прокопьевска -прокопьевске -пскова -пскове -пятигорска -пятигорске -ростове -рубцовска -рыбинска -Пушкино -Раменское -Руза -сергиев -серпухов -серпухова -серпухове -Солнечногорск -Солнечногорске -Ступино -Талдом -Фоминск -фоминске -химки -чехов -чехове -щелково -электростали -электросталь -Яхрома -Москва -Московская -рязань -салавата -самара -самаре -самару -самары -саранска -саранске -сахалинска -сахалинске -севастополь -северодвинска -северодвинске -смоленска -смоленске -соликамска -ставрополя -сургута -сургуте -сызрань -сыктывкаре -таганрога -2019 -2020 -2021 -2022 -2023 -2024 -2026 -чему -быть -вам -если -или -тагила -тамбова -тамбове -тверь -томска -томске -туле -тулы -тюмень -украине -ульяновска -ульяновске -уральские -уральский -уральских -уральского -уральское -уральской -уральскую -уссурийска"
         }
       }
     ]
   },
-  "versionId": "51336fa6-6f20-495f-b585-a30caba43713",
+  "versionId": "06012c8f-4dcb-44d4-9ee1-42dd9c8875ae",
   "triggerCount": 0,
   "shared": [
     {
