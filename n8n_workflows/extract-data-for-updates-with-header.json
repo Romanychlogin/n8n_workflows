@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-30T17:56:19.098Z",
-  "updatedAt": "2025-10-15T14:53:51.701Z",
+  "updatedAt": "2025-10-15T15:10:05.045Z",
   "id": "UUlsZU9GOCmdvDHg",
   "name": "extract data for updates with header",
   "active": false,
@@ -17,7 +17,7 @@
       "type": "n8n-nodes-base.convertToFile",
       "typeVersion": 1.1,
       "position": [
-        1040,
+        1248,
         -80
       ],
       "id": "f01b45d2-eae8-43cf-826b-8e9fc600423b",
@@ -31,7 +31,7 @@
       "type": "n8n-nodes-base.dropbox",
       "typeVersion": 1,
       "position": [
-        2448,
+        2656,
         -48
       ],
       "id": "b481d235-879e-4fb6-8731-744f3bc50137",
@@ -186,7 +186,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        704,
+        912,
         -80
       ],
       "id": "53b9c994-d82d-4051-b03a-357724c272e3",
@@ -203,7 +203,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        112,
+        320,
         -64
       ],
       "id": "16819f54-d4a3-4020-994a-9cdba0646688",
@@ -226,7 +226,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        -304,
+        -96,
         -64
       ],
       "id": "96c57c21-ef6a-4ed7-87d3-2594efbb56f3",
@@ -245,7 +245,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        368,
+        576,
         -64
       ],
       "id": "8a20bdc0-26f0-48a8-a962-4ff2b49c80bd",
@@ -275,7 +275,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        -736,
+        -528,
         -32
       ],
       "id": "ca2edbb3-ee5f-42c0-a8e6-71ee04fbfbd1",
@@ -292,7 +292,7 @@
       "type": "n8n-nodes-base.merge",
       "typeVersion": 3.2,
       "position": [
-        1600,
+        1808,
         -48
       ],
       "id": "9aa4f336-7e95-4bdf-9fee-405847ce75b2",
@@ -315,8 +315,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        -624,
-        160
+        672,
+        240
       ],
       "id": "1cde0995-75f3-4bee-949a-1ced75d68421",
       "name": "set template path"
@@ -332,8 +332,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 2,
       "position": [
-        864,
-        128
+        1040,
+        288
       ]
     },
     {
@@ -347,7 +347,7 @@
       "type": "n8n-nodes-base.readWriteFile",
       "typeVersion": 1,
       "position": [
-        1248,
+        1456,
         -80
       ],
       "id": "ac2619a8-f9bb-4862-a2ed-ac37f73009d6",
@@ -364,22 +364,11 @@
       "type": "n8n-nodes-base.readWriteFile",
       "typeVersion": 1,
       "position": [
-        1280,
-        112
+        1296,
+        288
       ],
       "id": "f908967b-84a2-4607-96ea-c5b14af7593c",
       "name": "Read/Write Files from Disk1"
-    },
-    {
-      "parameters": {},
-      "type": "n8n-nodes-base.manualTrigger",
-      "typeVersion": 1,
-      "position": [
-        336,
-        624
-      ],
-      "id": "482f7b68-7d5d-4e3b-949a-651913281f39",
-      "name": "When clicking ‘Execute workflow’"
     },
     {
       "parameters": {
@@ -391,7 +380,7 @@
       "type": "n8n-nodes-base.readWriteFile",
       "typeVersion": 1,
       "position": [
-        2016,
+        2224,
         -48
       ],
       "id": "67ba370d-0684-4fe6-8a84-a2a35e0f5ac0",
@@ -404,8 +393,8 @@
       "type": "n8n-nodes-base.executeCommand",
       "typeVersion": 1,
       "position": [
-        544,
-        816
+        -48,
+        480
       ],
       "id": "24acbe67-b547-4d6a-b1e5-c5d9eae3d48d",
       "name": "Set package"
@@ -417,8 +406,8 @@
       "type": "n8n-nodes-base.executeCommand",
       "typeVersion": 1,
       "position": [
-        560,
-        624
+        400,
+        528
       ],
       "id": "0da68622-f5d3-495d-8a4b-2dd87d61e499",
       "name": "set script"
@@ -434,7 +423,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        2944,
+        3152,
         -48
       ],
       "id": "fd0c474e-3c85-49da-8b04-974c678d19c7",
@@ -454,7 +443,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        2720,
+        2928,
         -48
       ],
       "id": "ce44d4a7-1ea3-4902-b717-bc24301b7400",
@@ -467,11 +456,71 @@
       "type": "n8n-nodes-base.executeCommand",
       "typeVersion": 1,
       "position": [
-        1808,
+        2016,
         -48
       ],
       "id": "f6e7cc99-94ef-42fb-b65f-795c421487f9",
       "name": "Merge file header"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "8a620429-eda9-44aa-ae9e-488adbdae407",
+              "leftValue": "={{ $json.stdout }}",
+              "rightValue": "1",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -288,
+        304
+      ],
+      "id": "65723235-66e2-4693-b508-5c7be2939b4d",
+      "name": "If script already created"
+    },
+    {
+      "parameters": {
+        "command": "[ -f \"xlsx_apply_template.js\" ] && echo 1 || echo 0"
+      },
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        -624,
+        288
+      ],
+      "id": "0a730af9-b945-4ab0-a59b-7965db6bc247",
+      "name": "check if script exists"
+    },
+    {
+      "parameters": {
+        "content": "Используется локальный JS script чтобы использовать подключаемую библиотеку и не разбираться с правами. Скрипт деплоится на машину и пересоздается после каджого редиплоя"
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -688,
+        448
+      ],
+      "id": "c09dd066-4f5c-485c-b6ac-008bdba1cd48",
+      "name": "Sticky Note"
     }
   ],
   "connections": {
@@ -534,12 +583,12 @@
       "main": [
         [
           {
-            "node": "Mark_workwlow_started",
+            "node": "check if script exists",
             "type": "main",
             "index": 0
           },
           {
-            "node": "set template path",
+            "node": "Mark_workwlow_started",
             "type": "main",
             "index": 0
           }
@@ -612,17 +661,6 @@
         ]
       ]
     },
-    "When clicking ‘Execute workflow’": {
-      "main": [
-        [
-          {
-            "node": "set script",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Read/Write Files from Disk2": {
       "main": [
         [
@@ -666,6 +704,57 @@
           }
         ]
       ]
+    },
+    "Set package": {
+      "main": [
+        [
+          {
+            "node": "set script",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "set script": {
+      "main": [
+        [
+          {
+            "node": "set template path",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If script already created": {
+      "main": [
+        [
+          {
+            "node": "set template path",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Set package",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "check if script exists": {
+      "main": [
+        [
+          {
+            "node": "If script already created",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
@@ -690,7 +779,7 @@
       }
     ]
   },
-  "versionId": "c049f73b-8c08-4e45-95ca-1c330c233e82",
+  "versionId": "96f18149-5d0c-4b0f-aba2-5a28ef4f5bd2",
   "triggerCount": 0,
   "shared": [
     {
