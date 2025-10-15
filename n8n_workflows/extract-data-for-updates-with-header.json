@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-30T17:56:19.098Z",
-  "updatedAt": "2025-10-15T17:10:10.689Z",
+  "updatedAt": "2025-10-15T17:16:52.326Z",
   "id": "UUlsZU9GOCmdvDHg",
   "name": "extract data for updates with header",
   "active": false,
@@ -672,6 +672,19 @@
       ],
       "id": "711c3041-cd6a-40a5-b357-5afd17462cf3",
       "name": "Merge1"
+    },
+    {
+      "parameters": {
+        "content": "UPDATE CURRENT_ADS_LIST!!! WITH THE GROUP_nameS"
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        528,
+        -160
+      ],
+      "id": "5e6c7f23-831c-4943-b99c-67edc9003dec",
+      "name": "Sticky Note1"
     }
   ],
   "connections": {
@@ -968,7 +981,7 @@
       }
     ]
   },
-  "versionId": "22918d60-34e9-487e-b01e-0d127ca3030a",
+  "versionId": "98aa198f-74de-48d4-8cb2-63819de78f8f",
   "triggerCount": 0,
   "shared": [
     {
