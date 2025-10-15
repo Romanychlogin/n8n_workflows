@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-30T17:56:19.098Z",
-  "updatedAt": "2025-10-15T16:34:09.895Z",
+  "updatedAt": "2025-10-15T16:48:49.051Z",
   "id": "UUlsZU9GOCmdvDHg",
   "name": "extract data for updates with header",
   "active": false,
@@ -200,19 +200,19 @@
             {
               "id": "6cf0d95e-3466-40a9-a087-c391edbcb689",
               "name": "ql_header",
-              "value": "",
+              "value": "={{ $('Get quick links').last().json.link_headers_text }}",
               "type": "string"
             },
             {
               "id": "6fa5a4f7-6748-4308-947d-3ca9fff0d683",
               "name": "ql_descr",
-              "value": "",
+              "value": "={{ $('Get quick links').last().json.link_descriptions_text }}",
               "type": "string"
             },
             {
               "id": "68076cc7-a932-4ade-9fea-2bce6a746e1e",
               "name": "ql_url",
-              "value": "",
+              "value": "={{ $('Get quick links').last().json.link_urls_text }}",
               "type": "string"
             },
             {
@@ -254,7 +254,7 @@
             {
               "id": "aa74e979-1aed-47b6-b889-90869a6c810e",
               "name": "callouts",
-              "value": "",
+              "value": "={{ $('Get callouts').last().json.link_callout_text }}",
               "type": "string"
             },
             {
@@ -615,7 +615,7 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "SELECT\n  string_agg(NULLIF(btrim(ql.link_header), ''),      '||' ORDER BY link_id) AS link_headers_text,\n  string_agg(NULLIF(btrim(ql.link_description), ''), '||' ORDER BY link_id) AS link_descriptions_text,\n  string_agg(NULLIF(btrim(ql.link_url), ''),         '||' ORDER BY link_id) AS link_urls_text\nFROM public.adv_campaign_quick_links ql  where ql.campaign_id==$1;",
+        "query": "SELECT\n  string_agg(NULLIF(btrim(ql.link_header), ''),      '||' ORDER BY link_id) AS link_headers_text,\n  string_agg(NULLIF(btrim(ql.link_description), ''), '||' ORDER BY link_id) AS link_descriptions_text,\n  string_agg(NULLIF(btrim(ql.link_url), ''),         '||' ORDER BY link_id) AS link_urls_text\nFROM public.adv_campaign_quick_links ql  where ql.campaign_id=$1;",
         "options": {
           "queryReplacement": "={{ $json.campaign_id }}"
         }
@@ -639,16 +639,16 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "SELECT\n  string_agg(NULLIF(btrim(ql.callout_text), ''),      '||' ORDER BY link_id) AS link_callout_text\n  \nFROM adv_campaign_callouts ql  where ql.campaign_id==$1;",
+        "query": "SELECT\n  string_agg(NULLIF(btrim(ql.callout_text), ''),      '||' ORDER BY callout_id) AS link_callout_text\n  \nFROM adv_campaign_callouts ql  where ql.campaign_id=$1;",
         "options": {
-          "queryReplacement": "={{ $json.campaign_id }}"
+          "queryReplacement": "={{ $('select ads data').item.json.campaign_id }}"
         }
       },
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
         736,
-        80
+        96
       ],
       "id": "491dd3b0-f29d-479b-a746-928176044731",
       "name": "Get callouts",
@@ -968,7 +968,7 @@
       }
     ]
   },
-  "versionId": "3f11c2d2-1e14-4c08-a0fc-85b79c21608f",
+  "versionId": "a76fd9ce-69be-4ec5-9b56-7c0ff5967acd",
   "triggerCount": 0,
   "shared": [
     {
