@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-30T17:56:19.098Z",
-  "updatedAt": "2025-10-15T14:20:45.538Z",
+  "updatedAt": "2025-10-15T14:21:37.493Z",
   "id": "UUlsZU9GOCmdvDHg",
   "name": "extract data for updates with header",
   "active": false,
@@ -394,7 +394,7 @@
     },
     {
       "parameters": {
-        "command": "=node xlsx_header.js \\\n  template.xlsx \\\n  target.xlsx \\\n  output_id{{ $('select company data').last().json.company_id }}_{{ $('select company data').last().json.start_date }}_{{ $('select company data').last().json.end_date }}.xlsx \\\n  12 1 1 \\\n  \"{{$('When Executed by Another Workflow').first().json.minus_words}}\" \\\n  \"{{ $('select ads data').last().json.campaign_yandex_id }}\" \\\n  true"
+        "command": "=node xlsx_header.js \\\n  template.xlsx \\\n  target.xlsx \\\n  output_id{{ $('select company data').last().json.company_id }}_{{ $('select company data').last().json.start_date }}_{{ $('select company data').last().json.end_date }}.xlsx \\\n  12 1 1 \\\n\"{{ $('select ads data').last().json.campaign_yandex_id }}\" \\  \n\"{{$('When Executed by Another Workflow').first().json.minus_words}}\" \\\n  true"
       },
       "type": "n8n-nodes-base.executeCommand",
       "typeVersion": 1,
@@ -706,7 +706,7 @@
       }
     ]
   },
-  "versionId": "57d0f149-e7d8-4d64-878e-9f6f1da998cb",
+  "versionId": "7becfc94-19e1-4662-bd46-f03bea2e4740",
   "triggerCount": 0,
   "shared": [
     {
