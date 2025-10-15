@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-30T17:56:19.098Z",
-  "updatedAt": "2025-10-15T10:49:31.272Z",
+  "updatedAt": "2025-10-15T11:09:56.613Z",
   "id": "UUlsZU9GOCmdvDHg",
   "name": "extract data for updates with header",
   "active": false,
@@ -22,7 +22,7 @@
         "operation": "xlsx",
         "options": {
           "fileName": "output.xlsx",
-          "headerRow": true
+          "headerRow": false
         }
       },
       "type": "n8n-nodes-base.convertToFile",
@@ -449,7 +449,7 @@
     },
     {
       "parameters": {
-        "command": "cat > xlsx_header.js <<'EOF'\nconst ExcelJS = require('exceljs');\n\nconst samplePath = process.argv[2];\nconst targetPath = process.argv[3];\nconst outPath    = process.argv[4];\nconst HEADER_ROWS = parseInt(process.argv[5] || '12', 10);\nconst sampleSheetIndex = parseInt(process.argv[6] || '1', 10); // 1-based\nconst targetSheetIndex = parseInt(process.argv[7] || '1', 10); // 1-based\nconst e9Value    = process.argv[8] || '';\n\n(async () => {\n  const wbSample = new ExcelJS.Workbook();\n  await wbSample.xlsx.readFile(samplePath);\n  const wsSample = wbSample.getWorksheet(sampleSheetIndex);\n\n  const wbTarget = new ExcelJS.Workbook();\n  await wbTarget.xlsx.readFile(targetPath);\n  const wsTarget = wbTarget.getWorksheet(targetSheetIndex);\n\n  wsTarget.spliceRows(1, 0, ...Array.from({ length: HEADER_ROWS }, () => []));\n\n  for (let r = 1; r <= HEADER_ROWS; r++) {\n    const srcRow = wsSample.getRow(r), dstRow = wsTarget.getRow(r);\n    if (srcRow && srcRow.height != null) dstRow.height = srcRow.height;\n  }\n\n  const maxCol = wsSample.actualColumnCount || wsSample.columnCount || 50;\n  for (let c = 1; c <= maxCol; c++) {\n    const srcCol = wsSample.getColumn(c), dstCol = wsTarget.getColumn(c);\n    if (srcCol && srcCol.width != null) dstCol.width = srcCol.width;\n  }\n\n  for (let r = 1; r <= HEADER_ROWS; r++) {\n    for (let c = 1; c <= maxCol; c++) {\n      const s = wsSample.getCell(r, c), d = wsTarget.getCell(r, c);\n      d.value = s.value;\n      if (s.font) d.font = { ...s.font };\n      if (s.alignment) d.alignment = { ...s.alignment };\n      if (s.fill) d.fill = { ...s.fill };\n      if (s.border) d.border = { ...s.border };\n      if (s.numFmt) d.numFmt = s.numFmt;\n      if (s.protection) d.protection = { ...s.protection };\n    }\n  }\n\n  const merges = (wsSample.model && wsSample.model.merges) ? wsSample.model.merges : [];\n  for (const addr of merges) {\n    const m = addr.match(/^([A-Z]+)(\\d+):([A-Z]+)(\\d+)$/i);\n    if (!m) continue;\n    const r1 = parseInt(m[2], 10), r2 = parseInt(m[4], 10);\n    if (r1 <= HEADER_ROWS && r2 <= HEADER_ROWS) wsTarget.mergeCells(addr);\n  }\n\n  wsTarget.getCell('E9').value = e9Value;\n\n  await wbTarget.xlsx.writeFile(outPath);\n  process.stdout.write(outPath);\n})().catch(e => { console.error(e); process.exit(1); });\nEOF"
+        "command": "cat > xlsx_apply_template.js <<'EOF'\nconst ExcelJS = require('exceljs');\n\n// args:\n// 0: node\n// 1: script\n// 2: templatePath\n// 3: targetPath\n// 4: outPath\n// 5: HEADER_ROWS (default 12)\n// 6: templateSheetIndex (1-based, default 1)\n// 7: targetSheetIndex   (1-based, default 1)\n// 8: e9Value (string)\nconst templatePath = process.argv[2];\nconst targetPath   = process.argv[3];\nconst outPath      = process.argv[4];\nconst HEADER_ROWS  = parseInt(process.argv[5] || '12', 10);\nconst templateSheetIndex = parseInt(process.argv[6] || '1', 10);\nconst targetSheetIndex   = parseInt(process.argv[7] || '1', 10);\nconst e9Value     = process.argv[8] || '';\n\n(async () => {\n  // 1) Открываем шаблон (шапка, смерженная как нужно)\n  const wbTpl = new ExcelJS.Workbook();\n  await wbTpl.xlsx.readFile(templatePath);\n  const wsTpl = wbTpl.getWorksheet(templateSheetIndex);\n  if (!wsTpl) throw new Error('Template worksheet not found');\n\n  // 2) Открываем файл с данными\n  const wbSrc = new ExcelJS.Workbook();\n  await wbSrc.xlsx.readFile(targetPath);\n  const wsSrc = wbSrc.getWorksheet(targetSheetIndex);\n  if (!wsSrc) throw new Error('Target worksheet not found');\n\n  // 3) Вычисляем реальный размер данных в исходнике\n  const maxRow = wsSrc.actualRowCount || wsSrc.rowCount || 0;\n  const maxCol = wsSrc.actualColumnCount || wsSrc.columnCount || 0;\n\n  // 4) Копируем значения из target на template, начиная со строки HEADER_ROWS+1 (обычно 13)\n  const startRow = HEADER_ROWS + 1;\n  for (let r = 1; r <= maxRow; r++) {\n    const dstRow = wsTpl.getRow(startRow + r - 1);\n    const srcRow = wsSrc.getRow(r);\n    for (let c = 1; c <= maxCol; c++) {\n      const srcCell = srcRow.getCell(c);\n      const dstCell = dstRow.getCell(c);\n      // только значения и numFmt — без стилей/merge (они уже есть в template)\n      dstCell.value = srcCell.value;\n      if (srcCell.numFmt) dstCell.numFmt = srcCell.numFmt;\n    }\n    dstRow.commit && dstRow.commit();\n  }\n\n  // 5) Задать E9 (после копирования)\n  wsTpl.getCell('E9').value = e9Value;\n\n  // 6) Сохраняем\n  await wbTpl.xlsx.writeFile(outPath);\n  process.stdout.write(outPath);\n})().catch(e => { console.error(e); process.exit(1); });\nEOF"
       },
       "type": "n8n-nodes-base.executeCommand",
       "typeVersion": 1,
@@ -462,7 +462,7 @@
     },
     {
       "parameters": {
-        "command": "=node xlsx_header.js \\\n  template.xlsx \\\n  target.xlsx \\\n  output_with_header.xlsx \\\n  12 1 1 \\\n  {{$('When Executed by Another Workflow').first().json.minus_words}}"
+        "command": "=node xlsx_header.js \\\n  template.xlsx \\\n  target.xlsx \\\n  output_with_header.xlsx \\\n  12 1 1 \\\n  \"{{$('When Executed by Another Workflow').first().json.minus_words}}\""
       },
       "type": "n8n-nodes-base.executeCommand",
       "typeVersion": 1,
@@ -701,7 +701,7 @@
       }
     ]
   },
-  "versionId": "5bba2871-8e75-4900-81f0-d5b2c8a0f5e6",
+  "versionId": "8a763380-abe3-4366-badc-4d9bdad72cdd",
   "triggerCount": 0,
   "shared": [
     {
