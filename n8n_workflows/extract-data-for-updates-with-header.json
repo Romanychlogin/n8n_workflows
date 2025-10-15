@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-30T17:56:19.098Z",
-  "updatedAt": "2025-10-15T13:59:50.638Z",
+  "updatedAt": "2025-10-15T14:09:50.880Z",
   "id": "UUlsZU9GOCmdvDHg",
   "name": "extract data for updates with header",
   "active": false,
@@ -36,7 +36,7 @@
     },
     {
       "parameters": {
-        "path": "=/output_id{{ $('select company data').last().json.company_id }}_{{ $('select company data').last().json.start_date }}_{{ $('select company data').last().json.end_date }}.xlsx",
+        "path": "=/output_id{{ $('select company data').last().json.company_id }}_camp_{{ $('select ads data').last().json.campaign_yandex_id }}_{{ $('select company data').last().json.start_date }}_{{ $('select company data').last().json.end_date }}.xlsx",
         "binaryData": true
       },
       "type": "n8n-nodes-base.dropbox",
@@ -394,7 +394,7 @@
     },
     {
       "parameters": {
-        "command": "=node xlsx_header.js \\\n  template.xlsx \\\n  target.xlsx \\\n  output_id{{ $('select company data').last().json.company_id }}_{{ $('select company data').last().json.start_date }}_{{ $('select company data').last().json.end_date }}.xlsx \\\n  12 1 1 \\\n  \"{{$('When Executed by Another Workflow').first().json.minus_words}}\" \\\n  {{ $('select ads data').last().json.campaign_yandex_id }}"
+        "command": "=node xlsx_header.js \\\n  template.xlsx \\\n  target.xlsx \\\n  output_id{{ $('select company data').last().json.company_id }}_{{ $('select company data').last().json.start_date }}_{{ $('select company data').last().json.end_date }}.xlsx \\\n  12 1 1 \\\n  \"{{$('When Executed by Another Workflow').first().json.minus_words}}\" \\\n  {{ $('select ads data').last().json.campaign_yandex_id }} \\\n  true"
       },
       "type": "n8n-nodes-base.executeCommand",
       "typeVersion": 1,
@@ -436,7 +436,7 @@
     },
     {
       "parameters": {
-        "command": "cat > xlsx_apply_template.js <<'EOF'\nconst ExcelJS = require('exceljs');\n\n/*\nЗапуск:\nnode xlsx_apply_template.js \\\n  /data/in/template.xlsx \\\n  /data/in/target.xlsx \\\n  /data/out/output_with_header.xlsx \\\n  12 1 1 \\\n  \"СТРОКА_ДЛЯ_E9\" \\\n  false\n\nАргументы:\n 2: templatePath\n 3: targetPath\n 4: outPath\n 5: HEADER_ROWS (по умолчанию 12 → данные начнутся со строки 13)\n 6: templateSheetIndex (1-based)\n 7: targetSheetIndex   (1-based)\n 8: e9Value\n 9: CLEAR_BELOW (optional: \"true\"/\"false\"; если true — перед вставкой очистит всё ниже шапки)\n*/\n\nconst templatePath = process.argv[2];\nconst targetPath   = process.argv[3];\nconst outPath      = process.argv[4];\nconst HEADER_ROWS  = parseInt(process.argv[5] || '12', 10);\nconst templateSheetIndex = parseInt(process.argv[6] || '1', 10);\nconst targetSheetIndex   = parseInt(process.argv[7] || '1', 10);\nconst e9Value     = process.argv[8] || '';\nconst e8Value     = process.argv[9] || '';\nconst CLEAR_BELOW = String(process.argv[10] || 'false').toLowerCase() === 'true';\n\n(async () => {\n  const wbTpl = new ExcelJS.Workbook();\n  await wbTpl.xlsx.readFile(templatePath);\n  const wsTpl = wbTpl.getWorksheet(templateSheetIndex);\n  if (!wsTpl) throw new Error('Template worksheet not found');\n\n  const wbSrc = new ExcelJS.Workbook();\n  await wbSrc.xlsx.readFile(targetPath);\n  const wsSrc = wbSrc.getWorksheet(targetSheetIndex);\n  if (!wsSrc) throw new Error('Target worksheet not found');\n\n  // где начинаем вставлять данные\n  const startRow = HEADER_ROWS + 1;\n\n  // опционально очищаем всё ниже шапки (чтобы не осталось старых данных в шаблоне)\n  if (CLEAR_BELOW) {\n    const toDelete = Math.max(0, (wsTpl.rowCount || 0) - HEADER_ROWS);\n    if (toDelete > 0) wsTpl.spliceRows(startRow, toDelete);\n  }\n\n  // определяем размер данных исходника\n  const maxRow = wsSrc.actualRowCount || wsSrc.rowCount || 0;\n  const maxCol = wsSrc.actualColumnCount || wsSrc.columnCount || 0;\n\n  // вставляем построчно значения (без стилей и без merge)\n  for (let r = 1; r <= maxRow; r++) {\n    const srcRow = wsSrc.getRow(r);\n    const dstRow = wsTpl.getRow(startRow + r - 1);\n\n    for (let c = 1; c <= maxCol; c++) {\n      const srcCell = srcRow.getCell(c);\n      const dstCell = dstRow.getCell(c);\n\n      dstCell.value = srcCell.value;       // копируем только value\n      if (srcCell.numFmt) {                // и формат числа, при наличии\n        dstCell.numFmt = srcCell.numFmt;\n      }\n    }\n    if (dstRow.commit) dstRow.commit();\n  }\n\n  // задаём E9 после вставки\n  wsTpl.getCell('E9').value = e9Value;\n// задаём E8 после вставки\n  wsTpl.getCell('E8').value = e8Value;\n\n  await wbTpl.xlsx.writeFile(outPath);\n  process.stdout.write(outPath);\n})().catch(e => { console.error(e); process.exit(1); });\nEOF"
+        "command": "cat > xlsx_apply_template.js <<'EOF'\nconst ExcelJS = require('exceljs');\n\n/*\nЗапуск:\nnode xlsx_apply_template.js \\\n  /data/in/template.xlsx \\\n  /data/in/target.xlsx \\\n  /data/out/output_with_header.xlsx \\\n  12 1 1 \\\n  \"СТРОКА_ДЛЯ_E8\" \\\n  \"СТРОКА_ДЛЯ_E9\" \\\n  false\n\nАргументы:\n 2: templatePath\n 3: targetPath\n 4: outPath\n 5: HEADER_ROWS (по умолчанию 12 → данные начнутся со строки 13)\n 6: templateSheetIndex (1-based)\n 7: targetSheetIndex   (1-based)\n 8: e8Value (string)\n 9: e9Value (string)\n10: CLEAR_BELOW (\"true\"/\"false\"; по умолчанию false)\n*/\n\nconst templatePath = process.argv[2];\nconst targetPath   = process.argv[3];\nconst outPath      = process.argv[4];\nconst HEADER_ROWS  = parseInt(process.argv[5] || '12', 10);\nconst templateSheetIndex = parseInt(process.argv[6] || '1', 10);\nconst targetSheetIndex   = parseInt(process.argv[7] || '1', 10);\nconst e8Value     = process.argv[8] || '';\nconst e9Value     = process.argv[9] || '';\nconst CLEAR_BELOW = String(process.argv[10] || 'false').toLowerCase() === 'true';\n\n(async () => {\n  const wbTpl = new ExcelJS.Workbook();\n  await wbTpl.xlsx.readFile(templatePath);\n  const wsTpl = wbTpl.getWorksheet(templateSheetIndex);\n  if (!wsTpl) throw new Error('Template worksheet not found');\n\n  const wbSrc = new ExcelJS.Workbook();\n  await wbSrc.xlsx.readFile(targetPath);\n  const wsSrc = wbSrc.getWorksheet(targetSheetIndex);\n  if (!wsSrc) throw new Error('Target worksheet not found');\n\n  const startRow = HEADER_ROWS + 1;\n\n  if (CLEAR_BELOW) {\n    const toDelete = Math.max(0, (wsTpl.rowCount || 0) - HEADER_ROWS);\n    if (toDelete > 0) wsTpl.spliceRows(startRow, toDelete);\n  }\n\n  const maxRow = wsSrc.actualRowCount || wsSrc.rowCount || 0;\n  const maxCol = wsSrc.actualColumnCount || wsSrc.columnCount || 0;\n\n  for (let r = 1; r <= maxRow; r++) {\n    const srcRow = wsSrc.getRow(r);\n    const dstRow = wsTpl.getRow(startRow + r - 1);\n    for (let c = 1; c <= maxCol; c++) {\n      const srcCell = srcRow.getCell(c);\n      const dstCell = dstRow.getCell(c);\n      dstCell.value = srcCell.value;\n      if (srcCell.numFmt) dstCell.numFmt = srcCell.numFmt;\n    }\n    if (dstRow.commit) dstRow.commit();\n  }\n\n  // Устанавливаем E8 и E9 после вставки\n  wsTpl.getCell('E8').value = e8Value;\n  wsTpl.getCell('E9').value = e9Value;\n\n  await wbTpl.xlsx.writeFile(outPath);\n  process.stdout.write(outPath);\n})().catch(e => { console.error(e); process.exit(1); });\nEOF"
       },
       "type": "n8n-nodes-base.executeCommand",
       "typeVersion": 1,
@@ -703,7 +703,7 @@
       }
     ]
   },
-  "versionId": "deeaa043-2881-4abf-9170-691048e29b1d",
+  "versionId": "595de6f7-09ae-435f-bd37-e70676c19698",
   "triggerCount": 0,
   "shared": [
     {
