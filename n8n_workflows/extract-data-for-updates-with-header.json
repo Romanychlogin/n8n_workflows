@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-30T17:56:19.098Z",
-  "updatedAt": "2025-10-15T09:55:29.201Z",
+  "updatedAt": "2025-10-15T10:49:31.272Z",
   "id": "UUlsZU9GOCmdvDHg",
   "name": "extract data for updates with header",
   "active": false,
@@ -42,7 +42,7 @@
       "type": "n8n-nodes-base.dropbox",
       "typeVersion": 1,
       "position": [
-        2336,
+        2752,
         -96
       ],
       "id": "b481d235-879e-4fb6-8731-744f3bc50137",
@@ -352,19 +352,6 @@
     },
     {
       "parameters": {
-        "jsCode": "// Add package in Code node: exceljs\nconst ExcelJS = require('exceljs');\n\nconst HEADER_ROWS = 12;\nconst sampleSheetIndex = 1; // 1-based\nconst targetSheetIndex = 1; // 1-based\n\n// ---- значение для E9: из входного JSON или дефолт ----\nconst item = $input.item;\nconst MY_E9_STRING = $('When Executed by Another Workflow').first().json.minus_words;\n\nif (!item.binary?.template || !item.binary?.target) {\n  throw new Error(\"Нужны два бинарных файла: binary.sample и binary.target.\");\n}\n\nconst sampleBuf = Buffer.from(item.binary.template.data, 'base64');\nconst targetBuf = Buffer.from(item.binary.target.data, 'base64');\n\nconst wbSample = new ExcelJS.Workbook();\nawait wbSample.xlsx.load(sampleBuf);\nconst wbTarget = new ExcelJS.Workbook();\nawait wbTarget.xlsx.load(targetBuf);\n\nconst wsSample = wbSample.getWorksheet(sampleSheetIndex);\nconst wsTarget = wbTarget.getWorksheet(targetSheetIndex);\nif (!wsSample || !wsTarget) throw new Error(\"Проверьте индексы листов.\");\n\nwsTarget.spliceRows(1, 0, ...Array.from({ length: HEADER_ROWS }, () => []));\n\n// высоты строк\nfor (let r = 1; r <= HEADER_ROWS; r++) {\n  const srcRow = wsSample.getRow(r), dstRow = wsTarget.getRow(r);\n  if (srcRow && srcRow.height != null) dstRow.height = srcRow.height;\n}\n\n// ширины столбцов\nconst maxCol = wsSample.actualColumnCount || wsSample.columnCount || 50;\nfor (let c = 1; c <= maxCol; c++) {\n  const srcCol = wsSample.getColumn(c), dstCol = wsTarget.getColumn(c);\n  if (srcCol && srcCol.width != null) dstCol.width = srcCol.width;\n}\n\n// значения+стили в первых HEADER_ROWS\nfor (let r = 1; r <= HEADER_ROWS; r++) {\n  for (let c = 1; c <= maxCol; c++) {\n    const s = wsSample.getCell(r, c), d = wsTarget.getCell(r, c);\n    d.value = s.value;\n    if (s.font) d.font = { ...s.font };\n    if (s.alignment) d.alignment = { ...s.alignment };\n    if (s.fill) d.fill = { ...s.fill };\n    if (s.border) d.border = { ...s.border };\n    if (s.numFmt) d.numFmt = s.numFmt;\n    if (s.protection) d.protection = { ...s.protection };\n  }\n}\n\n// объединения (полностью в зоне шапки)\nconst merges = (wsSample.model && wsSample.model.merges) ? wsSample.model.merges : [];\nfor (const addr of merges) {\n  const m = addr.match(/^([A-Z]+)(\\d+):([A-Z]+)(\\d+)$/i);\n  if (!m) continue;\n  const r1 = parseInt(m[2], 10), r2 = parseInt(m[4], 10);\n  if (r1 <= HEADER_ROWS && r2 <= HEADER_ROWS) wsTarget.mergeCells(addr);\n}\n\n// --- ВАЖНО: перезаписываем значение E9 в итоговом файле ---\nconst e9 = wsTarget.getCell('E9');\ne9.value = MY_E9_STRING;          // стиль сохранится, меняем только value\n// при желании можно выровнять:\nif (e9.alignment) e9.alignment = { ...e9.alignment, wrapText: true };\n\n// сохранить\nconst outBuffer = await wbTarget.xlsx.writeBuffer();\nconst fileName = (item.binary.target.fileName || \"output_with_header.xlsx\")\n  .replace(/\\.xlsx$/i, '') + \"_with_header.xlsx\";\n\nreturn [{\n  json: {},\n  binary: {\n    file: {\n      data: outBuffer.toString('base64'),\n      fileName,\n      mimeType: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'\n    }\n  }\n}];"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        1888,
-        -80
-      ],
-      "id": "6331b990-c7d9-4e73-adcb-b93fced6a930",
-      "name": "Code in JavaScript1"
-    },
-    {
-      "parameters": {
         "assignments": {
           "assignments": [
             {
@@ -409,8 +396,8 @@
       "type": "n8n-nodes-base.extractFromFile",
       "typeVersion": 1,
       "position": [
-        1056,
-        128
+        1088,
+        336
       ],
       "id": "fc8e7286-c614-443e-b155-d50951d9cc1b",
       "name": "Extract from File"
@@ -448,6 +435,59 @@
       ],
       "id": "f908967b-84a2-4607-96ea-c5b14af7593c",
       "name": "Read/Write Files from Disk1"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        336,
+        624
+      ],
+      "id": "482f7b68-7d5d-4e3b-949a-651913281f39",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "command": "cat > xlsx_header.js <<'EOF'\nconst ExcelJS = require('exceljs');\n\nconst samplePath = process.argv[2];\nconst targetPath = process.argv[3];\nconst outPath    = process.argv[4];\nconst HEADER_ROWS = parseInt(process.argv[5] || '12', 10);\nconst sampleSheetIndex = parseInt(process.argv[6] || '1', 10); // 1-based\nconst targetSheetIndex = parseInt(process.argv[7] || '1', 10); // 1-based\nconst e9Value    = process.argv[8] || '';\n\n(async () => {\n  const wbSample = new ExcelJS.Workbook();\n  await wbSample.xlsx.readFile(samplePath);\n  const wsSample = wbSample.getWorksheet(sampleSheetIndex);\n\n  const wbTarget = new ExcelJS.Workbook();\n  await wbTarget.xlsx.readFile(targetPath);\n  const wsTarget = wbTarget.getWorksheet(targetSheetIndex);\n\n  wsTarget.spliceRows(1, 0, ...Array.from({ length: HEADER_ROWS }, () => []));\n\n  for (let r = 1; r <= HEADER_ROWS; r++) {\n    const srcRow = wsSample.getRow(r), dstRow = wsTarget.getRow(r);\n    if (srcRow && srcRow.height != null) dstRow.height = srcRow.height;\n  }\n\n  const maxCol = wsSample.actualColumnCount || wsSample.columnCount || 50;\n  for (let c = 1; c <= maxCol; c++) {\n    const srcCol = wsSample.getColumn(c), dstCol = wsTarget.getColumn(c);\n    if (srcCol && srcCol.width != null) dstCol.width = srcCol.width;\n  }\n\n  for (let r = 1; r <= HEADER_ROWS; r++) {\n    for (let c = 1; c <= maxCol; c++) {\n      const s = wsSample.getCell(r, c), d = wsTarget.getCell(r, c);\n      d.value = s.value;\n      if (s.font) d.font = { ...s.font };\n      if (s.alignment) d.alignment = { ...s.alignment };\n      if (s.fill) d.fill = { ...s.fill };\n      if (s.border) d.border = { ...s.border };\n      if (s.numFmt) d.numFmt = s.numFmt;\n      if (s.protection) d.protection = { ...s.protection };\n    }\n  }\n\n  const merges = (wsSample.model && wsSample.model.merges) ? wsSample.model.merges : [];\n  for (const addr of merges) {\n    const m = addr.match(/^([A-Z]+)(\\d+):([A-Z]+)(\\d+)$/i);\n    if (!m) continue;\n    const r1 = parseInt(m[2], 10), r2 = parseInt(m[4], 10);\n    if (r1 <= HEADER_ROWS && r2 <= HEADER_ROWS) wsTarget.mergeCells(addr);\n  }\n\n  wsTarget.getCell('E9').value = e9Value;\n\n  await wbTarget.xlsx.writeFile(outPath);\n  process.stdout.write(outPath);\n})().catch(e => { console.error(e); process.exit(1); });\nEOF"
+      },
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        560,
+        624
+      ],
+      "id": "0da68622-f5d3-495d-8a4b-2dd87d61e499",
+      "name": "Execute Command"
+    },
+    {
+      "parameters": {
+        "command": "=node xlsx_header.js \\\n  template.xlsx \\\n  target.xlsx \\\n  output_with_header.xlsx \\\n  12 1 1 \\\n  {{$('When Executed by Another Workflow').first().json.minus_words}}"
+      },
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        1808,
+        -48
+      ],
+      "id": "f6e7cc99-94ef-42fb-b65f-795c421487f9",
+      "name": "Execute Command1"
+    },
+    {
+      "parameters": {
+        "fileSelector": "output_with_header.xlsx",
+        "options": {
+          "dataPropertyName": "data"
+        }
+      },
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1,
+      "position": [
+        2016,
+        -48
+      ],
+      "id": "67ba370d-0684-4fe6-8a84-a2a35e0f5ac0",
+      "name": "Read/Write Files from Disk2"
     }
   ],
   "connections": {
@@ -553,18 +593,7 @@
       "main": [
         [
           {
-            "node": "Code in JavaScript1",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Code in JavaScript1": {
-      "main": [
-        [
-          {
-            "node": "Upload a file",
+            "node": "Execute Command1",
             "type": "main",
             "index": 0
           }
@@ -575,7 +604,7 @@
       "main": [
         [
           {
-            "node": "Extract from File",
+            "node": "Read/Write Files from Disk1",
             "type": "main",
             "index": 0
           }
@@ -595,13 +624,7 @@
     },
     "Extract from File": {
       "main": [
-        [
-          {
-            "node": "Read/Write Files from Disk1",
-            "type": "main",
-            "index": 0
-          }
-        ]
+        []
       ]
     },
     "Read/Write Files from Disk": {
@@ -625,6 +648,39 @@
           }
         ]
       ]
+    },
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Execute Command",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute Command1": {
+      "main": [
+        [
+          {
+            "node": "Read/Write Files from Disk2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read/Write Files from Disk2": {
+      "main": [
+        [
+          {
+            "node": "Upload a file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
@@ -645,7 +701,7 @@
       }
     ]
   },
-  "versionId": "781a8a71-8666-430d-a89c-70ff3ece7746",
+  "versionId": "5bba2871-8e75-4900-81f0-d5b2c8a0f5e6",
   "triggerCount": 0,
   "shared": [
     {
