@@ -1,22 +1,11 @@
 {
   "createdAt": "2025-09-30T17:56:19.098Z",
-  "updatedAt": "2025-10-15T14:21:37.493Z",
+  "updatedAt": "2025-10-15T14:38:50.546Z",
   "id": "UUlsZU9GOCmdvDHg",
   "name": "extract data for updates with header",
   "active": false,
   "isArchived": false,
   "nodes": [
-    {
-      "parameters": {},
-      "type": "n8n-nodes-base.noOp",
-      "name": "Replace Me",
-      "typeVersion": 1,
-      "position": [
-        4912,
-        0
-      ],
-      "id": "422a90e5-a9cd-4517-8da4-d3d0d881f080"
-    },
     {
       "parameters": {
         "operation": "xlsx",
@@ -394,20 +383,7 @@
     },
     {
       "parameters": {
-        "command": "=node xlsx_header.js \\\n  template.xlsx \\\n  target.xlsx \\\n  output_id{{ $('select company data').last().json.company_id }}_{{ $('select company data').last().json.start_date }}_{{ $('select company data').last().json.end_date }}.xlsx \\\n  12 1 1 \\\n\"{{ $('select ads data').last().json.campaign_yandex_id }}\" \\  \n\"{{$('When Executed by Another Workflow').first().json.minus_words}}\" \\\n  true"
-      },
-      "type": "n8n-nodes-base.executeCommand",
-      "typeVersion": 1,
-      "position": [
-        1808,
-        -48
-      ],
-      "id": "f6e7cc99-94ef-42fb-b65f-795c421487f9",
-      "name": "Execute Command1"
-    },
-    {
-      "parameters": {
-        "fileSelector": "=output_id{{ $('select company data').last().json.company_id }}_{{ $('select company data').last().json.start_date }}_{{ $('select company data').last().json.end_date }}.xlsx",
+        "fileSelector": "=output.xlsx",
         "options": {
           "dataPropertyName": "data"
         }
@@ -436,7 +412,7 @@
     },
     {
       "parameters": {
-        "command": "cat > xlsx_header.js <<'EOF'\nconst ExcelJS = require('exceljs');\n\n/*\nЗапуск:\nnode xlsx_apply_template.js \\\n  /data/in/template.xlsx \\\n  /data/in/target.xlsx \\\n  /data/out/output_with_header.xlsx \\\n  12 1 1 \\\n  \"СТРОКА_ДЛЯ_E8\" \\\n  \"СТРОКА_ДЛЯ_E9\" \\\n  false\n\nАргументы:\n 2: templatePath\n 3: targetPath\n 4: outPath\n 5: HEADER_ROWS (по умолчанию 12 → данные начнутся со строки 13)\n 6: templateSheetIndex (1-based)\n 7: targetSheetIndex   (1-based)\n 8: e8Value (string)\n 9: e9Value (string)\n10: CLEAR_BELOW (\"true\"/\"false\"; по умолчанию false)\n*/\n\nconst templatePath = process.argv[2];\nconst targetPath   = process.argv[3];\nconst outPath      = process.argv[4];\nconst HEADER_ROWS  = parseInt(process.argv[5] || '12', 10);\nconst templateSheetIndex = parseInt(process.argv[6] || '1', 10);\nconst targetSheetIndex   = parseInt(process.argv[7] || '1', 10);\nconst e8Value     = process.argv[8] || '';\nconst e9Value     = process.argv[9] || '';\nconst CLEAR_BELOW = String(process.argv[10] || 'false').toLowerCase() === 'true';\n\n(async () => {\n  const wbTpl = new ExcelJS.Workbook();\n  await wbTpl.xlsx.readFile(templatePath);\n  const wsTpl = wbTpl.getWorksheet(templateSheetIndex);\n  if (!wsTpl) throw new Error('Template worksheet not found');\n\n  const wbSrc = new ExcelJS.Workbook();\n  await wbSrc.xlsx.readFile(targetPath);\n  const wsSrc = wbSrc.getWorksheet(targetSheetIndex);\n  if (!wsSrc) throw new Error('Target worksheet not found');\n\n  const startRow = HEADER_ROWS + 1;\n\n  if (CLEAR_BELOW) {\n    const toDelete = Math.max(0, (wsTpl.rowCount || 0) - HEADER_ROWS);\n    if (toDelete > 0) wsTpl.spliceRows(startRow, toDelete);\n  }\n\n  const maxRow = wsSrc.actualRowCount || wsSrc.rowCount || 0;\n  const maxCol = wsSrc.actualColumnCount || wsSrc.columnCount || 0;\n\n  for (let r = 1; r <= maxRow; r++) {\n    const srcRow = wsSrc.getRow(r);\n    const dstRow = wsTpl.getRow(startRow + r - 1);\n    for (let c = 1; c <= maxCol; c++) {\n      const srcCell = srcRow.getCell(c);\n      const dstCell = dstRow.getCell(c);\n      dstCell.value = srcCell.value;\n      if (srcCell.numFmt) dstCell.numFmt = srcCell.numFmt;\n    }\n    if (dstRow.commit) dstRow.commit();\n  }\n\n// Устанавливаем E8 и E9 после вставки\n  wsTpl.getCell('E8').value = e8Value;\n  wsTpl.getCell('E9').value = e9Value;\n\n  await wbTpl.xlsx.writeFile(outPath);\n  process.stdout.write(outPath);\n})().catch(e => { console.error(e); process.exit(1); });\nEOF"
+        "command": "cat > xlsx_header.js <<'EOF'\nconst ExcelJS = require('exceljs');\n\n/*\nЗапуск:\nnode xlsx_apply_template.js \\\n  /data/in/template.xlsx \\\n  /data/in/target.xlsx \\\n  /data/out/output_with_header.xlsx \\\n  12 1 1 \\\n  \"СТРОКА_ДЛЯ_E8\" \\\n  \"СТРОКА_ДЛЯ_E9\" \\\n  false\n\nАргументы:\n 2: templatePath\n 3: targetPath\n 4: outPath\n 5: HEADER_ROWS (по умолчанию 12 → данные начнутся со строки 13)\n 6: templateSheetIndex (1-based)\n 7: targetSheetIndex   (1-based)\n 8: e9Value (string)\n 9: e8Value (string)\n10: CLEAR_BELOW (\"true\"/\"false\"; по умолчанию false)\n*/\n\nconst templatePath = process.argv[2];\nconst targetPath   = process.argv[3];\nconst outPath      = process.argv[4];\nconst HEADER_ROWS  = parseInt(process.argv[5] || '12', 10);\nconst templateSheetIndex = parseInt(process.argv[6] || '1', 10);\nconst targetSheetIndex   = parseInt(process.argv[7] || '1', 10);\nconst e9Value     = process.argv[8] || '';\nconst e8Value     = process.argv[9] || '';\nconst CLEAR_BELOW = String(process.argv[10] || 'false').toLowerCase() === 'true';\n\n(async () => {\n  const wbTpl = new ExcelJS.Workbook();\n  await wbTpl.xlsx.readFile(templatePath);\n  const wsTpl = wbTpl.getWorksheet(templateSheetIndex);\n  if (!wsTpl) throw new Error('Template worksheet not found');\n\n  const wbSrc = new ExcelJS.Workbook();\n  await wbSrc.xlsx.readFile(targetPath);\n  const wsSrc = wbSrc.getWorksheet(targetSheetIndex);\n  if (!wsSrc) throw new Error('Target worksheet not found');\n\n  const startRow = HEADER_ROWS + 1;\n\n  if (CLEAR_BELOW) {\n    const toDelete = Math.max(0, (wsTpl.rowCount || 0) - HEADER_ROWS);\n    if (toDelete > 0) wsTpl.spliceRows(startRow, toDelete);\n  }\n\n  const maxRow = wsSrc.actualRowCount || wsSrc.rowCount || 0;\n  const maxCol = wsSrc.actualColumnCount || wsSrc.columnCount || 0;\n\n  for (let r = 1; r <= maxRow; r++) {\n    const srcRow = wsSrc.getRow(r);\n    const dstRow = wsTpl.getRow(startRow + r - 1);\n    for (let c = 1; c <= maxCol; c++) {\n      const srcCell = srcRow.getCell(c);\n      const dstCell = dstRow.getCell(c);\n      dstCell.value = srcCell.value;\n      if (srcCell.numFmt) dstCell.numFmt = srcCell.numFmt;\n    }\n    if (dstRow.commit) dstRow.commit();\n  }\n\n// Устанавливаем E8 и E9 после вставки\n  wsTpl.getCell('E8').value = e8Value;\n  wsTpl.getCell('E9').value = e9Value;\n\n  await wbTpl.xlsx.writeFile(outPath);\n  process.stdout.write(outPath);\n})().catch(e => { console.error(e); process.exit(1); });\nEOF"
       },
       "type": "n8n-nodes-base.executeCommand",
       "typeVersion": 1,
@@ -483,14 +459,22 @@
       ],
       "id": "ce44d4a7-1ea3-4902-b717-bc24301b7400",
       "name": "Init total counter"
+    },
+    {
+      "parameters": {
+        "command": "=node xlsx_header.js \\\n  template.xlsx \\\n  target.xlsx \\\n  output.xlsx \\\n  12 1 1 \\\n  \"{{$('When Executed by Another Workflow').first().json.minus_words}}\" \\  \n  \"{{ $('select ads data').last().json.campaign_yandex_id }}\" \\  \n  false"
+      },
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        1808,
+        -48
+      ],
+      "id": "f6e7cc99-94ef-42fb-b65f-795c421487f9",
+      "name": "Merge file header"
     }
   ],
   "connections": {
-    "Replace Me": {
-      "main": [
-        []
-      ]
-    },
     "Convert to File": {
       "main": [
         [
@@ -577,7 +561,7 @@
       "main": [
         [
           {
-            "node": "Execute Command1",
+            "node": "Merge file header",
             "type": "main",
             "index": 0
           }
@@ -639,17 +623,6 @@
         ]
       ]
     },
-    "Execute Command1": {
-      "main": [
-        [
-          {
-            "node": "Read/Write Files from Disk2",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Read/Write Files from Disk2": {
       "main": [
         [
@@ -682,6 +655,17 @@
           }
         ]
       ]
+    },
+    "Merge file header": {
+      "main": [
+        [
+          {
+            "node": "Read/Write Files from Disk2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
@@ -706,7 +690,7 @@
       }
     ]
   },
-  "versionId": "7becfc94-19e1-4662-bd46-f03bea2e4740",
+  "versionId": "831eadff-efc7-481a-9dfb-43865304ef6d",
   "triggerCount": 0,
   "shared": [
     {
