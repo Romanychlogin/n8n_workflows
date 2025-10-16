@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-10-06T13:25:33.741Z",
-  "updatedAt": "2025-10-08T10:58:19.308Z",
+  "updatedAt": "2025-10-16T06:56:18.668Z",
   "id": "tbijdiaKB74Iaf6O",
   "name": "core update test management",
   "active": true,
@@ -9,7 +9,7 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "select n8n_process_name from business_processes where root_process_id=7  order by process_order ",
+        "query": "select n8n_process_name from business_processes where root_process_id in (7,18)  order by process_order ",
         "options": {}
       },
       "type": "n8n-nodes-base.postgres",
@@ -1185,7 +1185,7 @@
     "templateCredsSetupCompleted": true
   },
   "pinData": {},
-  "versionId": "dbdf4a41-e40d-4a13-8119-768b104145de",
+  "versionId": "ffc4a0fa-aec2-45a9-9e6f-b936e8d6b6ee",
   "triggerCount": 1,
   "shared": [
     {
