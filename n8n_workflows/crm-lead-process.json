@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-10-07T21:30:12.820Z",
-  "updatedAt": "2025-10-13T20:36:51.803Z",
+  "updatedAt": "2025-10-16T19:05:08.392Z",
   "id": "d4D0Fp4pO6Ch7S7C",
   "name": "CRM lead process",
   "active": true,
@@ -179,7 +179,8 @@
           ],
           "attemptToConvertTypes": false,
           "convertFieldsToString": false
-        }
+        },
+        "options": {}
       },
       "type": "n8n-nodes-base.dataTable",
       "typeVersion": 1,
@@ -406,7 +407,8 @@
         -80
       ],
       "id": "d8035638-ba96-4f19-b296-99ab252e1563",
-      "name": "check 5 min"
+      "name": "check 5 min",
+      "disabled": true
     },
     {
       "parameters": {
@@ -511,7 +513,7 @@
       "main": [
         [
           {
-            "node": "Code in JavaScript2",
+            "node": "Code in JavaScript1",
             "type": "main",
             "index": 0
           }
@@ -543,7 +545,7 @@
       "main": [
         [
           {
-            "node": "Set CRM data",
+            "node": "Set Metrica data",
             "type": "main",
             "index": 0
           }
@@ -633,7 +635,7 @@
       }
     ]
   },
-  "versionId": "61ef7d5a-d89b-4492-891b-557f0232d469",
+  "versionId": "787aae8d-2b69-459f-a5b0-7e3844df057c",
   "triggerCount": 1,
   "shared": [
     {
