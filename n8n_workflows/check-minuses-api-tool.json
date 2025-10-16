@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-01T13:14:53.645Z",
-  "updatedAt": "2025-10-07T08:31:31.630Z",
+  "updatedAt": "2025-10-16T08:41:38.751Z",
   "id": "bhBscYglbFhVyIcL",
   "name": "Check minuses API tool",
   "active": false,
@@ -62,8 +62,8 @@
       "waitBetweenTries": 5000,
       "credentials": {
         "openAiApi": {
-          "id": "V8R8KiZKXscJQ1sL",
-          "name": "OpenAi account"
+          "id": "m4NScyhZzV3hBcTr",
+          "name": "OpenAi Yads"
         }
       },
       "notes": "Creates an embedding for each candidate n-gram.\n- Set your OpenAI credential on this node.\n- Batch mode is possible later; this keeps it simple and explicit."
@@ -266,7 +266,7 @@
       }
     ]
   },
-  "versionId": "e57b10e4-1cc3-4b43-835a-61ed01ab9bab",
+  "versionId": "744042bc-c9b5-4c90-b2b6-152927069de8",
   "triggerCount": 1,
   "shared": [
     {
