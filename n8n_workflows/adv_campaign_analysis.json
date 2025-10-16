@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-07-18T08:31:54.459Z",
-  "updatedAt": "2025-10-16T13:07:03.789Z",
+  "updatedAt": "2025-10-16T13:16:29.677Z",
   "id": "wZGLxMCCmOnDJZ1o",
   "name": "ADV_campaign_analysis",
   "active": false,
@@ -328,7 +328,9 @@
           "value": {
             "resolution": "={{ $json.resolution}}",
             "list_id": "={{ $('Loop Over Items').last().json.list_id }}",
-            "ai_response_tokens": "={{ $json.total_tokens }}"
+            "ai_response_tokens": "={{ $json.total_tokens }}",
+            "ai_calls": "={{ $json.ai_calls }}",
+            "embedding_calls": "={{ $json.embedding_calls }}"
           },
           "matchingColumns": [
             "list_id"
@@ -503,6 +505,26 @@
               "type": "boolean",
               "canBeUsedToMatch": true,
               "removed": true
+            },
+            {
+              "id": "ai_calls",
+              "displayName": "ai_calls",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "embedding_calls",
+              "displayName": "embedding_calls",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": false
             }
           ],
           "attemptToConvertTypes": false,
@@ -639,7 +661,7 @@
           "mappingMode": "defineBelow",
           "value": {
             "list_id": "={{ $('Loop Over Items').last().json.list_id }}",
-            "resolution": "={{ \"найден конкурент: \"+$json.hits[0].matched+\", \"+$json.hits[0].canonical }}"
+            "resolution": "={{ \"найден конкурент: \"+ $('If competitors not found').last().json.hits[0].matched+\", название: \"+$('If competitors not found').last().json.hits[0].canonical }}"
           },
           "matchingColumns": [
             "list_id"
@@ -793,8 +815,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        8304,
-        -1520
+        9376,
+        -1088
       ],
       "id": "e95a4440-545c-4788-a36f-4a8649b6dcf9",
       "name": "Помечаем что найден конкурент",
@@ -1558,7 +1580,7 @@
       "type": "n8n-nodes-base.merge",
       "typeVersion": 3.2,
       "position": [
-        9232,
+        9056,
         -1104
       ],
       "id": "e513fecc-579d-47a2-9a2b-aaac244d7f15",
@@ -2201,6 +2223,32 @@
       ],
       "id": "449b1423-ecdc-4ff0-9f57-af61323f3193",
       "name": "update calls counters5"
+    },
+    {
+      "parameters": {
+        "jsCode": "const workflowData = $getWorkflowStaticData('global');\nfor (const item of $input.all()) {\n  item.json.embedding_calls = workflowData.embedding_calls;\n  item.json.ai_calls = workflowData.ai_calls;\n  \n}\n\nreturn $input.all();\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        9040,
+        -672
+      ],
+      "id": "ee1aeac7-2d33-4a9d-89da-cfdc7a098ded",
+      "name": "read call counters"
+    },
+    {
+      "parameters": {
+        "jsCode": "const workflowData = $getWorkflowStaticData('global');\nfor (const item of $input.all()) {\n  item.json.embedding_calls = workflowData.embedding_calls;\n  item.json.ai_calls = workflowData.ai_calls;\n  \n}\n\nreturn $input.all();\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        9200,
+        -1104
+      ],
+      "id": "e7bd086a-4e86-432b-bb9c-cd360d1765aa",
+      "name": "read call counters1"
     }
   ],
   "connections": {
@@ -2340,7 +2388,7 @@
       "main": [
         [
           {
-            "node": "Merge1",
+            "node": "Get current step and tokens saved",
             "type": "main",
             "index": 0
           }
@@ -2543,11 +2591,6 @@
         ],
         [
           {
-            "node": "Помечаем что найден конкурент",
-            "type": "main",
-            "index": 0
-          },
-          {
             "node": "if not exact competitor match",
             "type": "main",
             "index": 0
@@ -2559,7 +2602,7 @@
       "main": [
         [
           {
-            "node": "update",
+            "node": "read call counters",
             "type": "main",
             "index": 0
           }
@@ -2570,7 +2613,7 @@
       "main": [
         [
           {
-            "node": "update",
+            "node": "read call counters",
             "type": "main",
             "index": 0
           }
@@ -2695,7 +2738,7 @@
       "main": [
         [
           {
-            "node": "Get current step and tokens saved",
+            "node": "read call counters1",
             "type": "main",
             "index": 0
           }
@@ -3015,6 +3058,28 @@
           }
         ]
       ]
+    },
+    "read call counters": {
+      "main": [
+        [
+          {
+            "node": "update",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "read call counters1": {
+      "main": [
+        [
+          {
+            "node": "Помечаем что найден конкурент",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
@@ -3057,7 +3122,7 @@
       }
     ]
   },
-  "versionId": "f6d8cb42-0790-4fd6-b916-b3217552ba88",
+  "versionId": "e5e11029-fd24-447b-8169-256bfe113b98",
   "triggerCount": 0,
   "shared": [
     {
