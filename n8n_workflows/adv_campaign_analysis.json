@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-07-18T08:31:54.459Z",
-  "updatedAt": "2025-10-16T08:17:33.705Z",
+  "updatedAt": "2025-10-16T08:29:05.420Z",
   "id": "wZGLxMCCmOnDJZ1o",
   "name": "ADV_campaign_analysis",
   "active": false,
@@ -842,8 +842,8 @@
       "maxTries": 5,
       "credentials": {
         "openAiApi": {
-          "id": "V8R8KiZKXscJQ1sL",
-          "name": "OpenAi account"
+          "id": "m4NScyhZzV3hBcTr",
+          "name": "OpenAi Yads"
         }
       }
     },
@@ -2093,7 +2093,7 @@
         "operation": "executeQuery",
         "query": "WITH ce AS (\n    SELECT competitor_id\n    FROM public.competitor_entities\n    WHERE company_id = $6\n      AND canonical_name = $5\n    LIMIT 1\n)\nINSERT INTO public.competitor_name_variants\n    (competitor_id, is_common_word, name_text, embedding, report_id)\nSELECT\n    ce.competitor_id,\n    $1::boolean,          -- is_common_word\n    $2::text,             -- name_text\n    $3::vector,           -- embedding (pgvector)\n    $4::bigint  -- report_id (по умолчанию 0)\nFROM ce\nRETURNING competitor_id, is_common_word, name_text, report_id;",
         "options": {
-          "queryReplacement": "=[   \n{\"value\": \"=false\"}\n{ \"value\": \"={{ $('If competitors not found').last().json.hits[0].candidate }}\" },\n{ \"value\": \"={{'[' + $json.data[0].embedding.map(e => Number(e)).join(',') + ']'}}\" },\n{ \"value\": \"={{ $('Loop Over Items').item.json.report_id }}\" },\n{ \"value\": \"={{ $('Loop Over Items').item.json.report_id }}\" },\n{ \"value\": \"={{ $('Loop Over Items').item.json.canonical_name }}\" }\n]"
+          "queryReplacement": "=[   \n{\"value\": \"=false\"}\n{ \"value\": \"={{ $('If competitors not found').last().json.hits[0].candidate }}\" },\n{ \"value\": \"={{'[' + $('Get embedding1').item.json.data[0].embedding.map(e => Number(e)).join(',') + ']'}}\" },\n{ \"value\": \"={{ $('Loop Over Items').item.json.report_id }}\" },\n{ \"value\": \"={{ $('if not exact competitor match').item.json.hits[0].canonical }}\" },\n{ \"value\": \"={{ $('Loop Over Items').item.json.company_id }}\" }\n]"
         }
       },
       "type": "n8n-nodes-base.postgres",
@@ -2862,7 +2862,7 @@
       "alaysis_prompt": {
         "data": "Для полученного запроса Instructions\nПроанализируй поисковый запрос пользователя на предмет релевантности услугам компании KIBERone Саратов Октябрьский(company_name). Действуй строго по следующим правилам и согласно заданной последовательности действий:\n1.Если запрос полностью релевантен услугам компании , верни: \"is_correct_phrase\": true.\n2.Если запрос нерелевантен услугам компании 1) верни \"is_correct_phrase\": false 2) определи список потенциально допустимых минус слов. для этого всегда вызывай tool get_non_matching_ngrams. Передавай threshold, только если пользователь задал его; иначе не указывай (используется дефолт 0,88). 3)Из полученного от tool списка выдели минимальный набор минус-слов, обеспечивающих блокировку широкого класса подобных нерелевантных запросов.\nТребования к минус-словам: Используй минимально возможную комбинацию слов. Минус-слова должны однозначно исключать нерелевантные запросы.\nContext (о компании KIBERone)\nKIBERone – международная КиберШкола программирования и цифровых технологий для детей от 6 до 14 лет. Позиционирование бренда: KIBERone — первая международная КиберШкола будущего для IT-поколения 6–14 лет, признана ЮНЕСКО лучшей детской образовательной IT-школой в мире. Бренд является партнером Microsoft, Roblox и Samsung. Бесплатные пробные уроки Основные услуги и программы: Полный перечень модулей: Вводный модуль (основы цифровой грамотности) Основы программирования Scratch Jr Создание игр на Scratch ПиктоМир (алгоритмическое мышление) CodeMonkey (логика и программирование) Устройство компьютера Эффектные презентации (PowerPoint, Desygner) QR-коды Деловые люди (предпринимательство) Google Blockly (визуальное программирование) Roblox Studio (создание игр) Kodu Game Lab (3D-программирование) Разработка мобильных приложений в Thunkable Blender (3D-моделирование) Компьютерная грамотность Minecraft Education Нейросети (основы ИИ) Alice 3D (3D-программирование) Run Marco (основы алгоритмов) Исполнители: Чертёжник и Черепашка GIF-анимация Tinkercad (3D-проектирование) Кибербезопасность Construct 2 (создание 2D-игр) Компас-3D (САПР) Основы HTML (веб-разработка) Голосовой помощник Алиса Создание лендинга (Tilda) Python (создание игр) Чат-бот на Python Web-дизайн (Figma) Web-мастер (HTML+CSS) Motion Design Unreal Engine 4 (игровой движок) JavaScript (игры) C# (создание 2D-игр) C++ Java (создание приложений) Unity 3D (игры) Олимпиадное программирование Облачные технологии, Блокчейн, Data Science PHP+SQL Photoshop Подготовка к олимпиадам Приложения Google Летние программы: Летние IT-интенсивы (краткосрочные программы по направлениям Roblox, Minecraft, Python и др.) Летние КИБЕРканикулы (городской лагерь с IT-обучением и развлекательной программой) Дополнительные механики: Кибервалюта («кибероны») для мотивации учеников, обмен на мерч на КиберМаркете Тьюторы и преподаватели: Опытные специалисты с практическим опытом и педагогической подготовкой Другие важные разделы: Новости (новости школы и сети) СМИ о нас (публикации о школе) Фотогалерея (фото с мероприятий и уроков) Видео (видеоматериалы о школе) Расписание занятий (время занятий для групп и пробных уроков) Локации (адрес школы в Октябрьском районе Саратова, ул. Тараса Шевченко, 8) Оплата (способы оплаты и договор-оферта) Сертификаты (активация промокодов партнеров)\n"
       },
-      "steps_passed": 8,
+      "steps_passed": 13,
       "tokens_used": 0,
       "step": 0,
       "my_prompt": {
@@ -2881,7 +2881,7 @@
       {
         "json": {
           "id": "wZGLxMCCmOnDJZ1o",
-          "root_execution_id": 99670,
+          "root_execution_id": 99736,
           "company_id": 1,
           "threshhold": "0.79",
           "import_id": 5
@@ -2889,7 +2889,7 @@
       }
     ]
   },
-  "versionId": "17d31397-e6c1-4d5d-8d9a-fa1268418cbf",
+  "versionId": "d43c9e8e-d0aa-4d76-b446-b6b142f90dab",
   "triggerCount": 0,
   "shared": [
     {
