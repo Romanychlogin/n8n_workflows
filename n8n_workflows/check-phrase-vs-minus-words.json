@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-11T07:51:25.424Z",
-  "updatedAt": "2025-10-08T06:43:33.621Z",
+  "updatedAt": "2025-10-16T08:41:03.550Z",
   "id": "rmq06a0YRFizRgV1",
   "name": "check phrase VS minus words",
   "active": false,
@@ -62,8 +62,8 @@
       "waitBetweenTries": 5000,
       "credentials": {
         "openAiApi": {
-          "id": "V8R8KiZKXscJQ1sL",
-          "name": "OpenAi account"
+          "id": "m4NScyhZzV3hBcTr",
+          "name": "OpenAi Yads"
         }
       },
       "notes": "Creates an embedding for each candidate n-gram.\n- Set your OpenAI credential on this node.\n- Batch mode is possible later; this keeps it simple and explicit."
@@ -318,7 +318,7 @@
   "staticData": null,
   "meta": null,
   "pinData": {},
-  "versionId": "d70981a7-cfd2-41f9-9c67-1bf65eefded6",
+  "versionId": "6fdf54dc-f2cb-459a-aa7d-176e41cb3045",
   "triggerCount": 0,
   "shared": [
     {
