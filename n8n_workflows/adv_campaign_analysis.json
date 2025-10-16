@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-07-18T08:31:54.459Z",
-  "updatedAt": "2025-10-16T12:58:35.823Z",
+  "updatedAt": "2025-10-16T13:07:03.789Z",
   "id": "wZGLxMCCmOnDJZ1o",
   "name": "ADV_campaign_analysis",
   "active": false,
@@ -812,7 +812,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        5600,
+        5520,
         -32
       ],
       "id": "1fe77e75-c3f7-45c6-9745-7d60d1a87ec1",
@@ -832,8 +832,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        5808,
-        -48
+        5712,
+        -32
       ],
       "id": "5e99e27e-8a7f-4aa5-9bf8-ac03d750250f",
       "name": "HTTP Request",
@@ -897,8 +897,8 @@
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1.2,
       "position": [
-        4288,
-        -160
+        4240,
+        -64
       ],
       "id": "cd16a7e3-72ee-4ecb-b4ba-b40cebdc3476",
       "name": "Find competitors mentions"
@@ -1266,8 +1266,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        4528,
-        -160
+        4544,
+        -112
       ],
       "id": "cfb990ed-43bf-46ea-bd90-b9fe5333f2ef",
       "name": "If competitors not found"
@@ -1340,8 +1340,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        5408,
-        -16
+        5312,
+        -32
       ],
       "id": "65af494d-9402-4aab-abec-c8f3050500ac",
       "name": "Set prompt"
@@ -1760,8 +1760,8 @@
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1.2,
       "position": [
-        3488,
-        -112
+        3424,
+        -80
       ],
       "id": "f804ee65-a120-4941-82b2-b3a234d37e73",
       "name": "Call 'chech phrase VS minus words'"
@@ -1773,8 +1773,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        3680,
-        -128
+        3728,
+        -80
       ],
       "id": "16966628-d280-4034-89f6-9ca959152246",
       "name": "Code in JavaScript"
@@ -1797,8 +1797,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        3296,
-        -96
+        3280,
+        -80
       ],
       "id": "419269a7-7dcf-4881-ab78-7e25fc369f5c",
       "name": "Set threshold"
@@ -1866,8 +1866,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        4080,
-        -144
+        4096,
+        -64
       ],
       "id": "db6e3563-dd82-4416-b389-f1af5609931f",
       "name": "set input"
@@ -2126,26 +2126,26 @@
     },
     {
       "parameters": {
-        "jsCode": "const workflowData = $getWorkflowStaticData('global');\nworkflowData.ai_calls = 0;\nworkflowData.embedding_calls = 0;\nreturn $input.all();\n"
+        "jsCode": "const workflowData = $getWorkflowStaticData('global');\nworkflowData.embedding_calls =workflowData.embedding_calls + $input.first().json.meta.candidates_total;\nreturn $input.all();\n"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        3552,
-        192
+        3568,
+        -80
       ],
       "id": "da91f4fe-51a3-4f17-b7ac-6077588c6d61",
       "name": "update calls counters"
     },
     {
       "parameters": {
-        "jsCode": "const workflowData = $getWorkflowStaticData('global');\nworkflowData.ai_calls = 0;\nworkflowData.embedding_calls = 0;\nreturn $input.all();\n"
+        "jsCode": "const workflowData = $getWorkflowStaticData('global');\nworkflowData.embedding_calls = workflowData.embedding_calls+$input.first().json.meta.candidates_total;\nreturn $input.all();\n"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        4416,
-        192
+        4400,
+        -48
       ],
       "id": "757875f7-9965-4b55-85b8-c5406e6d8a9d",
       "name": "update calls counters1"
@@ -2157,8 +2157,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        6000,
-        -48
+        5904,
+        -32
       ],
       "id": "66c8f649-5762-4cb9-916a-b17dc4d051fe",
       "name": "update calls counters2"
@@ -2384,7 +2384,7 @@
       "main": [
         [
           {
-            "node": "If competitors not found",
+            "node": "update calls counters1",
             "type": "main",
             "index": 0
           }
@@ -2797,7 +2797,7 @@
       "main": [
         [
           {
-            "node": "Code in JavaScript",
+            "node": "update calls counters",
             "type": "main",
             "index": 0
           }
@@ -2993,6 +2993,28 @@
           }
         ]
       ]
+    },
+    "update calls counters1": {
+      "main": [
+        [
+          {
+            "node": "If competitors not found",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "update calls counters": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
@@ -3035,7 +3057,7 @@
       }
     ]
   },
-  "versionId": "d8d32347-cbaa-4b97-815c-448787f392a7",
+  "versionId": "f6d8cb42-0790-4fd6-b916-b3217552ba88",
   "triggerCount": 0,
   "shared": [
     {
