@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-10-07T21:30:12.820Z",
-  "updatedAt": "2025-10-16T19:17:49.826Z",
+  "updatedAt": "2025-10-16T19:35:22.192Z",
   "id": "d4D0Fp4pO6Ch7S7C",
   "name": "CRM lead process",
   "active": true,
@@ -420,8 +420,7 @@
         -80
       ],
       "id": "d8035638-ba96-4f19-b296-99ab252e1563",
-      "name": "check 5 min",
-      "disabled": true
+      "name": "check 5 min"
     },
     {
       "parameters": {
@@ -561,6 +560,11 @@
             "node": "Set Metrica data",
             "type": "main",
             "index": 0
+          },
+          {
+            "node": "Set CRM data",
+            "type": "main",
+            "index": 0
           }
         ]
       ]
@@ -587,68 +591,8 @@
   },
   "staticData": null,
   "meta": null,
-  "pinData": {
-    "Webhook": [
-      {
-        "json": {
-          "headers": {
-            "host": "n8n-main-production-4310.up.railway.app",
-            "user-agent": "GuzzleHttp/7",
-            "content-length": "619",
-            "content-type": "application/json",
-            "x-forwarded-for": "5.182.6.225",
-            "x-forwarded-host": "n8n-main-production-4310.up.railway.app",
-            "x-forwarded-proto": "https",
-            "x-railway-edge": "railway/europe-west4-drams3a",
-            "x-railway-request-id": "hliybFBnReyimChdYqdHTg",
-            "x-real-ip": "5.182.6.225",
-            "x-request-start": "1760386221912",
-            "accept-encoding": "gzip"
-          },
-          "params": {},
-          "query": {},
-          "body": {
-            "branch_id": 1,
-            "event": "create",
-            "entity": "Customer",
-            "entity_id": 19383,
-            "fields_old": [],
-            "fields_new": {
-              "dob": "2009-10-29",
-              "name": "n8n8n8n",
-              "note": "",
-              "id_no": "",
-              "b_date": "2025-10-14 00:10:21",
-              "e_date": "2030-12-31",
-              "barcode": "",
-              "is_study": 0,
-              "id_issued": "",
-              "branch_ids": [
-                1
-              ],
-              "company_id": null,
-              "created_at": "2025-10-13 20:10:21",
-              "legal_name": "n8n",
-              "legal_type": 1,
-              "lead_source_id": "40",
-              "lead_status_id": "",
-              "contact_contacts": [
-                "+36(762)346-523",
-                "fjdhfjhd@dhjshjd.ru"
-              ],
-              "custom_value_json": "{\"16\":\"\",\"12\":\"\",\"13\":\"\",\"11\":\"\",\"14\":\"\",\"15\":\"\"}"
-            },
-            "fields_rel": [],
-            "user_id": null,
-            "datetime": "2025-10-14 00:10:21"
-          },
-          "webhookUrl": "https://n8n-main-production-4310.up.railway.app/webhook/c11cd095-1060-4c9c-87df-2a3c9d34deab",
-          "executionMode": "production"
-        }
-      }
-    ]
-  },
-  "versionId": "85f0b32a-2726-4f43-88e7-156fef53f956",
+  "pinData": {},
+  "versionId": "9906c3d9-8f7f-4131-b053-7bb6dcc6bd70",
   "triggerCount": 1,
   "shared": [
     {
