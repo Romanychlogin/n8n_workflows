@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-07-18T08:31:54.459Z",
-  "updatedAt": "2025-10-16T07:39:57.159Z",
+  "updatedAt": "2025-10-16T07:41:44.246Z",
   "id": "wZGLxMCCmOnDJZ1o",
   "name": "ADV_campaign_analysis",
   "active": false,
@@ -297,7 +297,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        9024,
+        9232,
         -1696
       ],
       "id": "233a9fb2-ccfc-4fbd-a2af-5630a61c7a22",
@@ -513,7 +513,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        9024,
+        9232,
         -672
       ],
       "id": "8200d389-0be7-463e-b356-76cf1a2d659f",
@@ -1093,7 +1093,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        10432,
+        10640,
         272
       ],
       "id": "56bff92d-817b-4fb5-bf93-e3fd6d772376",
@@ -1113,7 +1113,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        10192,
+        10400,
         288
       ],
       "id": "7a3d33ad-9f12-4f6f-9b09-6d67a00e76a8",
@@ -1146,7 +1146,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        10816,
+        11024,
         304
       ],
       "id": "9114c887-564f-4e0f-b89d-99a381a7bdde",
@@ -1159,7 +1159,7 @@
       "type": "n8n-nodes-base.stopAndError",
       "typeVersion": 1,
       "position": [
-        11056,
+        11264,
         176
       ],
       "id": "fdab4be5-884f-4a7f-97b4-8c7ae8b22898",
@@ -1193,7 +1193,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        10640,
+        10848,
         272
       ],
       "id": "3b984213-9b8c-4d82-8b9f-38dcc24fcdc1",
@@ -1558,7 +1558,7 @@
       "type": "n8n-nodes-base.merge",
       "typeVersion": 3.2,
       "position": [
-        9024,
+        9232,
         -1104
       ],
       "id": "e513fecc-579d-47a2-9a2b-aaac244d7f15",
@@ -1611,7 +1611,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        8768,
+        8976,
         48
       ],
       "id": "423755a8-79d5-4e97-8b3e-dfa845ed5154",
@@ -1635,7 +1635,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        9024,
+        9232,
         48
       ],
       "id": "962f418d-b31e-4b98-9bb5-1d1df41b4534",
@@ -1654,7 +1654,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        8560,
+        8768,
         48
       ],
       "id": "f068e410-e03b-4a05-b110-546c0fa908b3",
@@ -2053,8 +2053,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        8528,
-        -1248
+        8448,
+        -1264
       ],
       "id": "4f603c6a-df99-40e0-9776-af17740200a4",
       "name": "add link",
@@ -2076,7 +2076,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        9248,
+        9456,
         48
       ],
       "id": "885246fc-6be8-46c1-ab9c-6371a36ba425",
@@ -2085,6 +2085,26 @@
         "postgres": {
           "id": "Hx2VFmUi5WO2K4QX",
           "name": "Postgres account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        8640,
+        -1264
+      ],
+      "id": "49584c07-784d-4feb-b4d4-89bb74e9e6a0",
+      "name": "add competitor name variant",
+      "credentials": {
+        "postgres": {
+          "id": "4YkdFJcdTgzo9hkz",
+          "name": "PGvector"
         }
       }
     }
@@ -2796,7 +2816,7 @@
       "main": [
         [
           {
-            "node": "Merge1",
+            "node": "add competitor name variant",
             "type": "main",
             "index": 0
           }
@@ -2808,6 +2828,17 @@
         [
           {
             "node": "Loop Over Items1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "add competitor name variant": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
             "type": "main",
             "index": 0
           }
@@ -2855,7 +2886,7 @@
       }
     ]
   },
-  "versionId": "1518e157-1008-4e00-aadc-05674e936c01",
+  "versionId": "9eed9c85-1236-4531-a925-68c551f9b642",
   "triggerCount": 0,
   "shared": [
     {
