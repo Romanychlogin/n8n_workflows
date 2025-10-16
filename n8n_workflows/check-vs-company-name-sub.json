@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-01T16:15:28.703Z",
-  "updatedAt": "2025-10-07T08:31:16.078Z",
+  "updatedAt": "2025-10-16T08:40:48.476Z",
   "id": "xKP6S9XsCeVSgebo",
   "name": "Check VS company name SUB",
   "active": false,
@@ -55,8 +55,8 @@
       "waitBetweenTries": 5000,
       "credentials": {
         "openAiApi": {
-          "id": "V8R8KiZKXscJQ1sL",
-          "name": "OpenAi account"
+          "id": "m4NScyhZzV3hBcTr",
+          "name": "OpenAi Yads"
         }
       }
     },
@@ -249,7 +249,7 @@
       }
     ]
   },
-  "versionId": "f275a3cf-11a3-4de8-872b-85ae10afe9e2",
+  "versionId": "bd952270-a138-4ab9-8cf5-fe37564d8b89",
   "triggerCount": 1,
   "shared": [
     {
