@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-28T11:31:13.045Z",
-  "updatedAt": "2025-10-06T13:08:13.298Z",
+  "updatedAt": "2025-10-16T13:59:46.502Z",
   "id": "lBAh8kjoXRX0aGUF",
   "name": "ADS headers and texts creation services for updates",
   "active": false,
@@ -15,8 +15,8 @@
       "type": "n8n-nodes-base.splitInBatches",
       "typeVersion": 3,
       "position": [
-        1024,
-        -240
+        1424,
+        -176
       ],
       "id": "339fe02b-ad75-4e32-9d50-2089c9aff64b",
       "name": "Loop Over Items"
@@ -90,7 +90,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1712,
+        2128,
         -432
       ],
       "id": "4f3fc0e3-fa1c-4cb9-a13d-60b482490cbb",
@@ -110,7 +110,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        2000,
+        2416,
         -448
       ],
       "id": "b1bb38a1-137c-4031-8004-b4af548b5139",
@@ -132,7 +132,7 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        1472,
+        1840,
         -704
       ],
       "id": "14d43963-a615-4fa3-b342-ae9afdc40bbe",
@@ -147,7 +147,7 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        2208,
+        2640,
         -736
       ],
       "id": "13121ff4-d249-4a98-8e5c-c0e5b02b069c",
@@ -162,8 +162,8 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        3136,
-        -736
+        3552,
+        -720
       ],
       "id": "a0ce2830-2bd4-4c30-ac2f-77257eb329fe",
       "name": "Sticky Note3"
@@ -175,7 +175,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1488,
+        1904,
         -400
       ],
       "id": "b81544ec-079e-4eb9-9a54-01e33f7b09a0",
@@ -188,7 +188,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        208,
+        176,
         -240
       ],
       "id": "f4e87d72-97f5-47cc-a4c1-ac98e7a68350",
@@ -201,7 +201,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        2528,
+        2944,
         -512
       ],
       "id": "36f031a3-58d5-4a86-837e-f018e1a85c0a",
@@ -221,7 +221,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        2816,
+        3232,
         -528
       ],
       "id": "18ee1d12-e481-4942-9d70-9b20809e475f",
@@ -241,7 +241,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        2288,
+        2704,
         -496
       ],
       "id": "aa83080e-9569-46a8-bb11-3729408a3ab1",
@@ -373,12 +373,12 @@
     },
     {
       "parameters": {
-        "jsCode": "\n\nreturn [{\n  json: \n {\n  \"model\": \"gpt-5\",\n  \"input\": [\n    {\n      \"role\": \"user\",\n      \"content\": [\n        {\n          \"type\": \"input_text\",\n          \"text\": $json.my_prompt\n        }\n      ]\n    }\n  ],\n  \"text\": {\n    \"format\": {\n      \"type\": \"json_schema\",\n      \"name\": \"url_string\",\n      \"strict\": true,\n      \"schema\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"url\": {\n            \"type\": \"string\",\n            \"description\": \"A valid URL string\"\n          }\n        },\n        \"required\": [\n          \"url\"\n        ],\n        \"additionalProperties\": false\n      }\n    },\n    \"verbosity\": \"low\"\n  },\n  \"reasoning\": {\n    \"effort\": \"minimal\",\n    \"summary\": null\n  },\n  \"tools\": [],\n  \"store\": false,\n  \"include\": [\n    \"reasoning.encrypted_content\",\n    \"web_search_call.action.sources\"\n  ]\n}\n\n}];"
+        "jsCode": "\n\nreturn [{\n  json: \n {\n  \"model\": \"gpt-5\",\n  \"input\": [\n    {\n      \"role\": \"user\",\n      \"content\": [\n        {\n          \"type\": \"input_text\",\n          \"text\": $json.my_prompt\n        }\n      ]\n    }\n  ],\n  \"text\": {\n    \"format\": {\n      \"type\": \"json_schema\",\n      \"name\": \"url_string\",\n      \"strict\": true,\n      \"schema\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"url\": {\n            \"type\": \"string\",\n            \"enum\": [$('string for service urls').last().json.joined],\n            \"description\": \"A valid URL string\"\n          }\n        },\n        \"required\": [\n          \"url\"\n        ],\n        \"additionalProperties\": false\n      }\n    },\n    \"verbosity\": \"low\"\n  },\n  \"reasoning\": {\n    \"effort\": \"minimal\",\n    \"summary\": null\n  },\n  \"tools\": [],\n  \"store\": false,\n  \"include\": [\n    \"reasoning.encrypted_content\",\n    \"web_search_call.action.sources\"\n  ]\n}\n\n}];"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        3392,
+        3808,
         -512
       ],
       "id": "0f2a355a-83d5-4688-a72d-a3f5e2b06845",
@@ -398,7 +398,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        3680,
+        4096,
         -528
       ],
       "id": "401426fa-b558-4a8a-95d7-45404d9f427f",
@@ -418,7 +418,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        3152,
+        3568,
         -496
       ],
       "id": "5bf259e9-7170-460e-ba0b-ae8e1c3475e6",
@@ -557,7 +557,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        3936,
+        4352,
         -240
       ],
       "id": "8c922024-79bf-4e07-ace4-89f6ba09d54e",
@@ -623,8 +623,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        832,
-        -256
+        1232,
+        -224
       ],
       "id": "1d88ae07-0d96-4cca-9acd-8a3efbf6b843",
       "name": "set first_item1"
@@ -647,7 +647,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        1232,
+        1648,
         -320
       ],
       "id": "f47b4838-9304-4d7a-abec-bbb1bd19947f",
@@ -772,7 +772,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        720,
+        1136,
         -768
       ],
       "id": "2a5c0454-3bad-4874-b98d-ecf20a32ec70",
@@ -796,7 +796,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        4608,
+        5024,
         -256
       ],
       "id": "26e447b7-abed-4c39-aacf-171846d67a7c",
@@ -816,7 +816,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        4368,
+        4784,
         -240
       ],
       "id": "40f61c39-7a5e-4611-9c1e-6c262d108748",
@@ -1047,7 +1047,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        4160,
+        4576,
         -240
       ],
       "id": "368ef176-4f7c-4098-8273-76913340a13e",
@@ -1087,7 +1087,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        560,
+        448,
         -240
       ],
       "id": "a1f18792-306e-4081-99bf-d7b7ee592f91",
@@ -1120,7 +1120,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        5024,
+        5440,
         -256
       ],
       "id": "dceef081-c3ee-41f3-9960-07c7266ccfb9",
@@ -1133,7 +1133,7 @@
       "type": "n8n-nodes-base.stopAndError",
       "typeVersion": 1,
       "position": [
-        5232,
+        5648,
         -352
       ],
       "id": "ff3975f3-349c-4223-9738-e41ef93479a3",
@@ -1167,7 +1167,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        4816,
+        5232,
         -256
       ],
       "id": "f00c475e-39b6-4d11-8591-4f1e19ead268",
@@ -1203,7 +1203,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        384,
+        320,
         -240
       ],
       "id": "57b6a039-9828-4ffd-9fc3-49bb872b76ed",
@@ -1228,6 +1228,72 @@
       ],
       "id": "43ea249a-77b6-44f9-b702-25f60003283f",
       "name": "Sticky Note4"
+    },
+    {
+      "parameters": {
+        "mode": "chooseBranch"
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        1088,
+        -272
+      ],
+      "id": "e8df1c17-c260-4bee-b18f-26b9363b6c81",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "operation": "select",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "service_urls",
+          "mode": "list",
+          "cachedResultName": "service_urls"
+        },
+        "returnAll": true,
+        "where": {
+          "values": [
+            {
+              "column": "service_id",
+              "value": "={{ $json.service_id }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        624,
+        -176
+      ],
+      "id": "f5652581-bcc8-48a4-a441-11d3f4e8fc7c",
+      "name": "get service urls",
+      "credentials": {
+        "postgres": {
+          "id": "Hx2VFmUi5WO2K4QX",
+          "name": "Postgres account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Собираем service_url из ВСЕХ входящих items и делаем одну строку: \"url1\",\"url2\",...\nconst urls = $input.all()\n  .map(it => it.json?.service_url)\n  .filter(v => v !== undefined && v !== null && String(v).trim() !== '')\n  .map(v => String(v).trim())\n  // экранируем двойные кавычки внутри значений\n  .map(s => s.replace(/\"/g, '\\\\\"'));\n\n// Если нужно убрать дубли — раскомментируйте следующую строку:\n// const urls = [...new Set(urls)];\n\nconst joined = `\"${urls.join('\",\"')}\"`;\n\nreturn [{ json: { joined, count: urls.length } }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        832,
+        -176
+      ],
+      "id": "fe3edef7-fcff-4365-8b43-93b4705ef623",
+      "name": "string for service urls"
     }
   ],
   "connections": {
@@ -1630,7 +1696,12 @@
         ],
         [
           {
-            "node": "set first_item1",
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "get service urls",
             "type": "main",
             "index": 0
           }
@@ -1676,6 +1747,39 @@
           }
         ]
       ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "set first_item1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "get service urls": {
+      "main": [
+        [
+          {
+            "node": "string for service urls",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "string for service urls": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
     }
   },
   "settings": {
@@ -1716,7 +1820,7 @@
       }
     ]
   },
-  "versionId": "7700c1e6-44a0-4085-8e88-f0024531e64c",
+  "versionId": "df45c5b0-14d5-4857-992a-402231dfeb6e",
   "triggerCount": 0,
   "shared": [
     {
