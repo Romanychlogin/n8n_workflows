@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-10-16T07:25:00.123Z",
-  "updatedAt": "2025-10-16T07:32:52.273Z",
+  "updatedAt": "2025-10-16T07:41:27.042Z",
   "id": "sLocyhmCeTBxhA88",
   "name": "campaign core update finalization",
   "active": false,
@@ -30,7 +30,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        -752,
+        -1296,
         -400
       ],
       "id": "ae6c0eb4-5028-415f-9650-c34710cbf919",
@@ -73,7 +73,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -976,
+        -1520,
         -400
       ],
       "id": "e3cedb70-9c9e-44fd-aea8-2cfc6f6b1802",
@@ -124,21 +124,6 @@
           "name": "Postgres account 2"
         }
       }
-    },
-    {
-      "parameters": {
-        "content": "дублируем альтернативные названия конкурентов из минус слов в таблицу с названиями конкурентов",
-        "height": 368,
-        "width": 640
-      },
-      "type": "n8n-nodes-base.stickyNote",
-      "typeVersion": 1,
-      "position": [
-        -1696,
-        -576
-      ],
-      "id": "0eeb92f8-66ff-4bba-ba6a-0d716bd36228",
-      "name": "Sticky Note"
     }
   ],
   "connections": {
@@ -224,7 +209,7 @@
       }
     ]
   },
-  "versionId": "feca5bd6-e3f3-4ae1-96f3-8f18a26fee0b",
+  "versionId": "c278aa2e-1fa9-450a-bf5d-09c0f0af2322",
   "triggerCount": 0,
   "shared": [
     {
