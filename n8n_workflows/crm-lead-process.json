@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-10-07T21:30:12.820Z",
-  "updatedAt": "2025-10-16T19:05:08.392Z",
+  "updatedAt": "2025-10-16T19:17:49.826Z",
   "id": "d4D0Fp4pO6Ch7S7C",
   "name": "CRM lead process",
   "active": true,
@@ -326,6 +326,15 @@
       "parameters": {
         "method": "POST",
         "url": "=https://api-metrika.yandex.net/management/v1/counter/85745759/offline_conversions/upload",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "client_id_type",
+              "value": "CLIENT_ID"
+            }
+          ]
+        },
         "sendHeaders": true,
         "headerParameters": {
           "parameters": [
@@ -336,10 +345,14 @@
           ]
         },
         "sendBody": true,
-        "contentType": "=multipart-form-data",
+        "contentType": "multipart-form-data",
         "bodyParameters": {
           "parameters": [
-            {}
+            {
+              "parameterType": "formBinaryData",
+              "name": "file",
+              "inputDataFieldName": "file"
+            }
           ]
         },
         "options": {}
@@ -635,7 +648,7 @@
       }
     ]
   },
-  "versionId": "787aae8d-2b69-459f-a5b0-7e3844df057c",
+  "versionId": "85f0b32a-2726-4f43-88e7-156fef53f956",
   "triggerCount": 1,
   "shared": [
     {
