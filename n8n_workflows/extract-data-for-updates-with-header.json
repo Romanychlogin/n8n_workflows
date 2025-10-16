@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-30T17:56:19.098Z",
-  "updatedAt": "2025-10-15T17:16:52.326Z",
+  "updatedAt": "2025-10-16T07:00:35.214Z",
   "id": "UUlsZU9GOCmdvDHg",
   "name": "extract data for updates with header",
   "active": false,
@@ -81,7 +81,7 @@
               "id": "c0cb504d-2b55-4c1f-a628-80b7a369a078",
               "name": "group_id",
               "value": "=",
-              "type": "number"
+              "type": "string"
             },
             {
               "id": "5c643aae-d54d-4ad8-aee2-f5114f35f078",
@@ -335,8 +335,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        576,
-        -64
+        592,
+        -192
       ],
       "id": "8a20bdc0-26f0-48a8-a962-4ff2b49c80bd",
       "name": "Code in JavaScript"
@@ -662,7 +662,8 @@
     },
     {
       "parameters": {
-        "mode": "chooseBranch"
+        "mode": "chooseBranch",
+        "numberInputs": 3
       },
       "type": "n8n-nodes-base.merge",
       "typeVersion": 3.2,
@@ -680,8 +681,8 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        528,
-        -160
+        96,
+        -288
       ],
       "id": "5e6c7f23-831c-4943-b99c-67edc9003dec",
       "name": "Sticky Note1"
@@ -981,7 +982,7 @@
       }
     ]
   },
-  "versionId": "98aa198f-74de-48d4-8cb2-63819de78f8f",
+  "versionId": "96babe11-29ad-4586-ad7d-dc78325c8d0c",
   "triggerCount": 0,
   "shared": [
     {
