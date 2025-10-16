@@ -1,0 +1,232 @@
+{
+  "createdAt": "2025-10-16T07:25:00.123Z",
+  "updatedAt": "2025-10-16T07:30:33.065Z",
+  "id": "sLocyhmCeTBxhA88",
+  "name": "campaign core update finalization",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "inputSource": "passthrough"
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -2688,
+        -400
+      ],
+      "id": "6f90eea9-7484-4749-a3e2-6cc1b849ecdf",
+      "name": "When Executed by Another Workflow"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "update business_processes_states set finished=NOW(),tokens_used=0,steps_passed=1,steps_total=1 where business_process_id=(select MAX(business_process_id) from business_processes where n8n_process_name=$1) and n8n_workflow_execution_id=$2",
+        "options": {
+          "queryReplacement": "=[{{$workflow.name}},{{$execution.id}}]"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -1184,
+        -400
+      ],
+      "id": "ae6c0eb4-5028-415f-9650-c34710cbf919",
+      "name": "Mark_workflow_completed",
+      "executeOnce": true,
+      "credentials": {
+        "postgres": {
+          "id": "4YkdFJcdTgzo9hkz",
+          "name": "PGvector"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO business_processes_states (business_process_id, company_id,n8n_workflow_execution_id,n8n_workflow_root_execution_id, started)\nSELECT MAX(business_process_id), $2,$3,$4, NOW()\nFROM public.business_processes\nWHERE n8n_process_name = $1;",
+        "options": {
+          "queryReplacement": "=[{{$workflow.name}},{{$json.company_id}},{{$execution.id}},{{ $('When Executed by Another Workflow').item.json.root_execution_id }}]"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -2416,
+        -400
+      ],
+      "id": "d16808ff-b2ec-484c-9369-ba81602b1c7f",
+      "name": "Mark_workwlow_started",
+      "credentials": {
+        "postgres": {
+          "id": "4YkdFJcdTgzo9hkz",
+          "name": "PGvector"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Function-Node (Run Once)\nconst workflowData = $getWorkflowStaticData('global');\nworkflowData.steps_passed = 0;\nworkflowData.tokens_used = 0;\nworkflowData.step = 0;\nreturn $input.all();\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1408,
+        -400
+      ],
+      "id": "e3cedb70-9c9e-44fd-aea8-2cfc6f6b1802",
+      "name": "Init total counter"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "update report_import set processed_date=now() where import_id=$1",
+        "options": {
+          "queryReplacement": ""
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -2160,
+        -400
+      ],
+      "id": "261d00cd-cc09-46d4-88c7-fe0168841630",
+      "name": "Mark report processed",
+      "credentials": {
+        "postgres": {
+          "id": "Hx2VFmUi5WO2K4QX",
+          "name": "Postgres account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "BEGIN;\n\nWITH ins AS (\n  INSERT INTO ads_list\n    (group_name, key_word, ad_header, ad_text, group_id,\n     ad_url, company_id, service_id, report_id, update_required, campaign_id)\n  SELECT\n    group_name, key_word, ad_header, ad_text, group_id,\n    ad_url, company_id, service_id, report_id, false, campaign_id\n  FROM public.current_ads_list \n  ),\ndel AS (\n  DELETE FROM public.current_ads_list c\n  USING ins\n  WHERE c.ad_id = ins.ad_id\n  RETURNING 1\n)\nSELECT\n  (SELECT count(*) FROM ins) AS inserted_or_updated,\n  (SELECT count(*) FROM del) AS deleted_from_current;\n\nCOMMIT;",
+        "options": {
+          "queryReplacement": "={{ $('When Executed by Another Workflow').item.json.company_id }},{{$json.used_keyword }}"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -1904,
+        -400
+      ],
+      "id": "ded680fe-ca9d-418d-8c4b-311b0bb104a1",
+      "name": "move processed ads from temp table",
+      "credentials": {
+        "postgres": {
+          "id": "Hx2VFmUi5WO2K4QX",
+          "name": "Postgres account 2"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "Mark_workwlow_started",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mark_workflow_completed": {
+      "main": [
+        []
+      ]
+    },
+    "Mark_workwlow_started": {
+      "main": [
+        [
+          {
+            "node": "Mark report processed",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Init total counter": {
+      "main": [
+        [
+          {
+            "node": "Mark_workflow_completed",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mark report processed": {
+      "main": [
+        [
+          {
+            "node": "move processed ads from temp table",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "move processed ads from temp table": {
+      "main": [
+        [
+          {
+            "node": "Init total counter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false,
+    "errorWorkflow": "v2Z32ISEUzsFYnZw"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {
+    "When Executed by Another Workflow": [
+      {
+        "json": {
+          "company_id": 1,
+          "root_execution_id": 74293,
+          "import_id": 5
+        }
+      }
+    ]
+  },
+  "versionId": "9fd2c460-ff40-48c0-9007-32393ac70c7a",
+  "triggerCount": 0,
+  "shared": [
+    {
+      "createdAt": "2025-10-16T07:25:00.123Z",
+      "updatedAt": "2025-10-16T07:25:00.123Z",
+      "role": "workflow:owner",
+      "workflowId": "sLocyhmCeTBxhA88",
+      "projectId": "spKmbJLU4mvACXIB"
+    }
+  ],
+  "tags": [
+    {
+      "createdAt": "2025-10-08T11:53:55.048Z",
+      "updatedAt": "2025-10-08T11:53:55.048Z",
+      "id": "bfaXXdoIW5NToPfb",
+      "name": "post procesing"
+    }
+  ],
+  "file_name": "campaign-core-update-finalization.json"
+}
