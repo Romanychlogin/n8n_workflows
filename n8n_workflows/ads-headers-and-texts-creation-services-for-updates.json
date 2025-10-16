@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-28T11:31:13.045Z",
-  "updatedAt": "2025-10-16T13:59:46.502Z",
+  "updatedAt": "2025-10-16T14:01:01.306Z",
   "id": "lBAh8kjoXRX0aGUF",
   "name": "ADS headers and texts creation services for updates",
   "active": false,
@@ -1294,6 +1294,21 @@
       ],
       "id": "fe3edef7-fcff-4365-8b43-93b4705ef623",
       "name": "string for service urls"
+    },
+    {
+      "parameters": {
+        "content": "потом используем для ограничения structured output AI, чтобы исключить глюки",
+        "height": 384,
+        "width": 352
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        608,
+        -416
+      ],
+      "id": "180ccaf7-6e7a-4305-8a94-227b8166aca1",
+      "name": "Sticky Note5"
     }
   ],
   "connections": {
@@ -1820,7 +1835,7 @@
       }
     ]
   },
-  "versionId": "df45c5b0-14d5-4857-992a-402231dfeb6e",
+  "versionId": "7838ad6a-4143-4c2e-b785-3e24dbc917ad",
   "triggerCount": 0,
   "shared": [
     {
