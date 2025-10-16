@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-30T17:56:19.098Z",
-  "updatedAt": "2025-10-16T07:03:23.185Z",
+  "updatedAt": "2025-10-16T07:42:29.455Z",
   "id": "UUlsZU9GOCmdvDHg",
   "name": "extract data for updates with header",
   "active": false,
@@ -25,6 +25,7 @@
     },
     {
       "parameters": {
+        "authentication": "oAuth2",
         "path": "=/output_id{{ $('select company data').last().json.company_id }}_camp_{{ $('select ads data').last().json.campaign_yandex_id }}_{{ $('select company data').last().json.start_date }}_{{ $('select company data').last().json.end_date }}.xlsx",
         "binaryData": true
       },
@@ -37,9 +38,9 @@
       "id": "b481d235-879e-4fb6-8731-744f3bc50137",
       "name": "Upload a file",
       "credentials": {
-        "dropboxApi": {
-          "id": "KgtvFdGsueqNuB0Z",
-          "name": "Dropbox account"
+        "dropboxOAuth2Api": {
+          "id": "AugpA5e12rWISfZ5",
+          "name": "Dropbox OAuth"
         }
       }
     },
@@ -1182,7 +1183,7 @@
       }
     ]
   },
-  "versionId": "6c824845-14ca-407d-b9e9-748391b466af",
+  "versionId": "f7d2f95a-48ef-412b-86e0-1fecb4d08cf4",
   "triggerCount": 0,
   "shared": [
     {
