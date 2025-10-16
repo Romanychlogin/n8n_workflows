@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-07-18T08:31:54.459Z",
-  "updatedAt": "2025-10-08T12:16:14.031Z",
+  "updatedAt": "2025-10-16T07:39:57.159Z",
   "id": "wZGLxMCCmOnDJZ1o",
   "name": "ADV_campaign_analysis",
   "active": false,
@@ -1662,29 +1662,6 @@
     },
     {
       "parameters": {
-        "operation": "executeQuery",
-        "query": "INSERT INTO minus_words_origin(\n\tminus_word_id, list_id, origin_weight)\n\tVALUES ($1, $2, $3);",
-        "options": {
-          "queryReplacement": "=[{{ $json.id }},{{ $('Loop Over Items1').item.json.list_id }},{{ $('Loop Over Items').item.json.count_views }}]"
-        }
-      },
-      "type": "n8n-nodes-base.postgres",
-      "typeVersion": 2.6,
-      "position": [
-        9248,
-        48
-      ],
-      "id": "885246fc-6be8-46c1-ab9c-6371a36ba425",
-      "name": "Execute a SQL query",
-      "credentials": {
-        "postgres": {
-          "id": "Hx2VFmUi5WO2K4QX",
-          "name": "Postgres account 2"
-        }
-      }
-    },
-    {
-      "parameters": {
         "options": {
           "reset": "={{ $json.is_first }}"
         }
@@ -2032,29 +2009,6 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "INSERT INTO minus_words_origin(\n\tminus_word_id, list_id, origin_weight)\n\tVALUES ($1, $2, $3);",
-        "options": {
-          "queryReplacement": "=[{{ $json.id }},{{ $('Loop Over Items1').item.json.list_id }},{{ $('Loop Over Items').item.json.count_views }}]"
-        }
-      },
-      "type": "n8n-nodes-base.postgres",
-      "typeVersion": 2.6,
-      "position": [
-        8528,
-        -1248
-      ],
-      "id": "4f603c6a-df99-40e0-9776-af17740200a4",
-      "name": "Execute a SQL query1",
-      "credentials": {
-        "postgres": {
-          "id": "Hx2VFmUi5WO2K4QX",
-          "name": "Postgres account 2"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "operation": "executeQuery",
         "query": "INSERT INTO public.minus_words\n  (minus_word_embedding, minus_word,  company_id, comment, weight)\nVALUES\n  ($1::vector, $2, $3, $4, $5)\nON CONFLICT (company_id, minus_word) DO UPDATE\nSET weight = COALESCE(minus_words.weight, 0) + COALESCE(EXCLUDED.weight, 0)\nRETURNING id;",
         "options": {
           "queryReplacement": "=[\n  { \"value\": \"={{'[' + $json.data[0].embedding.map(e => Number(e)).join(',') + ']'}}\" },\n  { \"value\": \"={{ $('If competitors not found').last().json.hits[0].candidate }}\" },\n  { \"value\": \"={{ $('Loop Over Items').item.json.company_id }}\" },\n  { \"value\": \"={{'tokens used: 0' }}\" },\n  { \"value\": \"={{ $('Loop Over Items').item.json.count_views }}\" }\n]"
@@ -2087,6 +2041,52 @@
       ],
       "id": "1210da56-1449-4a58-a664-1e2884ae393b",
       "name": "Sticky Note9"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO minus_words_origin(\n\tminus_word_id, list_id, origin_weight)\n\tVALUES ($1, $2, $3);",
+        "options": {
+          "queryReplacement": "=[{{ $json.id }},{{ $('Loop Over Items1').item.json.list_id }},{{ $('Loop Over Items').item.json.count_views }}]"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        8528,
+        -1248
+      ],
+      "id": "4f603c6a-df99-40e0-9776-af17740200a4",
+      "name": "add link",
+      "credentials": {
+        "postgres": {
+          "id": "Hx2VFmUi5WO2K4QX",
+          "name": "Postgres account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO minus_words_origin(\n\tminus_word_id, list_id, origin_weight)\n\tVALUES ($1, $2, $3);",
+        "options": {
+          "queryReplacement": "=[{{ $json.id }},{{ $('Loop Over Items1').item.json.list_id }},{{ $('Loop Over Items').item.json.count_views }}]"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        9248,
+        48
+      ],
+      "id": "885246fc-6be8-46c1-ab9c-6371a36ba425",
+      "name": "add link1",
+      "credentials": {
+        "postgres": {
+          "id": "Hx2VFmUi5WO2K4QX",
+          "name": "Postgres account 2"
+        }
+      }
     }
   ],
   "connections": {
@@ -2632,18 +2632,7 @@
       "main": [
         [
           {
-            "node": "Execute a SQL query",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Execute a SQL query": {
-      "main": [
-        [
-          {
-            "node": "Loop Over Items1",
+            "node": "add link1",
             "type": "main",
             "index": 0
           }
@@ -2792,7 +2781,18 @@
         ]
       ]
     },
-    "Execute a SQL query1": {
+    "Insert minus words from competitors": {
+      "main": [
+        [
+          {
+            "node": "add link",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "add link": {
       "main": [
         [
           {
@@ -2803,11 +2803,11 @@
         ]
       ]
     },
-    "Insert minus words from competitors": {
+    "add link1": {
       "main": [
         [
           {
-            "node": "Execute a SQL query1",
+            "node": "Loop Over Items1",
             "type": "main",
             "index": 0
           }
@@ -2855,7 +2855,7 @@
       }
     ]
   },
-  "versionId": "d14d46d5-6b70-4fac-96d1-106089af031b",
+  "versionId": "1518e157-1008-4e00-aadc-05674e936c01",
   "triggerCount": 0,
   "shared": [
     {
