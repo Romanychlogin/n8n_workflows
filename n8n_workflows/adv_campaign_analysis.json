@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-07-18T08:31:54.459Z",
-  "updatedAt": "2025-10-16T08:35:14.393Z",
+  "updatedAt": "2025-10-16T12:58:35.823Z",
   "id": "wZGLxMCCmOnDJZ1o",
   "name": "ADV_campaign_analysis",
   "active": false,
@@ -869,7 +869,7 @@
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1.2,
       "position": [
-        7200,
+        7088,
         -224
       ],
       "id": "5d7ed225-61eb-40cf-86f8-cf487e481e1c",
@@ -1611,7 +1611,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        8976,
+        8864,
         48
       ],
       "id": "423755a8-79d5-4e97-8b3e-dfa845ed5154",
@@ -1654,7 +1654,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        8768,
+        8672,
         48
       ],
       "id": "f068e410-e03b-4a05-b110-546c0fa908b3",
@@ -1980,8 +1980,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        8096,
-        -1296
+        7952,
+        -1280
       ],
       "id": "ec31500b-8d32-4315-954c-a9eda091158c",
       "name": "Get embedding1",
@@ -2000,8 +2000,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        7888,
-        -1296
+        7760,
+        -1280
       ],
       "id": "55dde7c9-4cf6-45dd-9d52-f464c1d76854",
       "name": "Set API JSON3"
@@ -2110,6 +2110,97 @@
           "name": "PGvector"
         }
       }
+    },
+    {
+      "parameters": {
+        "jsCode": "const workflowData = $getWorkflowStaticData('global');\nworkflowData.ai_calls = 0;\nworkflowData.embedding_calls = 0;\nreturn $input.all();\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1472,
+        -96
+      ],
+      "id": "a8d782f9-a6c2-465c-9d42-7cc90b5ba489",
+      "name": "Init calls counters"
+    },
+    {
+      "parameters": {
+        "jsCode": "const workflowData = $getWorkflowStaticData('global');\nworkflowData.ai_calls = 0;\nworkflowData.embedding_calls = 0;\nreturn $input.all();\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3552,
+        192
+      ],
+      "id": "da91f4fe-51a3-4f17-b7ac-6077588c6d61",
+      "name": "update calls counters"
+    },
+    {
+      "parameters": {
+        "jsCode": "const workflowData = $getWorkflowStaticData('global');\nworkflowData.ai_calls = 0;\nworkflowData.embedding_calls = 0;\nreturn $input.all();\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        4416,
+        192
+      ],
+      "id": "757875f7-9965-4b55-85b8-c5406e6d8a9d",
+      "name": "update calls counters1"
+    },
+    {
+      "parameters": {
+        "jsCode": "const workflowData = $getWorkflowStaticData('global');\nworkflowData.ai_calls = workflowData.ai_calls +1;\n\nreturn $input.all();\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        6000,
+        -48
+      ],
+      "id": "66c8f649-5762-4cb9-916a-b17dc4d051fe",
+      "name": "update calls counters2"
+    },
+    {
+      "parameters": {
+        "jsCode": "const workflowData = $getWorkflowStaticData('global');\nworkflowData.embedding_calls = workflowData.embedding_calls + $input.first().json.meta.candidates_total;\nreturn $input.all();\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        7280,
+        -224
+      ],
+      "id": "099d12a6-e3ef-4529-8ad4-77fa6cb0fe1c",
+      "name": "update calls counters3"
+    },
+    {
+      "parameters": {
+        "jsCode": "const workflowData = $getWorkflowStaticData('global');\nworkflowData.embedding_calls = workflowData.embedding_calls + 1;\nreturn $input.all();\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        8128,
+        -1280
+      ],
+      "id": "13b1d442-f98c-43f5-89a0-907de68cd2da",
+      "name": "update calls counters4"
+    },
+    {
+      "parameters": {
+        "jsCode": "const workflowData = $getWorkflowStaticData('global');\nworkflowData.embedding_calls = workflowData.embedding_calls + 1;\nreturn $input.all();\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        9056,
+        48
+      ],
+      "id": "449b1423-ecdc-4ff0-9f57-af61323f3193",
+      "name": "update calls counters5"
     }
   ],
   "connections": {
@@ -2124,7 +2215,7 @@
         ],
         [
           {
-            "node": "пословное соответствие?",
+            "node": "Init calls counters",
             "type": "main",
             "index": 0
           }
@@ -2271,7 +2362,7 @@
       "main": [
         [
           {
-            "node": "Обработка ответа AI",
+            "node": "update calls counters2",
             "type": "main",
             "index": 0
           }
@@ -2282,7 +2373,7 @@
       "main": [
         [
           {
-            "node": "If minuses array is empty",
+            "node": "update calls counters3",
             "type": "main",
             "index": 0
           }
@@ -2633,7 +2724,7 @@
       "main": [
         [
           {
-            "node": "Insert minus words1",
+            "node": "update calls counters5",
             "type": "main",
             "index": 0
           }
@@ -2786,7 +2877,7 @@
       "main": [
         [
           {
-            "node": "Insert minus words from competitors",
+            "node": "update calls counters4",
             "type": "main",
             "index": 0
           }
@@ -2847,6 +2938,61 @@
           }
         ]
       ]
+    },
+    "Init calls counters": {
+      "main": [
+        [
+          {
+            "node": "пословное соответствие?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "update calls counters2": {
+      "main": [
+        [
+          {
+            "node": "Обработка ответа AI",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "update calls counters4": {
+      "main": [
+        [
+          {
+            "node": "Insert minus words from competitors",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "update calls counters3": {
+      "main": [
+        [
+          {
+            "node": "If minuses array is empty",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "update calls counters5": {
+      "main": [
+        [
+          {
+            "node": "Insert minus words1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
@@ -2889,7 +3035,7 @@
       }
     ]
   },
-  "versionId": "fa40a4c4-daf3-4a2f-8d7b-837632a45bda",
+  "versionId": "d8d32347-cbaa-4b97-815c-448787f392a7",
   "triggerCount": 0,
   "shared": [
     {
