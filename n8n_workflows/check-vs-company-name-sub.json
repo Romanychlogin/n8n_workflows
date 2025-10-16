@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-01T16:15:28.703Z",
-  "updatedAt": "2025-10-16T08:40:48.476Z",
+  "updatedAt": "2025-10-16T13:05:59.956Z",
   "id": "xKP6S9XsCeVSgebo",
   "name": "Check VS company name SUB",
   "active": false,
@@ -111,7 +111,7 @@
     },
     {
       "parameters": {
-        "jsCode": "// Collect ok=true, dedupe by canonical, keep highest similarity and longest phrase on tie\nconst items = $input.all().map(i => i.json).filter(j => j.ok);\nconst best = new Map();\nfor (const h of items) {\n  const key = h.canonical || h.matched || 'unknown';\n  const prev = best.get(key);\n  if (!prev || h.similarity > prev.similarity || (h.similarity === prev.similarity && (h.candidate?.length||0) > (prev.candidate?.length||0))) {\n    best.set(key, h);\n  }\n}\nreturn [{ json: { hits: Array.from(best.values()) } }];"
+        "jsCode": "// Collect ok=true, dedupe by canonical, keep highest similarity and longest phrase on tie\nconst items = $input.all().map(i => i.json).filter(j => j.ok);\nconst ctx = $('Code: extract_ngrams').first().json;\nconst best = new Map();\nfor (const h of items) {\n  const key = h.canonical || h.matched || 'unknown';\n  const prev = best.get(key);\n  if (!prev || h.similarity > prev.similarity || (h.similarity === prev.similarity && (h.candidate?.length||0) > (prev.candidate?.length||0))) {\n    best.set(key, h);\n  }\n}\nreturn [{ json: { hits: Array.from(best.values()),\n    meta: {\n      threshold: ctx.threshold,\n      candidates_total: ctx.candidates.length,\n      checked_ngrams: '1..'+ctx.MAX_N,\n      company_id:ctx.company_id\n    } } }];"
       },
       "id": "e223720a-8d2f-4836-a511-05ce0c06d19f",
       "name": "Code: aggregate_hits",
@@ -249,7 +249,7 @@
       }
     ]
   },
-  "versionId": "bd952270-a138-4ab9-8cf5-fe37564d8b89",
+  "versionId": "ddf240bc-0d63-4d4b-b071-e3adad2fbaca",
   "triggerCount": 1,
   "shared": [
     {
