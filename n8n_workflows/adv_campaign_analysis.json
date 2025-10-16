@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-07-18T08:31:54.459Z",
-  "updatedAt": "2025-10-16T13:16:29.677Z",
+  "updatedAt": "2025-10-16T17:06:39.809Z",
   "id": "wZGLxMCCmOnDJZ1o",
   "name": "ADV_campaign_analysis",
   "active": false,
@@ -829,7 +829,7 @@
     },
     {
       "parameters": {
-        "jsCode": "return [{\n  json: \n {\n  \"model\": \"gpt-5\",\n  \"input\": [\n    {\n      \"role\": \"developer\",\n      \"content\": [\n        {\n          \"type\": \"input_text\",\n          \"text\": \"# Role and Objective\\n- You are a search query analysis assistant. Your role is to identify and filter out irrelevant queries and detect any negative keywords (“minus words”) indicating a non-target audience. Validate each input phrase and respond with a structured JSON object that indicates compliance and lists any detected minus words.\\n\\n# Instructions\\n- Always return a response as a strict JSON object matching the following format:\\n  {\\n    \\\"is_correct_phrase\\\": boolean,\\n    \\\"minus_words\\\": [string]\\n  }\\n- Do not output any comments, explanations, or additional text.\\n\\n## Sub-categories\\n- The `is_correct_phrase` field must be set to either `true` or `false`, and cannot be null or any other type.\\n- The `minus_words` array must only contain unique string values, or be an empty array (`[]`) if there are no minus words. Do not include duplicate entries. Item order is not important.\\n- If input is absent or improperly formatted, always return:\\n  {\\n    \\\"is_correct_phrase\\\": false,\\n    \\\"minus_words\\\": []\\n  }\\n\\n# Context\\n- Phrase correctness is determined by external requirements or rules not included here.\\n- Only input validation is required; generating or explaining logic is outside the scope.\\n\"\n        }\n      ]\n    },\n    {\n      \"role\": \"user\",\n      \"content\": [\n        {\n          \"type\": \"input_text\",\n          \"text\": $json.my_prompt\n        }\n      ]\n    }\n  ],\n  \"text\": {\n    \"format\": {\n      \"type\": \"json_schema\",\n      \"name\": \"phrase_and_minus_words\",\n      \"strict\": true,\n      \"schema\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"is_correct_phrase\": {\n            \"type\": \"boolean\",\n            \"description\": \"Indicates if the phrase is correct.\"\n          },\n          \"minus_words\": {\n            \"type\": \"array\",\n            \"description\": \"A list of minus words. Can be empty.\",\n            \"items\": {\n              \"type\": \"string\",\n              \"description\": \"A minus word.\"\n            }\n          }\n        },\n        \"required\": [\n          \"is_correct_phrase\",\n          \"minus_words\"\n        ],\n        \"additionalProperties\": false\n      }\n    },\n    \"verbosity\": \"low\"\n  },\n  \"reasoning\": {\n    \"effort\": \"low\",\n    \"summary\": null\n  },\n  \"tools\": [\n    {\n      \"type\": \"function\",\n      \"description\": \"Return allowed 1–3 word combinations for negative keywords (minus words).\",\n      \"name\": \"get_non_matching_ngrams\",\n      \"parameters\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"phrase\": {\n            \"type\": \"string\",\n            \"description\": \"User phrase to analyze\"\n          },\n          \"threshold\": {\n            \"type\": \"number\",\n            \"description\": \"Match threshold, default 0.88\"\n          }\n        },\n        \"required\": [\n          \"phrase\"\n        ]\n      },\n      \"strict\": false\n    }\n  ],\n  \"store\": true,\n  \"include\": [\n    \"reasoning.encrypted_content\",\n    \"web_search_call.action.sources\"\n  ]\n}\n\n}];"
+        "jsCode": "return [{\n  json: \n {\n  \"model\": \"gpt-5\",\n  \"input\": [\n    {\n      \"role\": \"developer\",\n      \"content\": [\n        {\n          \"type\": \"input_text\",\n          \"text\": \"# Role and Objective\\n- You are a search query analysis assistant. Your role is to identify and filter out irrelevant queries for client's services. Validate each input phrase and respond with a structured JSON object.\\n\"\n        }\n      ]\n    },\n    {\n      \"role\": \"user\",\n      \"content\": [\n        {\n          \"type\": \"input_text\",\n          \"text\": $json.my_prompt\n        }\n      ]\n    }\n  ],\n  \"text\": {\n    \"format\": {\n      \"type\": \"json_schema\",\n      \"name\": \"phrase_resolution\",\n      \"strict\": true,\n      \"schema\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"is_correct_phrase\": {\n            \"type\": \"boolean\",\n            \"description\": \"Indicates if the phrase is correct.\"\n          }\n        },\n        \"required\": [\n          \"is_correct_phrase\"\n        ],\n        \"additionalProperties\": false\n      }\n    },\n    \"verbosity\": \"low\"\n  },\n  \"reasoning\": {\n    \"effort\": \"low\",\n    \"summary\": null\n  },\n  \"tools\": [],\n  \"store\": false,\n  \"include\": [\n    \"reasoning.encrypted_content\",\n    \"web_search_call.action.sources\"\n  ]\n}\n\n}];"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -3114,7 +3114,7 @@
       {
         "json": {
           "id": "wZGLxMCCmOnDJZ1o",
-          "root_execution_id": 99736,
+          "root_execution_id": 99805,
           "company_id": 1,
           "threshhold": "0.79",
           "import_id": 5
@@ -3122,7 +3122,7 @@
       }
     ]
   },
-  "versionId": "e5e11029-fd24-447b-8169-256bfe113b98",
+  "versionId": "3a544e7b-374d-4c17-a440-d719a335892d",
   "triggerCount": 0,
   "shared": [
     {
