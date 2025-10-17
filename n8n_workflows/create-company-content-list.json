@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-08-28T20:09:39.237Z",
-  "updatedAt": "2025-09-10T11:16:15.829Z",
+  "updatedAt": "2025-10-17T09:22:59.645Z",
   "id": "PQoJR6FgUb0qC3p9",
   "name": "Create Company content list",
   "active": false,
@@ -1174,7 +1174,7 @@
     "templateCredsSetupCompleted": true
   },
   "pinData": {},
-  "versionId": "a203ef36-4b0a-49e1-94e8-b0d3c1a91ecc",
+  "versionId": "1f0a50d0-1c50-4845-8ef2-a1a59b6d0904",
   "triggerCount": 0,
   "shared": [
     {
@@ -1185,5 +1185,12 @@
       "projectId": "spKmbJLU4mvACXIB"
     }
   ],
-  "tags": []
+  "tags": [
+    {
+      "createdAt": "2025-10-17T09:03:18.269Z",
+      "updatedAt": "2025-10-17T09:03:18.269Z",
+      "id": "S7zerj1h6Ro25pTA",
+      "name": "client creation"
+    }
+  ]
 }
