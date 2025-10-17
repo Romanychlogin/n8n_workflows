@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-11T07:51:25.424Z",
-  "updatedAt": "2025-10-16T13:06:03.751Z",
+  "updatedAt": "2025-10-17T08:35:05.654Z",
   "id": "rmq06a0YRFizRgV1",
   "name": "check phrase VS minus words",
   "active": false,
@@ -194,19 +194,6 @@
         -80
       ],
       "notes": "Produces the final response for the Webhook: list of n-grams that have no strong match."
-    },
-    {
-      "parameters": {
-        "content": "исправить, сейчас возвращаются сматченные куски фразы а не сами минус слова"
-      },
-      "type": "n8n-nodes-base.stickyNote",
-      "typeVersion": 1,
-      "position": [
-        640,
-        -256
-      ],
-      "id": "7c5072c0-1788-4673-99a2-7f65809c6b95",
-      "name": "Sticky Note"
     }
   ],
   "connections": {
@@ -317,8 +304,18 @@
   },
   "staticData": null,
   "meta": null,
-  "pinData": {},
-  "versionId": "12db0737-209b-4ce8-ae31-179fbb1b9d29",
+  "pinData": {
+    "When Executed by Another Workflow": [
+      {
+        "json": {
+          "list_id": "7770",
+          "key_word": "программирование для детей в юбилейном саратов",
+          "threshold": 0.8
+        }
+      }
+    ]
+  },
+  "versionId": "fb280ba4-44cc-4f28-8818-ec52da3b4b08",
   "triggerCount": 0,
   "shared": [
     {
