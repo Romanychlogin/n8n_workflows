@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-11T07:51:25.424Z",
-  "updatedAt": "2025-10-17T09:02:25.483Z",
+  "updatedAt": "2025-10-17T09:39:10.679Z",
   "id": "rmq06a0YRFizRgV1",
   "name": "check phrase VS minus words",
   "active": false,
@@ -121,62 +121,14 @@
       "notes": "Compares nearest match similarity with the threshold and marks pass/fail."
     },
     {
-      "parameters": {},
-      "type": "n8n-nodes-base.manualTrigger",
-      "typeVersion": 1,
-      "position": [
-        -928,
-        144
-      ],
-      "id": "e5ca0243-ad78-47af-b6a9-b1d2a7c797c1",
-      "name": "When clicking ‘Execute workflow’",
-      "disabled": true
-    },
-    {
-      "parameters": {
-        "assignments": {
-          "assignments": [
-            {
-              "id": "7d965486-1297-4240-af7c-2be7556a7b8d",
-              "name": "phrase",
-              "value": "онлайн школа кодинга для взрослых бесплатно",
-              "type": "string"
-            },
-            {
-              "id": "3f303f2d-b5bb-487d-88c0-f44550961553",
-              "name": "threshold",
-              "value": 0.88,
-              "type": "number"
-            },
-            {
-              "id": "bab4381c-0464-4787-b299-00410bee6298",
-              "name": "company_id",
-              "value": 1,
-              "type": "number"
-            }
-          ]
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.set",
-      "typeVersion": 3.4,
-      "position": [
-        -736,
-        128
-      ],
-      "id": "fd0aaa3a-35d2-4c22-8631-82c77815265a",
-      "name": "Edit Fields",
-      "disabled": true
-    },
-    {
       "parameters": {
         "inputSource": "passthrough"
       },
       "type": "n8n-nodes-base.executeWorkflowTrigger",
       "typeVersion": 1.1,
       "position": [
-        -880,
-        -256
+        -864,
+        -80
       ],
       "id": "2e41b42e-f70e-449b-86fc-7a048cf169f9",
       "name": "When Executed by Another Workflow"
@@ -263,28 +215,6 @@
         ]
       ]
     },
-    "When clicking ‘Execute workflow’": {
-      "main": [
-        [
-          {
-            "node": "Edit Fields",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Edit Fields": {
-      "main": [
-        [
-          {
-            "node": "Code: normalize_and_ngrams",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "When Executed by Another Workflow": {
       "main": [
         [
@@ -315,7 +245,7 @@
       }
     ]
   },
-  "versionId": "19cad8d1-a9cd-4c17-8913-6e2f674c990a",
+  "versionId": "95f70064-55fd-4699-94fd-3ea89422c600",
   "triggerCount": 0,
   "shared": [
     {
