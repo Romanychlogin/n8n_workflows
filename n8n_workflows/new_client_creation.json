@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-19T08:56:54.078Z",
-  "updatedAt": "2025-09-22T16:56:03.458Z",
+  "updatedAt": "2025-10-17T09:23:10.940Z",
   "id": "wycPS2KeZkmdbajx",
   "name": "New_client_creation",
   "active": false,
@@ -1453,7 +1453,7 @@
       }
     ]
   },
-  "versionId": "3f5bd099-aa88-4a24-bf49-e1d8369dc0d1",
+  "versionId": "f644f7ad-1dfc-4b43-8300-c0f108cd0986",
   "triggerCount": 0,
   "shared": [
     {
@@ -1464,5 +1464,12 @@
       "projectId": "spKmbJLU4mvACXIB"
     }
   ],
-  "tags": []
+  "tags": [
+    {
+      "createdAt": "2025-10-17T09:03:18.269Z",
+      "updatedAt": "2025-10-17T09:03:18.269Z",
+      "id": "S7zerj1h6Ro25pTA",
+      "name": "client creation"
+    }
+  ]
 }
