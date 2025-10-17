@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-10-17T09:39:52.642Z",
-  "updatedAt": "2025-10-17T09:54:56.796Z",
+  "updatedAt": "2025-10-17T10:07:13.619Z",
   "id": "cMcY26oqQV5mNCvI",
   "name": "create content records for the  key word",
   "active": false,
@@ -118,6 +118,19 @@
         }
       },
       "notes": "Looks up the nearest content phrase using pgvector (<#> = cosine distance if normalized). \n- Assumes table company_content(phrase text, phrase_embedding vector).\n- Returns top-1 match with similarity = -distance."
+    },
+    {
+      "parameters": {
+        "jsCode": "// Собираем все входящие элементы\nconst items = $input.all();\n\n// Формируем пары \"phrase:content_weight\"\nconst parts = items\n  .map(({ json }) => {\n    const phrase = String(json.phrase ?? '').trim();\n    const weight = json.content_weight;\n    if (!phrase || weight === undefined || weight === null) return null;\n\n    // Если в phrase есть запятые, обернём её в кавычки (чтобы не ломать формат)\n    const safePhrase = phrase.includes(',') ? `\"${phrase.replace(/\"/g, '\\\\\"')}\"` : phrase;\n    return `${safePhrase}:${String(weight).trim()}`;\n  })\n  .filter(Boolean);\n\n// Возвращаем одну строку\nreturn [{ json: { combined: parts.join(', ') } }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        688,
+        -80
+      ],
+      "id": "3c8e44b8-fd17-46fa-9227-a60cab4f830d",
+      "name": "Code in JavaScript"
     }
   ],
   "connections": {
@@ -178,7 +191,13 @@
     },
     "Insert content": {
       "main": [
-        []
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
       ]
     }
   },
@@ -202,7 +221,7 @@
       }
     ]
   },
-  "versionId": "cef762c9-93b3-48ea-9a23-cc117ec3dd6e",
+  "versionId": "9fb4da44-3d26-48f1-9097-b7eaa2f8aabb",
   "triggerCount": 0,
   "shared": [
     {
