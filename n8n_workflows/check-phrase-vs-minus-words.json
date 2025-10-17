@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-11T07:51:25.424Z",
-  "updatedAt": "2025-10-17T08:35:05.654Z",
+  "updatedAt": "2025-10-17T09:02:25.483Z",
   "id": "rmq06a0YRFizRgV1",
   "name": "check phrase VS minus words",
   "active": false,
@@ -308,14 +308,14 @@
     "When Executed by Another Workflow": [
       {
         "json": {
-          "list_id": "7770",
-          "key_word": "программирование для детей в юбилейном саратов",
+          "company_id": "1",
+          "key_word": "школа программрование в саратове",
           "threshold": 0.8
         }
       }
     ]
   },
-  "versionId": "fb280ba4-44cc-4f28-8818-ec52da3b4b08",
+  "versionId": "19cad8d1-a9cd-4c17-8913-6e2f674c990a",
   "triggerCount": 0,
   "shared": [
     {
