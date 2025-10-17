@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-25T13:33:58.106Z",
-  "updatedAt": "2025-10-17T09:15:18.556Z",
+  "updatedAt": "2025-10-17T10:08:19.854Z",
   "id": "0J5cvuaSz3IhDS99",
   "name": "campaign core update",
   "active": false,
@@ -1435,19 +1435,6 @@
     },
     {
       "parameters": {
-        "content": "Добавить company_id в анализ запущенных процессов!!!"
-      },
-      "type": "n8n-nodes-base.stickyNote",
-      "typeVersion": 1,
-      "position": [
-        -192,
-        208
-      ],
-      "id": "fa8515bb-a187-4fd7-b248-89084f9b201e",
-      "name": "Sticky Note7"
-    },
-    {
-      "parameters": {
         "operation": "executeQuery",
         "query": "update business_processes_states set error_happened=NOW(),error_message='execution completed but not marked finished' where business_process_id=(select MAX(business_process_id) from business_processes where n8n_process_name=$1) and n8n_workflow_execution_id=$2",
         "options": {
@@ -2303,19 +2290,6 @@
       ],
       "id": "b184f539-2055-4746-9440-5d5af5966293",
       "name": "campaign core update finalization"
-    },
-    {
-      "parameters": {
-        "content": "Обновить company content!!!!!!!"
-      },
-      "type": "n8n-nodes-base.stickyNote",
-      "typeVersion": 1,
-      "position": [
-        -336,
-        1072
-      ],
-      "id": "cbe4b355-fa0e-43b9-a026-f17d8fabaaac",
-      "name": "Sticky Note6"
     },
     {
       "parameters": {
@@ -3340,7 +3314,7 @@
       }
     ]
   },
-  "versionId": "9764c705-02a7-4ed6-807a-5600686dc85a",
+  "versionId": "83e9b2db-7798-4575-9606-66c6aa25876f",
   "triggerCount": 0,
   "shared": [
     {
