@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-10-17T09:39:52.642Z",
-  "updatedAt": "2025-10-17T09:40:04.963Z",
+  "updatedAt": "2025-10-17T09:54:56.796Z",
   "id": "cMcY26oqQV5mNCvI",
   "name": "create content records for the  key word",
   "active": false,
@@ -8,7 +8,7 @@
   "nodes": [
     {
       "parameters": {
-        "jsCode": "// === Code: normalize_and_ngrams ===\n// INPUT:  HTTP Webhook body { key_word: string, threshold?: number,company_id }\n// OUTPUT: { threshold: number, candidates: string[], tokens: string[] }\n// PURPOSE:\n//   1) Normalize the phrase (lowercase, keep letters/digits/underscore and - + #)\n//   2) Remove Russian prepositions as separate words (not touching - + #)\n//   3) Tokenize and build 1..3-gram unique candidates preserving order\n//   4) Provide threshold (default 0.88) downstream\n\n// Input JSON: { company_name, text, threshold? }\nconst body = $json;\nconst prepositions = [\n  \"в\",\"без\",\"до\",\"из\",\"к\",\"и\",\"на\",\"по\",\"о\",\"от\",\"перед\",\"при\",\n  \"через\",\"с\",\"у\",\"за\",\"над\",\"об\",\"под\",\"про\",\"для\",\"между\"\n];\n\n// Нормализуем регистр\nlet text = String(body.key_word ?? \"\").toLowerCase();\n\n// Экранируем спецсимволы\nconst escape = s => s.replace(/[.*+?^${}()|[\\]\\\\]/g, \"\\\\$&\");\nconst alts = prepositions.map(escape).join(\"|\");\n\n// Разрешаем буквы, цифры, подчёркивание, а также - + #\nconst re = new RegExp(\n  `(^|[^\\\\p{L}\\\\p{N}_\\\\-+#])(?:${alts})(?=$|[^\\\\p{L}\\\\p{N}_\\\\-+#])`,\n  \"giu\"\n);\n\n// Удаляем предлоги, сохраняя левый разделитель\ntext = text.replace(re, \"$1\");\n\n// Чистим пробелы\ntext = text.replace(/\\s+/g, \" \").trim();\n//const company = body.company_name;\nconst threshold = (typeof body.threshold === 'number') ? body.threshold : 0.88;\nconst company_id = body.company_id;\nconst tokens = (text.match(/[A-Za-zА-Яа-яЁё0-9][A-Za-zА-Яа-яЁё0-9&.\\-]{0,}/g) || [])\n  .map(s => s.trim())\n  .filter(Boolean);\n\nconst MAX_N = 3;\nconst set = new Set();\nfor (let i = 0; i < tokens.length; i++) {\n  for (let n = 1; n <= MAX_N && i + n <= tokens.length; n++) {\n    const phrase = tokens.slice(i, i+n).join(' ');\n    set.add(phrase);\n  }\n}\nlet candidates = Array.from(set);\n// если пусто — добавляем пустую строку\nif (candidates.length === 0) {\n  candidates = [\"\"];\n}\n\nreturn [{ json: { threshold,company_id, candidates,MAX_N } }];\n"
+        "jsCode": "// === Code: normalize_and_ngrams ===\n// INPUT:  HTTP Webhook body { key_word: string, threshold?: number,company_id }\n// OUTPUT: { threshold: number, candidates: string[], tokens: string[] }\n// PURPOSE:\n//   1) Normalize the phrase (lowercase, keep letters/digits/underscore and - + #)\n//   2) Remove Russian prepositions as separate words (not touching - + #)\n//   3) Tokenize and build 1..3-gram unique candidates preserving order\n//   4) Provide threshold (default 0.88) downstream\n\n// Input JSON: { company_name, text, threshold? }\nconst body = $json;\nconst prepositions = [\n  \"в\",\"без\",\"до\",\"из\",\"к\",\"и\",\"на\",\"по\",\"о\",\"от\",\"перед\",\"при\",\n  \"через\",\"с\",\"у\",\"за\",\"над\",\"об\",\"под\",\"про\",\"для\",\"между\"\n];\n\n// Нормализуем регистр\nlet text = String(body.key_word ?? \"\").toLowerCase();\n\n// Экранируем спецсимволы\nconst escape = s => s.replace(/[.*+?^${}()|[\\]\\\\]/g, \"\\\\$&\");\nconst alts = prepositions.map(escape).join(\"|\");\n\n// Разрешаем буквы, цифры, подчёркивание, а также - + #\nconst re = new RegExp(\n  `(^|[^\\\\p{L}\\\\p{N}_\\\\-+#])(?:${alts})(?=$|[^\\\\p{L}\\\\p{N}_\\\\-+#])`,\n  \"giu\"\n);\n\n// Удаляем предлоги, сохраняя левый разделитель\ntext = text.replace(re, \"$1\");\n\n// Чистим пробелы\ntext = text.replace(/\\s+/g, \" \").trim();\n//const company = body.company_name;\n\nconst company_id = body.company_id;\nconst tokens = (text.match(/[A-Za-zА-Яа-яЁё0-9][A-Za-zА-Яа-яЁё0-9&.\\-]{0,}/g) || [])\n  .map(s => s.trim())\n  .filter(Boolean);\n\nconst MAX_N = 3;\nconst set = new Set();\nfor (let i = 0; i < tokens.length; i++) {\n  for (let n = 1; n <= MAX_N && i + n <= tokens.length; n++) {\n    const phrase = tokens.slice(i, i+n).join(' ');\n    set.add(phrase);\n  }\n}\nlet candidates = Array.from(set);\n// если пусто — добавляем пустую строку\nif (candidates.length === 0) {\n  candidates = [\"\"];\n}\n\nreturn [{ json: { company_id, candidates,MAX_N } }];\n"
       },
       "id": "307eeaed-c171-4407-a82d-dae40fdc3b7d",
       "name": "Code: normalize_and_ngrams",
@@ -22,7 +22,7 @@
     },
     {
       "parameters": {
-        "jsCode": "// === Code: explode_candidates ===\n// INPUT:  { threshold, candidates[] }\n// OUTPUT: array of items: { candidate, threshold }\n// PURPOSE: fan-out each n-gram into its own item for embedding + DB lookup\n\nconst { threshold,company_id, candidates } = $json;\n\nreturn candidates.map(c => ({ json: { candidate: c,company_id, threshold } }));"
+        "jsCode": "// === Code: explode_candidates ===\n// INPUT:  { threshold, candidates[] }\n// OUTPUT: array of items: { candidate, threshold }\n// PURPOSE: fan-out each n-gram into its own item for embedding + DB lookup\n\nconst { company_id, candidates } = $json;\n\nreturn candidates.map(c => ({ json: { candidate: c,company_id } }));"
       },
       "id": "b83b47f3-f32d-4b60-8032-68b9081fe6a9",
       "name": "Code: explode_candidates",
@@ -70,7 +70,7 @@
     },
     {
       "parameters": {
-        "jsCode": "// === Code: build_vector_literal ===\n// INPUT:  HTTP response(s) from OpenAI embeddings (one per candidate)\n// OUTPUT: items: { vector: \"[float,...]\", idx, candidate, threshold }\n// PURPOSE: Convert embedding array into a Postgres vector literal string and\n//          carry candidate + threshold forward for alignment\n\nconst sourceAll = $('Code: explode_candidates').all();\n\nconst out = $input.all().map((r, i) => {\n  // OpenAI HTTP node may put data in r.json.body.data or r.json.data depending on version\n  const emb = r.json?.body?.data?.[0]?.embedding ?? r.json?.data?.[0]?.embedding;\n  if (!Array.isArray(emb) || emb.length === 0) {\n    throw new Error('Embedding not found for item #' + i);\n  }\n  const vector = '[' + emb.map(Number).join(',') + ']';\n  const candidate = sourceAll[i]?.json?.candidate;\n  const threshold = sourceAll[i]?.json?.threshold;\n  const company_id = sourceAll[i]?.json?.company_id;\n  return { json: { vector, idx: i, candidate, threshold,company_id } };\n});\n\nreturn out;"
+        "jsCode": "// === Code: build_vector_literal ===\n// INPUT:  HTTP response(s) from OpenAI embeddings (one per candidate)\n// OUTPUT: items: { vector: \"[float,...]\", idx, candidate, threshold }\n// PURPOSE: Convert embedding array into a Postgres vector literal string and\n//          carry candidate + threshold forward for alignment\n\nconst sourceAll = $('Code: explode_candidates').all();\n\nconst out = $input.all().map((r, i) => {\n  // OpenAI HTTP node may put data in r.json.body.data or r.json.data depending on version\n  const emb = r.json?.body?.data?.[0]?.embedding ?? r.json?.data?.[0]?.embedding;\n  if (!Array.isArray(emb) || emb.length === 0) {\n    throw new Error('Embedding not found for item #' + i);\n  }\n  const vector = '[' + emb.map(Number).join(',') + ']';\n  const candidate = sourceAll[i]?.json?.candidate;\n  \n  const company_id = sourceAll[i]?.json?.company_id;\n  return { json: { vector, idx: i, candidate, company_id } };\n});\n\nreturn out;"
       },
       "id": "8b3e5125-4ec9-4dc4-9846-5ed563052556",
       "name": "Code: build_vector_literal",
@@ -81,44 +81,6 @@
         -80
       ],
       "notes": "Convert embedding arrays into a pgvector literal (e.g., \"[0.1,0.2,...]\")."
-    },
-    {
-      "parameters": {
-        "operation": "executeQuery",
-        "query": "SELECT v.minus_word,  0 - (v.minus_word_embedding <#> $1::vector) AS similarity FROM minus_words v where company_id=$2 \n  ORDER BY v.minus_word_embedding <#> $1::vector LIMIT 1;",
-        "options": {
-          "queryReplacement": "=[{ {{$json.vector}}}, { {{ $json.company_id}} }]"
-        }
-      },
-      "id": "0ff010e1-3659-4428-9799-866f02bb5656",
-      "name": "Postgres: vector search",
-      "type": "n8n-nodes-base.postgres",
-      "typeVersion": 2,
-      "position": [
-        480,
-        -80
-      ],
-      "credentials": {
-        "postgres": {
-          "id": "4YkdFJcdTgzo9hkz",
-          "name": "PGvector"
-        }
-      },
-      "notes": "Looks up the nearest content phrase using pgvector (<#> = cosine distance if normalized). \n- Assumes table company_content(phrase text, phrase_embedding vector).\n- Returns top-1 match with similarity = -distance."
-    },
-    {
-      "parameters": {
-        "jsCode": "// === Code: threshold_flag ===\n// INPUT:  Postgres results (top-1 row per candidate)\n// OUTPUT: items: { candidate, matched, similarity, pass }\n// PURPOSE: Compare best similarity to threshold and flag whether it passes\n\nconst ctx = $('Code: normalize_and_ngrams').first().json; // { threshold, candidates, tokens }\nconst exploded = $('Code: explode_candidates').all();\n\nconst out = $input.all().map((row, i) => {\n  const best = row.json || {};\n  const candidate = exploded[i]?.json?.candidate;\n  const similarity = typeof best.similarity === 'number' ? best.similarity : -1;\n  const pass = similarity >= (ctx.threshold ?? 0.88);\n  return { json: { candidate, matched: best.minus_word, similarity, pass } };\n});\n\nreturn out;"
-      },
-      "id": "1a55f89c-df6c-489b-b360-fd4c06c19c23",
-      "name": "Code: threshold_flag",
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        736,
-        -80
-      ],
-      "notes": "Compares nearest match similarity with the threshold and marks pass/fail."
     },
     {
       "parameters": {
@@ -135,17 +97,27 @@
     },
     {
       "parameters": {
-        "jsCode": "// === Code: collect_non_matches ===\n// INPUT:  { candidate, matched, similarity, pass }\n// OUTPUT: single item: { non_matches: string[], meta: {...} }\n// PURPOSE: Keep only candidates that did NOT pass threshold (i.e., non-matches)\n\nconst ctx = $('Code: normalize_and_ngrams').first().json; // for threshold & counts\n\nconst failed = $input.all()\n  .map(i => i.json)\n  .filter(j => j.pass);\n\nreturn [{\n  json: {\n    matches: failed.map(x => x.matched),\n    meta: {\n      threshold: ctx.threshold,\n      candidates_total: ctx.candidates.length,\n      checked_ngrams: '1..'+ctx.MAX_N,\n      company_id:ctx.company_id\n    }\n  }\n}];"
+        "operation": "executeQuery",
+        "query": "INSERT INTO company_content (phrase_embedding, company_id,report_id, phrase,content_weight)\nVALUES ($1::vector, $2, $3,$4,1)\n  ON CONFLICT ON CONSTRAINT company_content_company_phrase_ci_uk \n  DO UPDATE\nSET content_weight = COALESCE(company_content.content_weight, 1) + COALESCE(EXCLUDED.content_weight, 1)\nRETURNING  phrase,content_weight;",
+        "options": {
+          "queryReplacement": "=[{ {{$json.vector}}}, { {{ $json.company_id}} }, { {{ $('When Executed by Another Workflow').last().json.report_id}},{{ $json.candidate}} } }]"
+        }
       },
-      "id": "44a5aa5d-440a-4d15-86cc-e41b7d35dea6",
-      "name": "Code: find_matches",
-      "type": "n8n-nodes-base.code",
+      "id": "0ff010e1-3659-4428-9799-866f02bb5656",
+      "name": "Insert content",
+      "type": "n8n-nodes-base.postgres",
       "typeVersion": 2,
       "position": [
-        992,
+        480,
         -80
       ],
-      "notes": "Produces the final response for the Webhook: list of n-grams that have no strong match."
+      "credentials": {
+        "postgres": {
+          "id": "4YkdFJcdTgzo9hkz",
+          "name": "PGvector"
+        }
+      },
+      "notes": "Looks up the nearest content phrase using pgvector (<#> = cosine distance if normalized). \n- Assumes table company_content(phrase text, phrase_embedding vector).\n- Returns top-1 match with similarity = -distance."
     }
   ],
   "connections": {
@@ -186,29 +158,7 @@
       "main": [
         [
           {
-            "node": "Postgres: vector search",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Postgres: vector search": {
-      "main": [
-        [
-          {
-            "node": "Code: threshold_flag",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Code: threshold_flag": {
-      "main": [
-        [
-          {
-            "node": "Code: find_matches",
+            "node": "Insert content",
             "type": "main",
             "index": 0
           }
@@ -225,6 +175,11 @@
           }
         ]
       ]
+    },
+    "Insert content": {
+      "main": [
+        []
+      ]
     }
   },
   "settings": {
@@ -240,13 +195,14 @@
       {
         "json": {
           "company_id": "1",
+          "report_id": "5",
           "key_word": "школа программрование в саратове",
           "threshold": 0.8
         }
       }
     ]
   },
-  "versionId": "60cc03e7-7e61-4954-9df8-0a4bc5d29ab5",
+  "versionId": "cef762c9-93b3-48ea-9a23-cc117ec3dd6e",
   "triggerCount": 0,
   "shared": [
     {
