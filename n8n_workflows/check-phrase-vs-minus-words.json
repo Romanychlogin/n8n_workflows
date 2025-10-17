@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-11T07:51:25.424Z",
-  "updatedAt": "2025-10-17T16:03:36.908Z",
+  "updatedAt": "2025-10-17T18:46:16.149Z",
   "id": "rmq06a0YRFizRgV1",
   "name": "check phrase VS minus words",
   "active": false,
@@ -239,13 +239,13 @@
       {
         "json": {
           "company_id": "1",
-          "key_word": "школа it технологий",
+          "key_word": "школа айти технологий саратов дети",
           "threshold": 0.8
         }
       }
     ]
   },
-  "versionId": "7fe1967c-f0c6-4446-953e-64555cfedcdf",
+  "versionId": "123068fd-812c-48e7-ac79-e0fb4ed29cba",
   "triggerCount": 0,
   "shared": [
     {
