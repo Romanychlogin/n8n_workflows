@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-10-17T09:39:52.642Z",
-  "updatedAt": "2025-10-17T10:07:13.619Z",
+  "updatedAt": "2025-10-17T13:44:33.514Z",
   "id": "cMcY26oqQV5mNCvI",
   "name": "create content records for the  key word",
   "active": false,
@@ -130,7 +130,7 @@
         -80
       ],
       "id": "3c8e44b8-fd17-46fa-9227-a60cab4f830d",
-      "name": "Code in JavaScript"
+      "name": "summary"
     }
   ],
   "connections": {
@@ -193,7 +193,7 @@
       "main": [
         [
           {
-            "node": "Code in JavaScript",
+            "node": "summary",
             "type": "main",
             "index": 0
           }
@@ -221,7 +221,7 @@
       }
     ]
   },
-  "versionId": "9fb4da44-3d26-48f1-9097-b7eaa2f8aabb",
+  "versionId": "d75bf68a-8157-4f3b-93f9-c6ddc982caa6",
   "triggerCount": 0,
   "shared": [
     {
