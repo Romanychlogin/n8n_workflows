@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-07-18T08:31:54.459Z",
-  "updatedAt": "2025-10-16T17:06:39.809Z",
+  "updatedAt": "2025-10-17T05:00:23.072Z",
   "id": "wZGLxMCCmOnDJZ1o",
   "name": "ADV_campaign_analysis",
   "active": false,
@@ -1575,19 +1575,6 @@
     },
     {
       "parameters": {
-        "mode": "chooseBranch"
-      },
-      "type": "n8n-nodes-base.merge",
-      "typeVersion": 3.2,
-      "position": [
-        9056,
-        -1104
-      ],
-      "id": "e513fecc-579d-47a2-9a2b-aaac244d7f15",
-      "name": "Merge1"
-    },
-    {
-      "parameters": {
         "conditions": {
           "options": {
             "caseSensitive": true,
@@ -2039,8 +2026,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        8304,
-        -1264
+        8336,
+        -1280
       ],
       "id": "08733d91-f08e-47ef-b012-9c69087921c0",
       "name": "Insert minus words from competitors",
@@ -2053,19 +2040,6 @@
     },
     {
       "parameters": {
-        "content": "Добавить еще сохранение в  competitor_name_variants.\nА надо? Для переиспользования в других клиентах надо\nДля этого надо добавить возврат competitor_id в Check VS company name SUB"
-      },
-      "type": "n8n-nodes-base.stickyNote",
-      "typeVersion": 1,
-      "position": [
-        8816,
-        -1360
-      ],
-      "id": "1210da56-1449-4a58-a664-1e2884ae393b",
-      "name": "Sticky Note9"
-    },
-    {
-      "parameters": {
         "operation": "executeQuery",
         "query": "INSERT INTO minus_words_origin(\n\tminus_word_id, list_id, origin_weight)\n\tVALUES ($1, $2, $3);",
         "options": {
@@ -2075,7 +2049,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        8448,
+        8512,
         -1264
       ],
       "id": "4f603c6a-df99-40e0-9776-af17740200a4",
@@ -2121,7 +2095,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        8640,
+        8688,
         -1264
       ],
       "id": "49584c07-784d-4feb-b4d4-89bb74e9e6a0",
@@ -2205,7 +2179,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        8128,
+        8160,
         -1280
       ],
       "id": "13b1d442-f98c-43f5-89a0-907de68cd2da",
@@ -2249,6 +2223,19 @@
       ],
       "id": "e7bd086a-4e86-432b-bb9c-cd360d1765aa",
       "name": "read call counters1"
+    },
+    {
+      "parameters": {
+        "content": "добавить отчет в комментарий"
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        8880,
+        -1312
+      ],
+      "id": "68e04a51-c346-4fbe-988c-0b1f6313d4fe",
+      "name": "Sticky Note9"
     }
   ],
   "connections": {
@@ -2734,17 +2721,6 @@
         []
       ]
     },
-    "Merge1": {
-      "main": [
-        [
-          {
-            "node": "read call counters1",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "if not exact competitor match": {
       "main": [
         [
@@ -2756,9 +2732,9 @@
         ],
         [
           {
-            "node": "Merge1",
+            "node": "read call counters1",
             "type": "main",
-            "index": 1
+            "index": 0
           }
         ]
       ]
@@ -2975,7 +2951,7 @@
       "main": [
         [
           {
-            "node": "Merge1",
+            "node": "read call counters1",
             "type": "main",
             "index": 0
           }
@@ -3116,7 +3092,7 @@
       {
         "json": {
           "id": "wZGLxMCCmOnDJZ1o",
-          "root_execution_id": 99805,
+          "root_execution_id": 103085,
           "company_id": 1,
           "threshhold": "0.79",
           "import_id": 5
@@ -3124,7 +3100,7 @@
       }
     ]
   },
-  "versionId": "3a544e7b-374d-4c17-a440-d719a335892d",
+  "versionId": "f57d93ff-52af-4144-b9b3-1512c5f16aec",
   "triggerCount": 0,
   "shared": [
     {
