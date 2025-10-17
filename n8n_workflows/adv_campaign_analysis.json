@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-07-18T08:31:54.459Z",
-  "updatedAt": "2025-10-17T10:08:09.371Z",
+  "updatedAt": "2025-10-17T13:32:02.621Z",
   "id": "wZGLxMCCmOnDJZ1o",
   "name": "ADV_campaign_analysis",
   "active": false,
@@ -297,7 +297,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        9232,
+        9648,
         -1696
       ],
       "id": "233a9fb2-ccfc-4fbd-a2af-5630a61c7a22",
@@ -535,7 +535,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        9232,
+        9648,
         -672
       ],
       "id": "8200d389-0be7-463e-b356-76cf1a2d659f",
@@ -575,7 +575,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        6496,
+        6912,
         -496
       ],
       "id": "78d0f369-bc02-4a48-84af-389ac2c2f8cf",
@@ -815,7 +815,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        9376,
+        9792,
         -1088
       ],
       "id": "e95a4440-545c-4788-a36f-4a8649b6dcf9",
@@ -834,7 +834,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        5520,
+        5936,
         -32
       ],
       "id": "1fe77e75-c3f7-45c6-9745-7d60d1a87ec1",
@@ -854,7 +854,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        5712,
+        6128,
         -32
       ],
       "id": "5e99e27e-8a7f-4aa5-9bf8-ac03d750250f",
@@ -891,7 +891,7 @@
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1.2,
       "position": [
-        7088,
+        7504,
         -224
       ],
       "id": "5d7ed225-61eb-40cf-86f8-cf487e481e1c",
@@ -919,7 +919,7 @@
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1.2,
       "position": [
-        4240,
+        4656,
         -64
       ],
       "id": "cd16a7e3-72ee-4ecb-b4ba-b40cebdc3476",
@@ -953,7 +953,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        7488,
+        7904,
         -240
       ],
       "id": "32bea20b-bd2e-4a99-83b0-e9dce5af9140",
@@ -1115,7 +1115,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        10640,
+        11056,
         272
       ],
       "id": "56bff92d-817b-4fb5-bf93-e3fd6d772376",
@@ -1135,7 +1135,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        10400,
+        10816,
         288
       ],
       "id": "7a3d33ad-9f12-4f6f-9b09-6d67a00e76a8",
@@ -1168,7 +1168,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        11024,
+        11440,
         304
       ],
       "id": "9114c887-564f-4e0f-b89d-99a381a7bdde",
@@ -1181,7 +1181,7 @@
       "type": "n8n-nodes-base.stopAndError",
       "typeVersion": 1,
       "position": [
-        11264,
+        11680,
         176
       ],
       "id": "fdab4be5-884f-4a7f-97b4-8c7ae8b22898",
@@ -1215,7 +1215,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        10848,
+        11264,
         272
       ],
       "id": "3b984213-9b8c-4d82-8b9f-38dcc24fcdc1",
@@ -1288,7 +1288,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        4544,
+        4960,
         -112
       ],
       "id": "cfb990ed-43bf-46ea-bd90-b9fe5333f2ef",
@@ -1318,7 +1318,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        8368,
+        8784,
         -288
       ],
       "id": "6bf663d1-4db2-412c-aa73-d7943501ee9f",
@@ -1349,7 +1349,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        8032,
+        8448,
         -912
       ],
       "id": "e75eef70-59a7-4697-8b04-373c54883a70",
@@ -1362,7 +1362,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        5312,
+        5728,
         -32
       ],
       "id": "65af494d-9402-4aab-abec-c8f3050500ac",
@@ -1377,8 +1377,8 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        5088,
-        -128
+        5536,
+        -112
       ],
       "id": "e4d61d2a-8f5d-4a77-be30-8d8fcbc6d395",
       "name": "Sticky Note6"
@@ -1450,7 +1450,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        6832,
+        7248,
         -224
       ],
       "id": "828b3288-b068-4d7e-8518-4fb483913b3e",
@@ -1554,7 +1554,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        7744,
+        8160,
         64
       ],
       "id": "2f169d1d-9f54-4e14-8d57-39373804f250",
@@ -1600,7 +1600,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        7568,
+        7984,
         -1104
       ],
       "id": "d39e81ed-4fb4-493a-b400-dee069a12b96",
@@ -1620,7 +1620,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        8864,
+        9280,
         48
       ],
       "id": "423755a8-79d5-4e97-8b3e-dfa845ed5154",
@@ -1644,7 +1644,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        9232,
+        9648,
         48
       ],
       "id": "962f418d-b31e-4b98-9bb5-1d1df41b4534",
@@ -1663,7 +1663,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        8672,
+        9088,
         48
       ],
       "id": "f068e410-e03b-4a05-b110-546c0fa908b3",
@@ -1678,7 +1678,7 @@
       "type": "n8n-nodes-base.splitInBatches",
       "typeVersion": 3,
       "position": [
-        8176,
+        8592,
         -32
       ],
       "id": "b3afb7b9-8747-4a4a-bc16-db74e225c497",
@@ -1702,7 +1702,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        7984,
+        8400,
         -48
       ],
       "id": "01b08a50-3401-4bd7-a074-f4ea0a2f0d44",
@@ -1726,7 +1726,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        8368,
+        8784,
         48
       ],
       "id": "8eaa9362-716d-4865-86fd-b8fe47cf7390",
@@ -1736,7 +1736,7 @@
       "parameters": {
         "content": "Check vs minus words",
         "height": 352,
-        "width": 624
+        "width": 912
       },
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
@@ -1774,19 +1774,6 @@
       ],
       "id": "f804ee65-a120-4941-82b2-b3a234d37e73",
       "name": "Call 'chech phrase VS minus words'"
-    },
-    {
-      "parameters": {
-        "jsCode": "const first = $input.first();\nconst matches = Array.isArray(first?.json?.matches) ? first.json.matches : [];\n\nlet resolution;\nif (matches.length === 0) {\n  resolution = 'to add';\n} else {\n  resolution = 'minus words found: ' + matches.join(', ');\n}\n\nconst list_id = $('Set threshold').first().json.list_id;\n\nreturn { resolution, list_id,total_tokens:0 };"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        3728,
-        -80
-      ],
-      "id": "16966628-d280-4034-89f6-9ca959152246",
-      "name": "Code in JavaScript"
     },
     {
       "parameters": {
@@ -1839,7 +1826,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        3920,
+        4336,
         -432
       ],
       "id": "fcb9d117-646a-4c19-b57b-f178f5890142",
@@ -1875,7 +1862,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        4096,
+        4512,
         -64
       ],
       "id": "db6e3563-dd82-4416-b389-f1af5609931f",
@@ -1890,8 +1877,8 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        4064,
-        -208
+        4464,
+        -192
       ],
       "id": "21e76d24-b895-4efb-a714-5b46327f62e7",
       "name": "Sticky Note8"
@@ -1920,7 +1907,7 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        6640,
+        7072,
         -304
       ],
       "id": "ac949b77-9d7a-4054-a66b-d2caad3c75f8",
@@ -1935,7 +1922,7 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        7712,
+        8064,
         -128
       ],
       "id": "ec7e97a5-c8ee-4dfd-bcbd-c20a9e665c18",
@@ -1989,7 +1976,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        7952,
+        8368,
         -1280
       ],
       "id": "ec31500b-8d32-4315-954c-a9eda091158c",
@@ -2009,7 +1996,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        7760,
+        8176,
         -1280
       ],
       "id": "55dde7c9-4cf6-45dd-9d52-f464c1d76854",
@@ -2026,7 +2013,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        8336,
+        8752,
         -1280
       ],
       "id": "08733d91-f08e-47ef-b012-9c69087921c0",
@@ -2049,7 +2036,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        8512,
+        8928,
         -1264
       ],
       "id": "4f603c6a-df99-40e0-9776-af17740200a4",
@@ -2072,7 +2059,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        9456,
+        9872,
         48
       ],
       "id": "885246fc-6be8-46c1-ab9c-6371a36ba425",
@@ -2095,7 +2082,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        8688,
+        9104,
         -1264
       ],
       "id": "49584c07-784d-4feb-b4d4-89bb74e9e6a0",
@@ -2127,7 +2114,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        3568,
+        3584,
         -80
       ],
       "id": "da91f4fe-51a3-4f17-b7ac-6077588c6d61",
@@ -2140,7 +2127,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        4400,
+        4816,
         -48
       ],
       "id": "757875f7-9965-4b55-85b8-c5406e6d8a9d",
@@ -2153,7 +2140,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        5904,
+        6320,
         -32
       ],
       "id": "66c8f649-5762-4cb9-916a-b17dc4d051fe",
@@ -2166,7 +2153,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        7280,
+        7696,
         -224
       ],
       "id": "099d12a6-e3ef-4529-8ad4-77fa6cb0fe1c",
@@ -2179,7 +2166,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        8160,
+        8576,
         -1280
       ],
       "id": "13b1d442-f98c-43f5-89a0-907de68cd2da",
@@ -2192,7 +2179,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        9056,
+        9472,
         48
       ],
       "id": "449b1423-ecdc-4ff0-9f57-af61323f3193",
@@ -2205,7 +2192,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        9040,
+        9456,
         -672
       ],
       "id": "ee1aeac7-2d33-4a9d-89da-cfdc7a098ded",
@@ -2218,7 +2205,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        9200,
+        9616,
         -1104
       ],
       "id": "e7bd086a-4e86-432b-bb9c-cd360d1765aa",
@@ -2254,7 +2241,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        8272,
+        8688,
         -912
       ],
       "id": "38b53ed1-18db-4ca6-b7ed-8e4444b551f6",
@@ -2282,11 +2269,47 @@
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1.2,
       "position": [
-        8464,
+        8880,
         -912
       ],
       "id": "7853897e-1f6c-461f-8dd9-cdc21a7fb465",
       "name": "Add to company content"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO used_minus_words(list_id, minus_word_id)\n\tVALUES ($1,$2);",
+        "options": {
+          "queryReplacement": "={{$('Loop Over Items').last().json.list_id}},{{ $json.minus_word_id }}"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        4000,
+        -80
+      ],
+      "id": "cb4cc624-8548-4bbb-a5dd-c7d3dd18c9a0",
+      "name": "Execute a SQL query",
+      "credentials": {
+        "postgres": {
+          "id": "Hx2VFmUi5WO2K4QX",
+          "name": "Postgres account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const { company_id, matches } = $json;\n\nreturn matches.map(c => ({ json: { minus_word_id: c,company_id } }));"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3792,
+        -80
+      ],
+      "id": "0735d743-8336-4570-b250-6631872218dd",
+      "name": "Code in JavaScript"
     }
   ],
   "connections": {
@@ -2885,17 +2908,6 @@
         ]
       ]
     },
-    "Code in JavaScript": {
-      "main": [
-        [
-          {
-            "node": "If minus words not found",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "If minus words not found": {
       "main": [
         [
@@ -3129,6 +3141,28 @@
           }
         ]
       ]
+    },
+    "Execute a SQL query": {
+      "main": [
+        [
+          {
+            "node": "If minus words not found",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Execute a SQL query",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
@@ -3173,7 +3207,7 @@
       }
     ]
   },
-  "versionId": "e2b8ff7c-9758-42fb-9766-ddeccb70987c",
+  "versionId": "33cb1f22-2ae6-40d2-9af7-0b6559fc86b7",
   "triggerCount": 0,
   "shared": [
     {
