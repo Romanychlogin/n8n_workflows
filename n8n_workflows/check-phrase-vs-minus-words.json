@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-11T07:51:25.424Z",
-  "updatedAt": "2025-10-17T09:39:10.679Z",
+  "updatedAt": "2025-10-17T13:27:59.430Z",
   "id": "rmq06a0YRFizRgV1",
   "name": "check phrase VS minus words",
   "active": false,
@@ -85,7 +85,7 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "SELECT v.minus_word,  0 - (v.minus_word_embedding <#> $1::vector) AS similarity FROM minus_words v where company_id=$2 \n  ORDER BY v.minus_word_embedding <#> $1::vector LIMIT 1;",
+        "query": "SELECT v.minus_word,v.id,  0 - (v.minus_word_embedding <#> $1::vector) AS similarity FROM minus_words v where company_id=$2 \n  ORDER BY v.minus_word_embedding <#> $1::vector LIMIT 1;",
         "options": {
           "queryReplacement": "=[{ {{$json.vector}}}, { {{ $json.company_id}} }]"
         }
@@ -108,7 +108,7 @@
     },
     {
       "parameters": {
-        "jsCode": "// === Code: threshold_flag ===\n// INPUT:  Postgres results (top-1 row per candidate)\n// OUTPUT: items: { candidate, matched, similarity, pass }\n// PURPOSE: Compare best similarity to threshold and flag whether it passes\n\nconst ctx = $('Code: normalize_and_ngrams').first().json; // { threshold, candidates, tokens }\nconst exploded = $('Code: explode_candidates').all();\n\nconst out = $input.all().map((row, i) => {\n  const best = row.json || {};\n  const candidate = exploded[i]?.json?.candidate;\n  const similarity = typeof best.similarity === 'number' ? best.similarity : -1;\n  const pass = similarity >= (ctx.threshold ?? 0.88);\n  return { json: { candidate, matched: best.minus_word, similarity, pass } };\n});\n\nreturn out;"
+        "jsCode": "// === Code: threshold_flag ===\n// INPUT:  Postgres results (top-1 row per candidate)\n// OUTPUT: items: { candidate, matched, similarity, pass }\n// PURPOSE: Compare best similarity to threshold and flag whether it passes\n\nconst ctx = $('Code: normalize_and_ngrams').first().json; // { threshold, candidates, tokens }\nconst exploded = $('Code: explode_candidates').all();\n\nconst out = $input.all().map((row, i) => {\n  const best = row.json || {};\n  const candidate = exploded[i]?.json?.candidate;\n  const similarity = typeof best.similarity === 'number' ? best.similarity : -1;\n  const pass = similarity >= (ctx.threshold ?? 0.88);\n  return { json: { candidate, matched: best.minus_word,matched_id:best.id, similarity, pass } };\n});\n\nreturn out;"
       },
       "id": "e70dccb4-a2d1-4724-b51f-8475c9bad77c",
       "name": "Code: threshold_flag",
@@ -135,7 +135,7 @@
     },
     {
       "parameters": {
-        "jsCode": "// === Code: collect_non_matches ===\n// INPUT:  { candidate, matched, similarity, pass }\n// OUTPUT: single item: { non_matches: string[], meta: {...} }\n// PURPOSE: Keep only candidates that did NOT pass threshold (i.e., non-matches)\n\nconst ctx = $('Code: normalize_and_ngrams').first().json; // for threshold & counts\n\nconst failed = $input.all()\n  .map(i => i.json)\n  .filter(j => j.pass);\n\nreturn [{\n  json: {\n    matches: failed.map(x => x.matched),\n    meta: {\n      threshold: ctx.threshold,\n      candidates_total: ctx.candidates.length,\n      checked_ngrams: '1..'+ctx.MAX_N,\n      company_id:ctx.company_id\n    }\n  }\n}];"
+        "jsCode": "// === Code: collect_non_matches ===\n// INPUT:  { candidate, matched, similarity, pass }\n// OUTPUT: single item: { non_matches: string[], meta: {...} }\n// PURPOSE: Keep only candidates that did NOT pass threshold (i.e., non-matches)\n\nconst ctx = $('Code: normalize_and_ngrams').first().json; // for threshold & counts\n\nconst failed = $input.all()\n  .map(i => i.json)\n  .filter(j => j.pass);\n\nreturn [{\n  json: {\n    matches: failed.map(x => x.matched),\n    matches_ids: failed.map(x => x.matched_id),\n    meta: {\n      threshold: ctx.threshold,\n      candidates_total: ctx.candidates.length,\n      checked_ngrams: '1..'+ctx.MAX_N,\n      company_id:ctx.company_id\n    }\n  }\n}];"
       },
       "id": "7aac3e91-6ded-45b5-ac00-ea2f7afd9a43",
       "name": "Code: find_matches",
@@ -239,13 +239,13 @@
       {
         "json": {
           "company_id": "1",
-          "key_word": "школа программрование в саратове",
+          "key_word": "школа it технологий",
           "threshold": 0.8
         }
       }
     ]
   },
-  "versionId": "95f70064-55fd-4699-94fd-3ea89422c600",
+  "versionId": "76e10176-b104-42e4-9dfa-c169d31d3436",
   "triggerCount": 0,
   "shared": [
     {
