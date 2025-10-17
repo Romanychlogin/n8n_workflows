@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-07-18T08:31:54.459Z",
-  "updatedAt": "2025-10-17T13:32:02.621Z",
+  "updatedAt": "2025-10-17T14:07:10.322Z",
   "id": "wZGLxMCCmOnDJZ1o",
   "name": "ADV_campaign_analysis",
   "active": false,
@@ -1811,11 +1811,12 @@
           "conditions": [
             {
               "id": "ca56d76f-8158-451b-95b0-48adbef68027",
-              "leftValue": "={{ $json.resolution}}",
+              "leftValue": "={{ $('Call \\'chech phrase VS minus words\\'').item.json.matches}}",
               "rightValue": "to add",
               "operator": {
-                "type": "string",
-                "operation": "equals"
+                "type": "array",
+                "operation": "empty",
+                "singleValue": true
               }
             }
           ],
@@ -1826,8 +1827,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        4336,
-        -432
+        4256,
+        -416
       ],
       "id": "fcb9d117-646a-4c19-b57b-f178f5890142",
       "name": "If minus words not found"
@@ -2114,7 +2115,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        3584,
+        3600,
         -80
       ],
       "id": "da91f4fe-51a3-4f17-b7ac-6077588c6d61",
@@ -2286,8 +2287,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        4000,
-        -80
+        5088,
+        -352
       ],
       "id": "cb4cc624-8548-4bbb-a5dd-c7d3dd18c9a0",
       "name": "Execute a SQL query",
@@ -2305,8 +2306,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        3792,
-        -80
+        4896,
+        -352
       ],
       "id": "0735d743-8336-4570-b250-6631872218dd",
       "name": "Code in JavaScript"
@@ -2919,7 +2920,7 @@
         ],
         [
           {
-            "node": "set input params",
+            "node": "Code in JavaScript",
             "type": "main",
             "index": 0
           }
@@ -3091,7 +3092,7 @@
       "main": [
         [
           {
-            "node": "Code in JavaScript",
+            "node": "If minus words not found",
             "type": "main",
             "index": 0
           }
@@ -3146,7 +3147,7 @@
       "main": [
         [
           {
-            "node": "If minus words not found",
+            "node": "set input params",
             "type": "main",
             "index": 0
           }
@@ -3199,7 +3200,7 @@
       {
         "json": {
           "id": "wZGLxMCCmOnDJZ1o",
-          "root_execution_id": 103085,
+          "root_execution_id": 108459,
           "company_id": 1,
           "threshhold": "0.79",
           "import_id": 5
@@ -3207,7 +3208,7 @@
       }
     ]
   },
-  "versionId": "33cb1f22-2ae6-40d2-9af7-0b6559fc86b7",
+  "versionId": "f301231c-b154-4400-a11b-ad32186e5c9b",
   "triggerCount": 0,
   "shared": [
     {
