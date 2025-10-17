@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-11T07:51:25.424Z",
-  "updatedAt": "2025-10-17T13:27:59.430Z",
+  "updatedAt": "2025-10-17T16:03:36.908Z",
   "id": "rmq06a0YRFizRgV1",
   "name": "check phrase VS minus words",
   "active": false,
@@ -85,7 +85,7 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "SELECT v.minus_word,v.id,  0 - (v.minus_word_embedding <#> $1::vector) AS similarity FROM minus_words v where company_id=$2 \n  ORDER BY v.minus_word_embedding <#> $1::vector LIMIT 1;",
+        "query": "SELECT v.minus_word,v.id,  0 - (v.minus_word_embedding <#> $1::vector) AS similarity FROM minus_words v where company_id=$2 and is_verified=true\n  ORDER BY v.minus_word_embedding <#> $1::vector LIMIT 1;",
         "options": {
           "queryReplacement": "=[{ {{$json.vector}}}, { {{ $json.company_id}} }]"
         }
@@ -245,7 +245,7 @@
       }
     ]
   },
-  "versionId": "76e10176-b104-42e4-9dfa-c169d31d3436",
+  "versionId": "7fe1967c-f0c6-4446-953e-64555cfedcdf",
   "triggerCount": 0,
   "shared": [
     {
