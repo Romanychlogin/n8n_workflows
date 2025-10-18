@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-19T15:26:59.886Z",
-  "updatedAt": "2025-10-18T08:38:35.756Z",
+  "updatedAt": "2025-10-18T15:56:00.258Z",
   "id": "SptAKErjQeOJuESk",
   "name": "status bot",
   "active": true,
@@ -874,7 +874,10 @@
     }
   },
   "settings": {
-    "executionOrder": "v1"
+    "executionOrder": "v1",
+    "saveDataSuccessExecution": "none",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false
   },
   "staticData": {
     "node:Schedule Trigger": {
@@ -951,7 +954,7 @@
       }
     ]
   },
-  "versionId": "4c6f1f1d-eead-43fe-bd4b-bacbaf643fcd",
+  "versionId": "e05e8861-2e66-48ae-8bd4-634046a7c661",
   "triggerCount": 3,
   "shared": [
     {
