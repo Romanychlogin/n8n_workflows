@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-19T15:26:59.886Z",
-  "updatedAt": "2025-10-18T08:30:06.839Z",
+  "updatedAt": "2025-10-18T08:38:35.756Z",
   "id": "SptAKErjQeOJuESk",
   "name": "status bot",
   "active": true,
@@ -131,7 +131,7 @@
     },
     {
       "parameters": {
-        "jsCode": "/**\n * n8n Code node (JavaScript)\n * Агрегирует инциденты по клиентам и делит вывод на чанки <= 4096 символов.\n * - Не режет инцидент посередине (инцидент — 2 строки).\n * - Если единичный инцидент > 4096, мягко делит внутри него с пометкой (продолжение).\n * - Выдаёт несколько выходных элементов, у каждого json.text — свой кусок.\n */\n\nconst MAX_LEN = 4096;          // жёсткий лимит на длину одного выходного элемента\nconst OUT_FIELD = 'incident_text';      // поле для текста в выходном json\n\n// Мягкое деление длинной строки на части <= maxLen, стараясь резать по \\n\\n, . , ! , ? , \\n , ' '\nfunction softSplit(str, maxLen) {\n  const parts = [];\n  let start = 0;\n  while (start < str.length) {\n    const end = Math.min(start + maxLen, str.length);\n    const slice = str.slice(start, end);\n\n    // поиск удобной точки разрыва\n    const candidates = [\n      '\\n\\n', '. ', '! ', '? ', '\\n', ' '\n    ];\n    let cut = -1;\n    for (const c of candidates) {\n      const i = slice.lastIndexOf(c);\n      if (i > cut) cut = i;\n    }\n\n    let take = cut >= 0 ? cut + 1 : slice.length;\n    // защита от пустого шага\n    if (take <= 0) take = slice.length;\n\n    parts.push(slice.slice(0, take));\n    start += take;\n  }\n  return parts;\n}\n\n// Пытаемся добавить фрагмент к текущему чанку, при переполнении — начинаем новый\nfunction tryAppendChunk(chunks, buffer, fragment) {\n  if ((buffer.current + fragment).length <= MAX_LEN) {\n    buffer.current += fragment;\n    return;\n  }\n\n  // Текущий буфер переполнится — закрываем его, начинаем новый\n  if (buffer.current) {\n    chunks.push(buffer.current.trimEnd());\n    buffer.current = '';\n  }\n\n  if (fragment.length <= MAX_LEN) {\n    buffer.current = fragment;\n    return;\n  }\n\n  // Крайний случай: один инцидент длиннее MAX_LEN — мягко делим внутри\n  const parts = softSplit(fragment, MAX_LEN);\n  for (let p = 0; p < parts.length; p++) {\n    const suffix = (p < parts.length - 1) ? ' (продолжение)\\n' : '';\n    const piece = parts[p] + suffix;\n    if ((buffer.current + piece).length > MAX_LEN && buffer.current) {\n      chunks.push(buffer.current.trimEnd());\n      buffer.current = '';\n    }\n    buffer.current = (buffer.current || '') + piece;\n  }\n}\n\n// --------- Основная логика ---------\nconst items = $input.all();\nconst chunks = [];\nconst buffer = { current: '' };\n\nlet lastClient = null;\n\n// Инициализация как в исходном коде: первая строка — \"Клиент: <имя>\"\nif (items.length > 0) {\n  lastClient = items[0].json.company_name;\n  tryAppendChunk(chunks, buffer, `Клиент: ${lastClient}`);\n}\n\nfor (const { json: i } of items) {\n  const client = i.company_name;\n\n  // Если сменился клиент — заголовок нового клиента\n  if (client !== lastClient) {\n    tryAppendChunk(chunks, buffer, `\\n\\nКлиент: ${client}`);\n    lastClient = client;\n  }\n\n  // Неделимый инцидент — 2 строки\n  const incidentBlock =\n    `\\nОшибка процесса: ${i.business_process_name} (${i.n8n_process_name})\\n` +\n    `в: ${i.error_happened}  описание: ${i.error_message}`;\n\n  tryAppendChunk(chunks, buffer, incidentBlock);\n}\n\n// Финальный сброс буфера\nif (buffer.current.trim().length > 0) {\n  chunks.push(buffer.current.trimEnd());\n}\n\n// Возвращаем один элемент на каждый чанк\nreturn chunks.map((text, idx) => ({\n  json: {\n    [OUT_FIELD]: text,\n    chunk_index: idx,\n    chunks_total: chunks.length,\n  },\n}));\n"
+        "jsCode": "/**\n * n8n Code node (JavaScript)\n * Агрегирует инциденты по клиентам и делит вывод на чанки <= 4096 символов.\n * - Не режет инцидент посередине (инцидент — 2 строки).\n * - Если единичный инцидент > 4096, мягко делит внутри него с пометкой (продолжение).\n * - Выдаёт несколько выходных элементов, у каждого json.text — свой кусок.\n */\n\nconst MAX_LEN = 4096;          // жёсткий лимит на длину одного выходного элемента\nconst OUT_FIELD = 'text';      // поле для текста в выходном json\n\n// Экранирование под Telegram MarkdownV2\nfunction escapeMarkdownV2(s) {\n  // список из оф. доки Telegram для MarkdownV2:\n  // _ * [ ] ( ) ~ ` > # + - = | { } . !\n  return String(s).replace(/([_*\\[\\]()~`>#+\\-=|{}.!])/g, '\\\\$1');\n}\n\n// Если хочешь жирный заголовок + текст, делай так:\nconst now = new Date();\n\nconst header = '*'+now.toLocaleTimeString('ru-RU', { timeZone:'Europe/Moscow', hour: '2-digit', minute: '2-digit' })+' MSK*';                 // уже корректный Markdown\n\n\n\n// Мягкое деление длинной строки на части <= maxLen, стараясь резать по \\n\\n, . , ! , ? , \\n , ' '\nfunction softSplit(str, maxLen) {\n  const parts = [];\n  let start = 0;\n  while (start < str.length) {\n    const end = Math.min(start + maxLen, str.length);\n    const slice = str.slice(start, end);\n\n    // поиск удобной точки разрыва\n    const candidates = [\n      '\\n\\n', '. ', '! ', '? ', '\\n', ' '\n    ];\n    let cut = -1;\n    for (const c of candidates) {\n      const i = slice.lastIndexOf(c);\n      if (i > cut) cut = i;\n    }\n\n    let take = cut >= 0 ? cut + 1 : slice.length;\n    // защита от пустого шага\n    if (take <= 0) take = slice.length;\n\n    parts.push(slice.slice(0, take));\n    start += take;\n  }\n  return parts;\n}\n\n// Пытаемся добавить фрагмент к текущему чанку, при переполнении — начинаем новый\nfunction tryAppendChunk(chunks, buffer, fragment) {\n  if ((buffer.current + fragment).length <= MAX_LEN) {\n    buffer.current += fragment;\n    return;\n  }\n\n  // Текущий буфер переполнится — закрываем его, начинаем новый\n  if (buffer.current) {\n    chunks.push(buffer.current.trimEnd());\n    buffer.current = '';\n  }\n\n  if (fragment.length <= MAX_LEN) {\n    buffer.current = fragment;\n    return;\n  }\n\n  // Крайний случай: один инцидент длиннее MAX_LEN — мягко делим внутри\n  const parts = softSplit(fragment, MAX_LEN);\n  for (let p = 0; p < parts.length; p++) {\n    const suffix = (p < parts.length - 1) ? ' (продолжение)\\n' : '';\n    const piece = parts[p] + suffix;\n    if ((buffer.current + piece).length > MAX_LEN && buffer.current) {\n      chunks.push(buffer.current.trimEnd());\n      buffer.current = '';\n    }\n    buffer.current = (buffer.current || '') + piece;\n  }\n}\n\n// --------- Основная логика ---------\nconst items = $input.all();\nconst chunks = [];\nconst buffer = { current: '' };\n\nlet lastClient = null;\n\n// Инициализация как в исходном коде: первая строка — \"Клиент: <имя>\"\nif (items.length > 0) {\n  lastClient = items[0].json.company_name;\n  tryAppendChunk(chunks, buffer, `Клиент: ${lastClient}`);\n}\n\nfor (const { json: i } of items) {\n  const client = i.company_name;\n\n  // Если сменился клиент — заголовок нового клиента\n  if (client !== lastClient) {\n    tryAppendChunk(chunks, buffer, `\\n\\nКлиент: ${client}`);\n    lastClient = client;\n  }\n\n  // Неделимый инцидент — 2 строки\n  const incidentBlock =\n    `\\nОшибка процесса: ${i.business_process_name} (${i.n8n_process_name})\\n` +\n    `в: ${i.error_happened}  описание: ${i.error_message}`;\n\n  tryAppendChunk(chunks, buffer, incidentBlock);\n}\n\n// Финальный сброс буфера\nif (buffer.current.trim().length > 0) {\n  chunks.push(buffer.current.trimEnd());\n}\n\n// Возвращаем один элемент на каждый чанк\nreturn chunks.map((text, idx) => ({\n  json: {\n    [OUT_FIELD]: header+'\\n'+escapeMarkdownV2(text),\n    chunk_index: idx,\n    chunks_total: chunks.length,\n  },\n}));\n"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -339,7 +339,8 @@
         224
       ],
       "id": "81e88932-ea57-469d-9f07-12b0a3ffd2af",
-      "name": "Code in JavaScript1"
+      "name": "Code in JavaScript1",
+      "disabled": true
     },
     {
       "parameters": {
@@ -935,22 +936,22 @@
     "Schedule Trigger for incidents": [
       {
         "json": {
-          "timestamp": "2025-10-18T11:28:35.004+03:00",
-          "Readable date": "October 18th 2025, 11:28:35 am",
-          "Readable time": "11:28:35 am",
+          "timestamp": "2025-10-18T11:37:01.003+03:00",
+          "Readable date": "October 18th 2025, 11:37:01 am",
+          "Readable time": "11:37:01 am",
           "Day of week": "Saturday",
           "Year": "2025",
           "Month": "October",
           "Day of month": "18",
           "Hour": "11",
-          "Minute": "28",
-          "Second": "35",
+          "Minute": "37",
+          "Second": "01",
           "Timezone": "Europe/Moscow (UTC+03:00)"
         }
       }
     ]
   },
-  "versionId": "5695bd7d-1043-468a-a9a6-539a99cbf98c",
+  "versionId": "4c6f1f1d-eead-43fe-bd4b-bacbaf643fcd",
   "triggerCount": 3,
   "shared": [
     {
