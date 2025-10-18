@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-07-18T08:31:54.459Z",
-  "updatedAt": "2025-10-17T18:48:31.601Z",
+  "updatedAt": "2025-10-18T05:47:21.416Z",
   "id": "wZGLxMCCmOnDJZ1o",
   "name": "ADV_campaign_analysis",
   "active": false,
@@ -1349,8 +1349,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        9088,
-        -880
+        8448,
+        -912
       ],
       "id": "e75eef70-59a7-4697-8b04-373c54883a70",
       "name": "mark to add"
@@ -2075,9 +2075,9 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "WITH ce AS (\n    SELECT competitor_id\n    FROM public.competitor_entities\n    WHERE company_id = $6\n      AND canonical_name = $5\n    LIMIT 1\n)\nINSERT INTO public.competitor_name_variants\n    (competitor_id, is_common_word, name_text, embedding, report_id)\nSELECT\n    ce.competitor_id,\n    $1::boolean,          -- is_common_word\n    $2::text,             -- name_text\n    $3::vector,           -- embedding (pgvector)\n    $4::bigint  -- report_id (по умолчанию 0)\nFROM ce\nRETURNING competitor_id, is_common_word, name_text, report_id;",
+        "query": "WITH ce AS (\n    SELECT competitor_id\n    FROM public.competitor_entities\n    WHERE company_id = $5\n      AND canonical_name = $4\n    LIMIT 1\n)\nINSERT INTO public.competitor_name_variants\n    (competitor_id, is_common_word, name_text, embedding, report_id)\nSELECT\n    ce.competitor_id,\n    false,          -- is_common_word\n    $1::text,             -- name_text\n    $2::vector,           -- embedding (pgvector)\n    $3::bigint  -- report_id (по умолчанию 0)\nFROM ce\nRETURNING competitor_id, is_common_word, name_text, report_id;",
         "options": {
-          "queryReplacement": "=[   \n{\"value\": \"=false\"}\n{ \"value\": \"={{ $('If competitors not found').last().json.hits[0].candidate }}\" },\n{ \"value\": \"={{'[' + $('Get embedding1').item.json.data[0].embedding.map(e => Number(e)).join(',') + ']'}}\" },\n{ \"value\": \"={{ $('Loop Over Items').item.json.report_id }}\" },\n{ \"value\": \"={{ $('if not exact competitor match').item.json.hits[0].canonical }}\" },\n{ \"value\": \"={{ $('Loop Over Items').item.json.company_id }}\" }\n]"
+          "queryReplacement": "=[   \n{ \"value\": \"={{ $('If competitors not found').last().json.hits[0].candidate }}\" },\n{ \"value\": \"={{'[' + $('Get embedding1').item.json.data[0].embedding.map(e => Number(e)).join(',') + ']'}}\" },\n{ \"value\": \"={{ $('Loop Over Items').item.json.report_id }}\" },\n{ \"value\": \"={{ $('if not exact competitor match').item.json.hits[0].canonical }}\" },\n{ \"value\": \"={{ $('Loop Over Items').item.json.company_id }}\" }\n]"
         }
       },
       "type": "n8n-nodes-base.postgres",
@@ -2415,7 +2415,7 @@
       "main": [
         [
           {
-            "node": "set input1",
+            "node": "mark to add",
             "type": "main",
             "index": 0
           }
@@ -2649,7 +2649,7 @@
       "main": [
         [
           {
-            "node": "set input1",
+            "node": "mark to add",
             "type": "main",
             "index": 0
           }
@@ -2696,7 +2696,7 @@
       "main": [
         [
           {
-            "node": "read call counters",
+            "node": "set input1",
             "type": "main",
             "index": 0
           }
@@ -3157,7 +3157,7 @@
       "main": [
         [
           {
-            "node": "mark to add",
+            "node": "read call counters",
             "type": "main",
             "index": 0
           }
@@ -3232,7 +3232,7 @@
       {
         "json": {
           "id": "wZGLxMCCmOnDJZ1o",
-          "root_execution_id": 108723,
+          "root_execution_id": 109705,
           "company_id": 1,
           "threshhold": "0.79",
           "import_id": 5
@@ -3240,7 +3240,7 @@
       }
     ]
   },
-  "versionId": "d37d7970-750d-4628-b431-415e035c9df7",
+  "versionId": "e2b02395-cfe1-4b63-a4b0-93de3f3cba02",
   "triggerCount": 0,
   "shared": [
     {
