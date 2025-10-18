@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-19T15:26:59.886Z",
-  "updatedAt": "2025-10-18T08:19:58.062Z",
+  "updatedAt": "2025-10-18T08:30:06.839Z",
   "id": "SptAKErjQeOJuESk",
   "name": "status bot",
   "active": true,
@@ -330,7 +330,7 @@
     {
       "parameters": {
         "mode": "runOnceForEachItem",
-        "jsCode": "// Code node (перед Telegram Send)\n// Берём исходный текст, например из предыдущего узла:\nconst src = $json.incident_text ?? '—';\n\n// Экранирование под Telegram MarkdownV2\nfunction escapeMarkdownV2(s) {\n  // список из оф. доки Telegram для MarkdownV2:\n  // _ * [ ] ( ) ~ ` > # + - = | { } . !\n  return String(s).replace(/([_*\\[\\]()~`>#+\\-=|{}.!])/g, '\\\\$1');\n}\n\n// Если хочешь жирный заголовок + текст, делай так:\nconst now = new Date();\n\nconst header = '*'+now.toLocaleTimeString('ru-RU', { timeZone:'Europe/Moscow', hour: '2-digit', minute: '2-digit' })+' MSK*';                 // уже корректный Markdown\nconst body   = escapeMarkdownV2(src);          // «опасный» произвольный текст\n\nconst text = `${header}\\n${body}`;\n\nreturn [{ json: { text } }];"
+        "jsCode": "// Code node (перед Telegram Send)\n// Берём исходный текст, например из предыдущего узла:\nconst src = $input.item.json.incident_text ??  '—';\n\n// Экранирование под Telegram MarkdownV2\nfunction escapeMarkdownV2(s) {\n  // список из оф. доки Telegram для MarkdownV2:\n  // _ * [ ] ( ) ~ ` > # + - = | { } . !\n  return String(s).replace(/([_*\\[\\]()~`>#+\\-=|{}.!])/g, '\\\\$1');\n}\n\n// Если хочешь жирный заголовок + текст, делай так:\nconst now = new Date();\n\nconst header = '*'+now.toLocaleTimeString('ru-RU', { timeZone:'Europe/Moscow', hour: '2-digit', minute: '2-digit' })+' MSK*';                 // уже корректный Markdown\nconst body   = escapeMarkdownV2(src);          // «опасный» произвольный текст\n\nconst text = `${header}\\n${body}`;\n\nreturn [{ json: { text } }];"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -935,22 +935,22 @@
     "Schedule Trigger for incidents": [
       {
         "json": {
-          "timestamp": "2025-10-18T11:18:03.002+03:00",
-          "Readable date": "October 18th 2025, 11:18:03 am",
-          "Readable time": "11:18:03 am",
+          "timestamp": "2025-10-18T11:28:35.004+03:00",
+          "Readable date": "October 18th 2025, 11:28:35 am",
+          "Readable time": "11:28:35 am",
           "Day of week": "Saturday",
           "Year": "2025",
           "Month": "October",
           "Day of month": "18",
           "Hour": "11",
-          "Minute": "18",
-          "Second": "03",
+          "Minute": "28",
+          "Second": "35",
           "Timezone": "Europe/Moscow (UTC+03:00)"
         }
       }
     ]
   },
-  "versionId": "05cf89b0-6c22-457d-8245-fe72b2fd6c5f",
+  "versionId": "5695bd7d-1043-468a-a9a6-539a99cbf98c",
   "triggerCount": 3,
   "shared": [
     {
