@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-19T15:26:59.886Z",
-  "updatedAt": "2025-09-29T13:56:00.676Z",
+  "updatedAt": "2025-10-18T08:19:58.062Z",
   "id": "SptAKErjQeOJuESk",
   "name": "status bot",
   "active": true,
@@ -131,7 +131,7 @@
     },
     {
       "parameters": {
-        "jsCode": "let incident_text = 'Клиент: ';\nlet client_name = $input.first().json.company_name;\n\nincident_text += client_name;\n\nfor (const { json: i } of $input.all()) {\n  if (i.company_name === client_name) {\n    incident_text += `\\nОшибка процесса: ${i.business_process_name} (${i.n8n_process_name})\\n`;\n    incident_text += `в: ${i.error_happened}  описание: ${i.error_message}`;\n  } else {\n    client_name = i.company_name;\n    incident_text += `\\n\\nКлиент: ${client_name}`;\n    incident_text += `\\nОшибка процесса: ${i.business_process_name} (${i.n8n_process_name})\\n`;\n    incident_text += `в: ${i.error_happened}  описание: ${i.error_message}`;\n  }\n}\n\nreturn [{ json: { text: incident_text } }];"
+        "jsCode": "/**\n * n8n Code node (JavaScript)\n * Агрегирует инциденты по клиентам и делит вывод на чанки <= 4096 символов.\n * - Не режет инцидент посередине (инцидент — 2 строки).\n * - Если единичный инцидент > 4096, мягко делит внутри него с пометкой (продолжение).\n * - Выдаёт несколько выходных элементов, у каждого json.text — свой кусок.\n */\n\nconst MAX_LEN = 4096;          // жёсткий лимит на длину одного выходного элемента\nconst OUT_FIELD = 'incident_text';      // поле для текста в выходном json\n\n// Мягкое деление длинной строки на части <= maxLen, стараясь резать по \\n\\n, . , ! , ? , \\n , ' '\nfunction softSplit(str, maxLen) {\n  const parts = [];\n  let start = 0;\n  while (start < str.length) {\n    const end = Math.min(start + maxLen, str.length);\n    const slice = str.slice(start, end);\n\n    // поиск удобной точки разрыва\n    const candidates = [\n      '\\n\\n', '. ', '! ', '? ', '\\n', ' '\n    ];\n    let cut = -1;\n    for (const c of candidates) {\n      const i = slice.lastIndexOf(c);\n      if (i > cut) cut = i;\n    }\n\n    let take = cut >= 0 ? cut + 1 : slice.length;\n    // защита от пустого шага\n    if (take <= 0) take = slice.length;\n\n    parts.push(slice.slice(0, take));\n    start += take;\n  }\n  return parts;\n}\n\n// Пытаемся добавить фрагмент к текущему чанку, при переполнении — начинаем новый\nfunction tryAppendChunk(chunks, buffer, fragment) {\n  if ((buffer.current + fragment).length <= MAX_LEN) {\n    buffer.current += fragment;\n    return;\n  }\n\n  // Текущий буфер переполнится — закрываем его, начинаем новый\n  if (buffer.current) {\n    chunks.push(buffer.current.trimEnd());\n    buffer.current = '';\n  }\n\n  if (fragment.length <= MAX_LEN) {\n    buffer.current = fragment;\n    return;\n  }\n\n  // Крайний случай: один инцидент длиннее MAX_LEN — мягко делим внутри\n  const parts = softSplit(fragment, MAX_LEN);\n  for (let p = 0; p < parts.length; p++) {\n    const suffix = (p < parts.length - 1) ? ' (продолжение)\\n' : '';\n    const piece = parts[p] + suffix;\n    if ((buffer.current + piece).length > MAX_LEN && buffer.current) {\n      chunks.push(buffer.current.trimEnd());\n      buffer.current = '';\n    }\n    buffer.current = (buffer.current || '') + piece;\n  }\n}\n\n// --------- Основная логика ---------\nconst items = $input.all();\nconst chunks = [];\nconst buffer = { current: '' };\n\nlet lastClient = null;\n\n// Инициализация как в исходном коде: первая строка — \"Клиент: <имя>\"\nif (items.length > 0) {\n  lastClient = items[0].json.company_name;\n  tryAppendChunk(chunks, buffer, `Клиент: ${lastClient}`);\n}\n\nfor (const { json: i } of items) {\n  const client = i.company_name;\n\n  // Если сменился клиент — заголовок нового клиента\n  if (client !== lastClient) {\n    tryAppendChunk(chunks, buffer, `\\n\\nКлиент: ${client}`);\n    lastClient = client;\n  }\n\n  // Неделимый инцидент — 2 строки\n  const incidentBlock =\n    `\\nОшибка процесса: ${i.business_process_name} (${i.n8n_process_name})\\n` +\n    `в: ${i.error_happened}  описание: ${i.error_message}`;\n\n  tryAppendChunk(chunks, buffer, incidentBlock);\n}\n\n// Финальный сброс буфера\nif (buffer.current.trim().length > 0) {\n  chunks.push(buffer.current.trimEnd());\n}\n\n// Возвращаем один элемент на каждый чанк\nreturn chunks.map((text, idx) => ({\n  json: {\n    [OUT_FIELD]: text,\n    chunk_index: idx,\n    chunks_total: chunks.length,\n  },\n}));\n"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -329,7 +329,8 @@
     },
     {
       "parameters": {
-        "jsCode": "// Code node (перед Telegram Send)\n// Берём исходный текст, например из предыдущего узла:\nconst src = $json.text ?? '—';\n\n// Экранирование под Telegram MarkdownV2\nfunction escapeMarkdownV2(s) {\n  // список из оф. доки Telegram для MarkdownV2:\n  // _ * [ ] ( ) ~ ` > # + - = | { } . !\n  return String(s).replace(/([_*\\[\\]()~`>#+\\-=|{}.!])/g, '\\\\$1');\n}\n\n// Если хочешь жирный заголовок + текст, делай так:\nconst now = new Date();\n\nconst header = '*'+now.toLocaleTimeString('ru-RU', { timeZone:'Europe/Moscow', hour: '2-digit', minute: '2-digit' })+' MSK*';                 // уже корректный Markdown\nconst body   = escapeMarkdownV2(src);          // «опасный» произвольный текст\n\nconst text = `${header}\\n${body}`;\n\nreturn [{ json: { text } }];"
+        "mode": "runOnceForEachItem",
+        "jsCode": "// Code node (перед Telegram Send)\n// Берём исходный текст, например из предыдущего узла:\nconst src = $json.incident_text ?? '—';\n\n// Экранирование под Telegram MarkdownV2\nfunction escapeMarkdownV2(s) {\n  // список из оф. доки Telegram для MarkdownV2:\n  // _ * [ ] ( ) ~ ` > # + - = | { } . !\n  return String(s).replace(/([_*\\[\\]()~`>#+\\-=|{}.!])/g, '\\\\$1');\n}\n\n// Если хочешь жирный заголовок + текст, делай так:\nconst now = new Date();\n\nconst header = '*'+now.toLocaleTimeString('ru-RU', { timeZone:'Europe/Moscow', hour: '2-digit', minute: '2-digit' })+' MSK*';                 // уже корректный Markdown\nconst body   = escapeMarkdownV2(src);          // «опасный» произвольный текст\n\nconst text = `${header}\\n${body}`;\n\nreturn [{ json: { text } }];"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -934,22 +935,22 @@
     "Schedule Trigger for incidents": [
       {
         "json": {
-          "timestamp": "2025-09-29T15:54:04.003+03:00",
-          "Readable date": "September 29th 2025, 3:54:04 pm",
-          "Readable time": "3:54:04 pm",
-          "Day of week": "Monday",
+          "timestamp": "2025-10-18T11:18:03.002+03:00",
+          "Readable date": "October 18th 2025, 11:18:03 am",
+          "Readable time": "11:18:03 am",
+          "Day of week": "Saturday",
           "Year": "2025",
-          "Month": "September",
-          "Day of month": "29",
-          "Hour": "15",
-          "Minute": "54",
-          "Second": "04",
+          "Month": "October",
+          "Day of month": "18",
+          "Hour": "11",
+          "Minute": "18",
+          "Second": "03",
           "Timezone": "Europe/Moscow (UTC+03:00)"
         }
       }
     ]
   },
-  "versionId": "3b9a8c93-a84a-49b6-9adb-aa5a4f74f911",
+  "versionId": "05cf89b0-6c22-457d-8245-fe72b2fd6c5f",
   "triggerCount": 3,
   "shared": [
     {
