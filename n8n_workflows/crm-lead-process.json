@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-10-07T21:30:12.820Z",
-  "updatedAt": "2025-10-19T18:33:47.417Z",
+  "updatedAt": "2025-10-19T19:30:45.935Z",
   "id": "d4D0Fp4pO6Ch7S7C",
   "name": "CRM lead process",
   "active": true,
@@ -304,7 +304,7 @@
             },
             {
               "id": "133b3309-fde4-4154-9af7-a710b86e3162",
-              "name": "target",
+              "name": "goalID",
               "value": "473672120",
               "type": "string"
             }
@@ -387,18 +387,40 @@
           "parameters": [
             {
               "name": "tid",
-              "value": "85745759"
+              "value": "={{ $json.counterId }}"
+            },
+            {
+              "name": "cid"
+            },
+            {
+              "name": "t",
+              "value": "event"
+            },
+            {
+              "name": "dl",
+              "value": "={{ $json.page_url }}"
+            },
+            {
+              "name": "dt",
+              "value": "={{ $json.page_title }}"
+            },
+            {
+              "name": "ea",
+              "value": "={{ $json.target }}"
+            },
+            {
+              "name": "ms"
+            },
+            {
+              "name": "dr",
+              "value": "={{ $json.referrer }}"
+            },
+            {
+              "name": "ms"
             }
           ]
         },
-        "options": {
-          "response": {
-            "response": {
-              "fullResponse": true,
-              "responseFormat": "text"
-            }
-          }
-        }
+        "options": {}
       },
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
@@ -591,8 +613,82 @@
   },
   "staticData": null,
   "meta": null,
-  "pinData": {},
-  "versionId": "f79dcea7-dd6f-4745-91fa-a58ddc9f5594",
+  "pinData": {
+    "Webhook": [
+      {
+        "json": {
+          "headers": {
+            "host": "n8n-main-production-4310.up.railway.app",
+            "user-agent": "GuzzleHttp/7",
+            "content-length": "619",
+            "content-type": "application/json",
+            "x-forwarded-for": "5.182.6.225",
+            "x-forwarded-host": "n8n-main-production-4310.up.railway.app",
+            "x-forwarded-proto": "https",
+            "x-railway-edge": "railway/europe-west4-drams3a",
+            "x-railway-request-id": "hliybFBnReyimChdYqdHTg",
+            "x-real-ip": "5.182.6.225",
+            "x-request-start": "1760386221912",
+            "accept-encoding": "gzip"
+          },
+          "params": {},
+          "query": {},
+          "body": {
+            "branch_id": 1,
+            "event": "create",
+            "entity": "Customer",
+            "entity_id": 19383,
+            "fields_old": [],
+            "fields_new": {
+              "dob": "2009-10-29",
+              "name": "n8n8n8n",
+              "note": "",
+              "id_no": "",
+              "b_date": "2025-10-14 00:10:21",
+              "e_date": "2030-12-31",
+              "barcode": "",
+              "is_study": 0,
+              "id_issued": "",
+              "branch_ids": [
+                1
+              ],
+              "company_id": null,
+              "created_at": "2025-10-13 20:10:21",
+              "legal_name": "n8n",
+              "legal_type": 1,
+              "lead_source_id": "40",
+              "lead_status_id": "",
+              "contact_contacts": [
+                "+36(762)346-523",
+                "fjdhfjhd@dhjshjd.ru"
+              ],
+              "custom_value_json": "{\"16\":\"\",\"12\":\"\",\"13\":\"\",\"11\":\"\",\"14\":\"\",\"15\":\"\"}"
+            },
+            "fields_rel": [],
+            "user_id": null,
+            "datetime": "2025-10-14 00:10:21"
+          },
+          "webhookUrl": "https://n8n-main-production-4310.up.railway.app/webhook/c11cd095-1060-4c9c-87df-2a3c9d34deab",
+          "executionMode": "production"
+        }
+      }
+    ],
+    "Code in JavaScript1": [
+      {
+        "json": {
+          "counterId": "85745759"
+        },
+        "binary": {
+          "file": {
+            "data": "WWNsaWQsVGFyZ2V0LERhdGVUaW1lCiIxMzc0MTgyNTI0MzkxNjAwOTQ3MSIsIjQ3MzY3MjEyMCIsIjE3NjA2MTMzNjUi",
+            "fileName": "offline-conv.csv",
+            "mimeType": "text/csv"
+          }
+        }
+      }
+    ]
+  },
+  "versionId": "ad4aad63-3ee6-48e2-b9c8-7f1dbc1384b1",
   "triggerCount": 1,
   "shared": [
     {
