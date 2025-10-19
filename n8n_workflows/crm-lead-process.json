@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-10-07T21:30:12.820Z",
-  "updatedAt": "2025-10-16T19:35:22.192Z",
+  "updatedAt": "2025-10-19T18:33:47.417Z",
   "id": "d4D0Fp4pO6Ch7S7C",
   "name": "CRM lead process",
   "active": true,
@@ -381,13 +381,13 @@
     },
     {
       "parameters": {
-        "url": "=https://mc.yandex.ru/watch/{{$json.counterId}}?page-url={{$json.page_url}}&browser-info=et:custom;rn={{$json.createdAt || Date.now()}};site-info=goal:crm_lead",
-        "sendHeaders": true,
-        "headerParameters": {
+        "url": "=https://mc.yandex.ru/collect",
+        "sendQuery": true,
+        "queryParameters": {
           "parameters": [
             {
-              "name": "User-Agent",
-              "value": "n8n-offline-conversion"
+              "name": "tid",
+              "value": "85745759"
             }
           ]
         },
@@ -525,7 +525,7 @@
       "main": [
         [
           {
-            "node": "Code in JavaScript1",
+            "node": "HTTP Request1",
             "type": "main",
             "index": 0
           }
@@ -592,7 +592,7 @@
   "staticData": null,
   "meta": null,
   "pinData": {},
-  "versionId": "9906c3d9-8f7f-4131-b053-7bb6dcc6bd70",
+  "versionId": "f79dcea7-dd6f-4745-91fa-a58ddc9f5594",
   "triggerCount": 1,
   "shared": [
     {
