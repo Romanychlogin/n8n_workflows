@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-22T14:01:12.675Z",
-  "updatedAt": "2025-10-19T18:44:33.794Z",
+  "updatedAt": "2025-10-19T19:22:27.269Z",
   "id": "BKfU7GhWdir6g3Ib",
   "name": "Receive wizard data",
   "active": true,
@@ -150,32 +150,22 @@
               "removed": false
             },
             {
-              "id": "ts_site_iso",
-              "displayName": "ts_site_iso",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "readOnly": false,
-              "removed": false
-            },
-            {
-              "id": "ts_site",
-              "displayName": "ts_site",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "number",
-              "readOnly": false,
-              "removed": false
-            },
-            {
               "id": "pending",
               "displayName": "pending",
               "required": false,
               "defaultMatch": false,
               "display": true,
               "type": "boolean",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "client_ID",
+              "displayName": "client_ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
               "readOnly": false,
               "removed": false
             }
@@ -280,7 +270,7 @@
       }
     ]
   },
-  "versionId": "7c162aa9-280f-4dcb-a98e-0938db9f8f99",
+  "versionId": "8a59f321-570a-4d81-b402-a1db560a2a94",
   "triggerCount": 1,
   "shared": [
     {
