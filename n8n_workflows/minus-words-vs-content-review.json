@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-10-20T11:14:53.972Z",
-  "updatedAt": "2025-10-20T15:45:56.385Z",
+  "updatedAt": "2025-10-20T17:14:34.977Z",
   "id": "dSYXe1nfeCvfozcQ",
   "name": "minus words vs content review",
   "active": false,
@@ -317,7 +317,10 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "options": {}
+        "query": "delete from company_content where content_id IN (\n    SELECT value::bigint\n    FROM jsonb_array_elements_text($1::jsonb) AS t(value)\n  )",
+        "options": {
+          "queryReplacement": "={{  JSON.stringify($('get ids').item.json.ids_string)}}"
+        }
       },
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
@@ -332,8 +335,7 @@
           "id": "Hx2VFmUi5WO2K4QX",
           "name": "Postgres account 2"
         }
-      },
-      "disabled": true
+      }
     },
     {
       "parameters": {
@@ -361,7 +363,7 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "SELECT\n  v.minus_word,\n  v.id,\n  ct.phrase,\n  ct.content_id,\n  1 - (v.minus_word_embedding <=> ct.phrase_embedding) AS similarity\nFROM company_content ct\nCROSS JOIN LATERAL (\n  SELECT v.minus_word, v.id, v.minus_word_embedding\n  FROM minus_words v,minus_words_origin org\n  WHERE v.company_id = $1\n  AND org.minus_word_id=v.id\n  AND org.key_word_id<>0 -- защищаем начальную загрузку\n  ORDER BY v.minus_word_embedding <=> ct.phrase_embedding\n  LIMIT 50                           -- подберите k экспериментально\n) v\nWHERE ct.company_id = $1\n  AND 1 - (v.minus_word_embedding <=> ct.phrase_embedding) > $2\n  AND ct.phrase_embedding IS NOT NULL;",
+        "query": "SELECT\n  v.minus_word,\n  v.id,\n  ct.phrase,\n  ct.content_id,\n  1 - (v.minus_word_embedding <=> ct.phrase_embedding) AS similarity\nFROM company_content ct\nCROSS JOIN LATERAL (\n  SELECT v.minus_word, v.id, v.minus_word_embedding\n  FROM minus_words v\n  WHERE v.company_id = $1\n  AND not exists (select 1 from minus_words_origin org WHERE org.minus_word_id=v.id AND org.key_word_id=0)\n  ORDER BY v.minus_word_embedding <=> ct.phrase_embedding\n  LIMIT 50                           -- подберите k экспериментально\n) v\nWHERE ct.company_id = $1\n  AND 1 - (v.minus_word_embedding <=> ct.phrase_embedding) > $2\n  AND ct.phrase_embedding IS NOT NULL;",
         "options": {
           "queryReplacement": "={{ $('When Executed by Another Workflow').last().json.company_id }},{{ $('set variables').last().json.threshold }}"
         }
@@ -1055,7 +1057,7 @@
       }
     ]
   },
-  "versionId": "5edfe7a0-7931-4269-aa39-e54012bdac11",
+  "versionId": "248c6104-4b49-4f2e-9dd0-30d0bd7f3885",
   "triggerCount": 0,
   "shared": [
     {
