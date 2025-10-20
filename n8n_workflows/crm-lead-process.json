@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-10-07T21:30:12.820Z",
-  "updatedAt": "2025-10-19T19:35:33.395Z",
+  "updatedAt": "2025-10-20T15:44:02.983Z",
   "id": "d4D0Fp4pO6Ch7S7C",
   "name": "CRM lead process",
   "active": true,
@@ -305,7 +305,7 @@
             {
               "id": "133b3309-fde4-4154-9af7-a710b86e3162",
               "name": "goalID",
-              "value": "473672120",
+              "value": "crm_lead",
               "type": "string"
             },
             {
@@ -397,7 +397,7 @@
             },
             {
               "name": "cid",
-              "value": "={{ $json.client_ID }}"
+              "value": "=1760971838125535812"
             },
             {
               "name": "t",
@@ -697,7 +697,7 @@
       }
     ]
   },
-  "versionId": "1f5b7ca0-16e1-4277-8e6f-aebf2c66bbb9",
+  "versionId": "fc21955b-d581-4677-a946-7ed84b0f8ed8",
   "triggerCount": 1,
   "shared": [
     {
