@@ -1,0 +1,232 @@
+{
+  "createdAt": "2025-10-20T11:14:53.972Z",
+  "updatedAt": "2025-10-20T11:20:26.079Z",
+  "id": "dSYXe1nfeCvfozcQ",
+  "name": "minus words vs content review",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "inputSource": "passthrough"
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -2688,
+        -400
+      ],
+      "id": "291d5162-89da-4303-9cca-c5035fe9301b",
+      "name": "When Executed by Another Workflow"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "update business_processes_states set finished=NOW(),tokens_used=0,steps_passed=1,steps_total=1 where business_process_id=(select MAX(business_process_id) from business_processes where n8n_process_name=$1) and n8n_workflow_execution_id=$2",
+        "options": {
+          "queryReplacement": "=[{{$workflow.name}},{{$execution.id}}]"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -880,
+        -400
+      ],
+      "id": "bab4fa97-bd10-4819-ae2b-73b08c7bc74b",
+      "name": "Mark_workflow_completed",
+      "executeOnce": true,
+      "credentials": {
+        "postgres": {
+          "id": "4YkdFJcdTgzo9hkz",
+          "name": "PGvector"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO business_processes_states (business_process_id, company_id,n8n_workflow_execution_id,n8n_workflow_root_execution_id, started)\nSELECT MAX(business_process_id), $2,$3,$4, NOW()\nFROM public.business_processes\nWHERE n8n_process_name = $1;",
+        "options": {
+          "queryReplacement": "=[{{$workflow.name}},{{$json.company_id}},{{$execution.id}},{{ $('When Executed by Another Workflow').item.json.root_execution_id }}]"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -2416,
+        -400
+      ],
+      "id": "96866a0e-abc5-4743-b073-7534819b37b5",
+      "name": "Mark_workwlow_started",
+      "credentials": {
+        "postgres": {
+          "id": "4YkdFJcdTgzo9hkz",
+          "name": "PGvector"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Function-Node (Run Once)\nconst workflowData = $getWorkflowStaticData('global');\nworkflowData.steps_passed = 0;\nworkflowData.tokens_used = 0;\nworkflowData.step = 0;\nreturn $input.all();\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1104,
+        -400
+      ],
+      "id": "68cb8b05-9d21-4074-a3dc-3fdabb0326f4",
+      "name": "Init total counter"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT\n  v.minus_word,\n  v.id,\n  ct.phrase,\n  ct.content_id,\n  1 - (v.minus_word_embedding <=> ct.phrase_embedding) AS similarity\nFROM company_content ct\nCROSS JOIN LATERAL (\n  SELECT v.minus_word, v.id, v.minus_word_embedding\n  FROM minus_words v\n  WHERE v.company_id = 1\n  ORDER BY v.minus_word_embedding <=> ct.phrase_embedding\n  LIMIT 50                           -- подберите k экспериментально\n) v\nWHERE ct.company_id = $1\n  AND 1 - (v.minus_word_embedding <=> ct.phrase_embedding) > $2\n  AND ct.phrase_embedding IS NOT NULL;",
+        "options": {
+          "queryReplacement": "={{ $('When Executed by Another Workflow').item.json.company_id }},{{$json.threshold  }}"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -1968,
+        -400
+      ],
+      "id": "22cf5131-f5bd-420f-b192-0e20113a70b7",
+      "name": "Get matched minus words and content",
+      "credentials": {
+        "postgres": {
+          "id": "Hx2VFmUi5WO2K4QX",
+          "name": "Postgres account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "831e9ce7-d073-4020-a654-7792be7b4fd0",
+              "name": "threshold",
+              "value": 0.8,
+              "type": "number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -2208,
+        -400
+      ],
+      "id": "5dde924d-173d-4dd1-a0b0-9451473cf7c9",
+      "name": "set variables"
+    }
+  ],
+  "connections": {
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "Mark_workwlow_started",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mark_workflow_completed": {
+      "main": [
+        []
+      ]
+    },
+    "Mark_workwlow_started": {
+      "main": [
+        [
+          {
+            "node": "set variables",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Init total counter": {
+      "main": [
+        [
+          {
+            "node": "Mark_workflow_completed",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get matched minus words and content": {
+      "main": [
+        [
+          {
+            "node": "Init total counter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "set variables": {
+      "main": [
+        [
+          {
+            "node": "Get matched minus words and content",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false,
+    "errorWorkflow": "v2Z32ISEUzsFYnZw"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {
+    "When Executed by Another Workflow": [
+      {
+        "json": {
+          "company_id": 1,
+          "root_execution_id": 74293,
+          "import_id": 5
+        }
+      }
+    ]
+  },
+  "versionId": "b8d16d2d-563d-4cdd-8d01-610524bb41a3",
+  "triggerCount": 0,
+  "shared": [
+    {
+      "createdAt": "2025-10-20T11:14:53.972Z",
+      "updatedAt": "2025-10-20T11:14:53.972Z",
+      "role": "workflow:owner",
+      "workflowId": "dSYXe1nfeCvfozcQ",
+      "projectId": "spKmbJLU4mvACXIB"
+    }
+  ],
+  "tags": [
+    {
+      "createdAt": "2025-10-08T11:53:55.048Z",
+      "updatedAt": "2025-10-08T11:53:55.048Z",
+      "id": "bfaXXdoIW5NToPfb",
+      "name": "post procesing"
+    }
+  ],
+  "file_name": "minus-words-vs-content-review.json"
+}
