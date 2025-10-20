@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-10-20T11:13:50.516Z",
-  "updatedAt": "2025-10-20T11:13:50.516Z",
+  "updatedAt": "2025-10-20T14:34:57.835Z",
   "id": "xNiuEqQOSNCSLvW5",
   "name": "ADV_campaign_analysis_AI",
   "active": false,
@@ -34,39 +34,6 @@
     },
     {
       "parameters": {
-        "conditions": {
-          "options": {
-            "caseSensitive": true,
-            "leftValue": "",
-            "typeValidation": "strict",
-            "version": 2
-          },
-          "conditions": [
-            {
-              "id": "5db6f53d-c697-4fb8-8804-93f5c0a2fcca",
-              "leftValue": "={{ $json.condition_type }}",
-              "rightValue": "пословное",
-              "operator": {
-                "type": "string",
-                "operation": "equals"
-              }
-            }
-          ],
-          "combinator": "and"
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.if",
-      "typeVersion": 2.2,
-      "position": [
-        1888,
-        -208
-      ],
-      "id": "c4e0e9a8-d264-49c6-b9d3-1f4fec8c741d",
-      "name": "пословное соответствие?"
-    },
-    {
-      "parameters": {
         "content": "Соответствие\n1)Если пословное то проверяем совпадение запроса с нашим ключом. \nа)совпадает(убираем кавычки у нашего ключа) - все ОК\nб)не совпадает - спрашиваем у чата релевантна ли нам фраза. Да - добавляем в ключи. Нет - добавляем в минус слова.\n2)Не пословное - спрашиваем у чата релевантна ли нам фраза. Да - добавляем в ключи. Нет - добавляем в минус слова."
       },
       "type": "n8n-nodes-base.stickyNote",
@@ -77,237 +44,6 @@
       ],
       "id": "2519def4-d7fa-4536-80ff-bf0e222f0650",
       "name": "Sticky Note1"
-    },
-    {
-      "parameters": {
-        "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nfor (const item of $input.all()) {\n  item.json.same_key = item.json.key_word.replace(/[\\s\"]/g, '') === item.json.used_keyword.replace(/[\\s\"]/g, '');\n}\n\nreturn $input.all();"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        2288,
-        -512
-      ],
-      "id": "007749b5-c912-4aac-b699-2048021eb9dc",
-      "name": "проверяем полное соответствие"
-    },
-    {
-      "parameters": {
-        "conditions": {
-          "options": {
-            "caseSensitive": true,
-            "leftValue": "",
-            "typeValidation": "strict",
-            "version": 2
-          },
-          "conditions": [
-            {
-              "id": "b59658e0-7426-4b0c-bb61-db52e84fc3cf",
-              "leftValue": "={{ $json.same_key }}",
-              "rightValue": "",
-              "operator": {
-                "type": "boolean",
-                "operation": "true",
-                "singleValue": true
-              }
-            }
-          ],
-          "combinator": "and"
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.if",
-      "typeVersion": 2.2,
-      "position": [
-        2848,
-        -672
-      ],
-      "id": "2953de3a-c621-4c3c-b07b-c048d1f87ab1",
-      "name": "Соответствие полное?"
-    },
-    {
-      "parameters": {
-        "operation": "update",
-        "schema": {
-          "__rl": true,
-          "mode": "list",
-          "value": "public"
-        },
-        "table": {
-          "__rl": true,
-          "value": "current_list",
-          "mode": "list",
-          "cachedResultName": "current_list"
-        },
-        "columns": {
-          "mappingMode": "defineBelow",
-          "value": {
-            "resolution": "same key",
-            "list_id": "={{ $('Loop Over Items').last().json.list_id }}"
-          },
-          "matchingColumns": [
-            "list_id"
-          ],
-          "schema": [
-            {
-              "id": "list_id",
-              "displayName": "list_id",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "number",
-              "canBeUsedToMatch": true,
-              "removed": false
-            },
-            {
-              "id": "key_word",
-              "displayName": "key_word",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true,
-              "removed": true
-            },
-            {
-              "id": "campaign_id",
-              "displayName": "campaign_id",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "number",
-              "canBeUsedToMatch": true,
-              "removed": true
-            },
-            {
-              "id": "used_keyword",
-              "displayName": "used_keyword",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true,
-              "removed": true
-            },
-            {
-              "id": "group_id",
-              "displayName": "group_id",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "number",
-              "canBeUsedToMatch": true,
-              "removed": true
-            },
-            {
-              "id": "condition_type",
-              "displayName": "condition_type",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true,
-              "removed": true
-            },
-            {
-              "id": "category",
-              "displayName": "category",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true,
-              "removed": true
-            },
-            {
-              "id": "ads_header",
-              "displayName": "ads_header",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true,
-              "removed": true
-            },
-            {
-              "id": "date",
-              "displayName": "date",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "dateTime",
-              "canBeUsedToMatch": true,
-              "removed": true
-            },
-            {
-              "id": "ai_responce",
-              "displayName": "ai_responce",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true,
-              "removed": true
-            },
-            {
-              "id": "resolution",
-              "displayName": "resolution",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true
-            },
-            {
-              "id": "count_views",
-              "displayName": "count_views",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "number",
-              "canBeUsedToMatch": true,
-              "removed": true
-            },
-            {
-              "id": "count_clics",
-              "displayName": "count_clics",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "number",
-              "canBeUsedToMatch": true,
-              "removed": true
-            },
-            {
-              "id": "count_convetions",
-              "displayName": "count_convetions",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "number",
-              "canBeUsedToMatch": true,
-              "removed": true
-            }
-          ],
-          "attemptToConvertTypes": false,
-          "convertFieldsToString": false
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.postgres",
-      "typeVersion": 2.6,
-      "position": [
-        9648,
-        -1696
-      ],
-      "id": "44afbed4-c402-42a4-b2d9-66f7214dad72",
-      "name": "Помечаем что ключ совпадает",
-      "credentials": {
-        "postgres": {
-          "id": "Hx2VFmUi5WO2K4QX",
-          "name": "Postgres account 2"
-        }
-      }
     },
     {
       "parameters": {
@@ -598,8 +334,7 @@
           "cachedResultUrl": "https://github.com/Romanychlogin/n8n_prompts"
         },
         "filePath": "keyword_analysis.txt",
-        "additionalParameters": {},
-        "path": "9b3c00bc-0f09-4c63-a372-331ab1441e95"
+        "additionalParameters": {}
       },
       "type": "n8n-nodes-base.github",
       "typeVersion": 1.1,
@@ -643,190 +378,6 @@
       ],
       "id": "6bed5b72-bb32-47be-a4f2-f2fbfcdf7520",
       "name": "Code1"
-    },
-    {
-      "parameters": {
-        "operation": "update",
-        "schema": {
-          "__rl": true,
-          "mode": "list",
-          "value": "public"
-        },
-        "table": {
-          "__rl": true,
-          "value": "current_list",
-          "mode": "list",
-          "cachedResultName": "current_list"
-        },
-        "columns": {
-          "mappingMode": "defineBelow",
-          "value": {
-            "list_id": "={{ $('Loop Over Items').last().json.list_id }}",
-            "resolution": "={{ \"найден конкурент: \"+ $('If competitors not found').last().json.hits[0].matched+\", название: \"+$('If competitors not found').last().json.hits[0].canonical }}"
-          },
-          "matchingColumns": [
-            "list_id"
-          ],
-          "schema": [
-            {
-              "id": "list_id",
-              "displayName": "list_id",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "number",
-              "canBeUsedToMatch": true,
-              "removed": false
-            },
-            {
-              "id": "key_word",
-              "displayName": "key_word",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true,
-              "removed": true
-            },
-            {
-              "id": "campaign_id",
-              "displayName": "campaign_id",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "number",
-              "canBeUsedToMatch": true,
-              "removed": true
-            },
-            {
-              "id": "used_keyword",
-              "displayName": "used_keyword",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true,
-              "removed": true
-            },
-            {
-              "id": "group_id",
-              "displayName": "group_id",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "number",
-              "canBeUsedToMatch": true,
-              "removed": true
-            },
-            {
-              "id": "condition_type",
-              "displayName": "condition_type",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true,
-              "removed": true
-            },
-            {
-              "id": "category",
-              "displayName": "category",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true,
-              "removed": true
-            },
-            {
-              "id": "ads_header",
-              "displayName": "ads_header",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true,
-              "removed": true
-            },
-            {
-              "id": "date",
-              "displayName": "date",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "dateTime",
-              "canBeUsedToMatch": true,
-              "removed": true
-            },
-            {
-              "id": "ai_responce",
-              "displayName": "ai_responce",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true,
-              "removed": true
-            },
-            {
-              "id": "resolution",
-              "displayName": "resolution",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true
-            },
-            {
-              "id": "count_views",
-              "displayName": "count_views",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "number",
-              "canBeUsedToMatch": true,
-              "removed": true
-            },
-            {
-              "id": "count_clics",
-              "displayName": "count_clics",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "number",
-              "canBeUsedToMatch": true,
-              "removed": true
-            },
-            {
-              "id": "count_convetions",
-              "displayName": "count_convetions",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "number",
-              "canBeUsedToMatch": true,
-              "removed": true
-            }
-          ],
-          "attemptToConvertTypes": false,
-          "convertFieldsToString": false
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.postgres",
-      "typeVersion": 2.6,
-      "position": [
-        9792,
-        -1088
-      ],
-      "id": "c1eb8e09-421f-455d-b2cd-f578f939f267",
-      "name": "Помечаем что найден конкурент",
-      "credentials": {
-        "postgres": {
-          "id": "Hx2VFmUi5WO2K4QX",
-          "name": "Postgres account 2"
-        }
-      }
     },
     {
       "parameters": {
@@ -897,34 +448,6 @@
       ],
       "id": "f5f60852-8795-4398-be7c-0de54ed6863d",
       "name": "Execute Workflow"
-    },
-    {
-      "parameters": {
-        "workflowId": {
-          "__rl": true,
-          "value": "xKP6S9XsCeVSgebo",
-          "mode": "list",
-          "cachedResultUrl": "/workflow/xKP6S9XsCeVSgebo",
-          "cachedResultName": "Check VS company name SUB"
-        },
-        "workflowInputs": {
-          "mappingMode": "defineBelow",
-          "value": {},
-          "matchingColumns": [],
-          "schema": [],
-          "attemptToConvertTypes": false,
-          "convertFieldsToString": true
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.executeWorkflow",
-      "typeVersion": 1.2,
-      "position": [
-        4656,
-        -64
-      ],
-      "id": "f0e90938-0ac2-47ce-97b6-12db1569b82d",
-      "name": "Find competitors mentions"
     },
     {
       "parameters": {
@@ -1230,73 +753,6 @@
     },
     {
       "parameters": {
-        "conditions": {
-          "options": {
-            "caseSensitive": true,
-            "leftValue": "",
-            "typeValidation": "strict",
-            "version": 2
-          },
-          "conditions": [
-            {
-              "id": "e4ab3071-3b4d-4307-9905-188f2f24c488",
-              "leftValue": "={{ $json.count_convetions }}",
-              "rightValue": 0,
-              "operator": {
-                "type": "number",
-                "operation": "gt"
-              }
-            }
-          ],
-          "combinator": "and"
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.if",
-      "typeVersion": 2.2,
-      "position": [
-        3024,
-        -288
-      ],
-      "id": "caf10ae4-9e76-4057-8de2-08d88c7fa370",
-      "name": "If we have conversions for the key word"
-    },
-    {
-      "parameters": {
-        "conditions": {
-          "options": {
-            "caseSensitive": true,
-            "leftValue": "",
-            "typeValidation": "strict",
-            "version": 2
-          },
-          "conditions": [
-            {
-              "id": "ca56d76f-8158-451b-95b0-48adbef68027",
-              "leftValue": "={{ $json.hits}}",
-              "rightValue": "",
-              "operator": {
-                "type": "array",
-                "operation": "empty",
-                "singleValue": true
-              }
-            }
-          ],
-          "combinator": "and"
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.if",
-      "typeVersion": 2.2,
-      "position": [
-        4960,
-        -112
-      ],
-      "id": "7e5b792e-9dd4-44bb-8209-f04bc79db7e6",
-      "name": "If competitors not found"
-    },
-    {
-      "parameters": {
         "assignments": {
           "assignments": [
             {
@@ -1400,7 +856,7 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "select lst.*,c.company_name,cs.service_name, cs.service_description \nfrom current_list lst,companies c, company_services cs \nwhere lst.report_id=$1 and lst.service_id=cs.service_id and lst.company_id = cs.company_id and c.company_id=cs.company_id and lst.resolution is null\n",
+        "query": "select lst.*,c.company_name,cs.service_name, cs.service_description \nfrom current_list lst,companies c, company_services cs \nwhere lst.report_id=$1 and lst.service_id=cs.service_id and lst.company_id = cs.company_id and c.company_id=cs.company_id and lst.resolution='need AI'\n",
         "options": {
           "queryReplacement": "={{ $('set variables').item.json.report_id }}"
         }
@@ -1576,39 +1032,6 @@
     },
     {
       "parameters": {
-        "conditions": {
-          "options": {
-            "caseSensitive": true,
-            "leftValue": "",
-            "typeValidation": "strict",
-            "version": 2
-          },
-          "conditions": [
-            {
-              "id": "4a87b0f9-4ed9-409a-9def-bbaa4e413d90",
-              "leftValue": "={{ $json.hits[0].candidate }}",
-              "rightValue": "={{ $json.hits[0].matched }}",
-              "operator": {
-                "type": "string",
-                "operation": "notEquals"
-              }
-            }
-          ],
-          "combinator": "and"
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.if",
-      "typeVersion": 2.2,
-      "position": [
-        7984,
-        -1104
-      ],
-      "id": "ac08e7a6-83f6-4aff-b65f-14811eaa427d",
-      "name": "if not exact competitor match"
-    },
-    {
-      "parameters": {
         "method": "POST",
         "url": "https://api.openai.com/v1/embeddings",
         "authentication": "predefinedCredentialType",
@@ -1735,158 +1158,6 @@
     },
     {
       "parameters": {
-        "content": "Check vs minus words",
-        "height": 352,
-        "width": 912
-      },
-      "type": "n8n-nodes-base.stickyNote",
-      "typeVersion": 1,
-      "position": [
-        3232,
-        -224
-      ],
-      "id": "cbbdca03-460c-42b5-aeec-77a93c9630c2",
-      "name": "Sticky Note7"
-    },
-    {
-      "parameters": {
-        "workflowId": {
-          "__rl": true,
-          "value": "rmq06a0YRFizRgV1",
-          "mode": "list",
-          "cachedResultUrl": "/workflow/rmq06a0YRFizRgV1",
-          "cachedResultName": "check phrase VS minus words"
-        },
-        "workflowInputs": {
-          "mappingMode": "defineBelow",
-          "value": {},
-          "matchingColumns": [],
-          "schema": [],
-          "attemptToConvertTypes": false,
-          "convertFieldsToString": true
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.executeWorkflow",
-      "typeVersion": 1.2,
-      "position": [
-        3424,
-        -80
-      ],
-      "id": "a585d938-6205-4901-b932-56783a26039b",
-      "name": "Call 'chech phrase VS minus words'"
-    },
-    {
-      "parameters": {
-        "assignments": {
-          "assignments": [
-            {
-              "id": "543a65b2-a6be-4d52-9130-a4714b59f4ae",
-              "name": "threshold",
-              "value": 0.8,
-              "type": "number"
-            }
-          ]
-        },
-        "includeOtherFields": true,
-        "options": {}
-      },
-      "type": "n8n-nodes-base.set",
-      "typeVersion": 3.4,
-      "position": [
-        3280,
-        -80
-      ],
-      "id": "069b62f2-0a68-46b4-bb51-cdc435baf3f9",
-      "name": "Set threshold"
-    },
-    {
-      "parameters": {
-        "conditions": {
-          "options": {
-            "caseSensitive": true,
-            "leftValue": "",
-            "typeValidation": "strict",
-            "version": 2
-          },
-          "conditions": [
-            {
-              "id": "ca56d76f-8158-451b-95b0-48adbef68027",
-              "leftValue": "={{ $('Call \\'chech phrase VS minus words\\'').item.json.matches}}",
-              "rightValue": "to add",
-              "operator": {
-                "type": "array",
-                "operation": "empty",
-                "singleValue": true
-              }
-            }
-          ],
-          "combinator": "and"
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.if",
-      "typeVersion": 2.2,
-      "position": [
-        4256,
-        -416
-      ],
-      "id": "821b7e52-43a2-4a29-b739-9a2b105c4a4a",
-      "name": "If minus words not found"
-    },
-    {
-      "parameters": {
-        "assignments": {
-          "assignments": [
-            {
-              "id": "4db35a49-e130-4ff8-9ccb-7b452205f80a",
-              "name": "threshold",
-              "value": "=0.88",
-              "type": "number"
-            },
-            {
-              "id": "47944833-0d31-4a55-9872-7c281576da2a",
-              "name": "key_word",
-              "value": "={{ $('Loop Over Items').last().json.key_word }}",
-              "type": "string"
-            },
-            {
-              "id": "224cde67-d787-4cce-8db0-4ca43a3c4fbe",
-              "name": "company_id",
-              "value": "={{ $('Loop Over Items').last().json.company_id }}",
-              "type": "string"
-            }
-          ]
-        },
-        "includeOtherFields": true,
-        "options": {}
-      },
-      "type": "n8n-nodes-base.set",
-      "typeVersion": 3.4,
-      "position": [
-        4512,
-        -64
-      ],
-      "id": "f6235f04-0110-47e0-8564-8036286fa3ca",
-      "name": "set input"
-    },
-    {
-      "parameters": {
-        "content": "Check vs competitors",
-        "height": 352,
-        "width": 624
-      },
-      "type": "n8n-nodes-base.stickyNote",
-      "typeVersion": 1,
-      "position": [
-        4464,
-        -192
-      ],
-      "id": "29d6d4e5-1a4c-4413-a20b-14ed3072ce1a",
-      "name": "Sticky Note8"
-    },
-    {
-      "parameters": {
         "content": "For the future reusse",
         "height": 672,
         "width": 1664
@@ -1966,92 +1237,6 @@
     },
     {
       "parameters": {
-        "method": "POST",
-        "url": "https://api.openai.com/v1/embeddings",
-        "authentication": "predefinedCredentialType",
-        "nodeCredentialType": "openAiApi",
-        "sendBody": true,
-        "specifyBody": "json",
-        "jsonBody": "={{$json}}",
-        "options": {}
-      },
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.2,
-      "position": [
-        8368,
-        -1280
-      ],
-      "id": "b436358e-25d4-448c-b912-9e567d5f8f56",
-      "name": "Get embedding1",
-      "retryOnFail": true,
-      "credentials": {
-        "openAiApi": {
-          "id": "m4NScyhZzV3hBcTr",
-          "name": "OpenAi Yads"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "jsCode": "return [{\n  json: {\n  \"model\": \"text-embedding-3-small\",\n  \"input\": $('If competitors not found').last().json.hits[0].candidate \n}\n}];"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        8176,
-        -1280
-      ],
-      "id": "301ec199-83ec-434f-be01-6182050ab4e4",
-      "name": "Set API JSON3"
-    },
-    {
-      "parameters": {
-        "operation": "executeQuery",
-        "query": "INSERT INTO public.minus_words\n  (minus_word_embedding, minus_word,  company_id, comment, weight)\nVALUES\n  ($1::vector, $2, $3,$4 , $5)\nON CONFLICT (company_id, minus_word) DO UPDATE\nSET weight = COALESCE(minus_words.weight, 0) + COALESCE(EXCLUDED.weight, 0)\nRETURNING id;",
-        "options": {
-          "queryReplacement": "=[\n  { \"value\": \"={{'[' + $json.data[0].embedding.map(e => Number(e)).join(',') + ']'}}\" },\n  { \"value\": \"={{ $('If competitors not found').last().json.hits[0].candidate }}\" },\n  { \"value\": \"={{ $('Loop Over Items').item.json.company_id }}\" },\n  { \"value\": \"={{ 'added from the core update (competitors) from the report:'+$('Loop Over Items').item.json.list_id }}\" }, \n  { \"value\": \"={{ $('Loop Over Items').item.json.count_views }}\" }\n]"
-        }
-      },
-      "type": "n8n-nodes-base.postgres",
-      "typeVersion": 2.6,
-      "position": [
-        8752,
-        -1280
-      ],
-      "id": "02e782f8-63ac-4eff-9220-95b15d060724",
-      "name": "Insert minus words from competitors",
-      "credentials": {
-        "postgres": {
-          "id": "4YkdFJcdTgzo9hkz",
-          "name": "PGvector"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "operation": "executeQuery",
-        "query": "INSERT INTO minus_words_origin(\n\tminus_word_id, list_id, origin_weight)\n\tVALUES ($1, $2, $3);",
-        "options": {
-          "queryReplacement": "=[{{ $json.id }},{{ $('Loop Over Items').item.json.list_id }},{{ $('Loop Over Items').item.json.count_views }}]"
-        }
-      },
-      "type": "n8n-nodes-base.postgres",
-      "typeVersion": 2.6,
-      "position": [
-        8928,
-        -1264
-      ],
-      "id": "74b6c02a-1141-4fd7-911b-d737fba24168",
-      "name": "add link",
-      "credentials": {
-        "postgres": {
-          "id": "Hx2VFmUi5WO2K4QX",
-          "name": "Postgres account 2"
-        }
-      }
-    },
-    {
-      "parameters": {
         "operation": "executeQuery",
         "query": "INSERT INTO minus_words_origin(\n\tminus_word_id, list_id, origin_weight)\n\tVALUES ($1, $2, $3);",
         "options": {
@@ -2075,29 +1260,6 @@
     },
     {
       "parameters": {
-        "operation": "executeQuery",
-        "query": "WITH ce AS (\n    SELECT competitor_id\n    FROM public.competitor_entities\n    WHERE company_id = $5\n      AND canonical_name = $4\n    LIMIT 1\n)\nINSERT INTO public.competitor_name_variants\n    (competitor_id, is_common_word, name_text, embedding, report_id)\nSELECT\n    ce.competitor_id,\n    false,          -- is_common_word\n    $1::text,             -- name_text\n    $2::vector,           -- embedding (pgvector)\n    $3::bigint  -- report_id (по умолчанию 0)\nFROM ce\nRETURNING competitor_id, is_common_word, name_text, report_id;",
-        "options": {
-          "queryReplacement": "=[   \n{ \"value\": \"={{ $('If competitors not found').last().json.hits[0].candidate }}\" },\n{ \"value\": \"={{'[' + $('Get embedding1').item.json.data[0].embedding.map(e => Number(e)).join(',') + ']'}}\" },\n{ \"value\": \"={{ $('Loop Over Items').item.json.report_id }}\" },\n{ \"value\": \"={{ $('if not exact competitor match').item.json.hits[0].canonical }}\" },\n{ \"value\": \"={{ $('Loop Over Items').item.json.company_id }}\" }\n]"
-        }
-      },
-      "type": "n8n-nodes-base.postgres",
-      "typeVersion": 2.6,
-      "position": [
-        9104,
-        -1264
-      ],
-      "id": "79d98eb4-7647-437d-838c-972953adff4c",
-      "name": "add competitor name variant",
-      "credentials": {
-        "postgres": {
-          "id": "4YkdFJcdTgzo9hkz",
-          "name": "PGvector"
-        }
-      }
-    },
-    {
-      "parameters": {
         "jsCode": "const workflowData = $getWorkflowStaticData('global');\nworkflowData.ai_calls = 0;\nworkflowData.embedding_calls = 0;\nreturn $input.all();\n"
       },
       "type": "n8n-nodes-base.code",
@@ -2108,32 +1270,6 @@
       ],
       "id": "b811b260-33ea-4eab-8199-bbb213262432",
       "name": "Init calls counters"
-    },
-    {
-      "parameters": {
-        "jsCode": "const workflowData = $getWorkflowStaticData('global');\nworkflowData.embedding_calls =workflowData.embedding_calls + $input.first().json.meta.candidates_total;\nreturn $input.all();\n"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        3600,
-        -80
-      ],
-      "id": "08fac042-2d77-4bac-9eee-03775897226e",
-      "name": "update calls counters"
-    },
-    {
-      "parameters": {
-        "jsCode": "const workflowData = $getWorkflowStaticData('global');\nworkflowData.embedding_calls = workflowData.embedding_calls+$input.first().json.meta.candidates_total;\nreturn $input.all();\n"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        4816,
-        -48
-      ],
-      "id": "cde4e335-323c-42f7-868f-c62cfd74251c",
-      "name": "update calls counters1"
     },
     {
       "parameters": {
@@ -2168,19 +1304,6 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        8576,
-        -1280
-      ],
-      "id": "b2d4d262-d67d-4db0-a83f-9c223bf2ca9a",
-      "name": "update calls counters4"
-    },
-    {
-      "parameters": {
-        "jsCode": "const workflowData = $getWorkflowStaticData('global');\nworkflowData.embedding_calls = workflowData.embedding_calls + 1;\nreturn $input.all();\n"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
         9472,
         48
       ],
@@ -2199,19 +1322,6 @@
       ],
       "id": "4f9e83e2-d05e-475b-ac56-53d2a33dcb44",
       "name": "read call counters"
-    },
-    {
-      "parameters": {
-        "jsCode": "const workflowData = $getWorkflowStaticData('global');\nfor (const item of $input.all()) {\n  item.json.embedding_calls = workflowData.embedding_calls;\n  item.json.ai_calls = workflowData.ai_calls;\n  \n}\n\nreturn $input.all();\n"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        9616,
-        -1104
-      ],
-      "id": "5cb56b2e-d9d0-46ea-a022-654375553e13",
-      "name": "read call counters1"
     },
     {
       "parameters": {
@@ -2280,42 +1390,6 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "INSERT INTO used_minus_words(list_id, minus_word_id)\n\tVALUES ($1,$2);",
-        "options": {
-          "queryReplacement": "={{$('Loop Over Items').last().json.list_id}},{{ $json.minus_word_id }}"
-        }
-      },
-      "type": "n8n-nodes-base.postgres",
-      "typeVersion": 2.6,
-      "position": [
-        5088,
-        -352
-      ],
-      "id": "4d22b06a-205f-4612-9d78-85ccac64957d",
-      "name": "Execute a SQL query",
-      "credentials": {
-        "postgres": {
-          "id": "Hx2VFmUi5WO2K4QX",
-          "name": "Postgres account 2"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "jsCode": "const { company_id, matches_ids } = $json;\n\nreturn matches_ids.map(c => ({ json: { minus_word_id: c,company_id } }));"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        4896,
-        -352
-      ],
-      "id": "2631bbf3-850f-436d-b153-629c5d8cea05",
-      "name": "Code in JavaScript"
-    },
-    {
-      "parameters": {
-        "operation": "executeQuery",
         "query": "UPDATE public.minus_words mw\nSET is_verified = true\nFROM (\n  SELECT org.minus_word_id\n  FROM public.minus_words_origin org\n  GROUP BY org.minus_word_id\n  HAVING COUNT(*) >= 2\n) v\nWHERE mw.id = v.minus_word_id\n  AND COALESCE(mw.is_verified, false) = false;",
         "options": {}
       },
@@ -2348,53 +1422,6 @@
         [
           {
             "node": "Init calls counters",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "пословное соответствие?": {
-      "main": [
-        [
-          {
-            "node": "проверяем полное соответствие",
-            "type": "main",
-            "index": 0
-          }
-        ],
-        [
-          {
-            "node": "If we have conversions for the key word",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "проверяем полное соответствие": {
-      "main": [
-        [
-          {
-            "node": "Соответствие полное?",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Соответствие полное?": {
-      "main": [
-        [
-          {
-            "node": "Помечаем что ключ совпадает",
-            "type": "main",
-            "index": 0
-          }
-        ],
-        [
-          {
-            "node": "If we have conversions for the key word",
             "type": "main",
             "index": 0
           }
@@ -2441,17 +1468,6 @@
         ]
       ]
     },
-    "Помечаем что ключ совпадает": {
-      "main": [
-        [
-          {
-            "node": "Get current step and tokens saved",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Extract from File1": {
       "main": [
         [
@@ -2466,17 +1482,6 @@
     "Code1": {
       "main": [
         []
-      ]
-    },
-    "Помечаем что найден конкурент": {
-      "main": [
-        [
-          {
-            "node": "refresh minus words status",
-            "type": "main",
-            "index": 0
-          }
-        ]
       ]
     },
     "Set API JSON": {
@@ -2506,17 +1511,6 @@
         [
           {
             "node": "update calls counters3",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Find competitors mentions": {
-      "main": [
-        [
-          {
-            "node": "update calls counters1",
             "type": "main",
             "index": 0
           }
@@ -2640,42 +1634,6 @@
         [
           {
             "node": "If",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "If we have conversions for the key word": {
-      "main": [
-        [
-          {
-            "node": "mark to add",
-            "type": "main",
-            "index": 0
-          }
-        ],
-        [
-          {
-            "node": "Set threshold",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "If competitors not found": {
-      "main": [
-        [
-          {
-            "node": "Set prompt",
-            "type": "main",
-            "index": 0
-          }
-        ],
-        [
-          {
-            "node": "if not exact competitor match",
             "type": "main",
             "index": 0
           }
@@ -2818,24 +1776,6 @@
         []
       ]
     },
-    "if not exact competitor match": {
-      "main": [
-        [
-          {
-            "node": "Set API JSON3",
-            "type": "main",
-            "index": 0
-          }
-        ],
-        [
-          {
-            "node": "read call counters1",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Get embedding": {
       "main": [
         [
@@ -2909,57 +1849,6 @@
         ]
       ]
     },
-    "Call 'chech phrase VS minus words'": {
-      "main": [
-        [
-          {
-            "node": "update calls counters",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Set threshold": {
-      "main": [
-        [
-          {
-            "node": "Call 'chech phrase VS minus words'",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "If minus words not found": {
-      "main": [
-        [
-          {
-            "node": "set input",
-            "type": "main",
-            "index": 0
-          }
-        ],
-        [
-          {
-            "node": "Code in JavaScript",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "set input": {
-      "main": [
-        [
-          {
-            "node": "Find competitors mentions",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "If anything to analise": {
       "main": [
         [
@@ -2978,50 +1867,6 @@
         ]
       ]
     },
-    "Get embedding1": {
-      "main": [
-        [
-          {
-            "node": "update calls counters4",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Set API JSON3": {
-      "main": [
-        [
-          {
-            "node": "Get embedding1",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Insert minus words from competitors": {
-      "main": [
-        [
-          {
-            "node": "add link",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "add link": {
-      "main": [
-        [
-          {
-            "node": "add competitor name variant",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "add link1": {
       "main": [
         [
@@ -3033,22 +1878,11 @@
         ]
       ]
     },
-    "add competitor name variant": {
-      "main": [
-        [
-          {
-            "node": "read call counters1",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Init calls counters": {
       "main": [
         [
           {
-            "node": "пословное соответствие?",
+            "node": "Set prompt",
             "type": "main",
             "index": 0
           }
@@ -3060,17 +1894,6 @@
         [
           {
             "node": "Обработка ответа AI",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "update calls counters4": {
-      "main": [
-        [
-          {
-            "node": "Insert minus words from competitors",
             "type": "main",
             "index": 0
           }
@@ -3099,44 +1922,11 @@
         ]
       ]
     },
-    "update calls counters1": {
-      "main": [
-        [
-          {
-            "node": "If competitors not found",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "update calls counters": {
-      "main": [
-        [
-          {
-            "node": "If minus words not found",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "read call counters": {
       "main": [
         [
           {
             "node": "update",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "read call counters1": {
-      "main": [
-        [
-          {
-            "node": "Помечаем что найден конкурент",
             "type": "main",
             "index": 0
           }
@@ -3159,28 +1949,6 @@
         [
           {
             "node": "read call counters",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Execute a SQL query": {
-      "main": [
-        [
-          {
-            "node": "set input params",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Code in JavaScript": {
-      "main": [
-        [
-          {
-            "node": "Execute a SQL query",
             "type": "main",
             "index": 0
           }
@@ -3241,7 +2009,7 @@
       }
     ]
   },
-  "versionId": "672ed3e4-d152-41e6-9968-a1d65bae1140",
+  "versionId": "8356aec8-d66b-4fba-a883-bc0743eb5fe6",
   "triggerCount": 0,
   "shared": [
     {
