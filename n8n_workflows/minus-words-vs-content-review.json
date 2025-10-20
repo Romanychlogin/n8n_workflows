@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-10-20T11:14:53.972Z",
-  "updatedAt": "2025-10-20T13:10:53.735Z",
+  "updatedAt": "2025-10-20T14:03:36.326Z",
   "id": "dSYXe1nfeCvfozcQ",
   "name": "minus words vs content review",
   "active": false,
@@ -30,8 +30,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        1520,
-        -608
+        1536,
+        -800
       ],
       "id": "bab4fa97-bd10-4819-ae2b-73b08c7bc74b",
       "name": "Mark_workflow_completed",
@@ -74,7 +74,7 @@
       "typeVersion": 2,
       "position": [
         1120,
-        -608
+        -816
       ],
       "id": "68cb8b05-9d21-4074-a3dc-3fdabb0326f4",
       "name": "Init total counter"
@@ -145,7 +145,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -1104,
+        -896,
         -384
       ],
       "id": "8705ec49-6728-4aa4-8d9e-f0f3e6dc925f",
@@ -165,7 +165,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        -944,
+        -736,
         -384
       ],
       "id": "7a635bb6-ab74-480b-8910-977621b7f13c",
@@ -187,7 +187,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -1264,
+        -1056,
         -384
       ],
       "id": "32033bbb-9158-4db7-9978-b95028196f5b",
@@ -322,7 +322,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        -1168,
+        -960,
         -672
       ],
       "id": "876c6cc5-e8be-4062-b24a-d17c8a8549cd",
@@ -332,17 +332,21 @@
           "id": "Hx2VFmUi5WO2K4QX",
           "name": "Postgres account 2"
         }
-      }
+      },
+      "disabled": true
     },
     {
       "parameters": {
         "operation": "executeQuery",
-        "options": {}
+        "query": "INSERT INTO public.company_content_log(\n\t content_id, phrase, report_id, change_timestamp, is_deleted, company_id)\n\tSELECT\n    cc.content_id,\n    cc.phrase,\n    $2 AS report_id,\n    now() AS change_timestamp,\n    true AS is_deleted,\n    $1 AS company_id\nFROM public.company_content AS cc\nWHERE cc.company_id = $1\n  AND cc.content_id IN ($3);",
+        "options": {
+          "queryReplacement": "={{ $('When Executed by Another Workflow').item.json.company_id }},{{ $('When Executed by Another Workflow').item.json.import_id }},{{  $json.ids_string}}"
+        }
       },
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        -1344,
+        -1136,
         -672
       ],
       "id": "4b586ba2-d758-49aa-ac0d-44b2c44464b2",
@@ -365,7 +369,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        -976,
+        -752,
         -672
       ],
       "id": "99a3e8e6-93e0-4dba-832c-0ef517094485",
@@ -384,7 +388,7 @@
       "type": "n8n-nodes-base.splitInBatches",
       "typeVersion": 3,
       "position": [
-        -432,
+        -224,
         -672
       ],
       "id": "bfa1c2e6-4ff5-414c-8689-081a2a099366",
@@ -397,7 +401,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -32,
+        176,
         -656
       ],
       "id": "3ebc0ae5-372f-436b-854a-83216df12e90",
@@ -417,7 +421,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        128,
+        336,
         -656
       ],
       "id": "3575ab45-8a47-401c-9cfd-bda34e78f9dd",
@@ -439,7 +443,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -208,
+        0,
         -656
       ],
       "id": "35e7182a-3f69-4253-b4a6-96b7ea58b896",
@@ -460,12 +464,12 @@
     },
     {
       "parameters": {
-        "jsCode": "// Сколько входящих элементов агрегировать в одном выходящем\nconst BATCH_SIZE = 100;\n\nfunction toIdString(v) {\n  if (typeof v === 'bigint') return v.toString();\n  if (typeof v === 'number') {\n    // защищаемся от NaN/Infinity и от дробной части\n    return Number.isFinite(v) ? Math.trunc(v).toString() : '';\n  }\n  if (typeof v === 'string') return v;\n  return v != null && v.toString ? v.toString() : '';\n}\n\nconst inputItems = $input.all();\nconst out = [];\n\nfor (let i = 0; i < inputItems.length; i += BATCH_SIZE) {\n  const chunk = inputItems.slice(i, i + BATCH_SIZE);\n\n  const items = chunk.map(({ json }) => ({\n    id: toIdString(json.id),\n    phrase: String(json.minus_word ?? '')\n  }));\n\n  out.push({ json: { items } });\n}\n//reset IDS string\nconst workflowData = $getWorkflowStaticData('global');\nworkflowData.ids_string='';\nreturn out;"
+        "jsCode": "// Сколько входящих элементов агрегировать в одном выходящем\nconst BATCH_SIZE = 100;\n\nfunction toIdString(v) {\n  if (typeof v === 'bigint') return v.toString();\n  if (typeof v === 'number') {\n    // защищаемся от NaN/Infinity и от дробной части\n    return Number.isFinite(v) ? Math.trunc(v).toString() : '';\n  }\n  if (typeof v === 'string') return v;\n  return v != null && v.toString ? v.toString() : '';\n}\n\nconst inputItems = $input.all();\nconst out = [];\n\nfor (let i = 0; i < inputItems.length; i += BATCH_SIZE) {\n  const chunk = inputItems.slice(i, i + BATCH_SIZE);\n\n  const items = chunk.map(({ json }) => ({\n    id: toIdString(json.id),\n    phrase: String(json.minus_word ?? '')\n  }));\n\n  out.push({ json: { items } });\n}\n//reset IDS string\n\nreturn out;"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -640,
+        -496,
         -672
       ],
       "id": "5cfda860-a1f5-442c-9836-6403ef395c53",
@@ -478,7 +482,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -784,
+        -576,
         -384
       ],
       "id": "d5f45c6a-73ac-4587-9499-723533940d0a",
@@ -486,12 +490,12 @@
     },
     {
       "parameters": {
-        "jsCode": "\n// 1) Берём строку JSON из указанного поля\nlet raw = $input.first().json?.output?.[1]?.content?.[0]?.text;\n\n// --- Вспомогательные функции ---\nfunction stripCodeFences(s) {\n  if (typeof s !== 'string') return s;\n  let t = s.trim();\n  // убираем ```json ... ``` или просто ```\n  if (t.startsWith('```')) {\n    t = t.replace(/^```[a-zA-Z]*\\n?/, '').replace(/```$/, '').trim();\n  }\n  return t;\n}\n\nfunction safeParseJSON(x) {\n  if (x == null) return null;\n  if (typeof x === 'object') return x; // уже объект\n  const s = stripCodeFences(String(x));\n  try {\n    return JSON.parse(s);\n  } catch (e) {\n    const m = s.match(/{[\\s\\S]*}/);\n    if (m) {\n      try { return JSON.parse(m[0]); } catch {}\n    }\n    return null;\n  }\n}\n\n// 2) Парсим и собираем ids с resolution=false\nconst obj = safeParseJSON(raw);\n\nif (!obj || !Array.isArray(obj.phrases)) {\n  // Фоллбек: ничего не нашли — ничего не трогаем в workflowData\n  return [{ json: { phrase_ids: '', count: 0, note: 'phrases not found' } }];\n}\n\n// Уберём дубли в текущей партии, сохраним порядок\nconst seen = new Set();\nconst ids = [];\nfor (const it of obj.phrases) {\n  if (!it || typeof it !== 'object') continue;\n  if (it.resolution === false && it.phrase_id != null) {\n    const idStr = String(it.phrase_id);\n    if (!seen.has(idStr)) { seen.add(idStr); ids.push(idStr); }\n  }\n}\n\nconst chunk = ids.join(',');\n\n// 3) Обновляем глобальные статические данные\nconst workflowData = $getWorkflowStaticData('global');\n\n// Приведём существующее значение к строке и уберём крайние запятые/пробелы\nconst existingRaw = (workflowData.ids_string ?? '').toString();\nconst existingClean = existingRaw.replace(/^\\s*,+|,+\\s*$/g, '').trim();\n\n// Приведём формируемый кусок к \"чистому\" виду (на всякий случай)\nconst chunkClean = chunk.replace(/^\\s*,+|,+\\s*$/g, '').trim();\n\nlet newValue = existingClean;\nif (chunkClean) {\n  if (existingClean) {\n    newValue = `${existingClean},${chunkClean}`;\n  } else {\n    newValue = chunkClean;\n  }\n}\n\n// Сохраняем обратно\nworkflowData.ids_string = newValue;\n\n// 4) Возвращаем результат ноды\nreturn [{\n  json: {\n    phrase_ids: chunkClean,             // текущая партия\n    count: ids.length,                  // сколько в текущей партии\n    global_ids_string: newValue         // итоговое значение в workflowData\n  }\n}];"
+        "jsCode": "// 1) Берём строку JSON из указанного поля\nlet raw = $input.first().json?.output?.[1]?.content?.[0]?.text;\n\n// --- Вспомогательные функции ---\nfunction stripCodeFences(s) {\n  if (typeof s !== 'string') return s;\n  let t = s.trim();\n  // убираем ```json ... ``` или просто ```\n  if (t.startsWith('```')) {\n    t = t.replace(/^```[a-zA-Z]*\\n?/, '').replace(/```$/, '').trim();\n  }\n  return t;\n}\n\nfunction safeParseJSON(x) {\n  if (x == null) return null;\n  if (typeof x === 'object') return x; // уже объект\n  const s = stripCodeFences(String(x));\n  try {\n    return JSON.parse(s);\n  } catch (e) {\n    const m = s.match(/{[\\s\\S]*}/);\n    if (m) {\n      try { return JSON.parse(m[0]); } catch {}\n    }\n    return null;\n  }\n}\n\n// 2) Парсим и собираем ids отдельно для true/false (без дублей в текущей партии)\nconst obj = safeParseJSON(raw);\nif (!obj || !Array.isArray(obj.phrases)) {\n  return [{\n    json: {\n      phrase_ids_true: '',\n      count_true: 0,\n      phrase_ids_false: '',\n      count_false: 0,\n      note: 'phrases not found'\n    }\n  }];\n}\n\nconst seenTrue = new Set();\nconst seenFalse = new Set();\nconst idsTrue = [];\nconst idsFalse = [];\n\nfor (const it of obj.phrases) {\n  if (!it || typeof it !== 'object') continue;\n  const idStr = it.phrase_id != null ? String(it.phrase_id) : null;\n  if (!idStr) continue;\n\n  if (it.resolution === true) {\n    if (!seenTrue.has(idStr)) { seenTrue.add(idStr); idsTrue.push(idStr); }\n  } else if (it.resolution === false) {\n    if (!seenFalse.has(idStr)) { seenFalse.add(idStr); idsFalse.push(idStr); }\n  }\n}\n\nconst chunkTrue = idsTrue.join(',');\nconst chunkFalse = idsFalse.join(',');\n\n// 3) Обновляем глобальные статические данные\nconst workflowData = $getWorkflowStaticData('global');\n\nfunction appendCsv(existingVal, addChunk) {\n  const existingRaw = (existingVal ?? '').toString();\n  const existingClean = existingRaw.replace(/^\\s*,+|,+\\s*$/g, '').trim();\n  const chunkClean = (addChunk ?? '').toString().replace(/^\\s*,+|,+\\s*$/g, '').trim();\n  if (!chunkClean) return existingClean;         // нечего добавлять\n  if (!existingClean) return chunkClean;         // инициализация\n  return `${existingClean},${chunkClean}`;       // добавление через запятую\n}\n\nworkflowData.ids_true_string  = appendCsv(workflowData.ids_true_string,  chunkTrue);\nworkflowData.ids_false_string = appendCsv(workflowData.ids_false_string, chunkFalse);\n\n// 4) Возвращаем результат ноды\nreturn [{\n  json: {\n    phrase_ids_true: chunkTrue,\n    count_true: idsTrue.length,\n    phrase_ids_false: chunkFalse,\n    count_false: idsFalse.length,\n    global_ids_true_string: workflowData.ids_true_string,\n    global_ids_false_string: workflowData.ids_false_string\n  }\n}];"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        304,
+        512,
         -656
       ],
       "id": "6f8afa5b-97c2-48fc-8f18-e27dcb2b1c51",
@@ -505,8 +509,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        160,
-        -832
+        608,
+        -864
       ],
       "id": "5d03e10e-347e-4ef5-a148-0f771d3d03fc",
       "name": "move relevant minus words into content",
@@ -515,7 +519,8 @@
           "id": "Hx2VFmUi5WO2K4QX",
           "name": "Postgres account 2"
         }
-      }
+      },
+      "disabled": true
     },
     {
       "parameters": {
@@ -525,11 +530,61 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        368,
-        -832
+        800,
+        -848
       ],
       "id": "fca9705d-108e-4857-b6ee-8bf6004f461f",
       "name": "delete other suspicious minus_words",
+      "credentials": {
+        "postgres": {
+          "id": "Hx2VFmUi5WO2K4QX",
+          "name": "Postgres account 2"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "jsCode": "const workflowData = $getWorkflowStaticData('global');\n\n// Инициализируем, если ещё не было\nif (typeof workflowData.ids_string !== 'string') {\n  workflowData.ids_string = String(workflowData.ids_string ?? '');\n}\n\n// Возвращаем как поле выходного элемента\nreturn [\n  { json: { ids_string: workflowData.ids_string } }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1344,
+        -496
+      ],
+      "id": "cfebf7d8-8577-4357-bcb2-9982d911faf9",
+      "name": "get ids"
+    },
+    {
+      "parameters": {
+        "jsCode": "const workflowData = $getWorkflowStaticData('global');\n\n\n\n// Инициализируем, если ещё не было\nif (typeof workflowData.ids_true_string !== 'string') {\n  workflowData.ids_true_string = String(workflowData.ids_true_string ?? '');\n}\nif (typeof workflowData.ids_false_string !== 'string') {\n  workflowData.ids_false_string = String(workflowData.ids_false_string ?? '');\n}\n\n\n// Возвращаем как поле выходного элемента\nreturn [\n  { json: { ids_true_string: workflowData.ids_true_string,ids_false_string: workflowData.ids_false_string } }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -80,
+        -832
+      ],
+      "id": "8a8a2d1d-815c-4ab7-89e7-f3864a51bb79",
+      "name": "get ids1"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO public.minus_words_log(\n\t minus_word_id, minus_word, report_id, change_timestamp, change_type, company_id)\n\tSELECT\n    cc.minus_word_id,\n    cc.minus_word,\n    $2 AS report_id,\n    now() AS change_timestamp,\n    'deleted' AS change_type,\n    $1 AS company_id\nFROM public.minus_words AS cc\nWHERE cc.company_id = $1\n  AND cc.minus_word_id IN ($3);",
+        "options": {
+          "queryReplacement": "={{ $('When Executed by Another Workflow').item.json.company_id }},{{ $('When Executed by Another Workflow').item.json.import_id }},{{  $json.ids_false_string}}"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        128,
+        -848
+      ],
+      "id": "9cb1c6a4-1602-4e45-9bc8-ed2048703d0f",
+      "name": "log del changes",
       "credentials": {
         "postgres": {
           "id": "Hx2VFmUi5WO2K4QX",
@@ -540,16 +595,19 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "options": {}
+        "query": "INSERT INTO public.minus_words_log(\n\t minus_word_id, minus_word, report_id, change_timestamp, change_type, company_id)\n\tSELECT\n    cc.minus_word_id,\n    cc.minus_word,\n    $2 AS report_id,\n    now() AS change_timestamp,\n    'moved to content' AS change_type,\n    $1 AS company_id\nFROM public.minus_words AS cc\nWHERE cc.company_id = $1\n  AND cc.minus_word_id IN ($3);",
+        "options": {
+          "queryReplacement": "={{ $('When Executed by Another Workflow').item.json.company_id }},{{ $('When Executed by Another Workflow').item.json.import_id }},{{  $('get ids1').item.json.ids_true_string}}"
+        }
       },
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        -240,
-        -832
+        336,
+        -848
       ],
-      "id": "9cb1c6a4-1602-4e45-9bc8-ed2048703d0f",
-      "name": "log changes",
+      "id": "f78f96f2-b7ab-40db-8cbc-9845d218c348",
+      "name": "log move changes",
       "credentials": {
         "postgres": {
           "id": "Hx2VFmUi5WO2K4QX",
@@ -623,7 +681,7 @@
       "main": [
         [
           {
-            "node": "log deletion",
+            "node": "get ids",
             "type": "main",
             "index": 0
           }
@@ -762,7 +820,7 @@
       "main": [
         [
           {
-            "node": "log changes",
+            "node": "get ids1",
             "type": "main",
             "index": 0
           }
@@ -875,7 +933,51 @@
         ]
       ]
     },
-    "log changes": {
+    "get ids": {
+      "main": [
+        [
+          {
+            "node": "log deletion",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "get ids1": {
+      "main": [
+        [
+          {
+            "node": "log del changes",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "log del changes": {
+      "main": [
+        [
+          {
+            "node": "log move changes",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "delete other suspicious minus_words": {
+      "main": [
+        [
+          {
+            "node": "Init total counter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "log move changes": {
       "main": [
         [
           {
@@ -908,7 +1010,7 @@
       }
     ]
   },
-  "versionId": "2a0d519d-9815-41f0-a0b1-3644fb78e2c5",
+  "versionId": "271d0b85-17e1-4bdc-976a-e802a3bfeef5",
   "triggerCount": 0,
   "shared": [
     {
