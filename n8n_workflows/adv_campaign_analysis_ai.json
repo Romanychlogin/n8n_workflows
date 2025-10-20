@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-10-20T11:13:50.516Z",
-  "updatedAt": "2025-10-20T16:40:11.109Z",
+  "updatedAt": "2025-10-20T16:47:58.925Z",
   "id": "xNiuEqQOSNCSLvW5",
   "name": "ADV_campaign_analysis_AI",
   "active": false,
@@ -64,7 +64,7 @@
           "value": {
             "resolution": "={{ $json.resolution}}",
             "list_id": "={{ $('Loop Over Items').last().json.list_id }}",
-            "ai_response_tokens": "={{ $json.total_tokens }}",
+            "ai_response_tokens": "=0",
             "ai_calls": "={{ $json.ai_calls }}",
             "embedding_calls": "={{ $json.embedding_calls }}"
           },
@@ -271,8 +271,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        11072,
-        208
+        11200,
+        176
       ],
       "id": "42d63bda-f271-4a00-8872-7f837ca226ef",
       "name": "update",
@@ -890,7 +890,7 @@
             {
               "id": "ec583710-a44c-47de-ba3f-ebbfaa229fb1",
               "name": "args.phrase",
-              "value": "={{ $('Loop Over Items').last().json.key_word }}",
+              "value": "={{ $('Loop Over Items2').last().json.key_word }}",
               "type": "string"
             },
             {
@@ -1180,8 +1180,8 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        7872,
-        -272
+        7856,
+        -304
       ],
       "id": "abe656a2-5993-4c54-8bbc-97cdd453ce0e",
       "name": "Sticky Note4"
@@ -1436,7 +1436,9 @@
     },
     {
       "parameters": {
-        "options": {}
+        "options": {
+          "reset": "={{ $json.is_first }}"
+        }
       },
       "type": "n8n-nodes-base.splitInBatches",
       "typeVersion": 3,
@@ -1446,6 +1448,54 @@
       ],
       "id": "d1c9513d-65b1-41d2-aba0-9268b3976ab5",
       "name": "Loop Over Items2"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "ebafa31d-edf7-41c0-a06e-e884ad9595ea",
+              "name": "is_first",
+              "value": "=true",
+              "type": "boolean"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        4160,
+        176
+      ],
+      "id": "d6e9d273-dd57-47c7-ab27-d45422911ee1",
+      "name": "set first_item"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "ebafa31d-edf7-41c0-a06e-e884ad9595ea",
+              "name": "is_first",
+              "value": "=false",
+              "type": "boolean"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        5296,
+        128
+      ],
+      "id": "a972476f-24be-4274-a651-d71635124654",
+      "name": "reset first_item1"
     }
   ],
   "connections": {
@@ -2020,7 +2070,7 @@
       "main": [
         [
           {
-            "node": "Loop Over Items2",
+            "node": "set first_item",
             "type": "main",
             "index": 0
           }
@@ -2036,6 +2086,28 @@
             "index": 0
           }
         ],
+        [
+          {
+            "node": "reset first_item1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "set first_item": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "reset first_item1": {
+      "main": [
         [
           {
             "node": "Обработка ответа AI",
@@ -2088,7 +2160,7 @@
       }
     ]
   },
-  "versionId": "03804e74-b2e5-470f-bf1c-bfbfcdc2ba5f",
+  "versionId": "4743b6ce-4525-46cd-b648-0bf734142420",
   "triggerCount": 0,
   "shared": [
     {
