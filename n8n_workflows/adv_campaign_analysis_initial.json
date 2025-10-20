@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-10-20T11:13:37.232Z",
-  "updatedAt": "2025-10-20T14:31:46.121Z",
+  "updatedAt": "2025-10-20T15:50:38.622Z",
   "id": "b9eGU4g5DID0kq2E",
   "name": "ADV_campaign_analysis_initial",
   "active": false,
@@ -546,68 +546,6 @@
           "name": "Postgres account 2"
         }
       }
-    },
-    {
-      "parameters": {
-        "resource": "file",
-        "operation": "get",
-        "owner": {
-          "__rl": true,
-          "value": "Romanychlogin",
-          "mode": "name"
-        },
-        "repository": {
-          "__rl": true,
-          "value": "n8n_prompts",
-          "mode": "list",
-          "cachedResultName": "n8n_prompts",
-          "cachedResultUrl": "https://github.com/Romanychlogin/n8n_prompts"
-        },
-        "filePath": "keyword_analysis.txt",
-        "additionalParameters": {}
-      },
-      "type": "n8n-nodes-base.github",
-      "typeVersion": 1.1,
-      "position": [
-        192,
-        -416
-      ],
-      "id": "5fa92481-748e-4f38-8692-9dc90515e275",
-      "name": "Get a file",
-      "webhookId": "92bbe04b-c34a-4d25-9a53-5bd59389e2ac",
-      "credentials": {
-        "githubApi": {
-          "id": "JQAFAcMNS9Ylyb0V",
-          "name": "GitHub account"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "operation": "text",
-        "options": {}
-      },
-      "type": "n8n-nodes-base.extractFromFile",
-      "typeVersion": 1,
-      "position": [
-        400,
-        -416
-      ],
-      "id": "02e70ed7-b8ad-4fb1-97f3-50ac6d87ac38",
-      "name": "Extract from File1"
-    },
-    {
-      "parameters": {
-        "jsCode": "// Function-Node (Run Once)\nconst workflowData = $getWorkflowStaticData('global');\nworkflowData.my_prompt = items[0].json;\nreturn items;"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        608,
-        -416
-      ],
-      "id": "61c8bd88-e845-4702-af9a-8c903b4c30d9",
-      "name": "Code1"
     },
     {
       "parameters": {
@@ -2324,17 +2262,6 @@
         ]
       ]
     },
-    "Get a file": {
-      "main": [
-        [
-          {
-            "node": "Extract from File1",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Помечаем что ключ совпадает": {
       "main": [
         [
@@ -2344,22 +2271,6 @@
             "index": 0
           }
         ]
-      ]
-    },
-    "Extract from File1": {
-      "main": [
-        [
-          {
-            "node": "Code1",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Code1": {
-      "main": [
-        []
       ]
     },
     "Помечаем что найден конкурент": {
@@ -2427,11 +2338,6 @@
     "set variables": {
       "main": [
         [
-          {
-            "node": "Get a file",
-            "type": "main",
-            "index": 0
-          },
           {
             "node": "Mark_workwlow_started",
             "type": "main",
@@ -3102,7 +3008,7 @@
       }
     ]
   },
-  "versionId": "41bb1541-eefb-4ee1-ab5d-b35ff1056278",
+  "versionId": "d7ad16b2-467c-4508-8c81-8886db077821",
   "triggerCount": 0,
   "shared": [
     {
