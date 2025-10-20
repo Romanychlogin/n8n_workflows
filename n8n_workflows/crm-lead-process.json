@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-10-07T21:30:12.820Z",
-  "updatedAt": "2025-10-20T17:56:22.159Z",
+  "updatedAt": "2025-10-20T18:24:16.089Z",
   "id": "d4D0Fp4pO6Ch7S7C",
   "name": "CRM lead process",
   "active": true,
@@ -397,7 +397,7 @@
             },
             {
               "name": "cid",
-              "value": "=1760971838125535812"
+              "value": "={{ $json.client_ID }}"
             },
             {
               "name": "t",
@@ -636,68 +636,9 @@
           }
         }
       }
-    ],
-    "Webhook": [
-      {
-        "json": {
-          "headers": {
-            "host": "n8n-main-production-4310.up.railway.app",
-            "user-agent": "GuzzleHttp/7",
-            "content-length": "609",
-            "content-type": "application/json",
-            "x-forwarded-for": "5.182.6.225",
-            "x-forwarded-host": "n8n-main-production-4310.up.railway.app",
-            "x-forwarded-proto": "https",
-            "x-railway-edge": "railway/europe-west4-drams3a",
-            "x-railway-request-id": "p56DIDM9QpyjcuPa5nX1uw",
-            "x-real-ip": "5.182.6.225",
-            "x-request-start": "1760902386909",
-            "accept-encoding": "gzip"
-          },
-          "params": {},
-          "query": {},
-          "body": {
-            "branch_id": 1,
-            "event": "create",
-            "entity": "Customer",
-            "entity_id": 19395,
-            "fields_old": [],
-            "fields_new": {
-              "dob": "2009-10-17",
-              "name": "n8n",
-              "note": "",
-              "id_no": "",
-              "b_date": "2025-10-19 23:33:06",
-              "e_date": "2030-12-31",
-              "barcode": "",
-              "is_study": 0,
-              "id_issued": "",
-              "branch_ids": [
-                1
-              ],
-              "company_id": null,
-              "created_at": "2025-10-19 19:33:06",
-              "legal_name": "n8n",
-              "legal_type": 1,
-              "lead_source_id": "40",
-              "lead_status_id": "",
-              "contact_contacts": [
-                "+262-72672-6267",
-                "anan@anana.ru"
-              ],
-              "custom_value_json": "{\"16\":\"\",\"12\":\"\",\"13\":\"\",\"11\":\"\",\"14\":\"\",\"15\":\"\"}"
-            },
-            "fields_rel": [],
-            "user_id": null,
-            "datetime": "2025-10-19 23:33:06"
-          },
-          "webhookUrl": "https://n8n-main-production-4310.up.railway.app/webhook/c11cd095-1060-4c9c-87df-2a3c9d34deab",
-          "executionMode": "production"
-        }
-      }
     ]
   },
-  "versionId": "26abc40d-f93b-4f42-a48e-ef6d933c0967",
+  "versionId": "00fe3e53-4aaa-4d34-b6fc-21c3cf6791f8",
   "triggerCount": 1,
   "shared": [
     {
