@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-10-20T11:14:53.972Z",
-  "updatedAt": "2025-10-20T14:03:36.326Z",
+  "updatedAt": "2025-10-20T14:17:28.443Z",
   "id": "dSYXe1nfeCvfozcQ",
   "name": "minus words vs content review",
   "active": false,
@@ -340,7 +340,7 @@
         "operation": "executeQuery",
         "query": "INSERT INTO public.company_content_log(\n\t content_id, phrase, report_id, change_timestamp, is_deleted, company_id)\n\tSELECT\n    cc.content_id,\n    cc.phrase,\n    $2 AS report_id,\n    now() AS change_timestamp,\n    true AS is_deleted,\n    $1 AS company_id\nFROM public.company_content AS cc\nWHERE cc.company_id = $1\n  AND cc.content_id IN ($3);",
         "options": {
-          "queryReplacement": "={{ $('When Executed by Another Workflow').item.json.company_id }},{{ $('When Executed by Another Workflow').item.json.import_id }},{{  $json.ids_string}}"
+          "queryReplacement": "={{ $('When Executed by Another Workflow').last().json.company_id }},{{ $('When Executed by Another Workflow').last().json.import_id }},{{  $json.ids_string}}"
         }
       },
       "type": "n8n-nodes-base.postgres",
@@ -363,7 +363,7 @@
         "operation": "executeQuery",
         "query": "SELECT\n  v.minus_word,\n  v.id,\n  ct.phrase,\n  ct.content_id,\n  1 - (v.minus_word_embedding <=> ct.phrase_embedding) AS similarity\nFROM company_content ct\nCROSS JOIN LATERAL (\n  SELECT v.minus_word, v.id, v.minus_word_embedding\n  FROM minus_words v\n  WHERE v.company_id = 1\n  ORDER BY v.minus_word_embedding <=> ct.phrase_embedding\n  LIMIT 50                           -- подберите k экспериментально\n) v\nWHERE ct.company_id = $1\n  AND 1 - (v.minus_word_embedding <=> ct.phrase_embedding) > $2\n  AND ct.phrase_embedding IS NOT NULL;",
         "options": {
-          "queryReplacement": "={{ $('When Executed by Another Workflow').item.json.company_id }},{{$json.threshold  }}"
+          "queryReplacement": "={{ $('When Executed by Another Workflow').last().json.company_id }},{{ $('set variables').last().json.threshold }}"
         }
       },
       "type": "n8n-nodes-base.postgres",
@@ -550,8 +550,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -1344,
-        -496
+        -1312,
+        -480
       ],
       "id": "cfebf7d8-8577-4357-bcb2-9982d911faf9",
       "name": "get ids"
@@ -563,8 +563,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -80,
-        -832
+        -96,
+        -848
       ],
       "id": "8a8a2d1d-815c-4ab7-89e7-f3864a51bb79",
       "name": "get ids1"
@@ -574,7 +574,7 @@
         "operation": "executeQuery",
         "query": "INSERT INTO public.minus_words_log(\n\t minus_word_id, minus_word, report_id, change_timestamp, change_type, company_id)\n\tSELECT\n    cc.minus_word_id,\n    cc.minus_word,\n    $2 AS report_id,\n    now() AS change_timestamp,\n    'deleted' AS change_type,\n    $1 AS company_id\nFROM public.minus_words AS cc\nWHERE cc.company_id = $1\n  AND cc.minus_word_id IN ($3);",
         "options": {
-          "queryReplacement": "={{ $('When Executed by Another Workflow').item.json.company_id }},{{ $('When Executed by Another Workflow').item.json.import_id }},{{  $json.ids_false_string}}"
+          "queryReplacement": "={{ $('When Executed by Another Workflow').last().json.company_id }},{{ $('When Executed by Another Workflow').last().json.import_id }},{{  $json.ids_false_string}}"
         }
       },
       "type": "n8n-nodes-base.postgres",
@@ -597,7 +597,7 @@
         "operation": "executeQuery",
         "query": "INSERT INTO public.minus_words_log(\n\t minus_word_id, minus_word, report_id, change_timestamp, change_type, company_id)\n\tSELECT\n    cc.minus_word_id,\n    cc.minus_word,\n    $2 AS report_id,\n    now() AS change_timestamp,\n    'moved to content' AS change_type,\n    $1 AS company_id\nFROM public.minus_words AS cc\nWHERE cc.company_id = $1\n  AND cc.minus_word_id IN ($3);",
         "options": {
-          "queryReplacement": "={{ $('When Executed by Another Workflow').item.json.company_id }},{{ $('When Executed by Another Workflow').item.json.import_id }},{{  $('get ids1').item.json.ids_true_string}}"
+          "queryReplacement": "={{ $('When Executed by Another Workflow').last().json.company_id }},{{ $('When Executed by Another Workflow').last().json.import_id }},{{  $('get ids1').last().json.ids_true_string}}"
         }
       },
       "type": "n8n-nodes-base.postgres",
@@ -614,6 +614,51 @@
           "name": "Postgres account 2"
         }
       }
+    },
+    {
+      "parameters": {
+        "content": "Анализируем контент совпадающий с  минус словами",
+        "height": 368,
+        "width": 1392
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -1712,
+        -512
+      ],
+      "id": "de6b6e88-817b-4c18-9cd0-6a6fb4c02d58",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "Удаляем нерелевнтный контент",
+        "height": 368,
+        "width": 960
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -1280,
+        -896
+      ],
+      "id": "da2ceedc-46a7-48c6-be30-a88e91c201ae",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "Минус слова: 1)релевантные - переносим в контент 2)нерелеватные - удаляем на всякий случай",
+        "height": 592,
+        "width": 1232
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -240,
+        -912
+      ],
+      "id": "0aa061e7-31b2-4a78-9397-1d72ad48093e",
+      "name": "Sticky Note2"
     }
   ],
   "connections": {
@@ -1010,7 +1055,7 @@
       }
     ]
   },
-  "versionId": "271d0b85-17e1-4bdc-976a-e802a3bfeef5",
+  "versionId": "dc8960bf-1401-4cae-ba14-b5f4a51111b4",
   "triggerCount": 0,
   "shared": [
     {
