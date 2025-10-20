@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-10-20T11:13:50.516Z",
-  "updatedAt": "2025-10-20T16:28:38.787Z",
+  "updatedAt": "2025-10-20T16:40:11.109Z",
   "id": "xNiuEqQOSNCSLvW5",
   "name": "ADV_campaign_analysis_AI",
   "active": false,
@@ -381,7 +381,7 @@
     },
     {
       "parameters": {
-        "jsCode": "return [{\n  json: \n {\n  \"model\": \"gpt-5\",\n  \"input\": [\n    {\n      \"role\": \"developer\",\n      \"content\": [\n        {\n          \"type\": \"input_text\",\n          \"text\": \"# Role and Objective\\n- You are a search query analysis assistant. Your role is to identify and filter out irrelevant queries for client's services. Validate each input phrase and respond with a structured JSON object.\\n\"\n        }\n      ]\n    },\n    {\n      \"role\": \"user\",\n      \"content\": [\n        {\n          \"type\": \"input_text\",\n          \"text\": $json.my_prompt\n        }\n      ]\n    }\n  ],\n  \"text\": {\n    \"format\": {\n      \"type\": \"json_schema\",\n      \"name\": \"phrases_resolutions\",\n      \"strict\": true,\n      \"schema\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"phrases\": {\n            \"type\": \"array\",\n            \"description\": \"A list of entries each consisting of a phrase ID and a corresponding boolean resolution.\",\n            \"items\": {\n              \"type\": \"object\",\n              \"properties\": {\n                \"phrase_id\": {\n                  \"type\": \"string\",\n                  \"description\": \"The ID of the textual phrase.\",\n                  \"minLength\": 1\n                },\n                \"resolution\": {\n                  \"type\": \"boolean\",\n                  \"description\": \"Boolean value indicating the resolution of the phrase.\"\n                }\n              },\n              \"required\": [\n                \"phrase_id\",\n                \"resolution\"\n              ],\n              \"additionalProperties\": false\n            }\n          }\n        },\n        \"required\": [\n          \"phrases\"\n        ],\n        \"additionalProperties\": false\n      }\n    },\n    \"verbosity\": \"low\"\n  },\n  \"reasoning\": {\n    \"effort\": \"low\",\n    \"summary\": \"detailed\"\n  },\n  \"tools\": [],\n  \"store\": false,\n  \"include\": [\n    \"reasoning.encrypted_content\",\n    \"web_search_call.action.sources\"\n  ]\n}\n\n}];"
+        "jsCode": "return [{\n  json: \n {\n  \"model\": \"gpt-5\",\n  \"input\": [\n    {\n      \"role\": \"developer\",\n      \"content\": [\n        {\n          \"type\": \"input_text\",\n          \"text\": \"# Role and Objective\\n- You are a search query analysis assistant. Your role is to identify and filter out irrelevant queries for client's services. Validate each input phrase and respond with a structured JSON object.\\n\"\n        }\n      ]\n    },\n    {\n      \"role\": \"user\",\n      \"content\": [\n        {\n          \"type\": \"input_text\",\n          \"text\": $json.my_prompt\n        }\n      ]\n    }\n  ],\n  \"text\": {\n    \"format\": {\n      \"type\": \"json_schema\",\n      \"name\": \"phrases_resolutions\",\n      \"strict\": true,\n      \"schema\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"phrases\": {\n            \"type\": \"array\",\n            \"description\": \"A list of entries each consisting of a phrase ID and a corresponding boolean resolution.\",\n            \"items\": {\n              \"type\": \"object\",\n              \"properties\": {\n                \"phrase\": {\n              \"type\": \"string\",\n              \"description\": \"The textual phrase.\",\n              \"minLength\": 1\n                },\n                \"phrase_id\": {\n                  \"type\": \"string\",\n                  \"description\": \"The ID of the textual phrase.\",\n                  \"minLength\": 1\n                },\n                \"resolution\": {\n                  \"type\": \"boolean\",\n                  \"description\": \"Boolean value indicating the resolution of the phrase.\"\n                }\n              },\n              \"required\": [\n                \"phrase\",\n                \"phrase_id\",\n                \"resolution\"\n              ],\n              \"additionalProperties\": false\n            }\n          }\n        },\n        \"required\": [\n          \"phrases\"\n        ],\n        \"additionalProperties\": false\n      }\n    },\n    \"verbosity\": \"low\"\n  },\n  \"reasoning\": {\n    \"effort\": \"low\",\n    \"summary\": \"detailed\"\n  },\n  \"tools\": [],\n  \"store\": false,\n  \"include\": [\n    \"reasoning.encrypted_content\",\n    \"web_search_call.action.sources\"\n  ]\n}\n\n}];"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -660,7 +660,7 @@
       "typeVersion": 2,
       "position": [
         11440,
-        288
+        368
       ],
       "id": "658dc02c-f118-4106-bef5-15ed79d1f948",
       "name": "Get current step and tokens saved"
@@ -795,7 +795,7 @@
             {
               "id": "4f2396b9-b5c0-4e30-86c1-df42515df6af",
               "name": "total_tokens",
-              "value": "={{ $json.usage.total_tokens }}",
+              "value": "=0",
               "type": "number"
             }
           ]
@@ -1330,7 +1330,7 @@
             {
               "id": "47944833-0d31-4a55-9872-7c281576da2a",
               "name": "key_word",
-              "value": "={{ $('Loop Over Items').last().json.key_word }}",
+              "value": "={{ $('Loop Over Items2').last().json.key_word }}",
               "type": "string"
             },
             {
@@ -1423,7 +1423,7 @@
     },
     {
       "parameters": {
-        "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nfor (const item of $input.all()) {\n  item.json.myNewField = 1;\n}\n\nreturn $input.all();"
+        "jsCode": "// Берём строку JSON из указанного поля\nlet raw = $input.first().json?.output?.[1]?.content?.[0]?.text;\n\n// Удаляем ограждения кода ```...```\nfunction stripCodeFences(s) {\n  if (typeof s !== 'string') return s;\n  let t = s.trim();\n  if (t.startsWith('```')) {\n    t = t.replace(/^```[a-zA-Z]*\\n?/, '').replace(/```$/, '').trim();\n  }\n  return t;\n}\n\n// Безопасный парсинг JSON (с попыткой вытащить первый {...})\nfunction safeParseJSON(x) {\n  if (x == null) return null;\n  if (typeof x === 'object') return x;\n  const s = stripCodeFences(String(x));\n  try {\n    return JSON.parse(s);\n  } catch {\n    const m = s.match(/{[\\s\\S]*}/);\n    if (m) {\n      try { return JSON.parse(m[0]); } catch {}\n    }\n    return null;\n  }\n}\n\nconst obj = safeParseJSON(raw);\nif (!obj || !Array.isArray(obj.phrases)) {\n  return [];\n}\n\nconst out = [];\nfor (const it of obj.phrases) {\n  if (!it || typeof it !== 'object') continue;\n\n  const key_word      = typeof it.phrase === 'string' && it.phrase.length > 0 ? it.phrase : null;\n  const phrase_id   = typeof it.phrase_id === 'string' && it.phrase_id.length > 0 ? it.phrase_id : null;\n  const resolution  = typeof it.resolution === 'boolean' ? it.resolution : null;\n\n  // Учитываем расширенный формат: требуем, чтобы присутствовали все три входных поля,\n  // но в выход добавляем только phrase_id и resolution.\n  if (phrase && phrase_id && resolution !== null) {\n    out.push({\n      json: {\n        phrase_id,\n        resolution\n        // Если нужно включить сам текст фразы в выход:\n        , key_word\n      }\n    });\n  }\n}\n\nreturn out;"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -1441,8 +1441,8 @@
       "type": "n8n-nodes-base.splitInBatches",
       "typeVersion": 3,
       "position": [
-        4592,
-        -208
+        4720,
+        400
       ],
       "id": "d1c9513d-65b1-41d2-aba0-9268b3976ab5",
       "name": "Loop Over Items2"
@@ -2029,7 +2029,13 @@
     },
     "Loop Over Items2": {
       "main": [
-        [],
+        [
+          {
+            "node": "Get current step and tokens saved",
+            "type": "main",
+            "index": 0
+          }
+        ],
         [
           {
             "node": "Обработка ответа AI",
@@ -2082,7 +2088,7 @@
       }
     ]
   },
-  "versionId": "424edeea-db8c-4268-9d58-2f8ed8d75c6e",
+  "versionId": "03804e74-b2e5-470f-bf1c-bfbfcdc2ba5f",
   "triggerCount": 0,
   "shared": [
     {
