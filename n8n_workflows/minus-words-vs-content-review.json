@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-10-20T11:14:53.972Z",
-  "updatedAt": "2025-10-20T14:22:20.134Z",
+  "updatedAt": "2025-10-20T14:40:09.711Z",
   "id": "dSYXe1nfeCvfozcQ",
   "name": "minus words vs content review",
   "active": false,
@@ -550,8 +550,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -1312,
-        -480
+        -1392,
+        -592
       ],
       "id": "cfebf7d8-8577-4357-bcb2-9982d911faf9",
       "name": "get ids"
@@ -572,7 +572,7 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "INSERT INTO public.minus_words_log(\n\t minus_word_id, minus_word, report_id, change_timestamp, change_type, company_id)\n\tSELECT\n    cc.minus_word_id,\n    cc.minus_word,\n    $2 AS report_id,\n    now() AS change_timestamp,\n    'deleted' AS change_type,\n    $1 AS company_id\nFROM public.minus_words AS cc\nWHERE cc.company_id = $1\n  AND cc.minus_word_id IN ($3);",
+        "query": "INSERT INTO public.minus_words_log(\n\t minus_word_id, minus_word, report_id, change_timestamp, change_type, company_id)\n\tSELECT\n    cc.id,\n    cc.minus_word,\n    $2 AS report_id,\n    now() AS change_timestamp,\n    'deleted' AS change_type,\n    $1 AS company_id\nFROM public.minus_words AS cc\nWHERE cc.company_id = $1\n  AND cc.id IN ($3);",
         "options": {
           "queryReplacement": "={{ $('When Executed by Another Workflow').last().json.company_id }},{{ $('When Executed by Another Workflow').last().json.import_id }},{{  $json.ids_false_string}}"
         }
@@ -595,7 +595,7 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "INSERT INTO public.minus_words_log(\n\t minus_word_id, minus_word, report_id, change_timestamp, change_type, company_id)\n\tSELECT\n    cc.minus_word_id,\n    cc.minus_word,\n    $2 AS report_id,\n    now() AS change_timestamp,\n    'moved to content' AS change_type,\n    $1 AS company_id\nFROM public.minus_words AS cc\nWHERE cc.company_id = $1\n  AND cc.minus_word_id IN ($3);",
+        "query": "INSERT INTO public.minus_words_log(\n\t minus_word_id, minus_word, report_id, change_timestamp, change_type, company_id)\n\tSELECT\n    cc.id,\n    cc.minus_word,\n    $2 AS report_id,\n    now() AS change_timestamp,\n    'moved to content' AS change_type,\n    $1 AS company_id\nFROM public.minus_words AS cc\nWHERE cc.company_id = $1\n  AND cc.id IN ($3);",
         "options": {
           "queryReplacement": "={{ $('When Executed by Another Workflow').last().json.company_id }},{{ $('When Executed by Another Workflow').last().json.import_id }},{{  $('get ids1').last().json.ids_true_string}}"
         }
@@ -1055,7 +1055,7 @@
       }
     ]
   },
-  "versionId": "9ba80f12-2ec4-496b-b036-9574f10eb352",
+  "versionId": "ff21b273-61e1-4b75-80ad-0a83dc2ea6c0",
   "triggerCount": 0,
   "shared": [
     {
