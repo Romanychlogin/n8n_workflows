@@ -1,0 +1,3264 @@
+{
+  "createdAt": "2025-10-20T11:13:50.516Z",
+  "updatedAt": "2025-10-20T11:13:50.516Z",
+  "id": "xNiuEqQOSNCSLvW5",
+  "name": "ADV_campaign_analysis_AI",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        1200,
+        -96
+      ],
+      "id": "c6042371-815a-4f92-b3cb-a552c08886d4",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {
+        "content": "что делаем по регулярной отчетности. Пока из  CSV. Потом - API\nНа вход - стандартный поисковый запрос + Заголовок объявления. Без дат!!!!"
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -160,
+        -880
+      ],
+      "id": "079c3a0d-9893-4688-ac1f-d46a6e859d73",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "5db6f53d-c697-4fb8-8804-93f5c0a2fcca",
+              "leftValue": "={{ $json.condition_type }}",
+              "rightValue": "пословное",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1888,
+        -208
+      ],
+      "id": "c4e0e9a8-d264-49c6-b9d3-1f4fec8c741d",
+      "name": "пословное соответствие?"
+    },
+    {
+      "parameters": {
+        "content": "Соответствие\n1)Если пословное то проверяем совпадение запроса с нашим ключом. \nа)совпадает(убираем кавычки у нашего ключа) - все ОК\nб)не совпадает - спрашиваем у чата релевантна ли нам фраза. Да - добавляем в ключи. Нет - добавляем в минус слова.\n2)Не пословное - спрашиваем у чата релевантна ли нам фраза. Да - добавляем в ключи. Нет - добавляем в минус слова."
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -480,
+        -640
+      ],
+      "id": "2519def4-d7fa-4536-80ff-bf0e222f0650",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nfor (const item of $input.all()) {\n  item.json.same_key = item.json.key_word.replace(/[\\s\"]/g, '') === item.json.used_keyword.replace(/[\\s\"]/g, '');\n}\n\nreturn $input.all();"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2288,
+        -512
+      ],
+      "id": "007749b5-c912-4aac-b699-2048021eb9dc",
+      "name": "проверяем полное соответствие"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "b59658e0-7426-4b0c-bb61-db52e84fc3cf",
+              "leftValue": "={{ $json.same_key }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        2848,
+        -672
+      ],
+      "id": "2953de3a-c621-4c3c-b07b-c048d1f87ab1",
+      "name": "Соответствие полное?"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "current_list",
+          "mode": "list",
+          "cachedResultName": "current_list"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "resolution": "same key",
+            "list_id": "={{ $('Loop Over Items').last().json.list_id }}"
+          },
+          "matchingColumns": [
+            "list_id"
+          ],
+          "schema": [
+            {
+              "id": "list_id",
+              "displayName": "list_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "key_word",
+              "displayName": "key_word",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "campaign_id",
+              "displayName": "campaign_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "used_keyword",
+              "displayName": "used_keyword",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "group_id",
+              "displayName": "group_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "condition_type",
+              "displayName": "condition_type",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "category",
+              "displayName": "category",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "ads_header",
+              "displayName": "ads_header",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "date",
+              "displayName": "date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "ai_responce",
+              "displayName": "ai_responce",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "resolution",
+              "displayName": "resolution",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "count_views",
+              "displayName": "count_views",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "count_clics",
+              "displayName": "count_clics",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "count_convetions",
+              "displayName": "count_convetions",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        9648,
+        -1696
+      ],
+      "id": "44afbed4-c402-42a4-b2d9-66f7214dad72",
+      "name": "Помечаем что ключ совпадает",
+      "credentials": {
+        "postgres": {
+          "id": "Hx2VFmUi5WO2K4QX",
+          "name": "Postgres account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "current_list",
+          "mode": "list",
+          "cachedResultName": "current_list"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "resolution": "={{ $json.resolution}}",
+            "list_id": "={{ $('Loop Over Items').last().json.list_id }}",
+            "ai_response_tokens": "={{ $json.total_tokens }}",
+            "ai_calls": "={{ $json.ai_calls }}",
+            "embedding_calls": "={{ $json.embedding_calls }}"
+          },
+          "matchingColumns": [
+            "list_id"
+          ],
+          "schema": [
+            {
+              "id": "list_id",
+              "displayName": "list_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "key_word",
+              "displayName": "key_word",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "campaign_id",
+              "displayName": "campaign_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "used_keyword",
+              "displayName": "used_keyword",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "group_id",
+              "displayName": "group_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "condition_type",
+              "displayName": "condition_type",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "category",
+              "displayName": "category",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "ads_header",
+              "displayName": "ads_header",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "resolution",
+              "displayName": "resolution",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "count_views",
+              "displayName": "count_views",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "count_clics",
+              "displayName": "count_clics",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "count_convetions",
+              "displayName": "count_convetions",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "ai_response_tokens",
+              "displayName": "ai_response_tokens",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "company_id",
+              "displayName": "company_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "report_id",
+              "displayName": "report_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "service_id",
+              "displayName": "service_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "is_adv_processed",
+              "displayName": "is_adv_processed",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "boolean",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "ai_calls",
+              "displayName": "ai_calls",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "embedding_calls",
+              "displayName": "embedding_calls",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        9648,
+        -672
+      ],
+      "id": "42d63bda-f271-4a00-8872-7f837ca226ef",
+      "name": "update",
+      "credentials": {
+        "postgres": {
+          "id": "Hx2VFmUi5WO2K4QX",
+          "name": "Postgres account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "60fdafa4-2c5e-4917-978b-dbc1a116f516",
+              "leftValue": "={{ JSON.parse($json.output[1].content[0].text).is_correct_phrase }}",
+              "rightValue": "true_phrase",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        6912,
+        -496
+      ],
+      "id": "cd7d73dd-916a-4025-8f12-2fe62764d05a",
+      "name": "Обработка ответа AI"
+    },
+    {
+      "parameters": {
+        "resource": "file",
+        "operation": "get",
+        "owner": {
+          "__rl": true,
+          "value": "Romanychlogin",
+          "mode": "name"
+        },
+        "repository": {
+          "__rl": true,
+          "value": "n8n_prompts",
+          "mode": "list",
+          "cachedResultName": "n8n_prompts",
+          "cachedResultUrl": "https://github.com/Romanychlogin/n8n_prompts"
+        },
+        "filePath": "keyword_analysis.txt",
+        "additionalParameters": {},
+        "path": "9b3c00bc-0f09-4c63-a372-331ab1441e95"
+      },
+      "type": "n8n-nodes-base.github",
+      "typeVersion": 1.1,
+      "position": [
+        192,
+        -416
+      ],
+      "id": "f53a5bc8-5138-421f-9e0e-ccb93f04a534",
+      "name": "Get a file",
+      "webhookId": "9b3c00bc-0f09-4c63-a372-331ab1441e95",
+      "credentials": {
+        "githubApi": {
+          "id": "JQAFAcMNS9Ylyb0V",
+          "name": "GitHub account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "text",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        400,
+        -416
+      ],
+      "id": "bdd79bd8-ead3-42c8-a573-be8acc28316e",
+      "name": "Extract from File1"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Function-Node (Run Once)\nconst workflowData = $getWorkflowStaticData('global');\nworkflowData.my_prompt = items[0].json;\nreturn items;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        608,
+        -416
+      ],
+      "id": "6bed5b72-bb32-47be-a4f2-f2fbfcdf7520",
+      "name": "Code1"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "current_list",
+          "mode": "list",
+          "cachedResultName": "current_list"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "list_id": "={{ $('Loop Over Items').last().json.list_id }}",
+            "resolution": "={{ \"найден конкурент: \"+ $('If competitors not found').last().json.hits[0].matched+\", название: \"+$('If competitors not found').last().json.hits[0].canonical }}"
+          },
+          "matchingColumns": [
+            "list_id"
+          ],
+          "schema": [
+            {
+              "id": "list_id",
+              "displayName": "list_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "key_word",
+              "displayName": "key_word",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "campaign_id",
+              "displayName": "campaign_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "used_keyword",
+              "displayName": "used_keyword",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "group_id",
+              "displayName": "group_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "condition_type",
+              "displayName": "condition_type",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "category",
+              "displayName": "category",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "ads_header",
+              "displayName": "ads_header",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "date",
+              "displayName": "date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "ai_responce",
+              "displayName": "ai_responce",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "resolution",
+              "displayName": "resolution",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "count_views",
+              "displayName": "count_views",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "count_clics",
+              "displayName": "count_clics",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "count_convetions",
+              "displayName": "count_convetions",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        9792,
+        -1088
+      ],
+      "id": "c1eb8e09-421f-455d-b2cd-f578f939f267",
+      "name": "Помечаем что найден конкурент",
+      "credentials": {
+        "postgres": {
+          "id": "Hx2VFmUi5WO2K4QX",
+          "name": "Postgres account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "return [{\n  json: \n {\n  \"model\": \"gpt-5\",\n  \"input\": [\n    {\n      \"role\": \"developer\",\n      \"content\": [\n        {\n          \"type\": \"input_text\",\n          \"text\": \"# Role and Objective\\n- You are a search query analysis assistant. Your role is to identify and filter out irrelevant queries for client's services. Validate each input phrase and respond with a structured JSON object.\\n\"\n        }\n      ]\n    },\n    {\n      \"role\": \"user\",\n      \"content\": [\n        {\n          \"type\": \"input_text\",\n          \"text\": $json.my_prompt\n        }\n      ]\n    }\n  ],\n  \"text\": {\n    \"format\": {\n      \"type\": \"json_schema\",\n      \"name\": \"phrase_resolution\",\n      \"strict\": true,\n      \"schema\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"is_correct_phrase\": {\n            \"type\": \"boolean\",\n            \"description\": \"Indicates if the phrase is correct.\"\n          }\n        },\n        \"required\": [\n          \"is_correct_phrase\"\n        ],\n        \"additionalProperties\": false\n      }\n    },\n    \"verbosity\": \"low\"\n  },\n  \"reasoning\": {\n    \"effort\": \"low\",\n    \"summary\": null\n  },\n  \"tools\": [],\n  \"store\": false,\n  \"include\": [\n    \"reasoning.encrypted_content\",\n    \"web_search_call.action.sources\"\n  ]\n}\n\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        5936,
+        -32
+      ],
+      "id": "04274773-651d-45ab-9df6-48f89ee475ef",
+      "name": "Set API JSON"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.openai.com/v1/responses",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "openAiApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{$json}}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        6128,
+        -32
+      ],
+      "id": "6ed8cbba-11a9-4b95-a8e5-5ea4ab884133",
+      "name": "HTTP Request",
+      "retryOnFail": true,
+      "waitBetweenTries": 5000,
+      "maxTries": 5,
+      "credentials": {
+        "openAiApi": {
+          "id": "m4NScyhZzV3hBcTr",
+          "name": "OpenAi Yads"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "bhBscYglbFhVyIcL",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/bhBscYglbFhVyIcL",
+          "cachedResultName": "Check minuses API tool"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        7504,
+        -224
+      ],
+      "id": "f5f60852-8795-4398-be7c-0de54ed6863d",
+      "name": "Execute Workflow"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "xKP6S9XsCeVSgebo",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/xKP6S9XsCeVSgebo",
+          "cachedResultName": "Check VS company name SUB"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        4656,
+        -64
+      ],
+      "id": "f0e90938-0ac2-47ce-97b6-12db1569b82d",
+      "name": "Find competitors mentions"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "0b8b9cb2-368a-4ef4-b4b4-560b030f71f4",
+              "leftValue": "={{ $json.non_matches }}",
+              "rightValue": "",
+              "operator": {
+                "type": "array",
+                "operation": "empty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        7904,
+        -240
+      ],
+      "id": "92a0598e-ca10-4f32-83b7-934fa603611d",
+      "name": "If minuses array is empty"
+    },
+    {
+      "parameters": {
+        "inputSource": "passthrough"
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -784,
+        -240
+      ],
+      "id": "a5436c29-80e5-4abf-a28c-eaa1d20ae322",
+      "name": "When Executed by Another Workflow"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "f74ac992-90a4-4403-a75e-17656de76902",
+              "name": "company_id",
+              "value": "={{ $json.company_id }}",
+              "type": "number"
+            },
+            {
+              "id": "172a851e-fdc7-4f3c-b095-88687e8a392a",
+              "name": "threshhold",
+              "value": "={{ $json.threshhold }}",
+              "type": "number"
+            },
+            {
+              "id": "3450e533-6daf-4160-b015-542138424177",
+              "name": "report_id",
+              "value": "={{ $json.import_id }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -544,
+        -240
+      ],
+      "id": "8693df2e-ac58-4696-9ac5-24eaf43c794f",
+      "name": "set variables"
+    },
+    {
+      "parameters": {
+        "content": "добавить обработку кейса когда есть конверсии"
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1744,
+        -624
+      ],
+      "id": "1839e48d-c29f-4c06-99ca-7244bb9c6b33",
+      "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO business_processes_states (business_process_id, company_id,n8n_workflow_execution_id,n8n_workflow_root_execution_id, started)\nSELECT MAX(business_process_id), $2,$3,$4, NOW()\nFROM public.business_processes\nWHERE n8n_process_name = $1;",
+        "options": {
+          "queryReplacement": "=[{{$workflow.name}},{{$json.company_id}},{{$execution.id}},{{ $('When Executed by Another Workflow').item.json.root_execution_id }}]"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -208,
+        -144
+      ],
+      "id": "3f390375-8aa8-41d7-9cfe-ff523f4380f9",
+      "name": "Mark_workwlow_started",
+      "credentials": {
+        "postgres": {
+          "id": "4YkdFJcdTgzo9hkz",
+          "name": "PGvector"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "update business_processes_states set steps_total=$3 where business_process_id=(select MAX(business_process_id) from business_processes where n8n_process_name=$1) and n8n_workflow_execution_id=$2",
+        "options": {
+          "queryReplacement": "=[{{$workflow.name}},{{$execution.id}},{{$input.all().length}}]"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        560,
+        80
+      ],
+      "id": "65f1da15-f0bf-4134-86bc-c4fce07753f5",
+      "name": "Mark_workflow_total_steps1",
+      "executeOnce": true,
+      "credentials": {
+        "postgres": {
+          "id": "4YkdFJcdTgzo9hkz",
+          "name": "PGvector"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Function-Node (Run Once)\nconst workflowData = $getWorkflowStaticData('global');\nworkflowData.steps_passed = 0;\nworkflowData.tokens_used = 0;\nworkflowData.step = 0;\nreturn $input.all();\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        320,
+        -80
+      ],
+      "id": "92bec7e0-1f38-498c-b8d7-d9766bffcc45",
+      "name": "Init total counter"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "update business_processes_states set finished=NOW() where business_process_id=(select MAX(business_process_id) from business_processes where n8n_process_name=$1) and n8n_workflow_execution_id=$2",
+        "options": {
+          "queryReplacement": "=[{{$workflow.name}},{{$execution.id}}]"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        1648,
+        -768
+      ],
+      "id": "6190730a-d55e-494b-8bac-e36971bba556",
+      "name": "Mark_workflow_completed",
+      "executeOnce": true,
+      "credentials": {
+        "postgres": {
+          "id": "4YkdFJcdTgzo9hkz",
+          "name": "PGvector"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "update business_processes_states set steps_passed=$3, tokens_used=$4,tokens_used_type=$5 where business_process_id=(select MAX(business_process_id) from business_processes where n8n_process_name=$1) and n8n_workflow_execution_id=$2",
+        "options": {
+          "queryReplacement": "=[{{$workflow.name}},{{$execution.id}},{{$json.steps_passed}},{{$json.tokens_used}},{{ 'gpt-5' }}]"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        11056,
+        272
+      ],
+      "id": "b15f8c10-7277-4cd8-8268-7397b7d39d4e",
+      "name": "Mark_workflow_passed_steps",
+      "executeOnce": true,
+      "credentials": {
+        "postgres": {
+          "id": "4YkdFJcdTgzo9hkz",
+          "name": "PGvector"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nconst workflowData = $getWorkflowStaticData('global');\nworkflowData.steps_passed = workflowData.steps_passed+1; // update steps counter\nlet step_tokens_used = 0;// безопасное чтение данных другой ноды\n\nfunction safeAll(nodeName) {\n  try {\n    return $(nodeName).all();        // вернёт массив items этой ноды\n  } catch (_e) {\n    return [];                       // нода не исполнялась — вернём пусто\n  }\n}\n\n// пример для HTTP Request1 — если нода не выполнялась, токены = 0\nconst httpItems = safeAll('HTTP Request');\n//const httpItems1 = safeAll('HTTP Request1');\nstep_tokens_used = httpItems.length\n  ? (httpItems[0]?.json?.usage?.total_tokens ?? 0)\n  : 0;\n\n //set used tokens here!!!!\nworkflowData.tokens_used = workflowData.tokens_used+step_tokens_used;\nfor (const item of $input.all()) {\n  item.json.steps_passed = workflowData.steps_passed;\n  item.json.tokens_used = workflowData.tokens_used\n}\n\nreturn $input.all();"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        10816,
+        288
+      ],
+      "id": "658dc02c-f118-4106-bef5-15ed79d1f948",
+      "name": "Get current step and tokens saved"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "fa13510a-3a56-4cd5-8b80-3e4fe626ce0b",
+              "leftValue": "={{ $json.to_terminate }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        11440,
+        304
+      ],
+      "id": "f7a7ee99-76a2-4d1f-89e0-74321d1fb911",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "errorMessage": "Process terminated by user"
+      },
+      "type": "n8n-nodes-base.stopAndError",
+      "typeVersion": 1,
+      "position": [
+        11680,
+        176
+      ],
+      "id": "7be709a2-2d36-413b-aebd-05f1ff0a8ded",
+      "name": "Stop and Error"
+    },
+    {
+      "parameters": {
+        "operation": "select",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "business_processes_states",
+          "mode": "list",
+          "cachedResultName": "business_processes_states"
+        },
+        "returnAll": true,
+        "where": {
+          "values": [
+            {
+              "column": "n8n_workflow_execution_id",
+              "value": "={{ $execution.id }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        11264,
+        272
+      ],
+      "id": "ef2ccf2a-e2d5-46a5-834b-9c7cd9732bc5",
+      "name": "check if termination is requested",
+      "credentials": {
+        "postgres": {
+          "id": "4YkdFJcdTgzo9hkz",
+          "name": "PGvector"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "e4ab3071-3b4d-4307-9905-188f2f24c488",
+              "leftValue": "={{ $json.count_convetions }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        3024,
+        -288
+      ],
+      "id": "caf10ae4-9e76-4057-8de2-08d88c7fa370",
+      "name": "If we have conversions for the key word"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "ca56d76f-8158-451b-95b0-48adbef68027",
+              "leftValue": "={{ $json.hits}}",
+              "rightValue": "",
+              "operator": {
+                "type": "array",
+                "operation": "empty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        4960,
+        -112
+      ],
+      "id": "7e5b792e-9dd4-44bb-8209-f04bc79db7e6",
+      "name": "If competitors not found"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "bb72a340-789e-459b-80c9-f1c2b454ed57",
+              "name": "resolution",
+              "value": "={{\"no relevant, minuses: \"+$('Execute Workflow').item.json.non_matches.map(String).join(', ')}}",
+              "type": "string"
+            },
+            {
+              "id": "2f7246f7-a167-46be-9212-edc599a35ff3",
+              "name": "total_tokens",
+              "value": "={{$('HTTP Request').length\n  ? ($('HTTP Request').last().json.usage.total_tokens ?? 0)\n  : 0 }}",
+              "type": "number"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        8784,
+        -288
+      ],
+      "id": "63004840-6153-4b02-8cdf-86c07fedf3f2",
+      "name": "no relevant",
+      "executeOnce": true
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "33090f58-518c-4671-a0cf-22b8b484a226",
+              "name": "resolution",
+              "value": "to add",
+              "type": "string"
+            },
+            {
+              "id": "4f2396b9-b5c0-4e30-86c1-df42515df6af",
+              "name": "total_tokens",
+              "value": "={{ $json.usage.total_tokens }}",
+              "type": "number"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        8448,
+        -912
+      ],
+      "id": "8052d647-bd8e-4826-be9f-1bb7b2cfcae0",
+      "name": "mark to add"
+    },
+    {
+      "parameters": {
+        "jsCode": "const workflowData = $getWorkflowStaticData('global');\nlet my_prompt = workflowData.my_prompt.data;\n\nfor (const item of $input.all()) {\n  item.json.my_prompt = my_prompt.replaceAll(\"{{service_description}}\",$('Loop Over Items').last().json.service_name +' ' + $('Loop Over Items').last().json.service_description).replaceAll(\"{{key_word}}\", $('Loop Over Items').last().json.key_word).replaceAll(\"{{company_name}}\", $('Loop Over Items').last().json.company_name);\n}\n\nreturn $input.all();"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        5728,
+        -32
+      ],
+      "id": "dd0b4545-f5fb-464e-b777-02ce51887323",
+      "name": "Set prompt"
+    },
+    {
+      "parameters": {
+        "content": "ASK AI if the phrase is relevant",
+        "height": 288,
+        "width": 1056
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        5536,
+        -112
+      ],
+      "id": "d54fb06c-1525-43e4-8676-d91e349d1f42",
+      "name": "Sticky Note6"
+    },
+    {
+      "parameters": {
+        "mode": "chooseBranch"
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        720,
+        -80
+      ],
+      "id": "9b8158d9-c24d-4353-bde4-98a2a4c15936",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "select lst.*,c.company_name,cs.service_name, cs.service_description \nfrom current_list lst,companies c, company_services cs \nwhere lst.report_id=$1 and lst.service_id=cs.service_id and lst.company_id = cs.company_id and c.company_id=cs.company_id and lst.resolution is null\n",
+        "options": {
+          "queryReplacement": "={{ $('set variables').item.json.report_id }}"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        80,
+        -112
+      ],
+      "id": "74c4cc35-1406-4032-b23b-d2b01c8c78cc",
+      "name": "get last import not processed records",
+      "alwaysOutputData": true,
+      "credentials": {
+        "postgres": {
+          "id": "Hx2VFmUi5WO2K4QX",
+          "name": "Postgres account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "26a3b4cf-c374-4833-8b03-55dcf4df1097",
+              "name": "args.company_id",
+              "value": "={{ $('Loop Over Items').last().json.company_id }}",
+              "type": "number"
+            },
+            {
+              "id": "ec583710-a44c-47de-ba3f-ebbfaa229fb1",
+              "name": "args.phrase",
+              "value": "={{ $('Loop Over Items').last().json.key_word }}",
+              "type": "string"
+            },
+            {
+              "id": "bf431c92-c6e4-41ab-b8b1-ee33acf9e25f",
+              "name": "args.threshold",
+              "value": 0.8,
+              "type": "number"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        7248,
+        -224
+      ],
+      "id": "1021bc24-1f46-4f9c-8311-28d07f71acf0",
+      "name": "set input params"
+    },
+    {
+      "parameters": {
+        "jsCode": "\n// Преобразуем в строку формата ARRAY['...','...']\nconst result = \n\n$json.non_matches.map(v => '\\'' + String(v).replace(/\\\\/g,'\\\\\\\\').replace(/\"/g,'\\\\\"') + '\\'').join(',') ;\n\nreturn [{ json: { array_string:$json.non_matches ,company_id:$('set input params').last().json.args.company_id } }];\n\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        4928,
+        960
+      ],
+      "id": "9f504090-caa4-4328-ba32-b1cf12644b3e",
+      "name": "prepare for SQL"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "WITH incoming AS (\n  SELECT DISTINCT trim(both ' ' FROM jsonb_array_elements_text($1::jsonb)) AS word\n)\nSELECT i.word\nFROM incoming i\nLEFT JOIN minus_words mw\n  ON lower(mw.minus_word) = lower(i.word)\n AND mw.company_id = $2\nWHERE mw.minus_word IS NULL\nORDER BY i.word;",
+        "options": {
+          "queryReplacement": "=[{{JSON.stringify($json.array_string)}},{{$json.company_id}}]"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        5136,
+        960
+      ],
+      "id": "c13fde82-f510-4ea8-822d-28a0dba8fa2c",
+      "name": "filter by existing minus words",
+      "credentials": {
+        "postgres": {
+          "id": "4YkdFJcdTgzo9hkz",
+          "name": "PGvector"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "return [{\n  json: \n {\n  \"model\": \"gpt-5-nano\",\n  \"input\": [\n    {\n      \"role\": \"developer\",\n      \"content\": [\n        {\n          \"type\": \"input_text\",\n          \"text\": \"# Role and Objective\\n- You are a search query analysis assistant. Your role is to  review negative keywords (“minus words”)  list indicating a non-target audience. \\n\\n# Instructions\\n\\n- The `minus_words` array must only contain unique string values, or be an empty array (`[]`) if there are no minus words. Do not include duplicate entries. Item order is not important.\\n\"\n        }\n      ]\n    },\n    {\n      \"role\": \"user\",\n      \"content\": [\n        {\n          \"type\": \"input_text\",\n          \"text\": $json.my_prompt\n        }\n      ]\n    }\n  ],\n  \"text\": {\n    \"format\": {\n      \"type\": \"json_schema\",\n      \"name\": \"minus_words\",\n      \"strict\": true,\n      \"schema\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"minus_words\": {\n            \"type\": \"array\",\n            \"description\": \"A list of minus words. Can be empty.\",\n            \"items\": {\n              \"type\": \"string\",\n              \"description\": \"A minus word.\"\n            },\n        \"maxItems\": 2\n          }\n        },\n        \"required\": [\n          \"minus_words\"\n        ],\n        \"additionalProperties\": false\n      }\n    },\n    \"verbosity\": \"low\"\n  },\n  \"reasoning\": {\n    \"effort\": \"minimal\",\n    \"summary\": null\n  },\n  \"tools\": [],\n  \"store\": false,\n  \"include\": [\n    \"reasoning.encrypted_content\",\n    \"web_search_call.action.sources\"\n  ]\n}\n\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        5616,
+        928
+      ],
+      "id": "a8e8ac9f-de96-4d3a-8496-2c3d96bd67be",
+      "name": "Set API JSON1"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.openai.com/v1/responses",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "openAiApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{$json}}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        5840,
+        928
+      ],
+      "id": "77d8a539-aabf-4552-a696-610cce5f2c2c",
+      "name": "HTTP Request1",
+      "retryOnFail": true,
+      "waitBetweenTries": 5000,
+      "maxTries": 5,
+      "credentials": {
+        "openAiApi": {
+          "id": "V8R8KiZKXscJQ1sL",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const workflowData = $getWorkflowStaticData('global');\nlet my_prompt = workflowData.my_prompt_minus.data;\n\nconst input = $input.all();\nmy_prompt = my_prompt.replaceAll(\"{{service_name}}\",$('Set service parameters').last().json.service_name).replaceAll(\"{{key_word}}\", $('Loop Over Items').last().json.key_word).replaceAll(\"{{company_name}}\", $('Set service parameters').last().json.company_name).replaceAll(\"{{minus_words}}\",JSON.stringify(input));\n\nreturn [\n  {\n    json: {\n     \n     my_prompt:my_prompt\n    }\n  }\n];\n\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        5424,
+        928
+      ],
+      "id": "cb60941c-a24b-4d91-b0f4-5640e1235057",
+      "name": "Set prompt1"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Достаём массив competitors\n\n\n// Разворачиваем каждый объект в отдельный item\nreturn $json.non_matches.map((c, index) => ({\n  json: {\n    index,\n    minus_word: c.toLowerCase(),\n    list_id:$('Loop Over Items').last().json.list_id    \n  }\n}));"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        8160,
+        64
+      ],
+      "id": "20d754ee-3ec6-4a64-a1d3-ba681e195534",
+      "name": "map_minus_words"
+    },
+    {
+      "parameters": {
+        "jsCode": "const parsed = JSON.parse($input.first().json.output[1].content[0].text);\n\n// Если иногда приходит уже массив — обработаем и этот случай\nconst list = Array.isArray(parsed) ? parsed : parsed.minus_words;\n\nreturn [{ json: { minus_words: list } }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        6032,
+        1008
+      ],
+      "id": "c8ff67f3-bdb1-4a2e-9b88-aac68a79667e",
+      "name": "minus_words_array"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "4a87b0f9-4ed9-409a-9def-bbaa4e413d90",
+              "leftValue": "={{ $json.hits[0].candidate }}",
+              "rightValue": "={{ $json.hits[0].matched }}",
+              "operator": {
+                "type": "string",
+                "operation": "notEquals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        7984,
+        -1104
+      ],
+      "id": "ac08e7a6-83f6-4aff-b65f-14811eaa427d",
+      "name": "if not exact competitor match"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.openai.com/v1/embeddings",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "openAiApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{$json}}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        9280,
+        48
+      ],
+      "id": "fc238e62-4914-4fa0-95e3-58e6f7db6fa0",
+      "name": "Get embedding",
+      "retryOnFail": true,
+      "credentials": {
+        "openAiApi": {
+          "id": "m4NScyhZzV3hBcTr",
+          "name": "OpenAi Yads"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO public.minus_words\n  (minus_word_embedding, minus_word,  company_id, comment, weight)\nVALUES\n  ($1::vector, $2, $3, $4, $5)\nON CONFLICT (company_id, minus_word) DO UPDATE\nSET weight = COALESCE(minus_words.weight, 0) + COALESCE(EXCLUDED.weight, 0)\nRETURNING id;",
+        "options": {
+          "queryReplacement": "=[\n  { \"value\": \"={{'[' + $json.data[0].embedding.map(e => Number(e)).join(',') + ']'}}\" },\n  { \"value\": \"={{ $('Loop Over Items1').item.json.minus_word }}\" },\n  { \"value\": \"={{ $('Loop Over Items').item.json.company_id }}\" },\n  { \"value\": \"={{ 'added from the core update from the report:'+$('Loop Over Items').item.json.report_id }}\" },\n  { \"value\": \"={{ $('Loop Over Items').item.json.count_views }}\" }\n]"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        9648,
+        48
+      ],
+      "id": "720601be-fdd4-4d37-b5dd-1a7bdad6337a",
+      "name": "Insert minus words1",
+      "credentials": {
+        "postgres": {
+          "id": "4YkdFJcdTgzo9hkz",
+          "name": "PGvector"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "return [{\n  json: {\n  \"model\": \"text-embedding-3-small\",\n  \"input\": $json.minus_word\n}\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        9088,
+        48
+      ],
+      "id": "a601ce46-942e-4623-b504-20516e45333b",
+      "name": "Set API JSON2"
+    },
+    {
+      "parameters": {
+        "options": {
+          "reset": "={{ $json.is_first }}"
+        }
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        8592,
+        -32
+      ],
+      "id": "19496feb-4ffa-4cd2-8306-ebf98f6adbce",
+      "name": "Loop Over Items1"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "ebafa31d-edf7-41c0-a06e-e884ad9595ea",
+              "name": "is_first",
+              "value": "=true",
+              "type": "boolean"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        8400,
+        -48
+      ],
+      "id": "51e6fb81-73bb-4619-8467-31fc009c9e8e",
+      "name": "set first_item1"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "ebafa31d-edf7-41c0-a06e-e884ad9595ea",
+              "name": "is_first",
+              "value": "=false",
+              "type": "boolean"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        8784,
+        48
+      ],
+      "id": "23d1a5ad-d3a8-4cdb-aa51-0777a425ffdf",
+      "name": "reset first_item"
+    },
+    {
+      "parameters": {
+        "content": "Check vs minus words",
+        "height": 352,
+        "width": 912
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        3232,
+        -224
+      ],
+      "id": "cbbdca03-460c-42b5-aeec-77a93c9630c2",
+      "name": "Sticky Note7"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "rmq06a0YRFizRgV1",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/rmq06a0YRFizRgV1",
+          "cachedResultName": "check phrase VS minus words"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        3424,
+        -80
+      ],
+      "id": "a585d938-6205-4901-b932-56783a26039b",
+      "name": "Call 'chech phrase VS minus words'"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "543a65b2-a6be-4d52-9130-a4714b59f4ae",
+              "name": "threshold",
+              "value": 0.8,
+              "type": "number"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        3280,
+        -80
+      ],
+      "id": "069b62f2-0a68-46b4-bb51-cdc435baf3f9",
+      "name": "Set threshold"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "ca56d76f-8158-451b-95b0-48adbef68027",
+              "leftValue": "={{ $('Call \\'chech phrase VS minus words\\'').item.json.matches}}",
+              "rightValue": "to add",
+              "operator": {
+                "type": "array",
+                "operation": "empty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        4256,
+        -416
+      ],
+      "id": "821b7e52-43a2-4a29-b739-9a2b105c4a4a",
+      "name": "If minus words not found"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "4db35a49-e130-4ff8-9ccb-7b452205f80a",
+              "name": "threshold",
+              "value": "=0.88",
+              "type": "number"
+            },
+            {
+              "id": "47944833-0d31-4a55-9872-7c281576da2a",
+              "name": "key_word",
+              "value": "={{ $('Loop Over Items').last().json.key_word }}",
+              "type": "string"
+            },
+            {
+              "id": "224cde67-d787-4cce-8db0-4ca43a3c4fbe",
+              "name": "company_id",
+              "value": "={{ $('Loop Over Items').last().json.company_id }}",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        4512,
+        -64
+      ],
+      "id": "f6235f04-0110-47e0-8564-8036286fa3ca",
+      "name": "set input"
+    },
+    {
+      "parameters": {
+        "content": "Check vs competitors",
+        "height": 352,
+        "width": 624
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        4464,
+        -192
+      ],
+      "id": "29d6d4e5-1a4c-4413-a20b-14ed3072ce1a",
+      "name": "Sticky Note8"
+    },
+    {
+      "parameters": {
+        "content": "For the future reusse",
+        "height": 672,
+        "width": 1664
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        4688,
+        624
+      ],
+      "id": "8e31d7e5-b289-4e7d-827b-6828f3924c5f",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "content": "get possible minus words filtered by the content",
+        "height": 304,
+        "width": 784
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        7072,
+        -304
+      ],
+      "id": "abe656a2-5993-4c54-8bbc-97cdd453ce0e",
+      "name": "Sticky Note4"
+    },
+    {
+      "parameters": {
+        "content": "save minus words data",
+        "height": 496,
+        "width": 1936
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        8064,
+        -128
+      ],
+      "id": "9c74674e-9454-4312-942c-48b1b1cd43b9",
+      "name": "Sticky Note5"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "d27bd43b-9c58-4c64-87ba-c82c2ccd45d1",
+              "leftValue": "={{ $input.first().json }}",
+              "rightValue": "",
+              "operator": {
+                "type": "object",
+                "operation": "empty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        976,
+        -112
+      ],
+      "id": "87a03f05-71c5-4e03-8c0a-33bb5efbae6a",
+      "name": "If anything to analise"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.openai.com/v1/embeddings",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "openAiApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{$json}}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        8368,
+        -1280
+      ],
+      "id": "b436358e-25d4-448c-b912-9e567d5f8f56",
+      "name": "Get embedding1",
+      "retryOnFail": true,
+      "credentials": {
+        "openAiApi": {
+          "id": "m4NScyhZzV3hBcTr",
+          "name": "OpenAi Yads"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "return [{\n  json: {\n  \"model\": \"text-embedding-3-small\",\n  \"input\": $('If competitors not found').last().json.hits[0].candidate \n}\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        8176,
+        -1280
+      ],
+      "id": "301ec199-83ec-434f-be01-6182050ab4e4",
+      "name": "Set API JSON3"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO public.minus_words\n  (minus_word_embedding, minus_word,  company_id, comment, weight)\nVALUES\n  ($1::vector, $2, $3,$4 , $5)\nON CONFLICT (company_id, minus_word) DO UPDATE\nSET weight = COALESCE(minus_words.weight, 0) + COALESCE(EXCLUDED.weight, 0)\nRETURNING id;",
+        "options": {
+          "queryReplacement": "=[\n  { \"value\": \"={{'[' + $json.data[0].embedding.map(e => Number(e)).join(',') + ']'}}\" },\n  { \"value\": \"={{ $('If competitors not found').last().json.hits[0].candidate }}\" },\n  { \"value\": \"={{ $('Loop Over Items').item.json.company_id }}\" },\n  { \"value\": \"={{ 'added from the core update (competitors) from the report:'+$('Loop Over Items').item.json.list_id }}\" }, \n  { \"value\": \"={{ $('Loop Over Items').item.json.count_views }}\" }\n]"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        8752,
+        -1280
+      ],
+      "id": "02e782f8-63ac-4eff-9220-95b15d060724",
+      "name": "Insert minus words from competitors",
+      "credentials": {
+        "postgres": {
+          "id": "4YkdFJcdTgzo9hkz",
+          "name": "PGvector"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO minus_words_origin(\n\tminus_word_id, list_id, origin_weight)\n\tVALUES ($1, $2, $3);",
+        "options": {
+          "queryReplacement": "=[{{ $json.id }},{{ $('Loop Over Items').item.json.list_id }},{{ $('Loop Over Items').item.json.count_views }}]"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        8928,
+        -1264
+      ],
+      "id": "74b6c02a-1141-4fd7-911b-d737fba24168",
+      "name": "add link",
+      "credentials": {
+        "postgres": {
+          "id": "Hx2VFmUi5WO2K4QX",
+          "name": "Postgres account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO minus_words_origin(\n\tminus_word_id, list_id, origin_weight)\n\tVALUES ($1, $2, $3);",
+        "options": {
+          "queryReplacement": "=[{{ $json.id }},{{ $('Loop Over Items1').item.json.list_id }},{{ $('Loop Over Items').item.json.count_views }}]"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        9872,
+        48
+      ],
+      "id": "3165a62d-5d5c-4de6-92a5-bbdcc53106da",
+      "name": "add link1",
+      "credentials": {
+        "postgres": {
+          "id": "Hx2VFmUi5WO2K4QX",
+          "name": "Postgres account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "WITH ce AS (\n    SELECT competitor_id\n    FROM public.competitor_entities\n    WHERE company_id = $5\n      AND canonical_name = $4\n    LIMIT 1\n)\nINSERT INTO public.competitor_name_variants\n    (competitor_id, is_common_word, name_text, embedding, report_id)\nSELECT\n    ce.competitor_id,\n    false,          -- is_common_word\n    $1::text,             -- name_text\n    $2::vector,           -- embedding (pgvector)\n    $3::bigint  -- report_id (по умолчанию 0)\nFROM ce\nRETURNING competitor_id, is_common_word, name_text, report_id;",
+        "options": {
+          "queryReplacement": "=[   \n{ \"value\": \"={{ $('If competitors not found').last().json.hits[0].candidate }}\" },\n{ \"value\": \"={{'[' + $('Get embedding1').item.json.data[0].embedding.map(e => Number(e)).join(',') + ']'}}\" },\n{ \"value\": \"={{ $('Loop Over Items').item.json.report_id }}\" },\n{ \"value\": \"={{ $('if not exact competitor match').item.json.hits[0].canonical }}\" },\n{ \"value\": \"={{ $('Loop Over Items').item.json.company_id }}\" }\n]"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        9104,
+        -1264
+      ],
+      "id": "79d98eb4-7647-437d-838c-972953adff4c",
+      "name": "add competitor name variant",
+      "credentials": {
+        "postgres": {
+          "id": "4YkdFJcdTgzo9hkz",
+          "name": "PGvector"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const workflowData = $getWorkflowStaticData('global');\nworkflowData.ai_calls = 0;\nworkflowData.embedding_calls = 0;\nreturn $input.all();\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1472,
+        -96
+      ],
+      "id": "b811b260-33ea-4eab-8199-bbb213262432",
+      "name": "Init calls counters"
+    },
+    {
+      "parameters": {
+        "jsCode": "const workflowData = $getWorkflowStaticData('global');\nworkflowData.embedding_calls =workflowData.embedding_calls + $input.first().json.meta.candidates_total;\nreturn $input.all();\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3600,
+        -80
+      ],
+      "id": "08fac042-2d77-4bac-9eee-03775897226e",
+      "name": "update calls counters"
+    },
+    {
+      "parameters": {
+        "jsCode": "const workflowData = $getWorkflowStaticData('global');\nworkflowData.embedding_calls = workflowData.embedding_calls+$input.first().json.meta.candidates_total;\nreturn $input.all();\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        4816,
+        -48
+      ],
+      "id": "cde4e335-323c-42f7-868f-c62cfd74251c",
+      "name": "update calls counters1"
+    },
+    {
+      "parameters": {
+        "jsCode": "const workflowData = $getWorkflowStaticData('global');\nworkflowData.ai_calls = workflowData.ai_calls +1;\n\nreturn $input.all();\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        6320,
+        -32
+      ],
+      "id": "767e14c4-b430-4574-8c1b-aaeeac84cf36",
+      "name": "update calls counters2"
+    },
+    {
+      "parameters": {
+        "jsCode": "const workflowData = $getWorkflowStaticData('global');\nworkflowData.embedding_calls = workflowData.embedding_calls + $input.first().json.meta.candidates_total;\nreturn $input.all();\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        7696,
+        -224
+      ],
+      "id": "eac938a0-0564-4643-82c7-0195086b9e1b",
+      "name": "update calls counters3"
+    },
+    {
+      "parameters": {
+        "jsCode": "const workflowData = $getWorkflowStaticData('global');\nworkflowData.embedding_calls = workflowData.embedding_calls + 1;\nreturn $input.all();\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        8576,
+        -1280
+      ],
+      "id": "b2d4d262-d67d-4db0-a83f-9c223bf2ca9a",
+      "name": "update calls counters4"
+    },
+    {
+      "parameters": {
+        "jsCode": "const workflowData = $getWorkflowStaticData('global');\nworkflowData.embedding_calls = workflowData.embedding_calls + 1;\nreturn $input.all();\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        9472,
+        48
+      ],
+      "id": "d42b665e-439a-474c-b2de-76936ac1b98f",
+      "name": "update calls counters5"
+    },
+    {
+      "parameters": {
+        "jsCode": "const workflowData = $getWorkflowStaticData('global');\nfor (const item of $input.all()) {\n  item.json.embedding_calls = workflowData.embedding_calls;\n  item.json.ai_calls = workflowData.ai_calls;\n  \n}\n\nreturn $input.all();\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        9456,
+        -672
+      ],
+      "id": "4f9e83e2-d05e-475b-ac56-53d2a33dcb44",
+      "name": "read call counters"
+    },
+    {
+      "parameters": {
+        "jsCode": "const workflowData = $getWorkflowStaticData('global');\nfor (const item of $input.all()) {\n  item.json.embedding_calls = workflowData.embedding_calls;\n  item.json.ai_calls = workflowData.ai_calls;\n  \n}\n\nreturn $input.all();\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        9616,
+        -1104
+      ],
+      "id": "5cb56b2e-d9d0-46ea-a022-654375553e13",
+      "name": "read call counters1"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "47944833-0d31-4a55-9872-7c281576da2a",
+              "name": "key_word",
+              "value": "={{ $('Loop Over Items').last().json.key_word }}",
+              "type": "string"
+            },
+            {
+              "id": "224cde67-d787-4cce-8db0-4ca43a3c4fbe",
+              "name": "company_id",
+              "value": "={{ $('Loop Over Items').last().json.company_id }}",
+              "type": "string"
+            },
+            {
+              "id": "18575e26-d5ea-458a-8414-b924427f3aa3",
+              "name": "report_id",
+              "value": "={{ $('Loop Over Items').last().json.report_id }}",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        8688,
+        -912
+      ],
+      "id": "87e84447-8f55-4401-a4aa-64d1d39165d7",
+      "name": "set input1"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "cMcY26oqQV5mNCvI",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/cMcY26oqQV5mNCvI",
+          "cachedResultName": "create content records for the  key word"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        8880,
+        -912
+      ],
+      "id": "a25e1961-b734-43d9-a915-169f111c2068",
+      "name": "Add to company content"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO used_minus_words(list_id, minus_word_id)\n\tVALUES ($1,$2);",
+        "options": {
+          "queryReplacement": "={{$('Loop Over Items').last().json.list_id}},{{ $json.minus_word_id }}"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        5088,
+        -352
+      ],
+      "id": "4d22b06a-205f-4612-9d78-85ccac64957d",
+      "name": "Execute a SQL query",
+      "credentials": {
+        "postgres": {
+          "id": "Hx2VFmUi5WO2K4QX",
+          "name": "Postgres account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const { company_id, matches_ids } = $json;\n\nreturn matches_ids.map(c => ({ json: { minus_word_id: c,company_id } }));"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        4896,
+        -352
+      ],
+      "id": "2631bbf3-850f-436d-b153-629c5d8cea05",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "UPDATE public.minus_words mw\nSET is_verified = true\nFROM (\n  SELECT org.minus_word_id\n  FROM public.minus_words_origin org\n  GROUP BY org.minus_word_id\n  HAVING COUNT(*) >= 2\n) v\nWHERE mw.id = v.minus_word_id\n  AND COALESCE(mw.is_verified, false) = false;",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        9904,
+        -736
+      ],
+      "id": "7c173f33-7017-4638-a32e-44a7e2d95e69",
+      "name": "refresh minus words status",
+      "credentials": {
+        "postgres": {
+          "id": "Hx2VFmUi5WO2K4QX",
+          "name": "Postgres account 2"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Loop Over Items": {
+      "main": [
+        [
+          {
+            "node": "Mark_workflow_completed",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Init calls counters",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "пословное соответствие?": {
+      "main": [
+        [
+          {
+            "node": "проверяем полное соответствие",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "If we have conversions for the key word",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "проверяем полное соответствие": {
+      "main": [
+        [
+          {
+            "node": "Соответствие полное?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Соответствие полное?": {
+      "main": [
+        [
+          {
+            "node": "Помечаем что ключ совпадает",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "If we have conversions for the key word",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "update": {
+      "main": [
+        [
+          {
+            "node": "refresh minus words status",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Обработка ответа AI": {
+      "main": [
+        [
+          {
+            "node": "mark to add",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "set input params",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get a file": {
+      "main": [
+        [
+          {
+            "node": "Extract from File1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Помечаем что ключ совпадает": {
+      "main": [
+        [
+          {
+            "node": "Get current step and tokens saved",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File1": {
+      "main": [
+        [
+          {
+            "node": "Code1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code1": {
+      "main": [
+        []
+      ]
+    },
+    "Помечаем что найден конкурент": {
+      "main": [
+        [
+          {
+            "node": "refresh minus words status",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set API JSON": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "update calls counters2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute Workflow": {
+      "main": [
+        [
+          {
+            "node": "update calls counters3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Find competitors mentions": {
+      "main": [
+        [
+          {
+            "node": "update calls counters1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If minuses array is empty": {
+      "main": [
+        [
+          {
+            "node": "no relevant",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "map_minus_words",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "set variables",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "set variables": {
+      "main": [
+        [
+          {
+            "node": "Get a file",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Mark_workwlow_started",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mark_workwlow_started": {
+      "main": [
+        [
+          {
+            "node": "get last import not processed records",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Init total counter": {
+      "main": [
+        [
+          {
+            "node": "Mark_workflow_total_steps1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mark_workflow_passed_steps": {
+      "main": [
+        [
+          {
+            "node": "check if termination is requested",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get current step and tokens saved": {
+      "main": [
+        [
+          {
+            "node": "Mark_workflow_passed_steps",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Stop and Error",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "check if termination is requested": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If we have conversions for the key word": {
+      "main": [
+        [
+          {
+            "node": "mark to add",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Set threshold",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If competitors not found": {
+      "main": [
+        [
+          {
+            "node": "Set prompt",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "if not exact competitor match",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "no relevant": {
+      "main": [
+        [
+          {
+            "node": "read call counters",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "mark to add": {
+      "main": [
+        [
+          {
+            "node": "set input1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set prompt": {
+      "main": [
+        [
+          {
+            "node": "Set API JSON",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "If anything to analise",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mark_workflow_total_steps1": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "get last import not processed records": {
+      "main": [
+        [
+          {
+            "node": "Init total counter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "set input params": {
+      "main": [
+        [
+          {
+            "node": "Execute Workflow",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "prepare for SQL": {
+      "main": [
+        [
+          {
+            "node": "filter by existing minus words",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "filter by existing minus words": {
+      "main": [
+        []
+      ]
+    },
+    "Set API JSON1": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set prompt1": {
+      "main": [
+        [
+          {
+            "node": "Set API JSON1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request1": {
+      "main": [
+        []
+      ]
+    },
+    "map_minus_words": {
+      "main": [
+        [
+          {
+            "node": "set first_item1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "minus_words_array": {
+      "main": [
+        []
+      ]
+    },
+    "if not exact competitor match": {
+      "main": [
+        [
+          {
+            "node": "Set API JSON3",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "read call counters1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get embedding": {
+      "main": [
+        [
+          {
+            "node": "update calls counters5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set API JSON2": {
+      "main": [
+        [
+          {
+            "node": "Get embedding",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Insert minus words1": {
+      "main": [
+        [
+          {
+            "node": "add link1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items1": {
+      "main": [
+        [
+          {
+            "node": "no relevant",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "reset first_item",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "set first_item1": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "reset first_item": {
+      "main": [
+        [
+          {
+            "node": "Set API JSON2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Call 'chech phrase VS minus words'": {
+      "main": [
+        [
+          {
+            "node": "update calls counters",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set threshold": {
+      "main": [
+        [
+          {
+            "node": "Call 'chech phrase VS minus words'",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If minus words not found": {
+      "main": [
+        [
+          {
+            "node": "set input",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "set input": {
+      "main": [
+        [
+          {
+            "node": "Find competitors mentions",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If anything to analise": {
+      "main": [
+        [
+          {
+            "node": "Mark_workflow_completed",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get embedding1": {
+      "main": [
+        [
+          {
+            "node": "update calls counters4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set API JSON3": {
+      "main": [
+        [
+          {
+            "node": "Get embedding1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Insert minus words from competitors": {
+      "main": [
+        [
+          {
+            "node": "add link",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "add link": {
+      "main": [
+        [
+          {
+            "node": "add competitor name variant",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "add link1": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "add competitor name variant": {
+      "main": [
+        [
+          {
+            "node": "read call counters1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Init calls counters": {
+      "main": [
+        [
+          {
+            "node": "пословное соответствие?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "update calls counters2": {
+      "main": [
+        [
+          {
+            "node": "Обработка ответа AI",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "update calls counters4": {
+      "main": [
+        [
+          {
+            "node": "Insert minus words from competitors",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "update calls counters3": {
+      "main": [
+        [
+          {
+            "node": "If minuses array is empty",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "update calls counters5": {
+      "main": [
+        [
+          {
+            "node": "Insert minus words1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "update calls counters1": {
+      "main": [
+        [
+          {
+            "node": "If competitors not found",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "update calls counters": {
+      "main": [
+        [
+          {
+            "node": "If minus words not found",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "read call counters": {
+      "main": [
+        [
+          {
+            "node": "update",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "read call counters1": {
+      "main": [
+        [
+          {
+            "node": "Помечаем что найден конкурент",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "set input1": {
+      "main": [
+        [
+          {
+            "node": "Add to company content",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Add to company content": {
+      "main": [
+        [
+          {
+            "node": "read call counters",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute a SQL query": {
+      "main": [
+        [
+          {
+            "node": "set input params",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Execute a SQL query",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "refresh minus words status": {
+      "main": [
+        [
+          {
+            "node": "Get current step and tokens saved",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "saveDataErrorExecution": "all",
+    "saveDataSuccessExecution": "all",
+    "saveExecutionProgress": false,
+    "callerPolicy": "workflowsFromSameOwner",
+    "errorWorkflow": "v2Z32ISEUzsFYnZw"
+  },
+  "staticData": {
+    "global": {
+      "alaysis_prompt": {
+        "data": "Для полученного запроса Instructions\nПроанализируй поисковый запрос пользователя на предмет релевантности услугам компании KIBERone Саратов Октябрьский(company_name). Действуй строго по следующим правилам и согласно заданной последовательности действий:\n1.Если запрос полностью релевантен услугам компании , верни: \"is_correct_phrase\": true.\n2.Если запрос нерелевантен услугам компании 1) верни \"is_correct_phrase\": false 2) определи список потенциально допустимых минус слов. для этого всегда вызывай tool get_non_matching_ngrams. Передавай threshold, только если пользователь задал его; иначе не указывай (используется дефолт 0,88). 3)Из полученного от tool списка выдели минимальный набор минус-слов, обеспечивающих блокировку широкого класса подобных нерелевантных запросов.\nТребования к минус-словам: Используй минимально возможную комбинацию слов. Минус-слова должны однозначно исключать нерелевантные запросы.\nContext (о компании KIBERone)\nKIBERone – международная КиберШкола программирования и цифровых технологий для детей от 6 до 14 лет. Позиционирование бренда: KIBERone — первая международная КиберШкола будущего для IT-поколения 6–14 лет, признана ЮНЕСКО лучшей детской образовательной IT-школой в мире. Бренд является партнером Microsoft, Roblox и Samsung. Бесплатные пробные уроки Основные услуги и программы: Полный перечень модулей: Вводный модуль (основы цифровой грамотности) Основы программирования Scratch Jr Создание игр на Scratch ПиктоМир (алгоритмическое мышление) CodeMonkey (логика и программирование) Устройство компьютера Эффектные презентации (PowerPoint, Desygner) QR-коды Деловые люди (предпринимательство) Google Blockly (визуальное программирование) Roblox Studio (создание игр) Kodu Game Lab (3D-программирование) Разработка мобильных приложений в Thunkable Blender (3D-моделирование) Компьютерная грамотность Minecraft Education Нейросети (основы ИИ) Alice 3D (3D-программирование) Run Marco (основы алгоритмов) Исполнители: Чертёжник и Черепашка GIF-анимация Tinkercad (3D-проектирование) Кибербезопасность Construct 2 (создание 2D-игр) Компас-3D (САПР) Основы HTML (веб-разработка) Голосовой помощник Алиса Создание лендинга (Tilda) Python (создание игр) Чат-бот на Python Web-дизайн (Figma) Web-мастер (HTML+CSS) Motion Design Unreal Engine 4 (игровой движок) JavaScript (игры) C# (создание 2D-игр) C++ Java (создание приложений) Unity 3D (игры) Олимпиадное программирование Облачные технологии, Блокчейн, Data Science PHP+SQL Photoshop Подготовка к олимпиадам Приложения Google Летние программы: Летние IT-интенсивы (краткосрочные программы по направлениям Roblox, Minecraft, Python и др.) Летние КИБЕРканикулы (городской лагерь с IT-обучением и развлекательной программой) Дополнительные механики: Кибервалюта («кибероны») для мотивации учеников, обмен на мерч на КиберМаркете Тьюторы и преподаватели: Опытные специалисты с практическим опытом и педагогической подготовкой Другие важные разделы: Новости (новости школы и сети) СМИ о нас (публикации о школе) Фотогалерея (фото с мероприятий и уроков) Видео (видеоматериалы о школе) Расписание занятий (время занятий для групп и пробных уроков) Локации (адрес школы в Октябрьском районе Саратова, ул. Тараса Шевченко, 8) Оплата (способы оплаты и договор-оферта) Сертификаты (активация промокодов партнеров)\n"
+      },
+      "steps_passed": 1014,
+      "tokens_used": 1345952,
+      "step": 0,
+      "my_prompt": {
+        "data": "Проанализируй поисковый запрос пользователя:\"{{key_word}}\" на предмет релевантности сервису \"{{service_description}}\" компании \"{{company_name}}\".\nDefinitions\nРелевантность сервису это запрос соответствующий тематике сервиса, но не содержащий намерения к самостоятельной реализации или общего информационного запроса. Исключением является краткая именительная фраза без вопросительных/справочных маркеров и слов не релевантных услугам при этом явно упоминающая  название компании, вид деятельности компании или услуги но без упоминания конкретной реализации или деталей  считается релевантной. При этом вид деятельности компании является приоритетным при определении релевантности.\nInstructions\nДействуй строго по следующим правилам:\n\nЕсли запрос релевантен сервису компании, верни: \"is_correct_phrase\": true.\nЕсли запрос не релевантен сервису компании верни \"is_correct_phrase\": false\n"
+      },
+      "my_prompt_minus": {
+        "data": "Для фразы пользователя {{key_word}} не релевантной сервису {{service_name}} компании {{company_name}} доступен следующий список ключевых слов {{minus_words}}. \nВерни сокращенный список состоящий строго не более чем из двух минус слов, обеспечивающих блокировку широкого класса подобных нерелевантных запросов.\nТребования к минус-словам:\nРазрешено использовать только элементы входящего списка. Любое видоизменение элементов запрещено\nИспользуй минимально возможную комбинацию слов.\nМинус-слова должны однозначно исключать нерелевантные запросы.\n"
+      },
+      "ai_calls": 0,
+      "embedding_calls": 24
+    }
+  },
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {
+    "When Executed by Another Workflow": [
+      {
+        "json": {
+          "id": "wZGLxMCCmOnDJZ1o",
+          "root_execution_id": 109705,
+          "company_id": 1,
+          "threshhold": "0.79",
+          "import_id": 5
+        }
+      }
+    ]
+  },
+  "versionId": "672ed3e4-d152-41e6-9968-a1d65bae1140",
+  "triggerCount": 0,
+  "shared": [
+    {
+      "createdAt": "2025-10-20T11:13:50.516Z",
+      "updatedAt": "2025-10-20T11:13:50.516Z",
+      "role": "workflow:owner",
+      "workflowId": "xNiuEqQOSNCSLvW5",
+      "projectId": "spKmbJLU4mvACXIB"
+    }
+  ],
+  "tags": [
+    {
+      "createdAt": "2025-10-06T13:06:54.644Z",
+      "updatedAt": "2025-10-06T13:06:54.644Z",
+      "id": "DBEf57wUDunVJUG6",
+      "name": "campaign update"
+    }
+  ],
+  "file_name": "adv_campaign_analysis_ai.json"
+}
