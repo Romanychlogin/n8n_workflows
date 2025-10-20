@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-10-20T11:13:50.516Z",
-  "updatedAt": "2025-10-20T14:34:57.835Z",
+  "updatedAt": "2025-10-20T15:38:47.986Z",
   "id": "xNiuEqQOSNCSLvW5",
   "name": "ADV_campaign_analysis_AI",
   "active": false,
@@ -13,8 +13,8 @@
       "type": "n8n-nodes-base.splitInBatches",
       "typeVersion": 3,
       "position": [
-        1200,
-        -96
+        1744,
+        -80
       ],
       "id": "c6042371-815a-4f92-b3cb-a552c08886d4",
       "name": "Loop Over Items"
@@ -271,7 +271,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        9648,
+        9856,
         -672
       ],
       "id": "42d63bda-f271-4a00-8872-7f837ca226ef",
@@ -311,7 +311,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        6912,
+        7120,
         -496
       ],
       "id": "cd7d73dd-916a-4025-8f12-2fe62764d05a",
@@ -386,7 +386,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        5936,
+        6144,
         -32
       ],
       "id": "04274773-651d-45ab-9df6-48f89ee475ef",
@@ -406,7 +406,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        6128,
+        6336,
         -32
       ],
       "id": "6ed8cbba-11a9-4b95-a8e5-5ea4ab884133",
@@ -443,7 +443,7 @@
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1.2,
       "position": [
-        7504,
+        7712,
         -224
       ],
       "id": "f5f60852-8795-4398-be7c-0de54ed6863d",
@@ -477,7 +477,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        7904,
+        8112,
         -240
       ],
       "id": "92a0598e-ca10-4f32-83b7-934fa603611d",
@@ -615,7 +615,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        1648,
+        1856,
         -768
       ],
       "id": "6190730a-d55e-494b-8bac-e36971bba556",
@@ -639,7 +639,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        11056,
+        11264,
         272
       ],
       "id": "b15f8c10-7277-4cd8-8268-7397b7d39d4e",
@@ -659,7 +659,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        10816,
+        11024,
         288
       ],
       "id": "658dc02c-f118-4106-bef5-15ed79d1f948",
@@ -692,7 +692,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        11440,
+        11648,
         304
       ],
       "id": "f7a7ee99-76a2-4d1f-89e0-74321d1fb911",
@@ -705,7 +705,7 @@
       "type": "n8n-nodes-base.stopAndError",
       "typeVersion": 1,
       "position": [
-        11680,
+        11888,
         176
       ],
       "id": "7be709a2-2d36-413b-aebd-05f1ff0a8ded",
@@ -739,7 +739,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        11264,
+        11472,
         272
       ],
       "id": "ef2ccf2a-e2d5-46a5-834b-9c7cd9732bc5",
@@ -775,7 +775,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        8784,
+        8992,
         -288
       ],
       "id": "63004840-6153-4b02-8cdf-86c07fedf3f2",
@@ -806,7 +806,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        8448,
+        8656,
         -912
       ],
       "id": "8052d647-bd8e-4826-be9f-1bb7b2cfcae0",
@@ -819,7 +819,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        5728,
+        5936,
         -32
       ],
       "id": "dd0b4545-f5fb-464e-b777-02ce51887323",
@@ -856,7 +856,7 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "select lst.*,c.company_name,cs.service_name, cs.service_description \nfrom current_list lst,companies c, company_services cs \nwhere lst.report_id=$1 and lst.service_id=cs.service_id and lst.company_id = cs.company_id and c.company_id=cs.company_id and lst.resolution='need AI'\n",
+        "query": "select lst.*,c.company_name,cs.service_name, cs.service_description \nfrom current_list lst,companies c, company_services cs \nwhere lst.report_id=$1 and lst.service_id=cs.service_id and lst.company_id = cs.company_id and c.company_id=cs.company_id and lst.resolution='need AI' order by cs.service_name\n",
         "options": {
           "queryReplacement": "={{ $('set variables').item.json.report_id }}"
         }
@@ -907,7 +907,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        7248,
+        7456,
         -224
       ],
       "id": "1021bc24-1f46-4f9c-8311-28d07f71acf0",
@@ -1011,7 +1011,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        8160,
+        8368,
         64
       ],
       "id": "20d754ee-3ec6-4a64-a1d3-ba681e195534",
@@ -1044,7 +1044,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        9280,
+        9488,
         48
       ],
       "id": "fc238e62-4914-4fa0-95e3-58e6f7db6fa0",
@@ -1068,7 +1068,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        9648,
+        9856,
         48
       ],
       "id": "720601be-fdd4-4d37-b5dd-1a7bdad6337a",
@@ -1087,7 +1087,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        9088,
+        9296,
         48
       ],
       "id": "a601ce46-942e-4623-b504-20516e45333b",
@@ -1102,7 +1102,7 @@
       "type": "n8n-nodes-base.splitInBatches",
       "typeVersion": 3,
       "position": [
-        8592,
+        8800,
         -32
       ],
       "id": "19496feb-4ffa-4cd2-8306-ebf98f6adbce",
@@ -1126,7 +1126,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        8400,
+        8608,
         -48
       ],
       "id": "51e6fb81-73bb-4619-8467-31fc009c9e8e",
@@ -1150,7 +1150,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        8784,
+        8992,
         48
       ],
       "id": "23d1a5ad-d3a8-4cdb-aa51-0777a425ffdf",
@@ -1246,7 +1246,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        9872,
+        10080,
         48
       ],
       "id": "3165a62d-5d5c-4de6-92a5-bbdcc53106da",
@@ -1265,7 +1265,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1472,
+        2144,
         -96
       ],
       "id": "b811b260-33ea-4eab-8199-bbb213262432",
@@ -1278,7 +1278,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        6320,
+        6528,
         -32
       ],
       "id": "767e14c4-b430-4574-8c1b-aaeeac84cf36",
@@ -1291,7 +1291,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        7696,
+        7904,
         -224
       ],
       "id": "eac938a0-0564-4643-82c7-0195086b9e1b",
@@ -1304,7 +1304,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        9472,
+        9680,
         48
       ],
       "id": "d42b665e-439a-474c-b2de-76936ac1b98f",
@@ -1317,7 +1317,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        9456,
+        9664,
         -672
       ],
       "id": "4f9e83e2-d05e-475b-ac56-53d2a33dcb44",
@@ -1353,7 +1353,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        8688,
+        8896,
         -912
       ],
       "id": "87e84447-8f55-4401-a4aa-64d1d39165d7",
@@ -1381,7 +1381,7 @@
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1.2,
       "position": [
-        8880,
+        9088,
         -912
       ],
       "id": "a25e1961-b734-43d9-a915-169f111c2068",
@@ -1396,7 +1396,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        9904,
+        10112,
         -736
       ],
       "id": "7c173f33-7017-4638-a32e-44a7e2d95e69",
@@ -1407,6 +1407,19 @@
           "name": "Postgres account 2"
         }
       }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Сколько входящих элементов агрегировать в одном выходящем (в пределах одного service_name)\nconst BATCH_SIZE = 100;\n\nfunction toIdString(v) {\n  if (typeof v === 'bigint') return v.toString();\n  if (typeof v === 'number') return Number.isFinite(v) ? Math.trunc(v).toString() : '';\n  if (typeof v === 'string') return v;\n  return v != null && v.toString ? v.toString() : '';\n}\n\nfunction toStr(v) {\n  return v == null ? '' : String(v);\n}\n\nconst inputItems = $input.all();\nconst out = [];\n\nlet i = 0;\nwhile (i < inputItems.length) {\n  // Старт новой группы по service_name\n  const first = inputItems[i]?.json ?? {};\n  const groupService = toStr(first.service_name);\n\n  // Собираем все подряд идущие элементы с тем же service_name\n  const group = [];\n  while (i < inputItems.length) {\n    const cur = inputItems[i]?.json ?? {};\n    if (toStr(cur.service_name) !== groupService) break;\n    group.push(cur);\n    i++;\n  }\n\n  // Метаданные сервиса (одинаковые в группе)\n  const svcCompany       = toStr(first.company_name);\n  const svcName          = groupService;\n  const svcDescription   = toStr(first.service_description);\n\n  // Режем группу на пачки по BATCH_SIZE\n  for (let start = 0; start < group.length; start += BATCH_SIZE) {\n    const chunk = group.slice(start, start + BATCH_SIZE);\n\n    const items = chunk.map(j => ({\n      id: toIdString(j.content_id),           // берем content_id => строка\n      phrase: toStr(j.phrase)\n    }));\n\n    out.push({\n      json: {\n        company_name: svcCompany,\n        service_name: svcName,\n        service_description: svcDescription,\n        items\n      }\n    });\n  }\n}\n\nreturn out;\n\n\n\n\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1184,
+        -16
+      ],
+      "id": "18427422-1196-4d50-96d1-2a82077f2d8b",
+      "name": "Slice  into batches strings"
     }
   ],
   "connections": {
@@ -1860,7 +1873,7 @@
         ],
         [
           {
-            "node": "Loop Over Items",
+            "node": "Slice  into batches strings",
             "type": "main",
             "index": 0
           }
@@ -1965,6 +1978,17 @@
           }
         ]
       ]
+    },
+    "Slice  into batches strings": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
@@ -2009,7 +2033,7 @@
       }
     ]
   },
-  "versionId": "8356aec8-d66b-4fba-a883-bc0743eb5fe6",
+  "versionId": "c0bf269b-a067-4677-becf-c79ac4434f80",
   "triggerCount": 0,
   "shared": [
     {
