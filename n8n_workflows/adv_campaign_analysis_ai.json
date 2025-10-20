@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-10-20T11:13:50.516Z",
-  "updatedAt": "2025-10-20T15:38:47.986Z",
+  "updatedAt": "2025-10-20T16:16:08.003Z",
   "id": "xNiuEqQOSNCSLvW5",
   "name": "ADV_campaign_analysis_AI",
   "active": false,
@@ -333,7 +333,7 @@
           "cachedResultName": "n8n_prompts",
           "cachedResultUrl": "https://github.com/Romanychlogin/n8n_prompts"
         },
-        "filePath": "keyword_analysis.txt",
+        "filePath": "key_phrases_analysis.txt",
         "additionalParameters": {}
       },
       "type": "n8n-nodes-base.github",
@@ -386,8 +386,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        6144,
-        -32
+        2880,
+        -96
       ],
       "id": "04274773-651d-45ab-9df6-48f89ee475ef",
       "name": "Set API JSON"
@@ -406,8 +406,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        6336,
-        -32
+        3072,
+        -96
       ],
       "id": "6ed8cbba-11a9-4b95-a8e5-5ea4ab884133",
       "name": "HTTP Request",
@@ -814,13 +814,13 @@
     },
     {
       "parameters": {
-        "jsCode": "const workflowData = $getWorkflowStaticData('global');\nlet my_prompt = workflowData.my_prompt.data;\n\nfor (const item of $input.all()) {\n  item.json.my_prompt = my_prompt.replaceAll(\"{{service_description}}\",$('Loop Over Items').last().json.service_name +' ' + $('Loop Over Items').last().json.service_description).replaceAll(\"{{key_word}}\", $('Loop Over Items').last().json.key_word).replaceAll(\"{{company_name}}\", $('Loop Over Items').last().json.company_name);\n}\n\nreturn $input.all();"
+        "jsCode": "const workflowData = $getWorkflowStaticData('global');\nlet my_prompt = workflowData.my_prompt.data;\n\nfor (const item of $input.all()) {\n  item.json.my_prompt = my_prompt.replaceAll(\"{{service_description}}\",$('Loop Over Items').last().json.service_name +' ' + $('Loop Over Items').last().json.service_description).replaceAll(\"{{key_words}}\", JSON.stringify($('Loop Over Items').last().json.items).replaceAll(\"{{company_name}}\", $('Loop Over Items').last().json.company_name);\n}\n\nreturn $input.all();"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        5936,
-        -32
+        2672,
+        -96
       ],
       "id": "dd0b4545-f5fb-464e-b777-02ce51887323",
       "name": "Set prompt"
@@ -834,8 +834,8 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        5536,
-        -112
+        2464,
+        -176
       ],
       "id": "d54fb06c-1525-43e4-8676-d91e349d1f42",
       "name": "Sticky Note6"
@@ -1278,8 +1278,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        6528,
-        -32
+        3264,
+        -96
       ],
       "id": "767e14c4-b430-4574-8c1b-aaeeac84cf36",
       "name": "update calls counters2"
@@ -2033,7 +2033,7 @@
       }
     ]
   },
-  "versionId": "c0bf269b-a067-4677-becf-c79ac4434f80",
+  "versionId": "04712592-6d5d-487d-9f24-617321da508c",
   "triggerCount": 0,
   "shared": [
     {
