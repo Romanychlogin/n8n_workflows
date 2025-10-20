@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-10-20T11:14:53.972Z",
-  "updatedAt": "2025-10-20T12:48:26.615Z",
+  "updatedAt": "2025-10-20T13:10:53.735Z",
   "id": "dSYXe1nfeCvfozcQ",
   "name": "minus words vs content review",
   "active": false,
@@ -30,8 +30,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        -256,
-        -400
+        1520,
+        -608
       ],
       "id": "bab4fa97-bd10-4819-ae2b-73b08c7bc74b",
       "name": "Mark_workflow_completed",
@@ -73,8 +73,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -480,
-        -400
+        1120,
+        -608
       ],
       "id": "68cb8b05-9d21-4074-a3dc-3fdabb0326f4",
       "name": "Init total counter"
@@ -127,19 +127,6 @@
     },
     {
       "parameters": {
-        "jsCode": "// Сколько входящих элементов агрегировать в одном выходящем\nconst BATCH_SIZE = 100;\n\nfunction toIdString(v) {\n  if (typeof v === 'bigint') return v.toString();\n  if (typeof v === 'number') {\n    // защищаемся от NaN/Infinity и от дробной части\n    return Number.isFinite(v) ? Math.trunc(v).toString() : '';\n  }\n  if (typeof v === 'string') return v;\n  return v != null && v.toString ? v.toString() : '';\n}\n\nconst inputItems = $input.all();\nconst out = [];\n\nfor (let i = 0; i < inputItems.length; i += BATCH_SIZE) {\n  const chunk = inputItems.slice(i, i + BATCH_SIZE);\n\n  const items = chunk.map(({ json }) => ({\n    id: toIdString(json.content_id),\n    phrase: String(json.phrase ?? '')\n  }));\n\n  out.push({ json: { items } });\n}\n\nreturn out;"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        -1760,
-        -400
-      ],
-      "id": "ee23f5d1-cfa3-4813-b762-ab50b5d23b21",
-      "name": "Code in JavaScript"
-    },
-    {
-      "parameters": {
         "options": {}
       },
       "type": "n8n-nodes-base.splitInBatches",
@@ -158,8 +145,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -1120,
-        -320
+        -1104,
+        -384
       ],
       "id": "8705ec49-6728-4aa4-8d9e-f0f3e6dc925f",
       "name": "Set API JSON"
@@ -178,8 +165,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        -928,
-        -320
+        -944,
+        -384
       ],
       "id": "7a635bb6-ab74-480b-8910-977621b7f13c",
       "name": "HTTP Request",
@@ -200,8 +187,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -1328,
-        -320
+        -1264,
+        -384
       ],
       "id": "32033bbb-9158-4db7-9978-b95028196f5b",
       "name": "Set prompt"
@@ -329,16 +316,246 @@
     },
     {
       "parameters": {
-        "jsCode": "\nconst workflowData = $getWorkflowStaticData('global');\n/**\n * Собираем phrase_id с resolution=false из ответа OpenAI.\n * Работает как с плоской структурой { phrases: [...] }, так и с вложенными вариантами.\n */\n\nfunction isPhraseEntry(x) {\n  return x && typeof x === 'object'\n    && typeof x.phrase_id === 'string'\n    && typeof x.resolution === 'boolean';\n}\n\nfunction findPhrasesArray(obj) {\n  // Поиск первого массива объектов формата { phrase_id, resolution }\n  if (Array.isArray(obj)) {\n    if (obj.length > 0 && isPhraseEntry(obj[0])) return obj;\n    for (const el of obj) {\n      const found = findPhrasesArray(el);\n      if (found) return found;\n    }\n    return null;\n  }\n  if (obj && typeof obj === 'object') {\n    // Прямой путь: obj.phrases\n    if (Array.isArray(obj.phrases) && obj.phrases.length > 0 && isPhraseEntry(obj.phrases[0])) {\n      return obj.phrases;\n    }\n    for (const k of Object.keys(obj)) {\n      const found = findPhrasesArray(obj[k]);\n      if (found) return found;\n    }\n  }\n  return null;\n}\n\nconst inputItems = $input.all();\n\nconst ids = [];\nfor (const { json } of inputItems) {\n  const arr = findPhrasesArray(json);\n  if (!arr) continue;\n  for (const it of arr) {\n    if (isPhraseEntry(it) && it.resolution === false) {\n      ids.push(it.phrase_id);\n    }\n  }\n}\n\n// Уберём дубли, сохраняя порядок\nconst seen = new Set();\nconst uniqueIds = [];\nfor (const id of ids) {\n  if (!seen.has(id)) { seen.add(id); uniqueIds.push(id); }\n}\n\n// Формат: \"phrase_id1,phrase_id2,...\"\nconst result = uniqueIds.join(',');\n\n// Возвращаем одну строку в поле phrase_ids (и count на всякий случай)\nreturn [{ json: { phrase_ids: result, count: uniqueIds.length } }];"
+        "operation": "executeQuery",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -1168,
+        -672
+      ],
+      "id": "876c6cc5-e8be-4062-b24a-d17c8a8549cd",
+      "name": "delete irrelevant content",
+      "credentials": {
+        "postgres": {
+          "id": "Hx2VFmUi5WO2K4QX",
+          "name": "Postgres account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -1344,
+        -672
+      ],
+      "id": "4b586ba2-d758-49aa-ac0d-44b2c44464b2",
+      "name": "log deletion",
+      "credentials": {
+        "postgres": {
+          "id": "Hx2VFmUi5WO2K4QX",
+          "name": "Postgres account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT\n  v.minus_word,\n  v.id,\n  ct.phrase,\n  ct.content_id,\n  1 - (v.minus_word_embedding <=> ct.phrase_embedding) AS similarity\nFROM company_content ct\nCROSS JOIN LATERAL (\n  SELECT v.minus_word, v.id, v.minus_word_embedding\n  FROM minus_words v\n  WHERE v.company_id = 1\n  ORDER BY v.minus_word_embedding <=> ct.phrase_embedding\n  LIMIT 50                           -- подберите k экспериментально\n) v\nWHERE ct.company_id = $1\n  AND 1 - (v.minus_word_embedding <=> ct.phrase_embedding) > $2\n  AND ct.phrase_embedding IS NOT NULL;",
+        "options": {
+          "queryReplacement": "={{ $('When Executed by Another Workflow').item.json.company_id }},{{$json.threshold  }}"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -976,
+        -672
+      ],
+      "id": "99a3e8e6-93e0-4dba-832c-0ef517094485",
+      "name": "Get matched minus words and content1",
+      "credentials": {
+        "postgres": {
+          "id": "4YkdFJcdTgzo9hkz",
+          "name": "PGvector"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        -432,
+        -672
+      ],
+      "id": "bfa1c2e6-4ff5-414c-8689-081a2a099366",
+      "name": "Loop Over Items1"
+    },
+    {
+      "parameters": {
+        "jsCode": "return [{\n  json: \n {\n  \"model\": \"gpt-5\",\n  \"input\": [\n    {\n      \"role\": \"developer\",\n      \"content\": [\n        {\n          \"type\": \"input_text\",\n          \"text\": \"# Role and Objective\\n- You are a search query analysis assistant. Validate each input phrase and respond with a structured JSON object.\\n\"\n        }\n      ]\n    },\n    {\n      \"role\": \"user\",\n      \"content\": [\n        {\n          \"type\": \"input_text\",\n          \"text\": $json.my_prompt\n        }\n      ]\n    }\n  ],\n \"text\": {\n    \"format\": {\n      \"type\": \"json_schema\",\n      \"name\": \"phrases\",\n      \"strict\": true,\n      \"schema\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"phrases\": {\n            \"type\": \"array\",\n            \"description\": \"A list of entries each consisting of a phrase ID and a corresponding boolean resolution.\",\n            \"items\": {\n              \"type\": \"object\",\n              \"properties\": {\n                \"phrase_id\": {\n                  \"type\": \"string\",\n                  \"description\": \"The ID of the textual phrase.\",\n                  \"minLength\": 1\n                },\n                \"resolution\": {\n                  \"type\": \"boolean\",\n                  \"description\": \"Boolean value indicating the resolution of the phrase.\"\n                }\n              },\n              \"required\": [\n                \"phrase_id\",\n                \"resolution\"\n              ],\n              \"additionalProperties\": false\n            }\n          }\n        },\n        \"required\": [\n          \"phrases\"\n        ],\n        \"additionalProperties\": false\n      }\n    },\n    \"verbosity\": \"low\"\n  },\n  \"reasoning\": {\n    \"summary\": \"detailed\",\n    \"effort\": \"low\"\n  },\n  \"store\": false,\n  \"include\": [\n    \"reasoning.encrypted_content\",\n    \"web_search_call.action.sources\"\n  ]\n}\n\n}];"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -720,
-        -320
+        -32,
+        -656
+      ],
+      "id": "3ebc0ae5-372f-436b-854a-83216df12e90",
+      "name": "Set API JSON1"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.openai.com/v1/responses",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "openAiApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{$json}}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        128,
+        -656
+      ],
+      "id": "3575ab45-8a47-401c-9cfd-bda34e78f9dd",
+      "name": "HTTP Request1",
+      "retryOnFail": true,
+      "waitBetweenTries": 5000,
+      "maxTries": 5,
+      "credentials": {
+        "openAiApi": {
+          "id": "m4NScyhZzV3hBcTr",
+          "name": "OpenAi Yads"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const workflowData = $getWorkflowStaticData('global');\nlet my_prompt = workflowData.my_prompt.data;\n\nfor (const item of $input.all()) {\n  item.json.my_prompt = my_prompt.replaceAll(\"{{service_description}}\",workflowData.services_description).replaceAll(\"{{phrases}}\", JSON.stringify($('Loop Over Items1').last().json.items)).replaceAll(\"{{company_name}}\", $('get company name').last().json.company_name);\n}\n\nreturn $input.all();"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -208,
+        -656
+      ],
+      "id": "35e7182a-3f69-4253-b4a6-96b7ea58b896",
+      "name": "Set prompt1"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Сколько входящих элементов агрегировать в одном выходящем\nconst BATCH_SIZE = 100;\n\nfunction toIdString(v) {\n  if (typeof v === 'bigint') return v.toString();\n  if (typeof v === 'number') {\n    // защищаемся от NaN/Infinity и от дробной части\n    return Number.isFinite(v) ? Math.trunc(v).toString() : '';\n  }\n  if (typeof v === 'string') return v;\n  return v != null && v.toString ? v.toString() : '';\n}\n\nconst inputItems = $input.all();\nconst out = [];\n\nfor (let i = 0; i < inputItems.length; i += BATCH_SIZE) {\n  const chunk = inputItems.slice(i, i + BATCH_SIZE);\n\n  const items = chunk.map(({ json }) => ({\n    id: toIdString(json.content_id),\n    phrase: String(json.phrase ?? '')\n  }));\n\n  out.push({ json: { items } });\n}\n\n\nreturn out;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1760,
+        -400
+      ],
+      "id": "ee23f5d1-cfa3-4813-b762-ab50b5d23b21",
+      "name": "Slice  into batches strings"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Сколько входящих элементов агрегировать в одном выходящем\nconst BATCH_SIZE = 100;\n\nfunction toIdString(v) {\n  if (typeof v === 'bigint') return v.toString();\n  if (typeof v === 'number') {\n    // защищаемся от NaN/Infinity и от дробной части\n    return Number.isFinite(v) ? Math.trunc(v).toString() : '';\n  }\n  if (typeof v === 'string') return v;\n  return v != null && v.toString ? v.toString() : '';\n}\n\nconst inputItems = $input.all();\nconst out = [];\n\nfor (let i = 0; i < inputItems.length; i += BATCH_SIZE) {\n  const chunk = inputItems.slice(i, i + BATCH_SIZE);\n\n  const items = chunk.map(({ json }) => ({\n    id: toIdString(json.id),\n    phrase: String(json.minus_word ?? '')\n  }));\n\n  out.push({ json: { items } });\n}\n//reset IDS string\nconst workflowData = $getWorkflowStaticData('global');\nworkflowData.ids_string='';\nreturn out;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -640,
+        -672
+      ],
+      "id": "5cfda860-a1f5-442c-9836-6403ef395c53",
+      "name": "Slice  into batches strings2"
+    },
+    {
+      "parameters": {
+        "jsCode": "\n// 1) Берём строку JSON из указанного поля\nlet raw = $input.first().json?.output?.[1]?.content?.[0]?.text;\n\n// --- Вспомогательные функции ---\nfunction stripCodeFences(s) {\n  if (typeof s !== 'string') return s;\n  let t = s.trim();\n  // убираем ```json ... ``` или просто ```\n  if (t.startsWith('```')) {\n    t = t.replace(/^```[a-zA-Z]*\\n?/, '').replace(/```$/, '').trim();\n  }\n  return t;\n}\n\nfunction safeParseJSON(x) {\n  if (x == null) return null;\n  if (typeof x === 'object') return x; // уже объект\n  const s = stripCodeFences(String(x));\n  try {\n    return JSON.parse(s);\n  } catch (e) {\n    const m = s.match(/{[\\s\\S]*}/);\n    if (m) {\n      try { return JSON.parse(m[0]); } catch {}\n    }\n    return null;\n  }\n}\n\n// 2) Парсим и собираем ids с resolution=false\nconst obj = safeParseJSON(raw);\n\nif (!obj || !Array.isArray(obj.phrases)) {\n  // Фоллбек: ничего не нашли — ничего не трогаем в workflowData\n  return [{ json: { phrase_ids: '', count: 0, note: 'phrases not found' } }];\n}\n\n// Уберём дубли в текущей партии, сохраним порядок\nconst seen = new Set();\nconst ids = [];\nfor (const it of obj.phrases) {\n  if (!it || typeof it !== 'object') continue;\n  if (it.resolution === false && it.phrase_id != null) {\n    const idStr = String(it.phrase_id);\n    if (!seen.has(idStr)) { seen.add(idStr); ids.push(idStr); }\n  }\n}\n\nconst chunk = ids.join(',');\n\n// 3) Обновляем глобальные статические данные\nconst workflowData = $getWorkflowStaticData('global');\n\n// Приведём существующее значение к строке и уберём крайние запятые/пробелы\nconst existingRaw = (workflowData.ids_string ?? '').toString();\nconst existingClean = existingRaw.replace(/^\\s*,+|,+\\s*$/g, '').trim();\n\n// Приведём формируемый кусок к \"чистому\" виду (на всякий случай)\nconst chunkClean = chunk.replace(/^\\s*,+|,+\\s*$/g, '').trim();\n\nlet newValue = existingClean;\nif (chunkClean) {\n  if (existingClean) {\n    newValue = `${existingClean},${chunkClean}`;\n  } else {\n    newValue = chunkClean;\n  }\n}\n\n// Сохраняем обратно\nworkflowData.ids_string = newValue;\n\n// 4) Возвращаем результат ноды\nreturn [{\n  json: {\n    phrase_ids: chunkClean,             // текущая партия\n    count: ids.length,                  // сколько в текущей партии\n    global_ids_string: newValue         // итоговое значение в workflowData\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -784,
+        -384
       ],
       "id": "d5f45c6a-73ac-4587-9499-723533940d0a",
-      "name": "Code in JavaScript2"
+      "name": "aggregate ids into ids_string"
+    },
+    {
+      "parameters": {
+        "jsCode": "\n// 1) Берём строку JSON из указанного поля\nlet raw = $input.first().json?.output?.[1]?.content?.[0]?.text;\n\n// --- Вспомогательные функции ---\nfunction stripCodeFences(s) {\n  if (typeof s !== 'string') return s;\n  let t = s.trim();\n  // убираем ```json ... ``` или просто ```\n  if (t.startsWith('```')) {\n    t = t.replace(/^```[a-zA-Z]*\\n?/, '').replace(/```$/, '').trim();\n  }\n  return t;\n}\n\nfunction safeParseJSON(x) {\n  if (x == null) return null;\n  if (typeof x === 'object') return x; // уже объект\n  const s = stripCodeFences(String(x));\n  try {\n    return JSON.parse(s);\n  } catch (e) {\n    const m = s.match(/{[\\s\\S]*}/);\n    if (m) {\n      try { return JSON.parse(m[0]); } catch {}\n    }\n    return null;\n  }\n}\n\n// 2) Парсим и собираем ids с resolution=false\nconst obj = safeParseJSON(raw);\n\nif (!obj || !Array.isArray(obj.phrases)) {\n  // Фоллбек: ничего не нашли — ничего не трогаем в workflowData\n  return [{ json: { phrase_ids: '', count: 0, note: 'phrases not found' } }];\n}\n\n// Уберём дубли в текущей партии, сохраним порядок\nconst seen = new Set();\nconst ids = [];\nfor (const it of obj.phrases) {\n  if (!it || typeof it !== 'object') continue;\n  if (it.resolution === false && it.phrase_id != null) {\n    const idStr = String(it.phrase_id);\n    if (!seen.has(idStr)) { seen.add(idStr); ids.push(idStr); }\n  }\n}\n\nconst chunk = ids.join(',');\n\n// 3) Обновляем глобальные статические данные\nconst workflowData = $getWorkflowStaticData('global');\n\n// Приведём существующее значение к строке и уберём крайние запятые/пробелы\nconst existingRaw = (workflowData.ids_string ?? '').toString();\nconst existingClean = existingRaw.replace(/^\\s*,+|,+\\s*$/g, '').trim();\n\n// Приведём формируемый кусок к \"чистому\" виду (на всякий случай)\nconst chunkClean = chunk.replace(/^\\s*,+|,+\\s*$/g, '').trim();\n\nlet newValue = existingClean;\nif (chunkClean) {\n  if (existingClean) {\n    newValue = `${existingClean},${chunkClean}`;\n  } else {\n    newValue = chunkClean;\n  }\n}\n\n// Сохраняем обратно\nworkflowData.ids_string = newValue;\n\n// 4) Возвращаем результат ноды\nreturn [{\n  json: {\n    phrase_ids: chunkClean,             // текущая партия\n    count: ids.length,                  // сколько в текущей партии\n    global_ids_string: newValue         // итоговое значение в workflowData\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        304,
+        -656
+      ],
+      "id": "6f8afa5b-97c2-48fc-8f18-e27dcb2b1c51",
+      "name": "aggregate ids into ids_string1"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        160,
+        -832
+      ],
+      "id": "5d03e10e-347e-4ef5-a148-0f771d3d03fc",
+      "name": "move relevant minus words into content",
+      "credentials": {
+        "postgres": {
+          "id": "Hx2VFmUi5WO2K4QX",
+          "name": "Postgres account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        368,
+        -832
+      ],
+      "id": "fca9705d-108e-4857-b6ee-8bf6004f461f",
+      "name": "delete other suspicious minus_words",
+      "credentials": {
+        "postgres": {
+          "id": "Hx2VFmUi5WO2K4QX",
+          "name": "Postgres account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -240,
+        -832
+      ],
+      "id": "9cb1c6a4-1602-4e45-9bc8-ed2048703d0f",
+      "name": "log changes",
+      "credentials": {
+        "postgres": {
+          "id": "Hx2VFmUi5WO2K4QX",
+          "name": "Postgres account 2"
+        }
+      }
     }
   ],
   "connections": {
@@ -384,7 +601,7 @@
       "main": [
         [
           {
-            "node": "Code in JavaScript",
+            "node": "Slice  into batches strings",
             "type": "main",
             "index": 0
           }
@@ -402,22 +619,11 @@
         ]
       ]
     },
-    "Code in JavaScript": {
-      "main": [
-        [
-          {
-            "node": "Loop Over Items",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Loop Over Items": {
       "main": [
         [
           {
-            "node": "Init total counter",
+            "node": "log deletion",
             "type": "main",
             "index": 0
           }
@@ -457,7 +663,7 @@
       "main": [
         [
           {
-            "node": "Code in JavaScript2",
+            "node": "aggregate ids into ids_string",
             "type": "main",
             "index": 0
           }
@@ -530,11 +736,150 @@
         ]
       ]
     },
-    "Code in JavaScript2": {
+    "delete irrelevant content": {
+      "main": [
+        [
+          {
+            "node": "Get matched minus words and content1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "log deletion": {
+      "main": [
+        [
+          {
+            "node": "delete irrelevant content",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items1": {
+      "main": [
+        [
+          {
+            "node": "log changes",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Set prompt1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set API JSON1": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request1": {
+      "main": [
+        [
+          {
+            "node": "aggregate ids into ids_string1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set prompt1": {
+      "main": [
+        [
+          {
+            "node": "Set API JSON1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get matched minus words and content1": {
+      "main": [
+        [
+          {
+            "node": "Slice  into batches strings2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Slice  into batches strings": {
       "main": [
         [
           {
             "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Slice  into batches strings2": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "aggregate ids into ids_string": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "aggregate ids into ids_string1": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "move relevant minus words into content": {
+      "main": [
+        [
+          {
+            "node": "delete other suspicious minus_words",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "log changes": {
+      "main": [
+        [
+          {
+            "node": "move relevant minus words into content",
             "type": "main",
             "index": 0
           }
@@ -563,7 +908,7 @@
       }
     ]
   },
-  "versionId": "8f15e002-79e5-4816-8aba-8bce2d98c27d",
+  "versionId": "2a0d519d-9815-41f0-a0b1-3644fb78e2c5",
   "triggerCount": 0,
   "shared": [
     {
