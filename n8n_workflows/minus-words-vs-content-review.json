@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-10-20T11:14:53.972Z",
-  "updatedAt": "2025-10-20T17:14:34.977Z",
+  "updatedAt": "2025-10-20T17:25:34.245Z",
   "id": "dSYXe1nfeCvfozcQ",
   "name": "minus words vs content review",
   "active": false,
@@ -332,8 +332,8 @@
       "name": "delete irrelevant content",
       "credentials": {
         "postgres": {
-          "id": "Hx2VFmUi5WO2K4QX",
-          "name": "Postgres account 2"
+          "id": "4YkdFJcdTgzo9hkz",
+          "name": "PGvector"
         }
       }
     },
@@ -1057,7 +1057,7 @@
       }
     ]
   },
-  "versionId": "248c6104-4b49-4f2e-9dd0-30d0bd7f3885",
+  "versionId": "6f28d607-e027-4ca6-8bbc-2df0e1411fe3",
   "triggerCount": 0,
   "shared": [
     {
