@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-10-20T11:14:53.972Z",
-  "updatedAt": "2025-10-20T11:20:26.079Z",
+  "updatedAt": "2025-10-20T12:48:26.615Z",
   "id": "dSYXe1nfeCvfozcQ",
   "name": "minus words vs content review",
   "active": false,
@@ -13,8 +13,8 @@
       "type": "n8n-nodes-base.executeWorkflowTrigger",
       "typeVersion": 1.1,
       "position": [
-        -2688,
-        -400
+        -3328,
+        -416
       ],
       "id": "291d5162-89da-4303-9cca-c5035fe9301b",
       "name": "When Executed by Another Workflow"
@@ -30,7 +30,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        -880,
+        -256,
         -400
       ],
       "id": "bab4fa97-bd10-4819-ae2b-73b08c7bc74b",
@@ -54,8 +54,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        -2416,
-        -400
+        -3056,
+        -416
       ],
       "id": "96866a0e-abc5-4743-b073-7534819b37b5",
       "name": "Mark_workwlow_started",
@@ -73,7 +73,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -1104,
+        -480,
         -400
       ],
       "id": "68cb8b05-9d21-4074-a3dc-3fdabb0326f4",
@@ -97,8 +97,8 @@
       "name": "Get matched minus words and content",
       "credentials": {
         "postgres": {
-          "id": "Hx2VFmUi5WO2K4QX",
-          "name": "Postgres account 2"
+          "id": "4YkdFJcdTgzo9hkz",
+          "name": "PGvector"
         }
       }
     },
@@ -124,6 +124,221 @@
       ],
       "id": "5dde924d-173d-4dd1-a0b0-9451473cf7c9",
       "name": "set variables"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Сколько входящих элементов агрегировать в одном выходящем\nconst BATCH_SIZE = 100;\n\nfunction toIdString(v) {\n  if (typeof v === 'bigint') return v.toString();\n  if (typeof v === 'number') {\n    // защищаемся от NaN/Infinity и от дробной части\n    return Number.isFinite(v) ? Math.trunc(v).toString() : '';\n  }\n  if (typeof v === 'string') return v;\n  return v != null && v.toString ? v.toString() : '';\n}\n\nconst inputItems = $input.all();\nconst out = [];\n\nfor (let i = 0; i < inputItems.length; i += BATCH_SIZE) {\n  const chunk = inputItems.slice(i, i + BATCH_SIZE);\n\n  const items = chunk.map(({ json }) => ({\n    id: toIdString(json.content_id),\n    phrase: String(json.phrase ?? '')\n  }));\n\n  out.push({ json: { items } });\n}\n\nreturn out;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1760,
+        -400
+      ],
+      "id": "ee23f5d1-cfa3-4813-b762-ab50b5d23b21",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        -1552,
+        -400
+      ],
+      "id": "20d53e4f-72a1-484f-bd0f-1509c43e362e",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {
+        "jsCode": "return [{\n  json: \n {\n  \"model\": \"gpt-5\",\n  \"input\": [\n    {\n      \"role\": \"developer\",\n      \"content\": [\n        {\n          \"type\": \"input_text\",\n          \"text\": \"# Role and Objective\\n- You are a search query analysis assistant. Validate each input phrase and respond with a structured JSON object.\\n\"\n        }\n      ]\n    },\n    {\n      \"role\": \"user\",\n      \"content\": [\n        {\n          \"type\": \"input_text\",\n          \"text\": $json.my_prompt\n        }\n      ]\n    }\n  ],\n \"text\": {\n    \"format\": {\n      \"type\": \"json_schema\",\n      \"name\": \"phrases\",\n      \"strict\": true,\n      \"schema\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"phrases\": {\n            \"type\": \"array\",\n            \"description\": \"A list of entries each consisting of a phrase ID and a corresponding boolean resolution.\",\n            \"items\": {\n              \"type\": \"object\",\n              \"properties\": {\n                \"phrase_id\": {\n                  \"type\": \"string\",\n                  \"description\": \"The ID of the textual phrase.\",\n                  \"minLength\": 1\n                },\n                \"resolution\": {\n                  \"type\": \"boolean\",\n                  \"description\": \"Boolean value indicating the resolution of the phrase.\"\n                }\n              },\n              \"required\": [\n                \"phrase_id\",\n                \"resolution\"\n              ],\n              \"additionalProperties\": false\n            }\n          }\n        },\n        \"required\": [\n          \"phrases\"\n        ],\n        \"additionalProperties\": false\n      }\n    },\n    \"verbosity\": \"low\"\n  },\n  \"reasoning\": {\n    \"summary\": \"detailed\",\n    \"effort\": \"low\"\n  },\n  \"store\": false,\n  \"include\": [\n    \"reasoning.encrypted_content\",\n    \"web_search_call.action.sources\"\n  ]\n}\n\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1120,
+        -320
+      ],
+      "id": "8705ec49-6728-4aa4-8d9e-f0f3e6dc925f",
+      "name": "Set API JSON"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.openai.com/v1/responses",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "openAiApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{$json}}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -928,
+        -320
+      ],
+      "id": "7a635bb6-ab74-480b-8910-977621b7f13c",
+      "name": "HTTP Request",
+      "retryOnFail": true,
+      "waitBetweenTries": 5000,
+      "maxTries": 5,
+      "credentials": {
+        "openAiApi": {
+          "id": "m4NScyhZzV3hBcTr",
+          "name": "OpenAi Yads"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const workflowData = $getWorkflowStaticData('global');\nlet my_prompt = workflowData.my_prompt.data;\n\nfor (const item of $input.all()) {\n  item.json.my_prompt = my_prompt.replaceAll(\"{{service_description}}\",workflowData.services_description).replaceAll(\"{{phrases}}\", JSON.stringify($('Loop Over Items').last().json.items)).replaceAll(\"{{company_name}}\", $('get company name').last().json.company_name);\n}\n\nreturn $input.all();"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1328,
+        -320
+      ],
+      "id": "32033bbb-9158-4db7-9978-b95028196f5b",
+      "name": "Set prompt"
+    },
+    {
+      "parameters": {
+        "resource": "file",
+        "operation": "get",
+        "owner": {
+          "__rl": true,
+          "value": "Romanychlogin",
+          "mode": "name"
+        },
+        "repository": {
+          "__rl": true,
+          "value": "n8n_prompts",
+          "mode": "list",
+          "cachedResultName": "n8n_prompts",
+          "cachedResultUrl": "https://github.com/Romanychlogin/n8n_prompts"
+        },
+        "filePath": "phrase_analysis.txt",
+        "additionalParameters": {}
+      },
+      "type": "n8n-nodes-base.github",
+      "typeVersion": 1.1,
+      "position": [
+        -2832,
+        -432
+      ],
+      "id": "1c6a0c3e-a9c6-4e39-95b5-b243ff372221",
+      "name": "Get a file",
+      "webhookId": "92bbe04b-c34a-4d25-9a53-5bd59389e2ac",
+      "credentials": {
+        "githubApi": {
+          "id": "JQAFAcMNS9Ylyb0V",
+          "name": "GitHub account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "text",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        -2624,
+        -432
+      ],
+      "id": "a8e0755c-cbbc-459b-9d48-c939c353eaa6",
+      "name": "Extract from File1"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Function-Node (Run Once)\nconst workflowData = $getWorkflowStaticData('global');\nworkflowData.my_prompt = items[0].json;\nreturn items;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -2416,
+        -432
+      ],
+      "id": "6cffc52c-33de-498e-91c0-e0f364690068",
+      "name": "Code1"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "select cs.service_name,cs.service_description,cs.service_id from companies c, company_services cs where c.company_id=cs.company_id and c.company_id=$1",
+        "options": {
+          "queryReplacement": "={{ $('When Executed by Another Workflow').item.json.company_id }}"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -2288,
+        -672
+      ],
+      "id": "47cc6569-583b-45bb-816e-a3a99717f530",
+      "name": "Services list",
+      "credentials": {
+        "postgres": {
+          "id": "Hx2VFmUi5WO2K4QX",
+          "name": "Postgres account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const workflowData = $getWorkflowStaticData('global');\nworkflowData.services_description ='';\n\n\nfor (const item of $input.all()) {\n  workflowData.services_description = workflowData.services_description + item.json.service_name + ' '+ item.json.service_description+'\\n';\n}\n\nreturn $input.all();"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -2080,
+        -672
+      ],
+      "id": "0f356692-3e64-4d95-b2de-cdd2f0dc37e6",
+      "name": "Code in JavaScript1"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "select company_name from companies where company_id=$1",
+        "options": {
+          "queryReplacement": "={{ $('When Executed by Another Workflow').item.json.company_id }}"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -1872,
+        -672
+      ],
+      "id": "40bce46b-2f27-4306-a8c9-f8df1da3ea45",
+      "name": "get company name",
+      "credentials": {
+        "postgres": {
+          "id": "Hx2VFmUi5WO2K4QX",
+          "name": "Postgres account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "\nconst workflowData = $getWorkflowStaticData('global');\n/**\n * Собираем phrase_id с resolution=false из ответа OpenAI.\n * Работает как с плоской структурой { phrases: [...] }, так и с вложенными вариантами.\n */\n\nfunction isPhraseEntry(x) {\n  return x && typeof x === 'object'\n    && typeof x.phrase_id === 'string'\n    && typeof x.resolution === 'boolean';\n}\n\nfunction findPhrasesArray(obj) {\n  // Поиск первого массива объектов формата { phrase_id, resolution }\n  if (Array.isArray(obj)) {\n    if (obj.length > 0 && isPhraseEntry(obj[0])) return obj;\n    for (const el of obj) {\n      const found = findPhrasesArray(el);\n      if (found) return found;\n    }\n    return null;\n  }\n  if (obj && typeof obj === 'object') {\n    // Прямой путь: obj.phrases\n    if (Array.isArray(obj.phrases) && obj.phrases.length > 0 && isPhraseEntry(obj.phrases[0])) {\n      return obj.phrases;\n    }\n    for (const k of Object.keys(obj)) {\n      const found = findPhrasesArray(obj[k]);\n      if (found) return found;\n    }\n  }\n  return null;\n}\n\nconst inputItems = $input.all();\n\nconst ids = [];\nfor (const { json } of inputItems) {\n  const arr = findPhrasesArray(json);\n  if (!arr) continue;\n  for (const it of arr) {\n    if (isPhraseEntry(it) && it.resolution === false) {\n      ids.push(it.phrase_id);\n    }\n  }\n}\n\n// Уберём дубли, сохраняя порядок\nconst seen = new Set();\nconst uniqueIds = [];\nfor (const id of ids) {\n  if (!seen.has(id)) { seen.add(id); uniqueIds.push(id); }\n}\n\n// Формат: \"phrase_id1,phrase_id2,...\"\nconst result = uniqueIds.join(',');\n\n// Возвращаем одну строку в поле phrase_ids (и count на всякий случай)\nreturn [{ json: { phrase_ids: result, count: uniqueIds.length } }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -720,
+        -320
+      ],
+      "id": "d5f45c6a-73ac-4587-9499-723533940d0a",
+      "name": "Code in JavaScript2"
     }
   ],
   "connections": {
@@ -147,7 +362,7 @@
       "main": [
         [
           {
-            "node": "set variables",
+            "node": "Get a file",
             "type": "main",
             "index": 0
           }
@@ -169,7 +384,7 @@
       "main": [
         [
           {
-            "node": "Init total counter",
+            "node": "Code in JavaScript",
             "type": "main",
             "index": 0
           }
@@ -181,6 +396,145 @@
         [
           {
             "node": "Get matched minus words and content",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [
+          {
+            "node": "Init total counter",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Set prompt",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set API JSON": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set prompt": {
+      "main": [
+        [
+          {
+            "node": "Set API JSON",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get a file": {
+      "main": [
+        [
+          {
+            "node": "Extract from File1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File1": {
+      "main": [
+        [
+          {
+            "node": "Code1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code1": {
+      "main": [
+        [
+          {
+            "node": "Services list",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Services list": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript1": {
+      "main": [
+        [
+          {
+            "node": "get company name",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "get company name": {
+      "main": [
+        [
+          {
+            "node": "set variables",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript2": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
             "type": "main",
             "index": 0
           }
@@ -209,7 +563,7 @@
       }
     ]
   },
-  "versionId": "b8d16d2d-563d-4cdd-8d01-610524bb41a3",
+  "versionId": "8f15e002-79e5-4816-8aba-8bce2d98c27d",
   "triggerCount": 0,
   "shared": [
     {
