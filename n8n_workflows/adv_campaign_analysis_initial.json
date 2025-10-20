@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-10-20T11:13:37.232Z",
-  "updatedAt": "2025-10-20T11:13:37.232Z",
+  "updatedAt": "2025-10-20T14:31:46.121Z",
   "id": "b9eGU4g5DID0kq2E",
   "name": "ADV_campaign_analysis_initial",
   "active": false,
@@ -549,40 +549,6 @@
     },
     {
       "parameters": {
-        "conditions": {
-          "options": {
-            "caseSensitive": true,
-            "leftValue": "",
-            "typeValidation": "strict",
-            "version": 2
-          },
-          "conditions": [
-            {
-              "id": "60fdafa4-2c5e-4917-978b-dbc1a116f516",
-              "leftValue": "={{ JSON.parse($json.output[1].content[0].text).is_correct_phrase }}",
-              "rightValue": "true_phrase",
-              "operator": {
-                "type": "boolean",
-                "operation": "true",
-                "singleValue": true
-              }
-            }
-          ],
-          "combinator": "and"
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.if",
-      "typeVersion": 2.2,
-      "position": [
-        6912,
-        -496
-      ],
-      "id": "660718ab-9038-4b13-9fd2-55f82d0acb1f",
-      "name": "Обработка ответа AI"
-    },
-    {
-      "parameters": {
         "resource": "file",
         "operation": "get",
         "owner": {
@@ -598,8 +564,7 @@
           "cachedResultUrl": "https://github.com/Romanychlogin/n8n_prompts"
         },
         "filePath": "keyword_analysis.txt",
-        "additionalParameters": {},
-        "path": "92bbe04b-c34a-4d25-9a53-5bd59389e2ac"
+        "additionalParameters": {}
       },
       "type": "n8n-nodes-base.github",
       "typeVersion": 1.1,
@@ -825,48 +790,6 @@
         "postgres": {
           "id": "Hx2VFmUi5WO2K4QX",
           "name": "Postgres account 2"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "jsCode": "return [{\n  json: \n {\n  \"model\": \"gpt-5\",\n  \"input\": [\n    {\n      \"role\": \"developer\",\n      \"content\": [\n        {\n          \"type\": \"input_text\",\n          \"text\": \"# Role and Objective\\n- You are a search query analysis assistant. Your role is to identify and filter out irrelevant queries for client's services. Validate each input phrase and respond with a structured JSON object.\\n\"\n        }\n      ]\n    },\n    {\n      \"role\": \"user\",\n      \"content\": [\n        {\n          \"type\": \"input_text\",\n          \"text\": $json.my_prompt\n        }\n      ]\n    }\n  ],\n  \"text\": {\n    \"format\": {\n      \"type\": \"json_schema\",\n      \"name\": \"phrase_resolution\",\n      \"strict\": true,\n      \"schema\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"is_correct_phrase\": {\n            \"type\": \"boolean\",\n            \"description\": \"Indicates if the phrase is correct.\"\n          }\n        },\n        \"required\": [\n          \"is_correct_phrase\"\n        ],\n        \"additionalProperties\": false\n      }\n    },\n    \"verbosity\": \"low\"\n  },\n  \"reasoning\": {\n    \"effort\": \"low\",\n    \"summary\": null\n  },\n  \"tools\": [],\n  \"store\": false,\n  \"include\": [\n    \"reasoning.encrypted_content\",\n    \"web_search_call.action.sources\"\n  ]\n}\n\n}];"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        5936,
-        -32
-      ],
-      "id": "ecdb2f71-0321-4f9c-922c-d6ce377611bc",
-      "name": "Set API JSON"
-    },
-    {
-      "parameters": {
-        "method": "POST",
-        "url": "https://api.openai.com/v1/responses",
-        "authentication": "predefinedCredentialType",
-        "nodeCredentialType": "openAiApi",
-        "sendBody": true,
-        "specifyBody": "json",
-        "jsonBody": "={{$json}}",
-        "options": {}
-      },
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.2,
-      "position": [
-        6128,
-        -32
-      ],
-      "id": "dd590597-2e70-4569-a512-f796c39d16d5",
-      "name": "HTTP Request",
-      "retryOnFail": true,
-      "waitBetweenTries": 5000,
-      "maxTries": 5,
-      "credentials": {
-        "openAiApi": {
-          "id": "m4NScyhZzV3hBcTr",
-          "name": "OpenAi Yads"
         }
       }
     },
@@ -1355,34 +1278,6 @@
       ],
       "id": "0b64609f-741a-4e59-bc1e-e9e218abba39",
       "name": "mark to add"
-    },
-    {
-      "parameters": {
-        "jsCode": "const workflowData = $getWorkflowStaticData('global');\nlet my_prompt = workflowData.my_prompt.data;\n\nfor (const item of $input.all()) {\n  item.json.my_prompt = my_prompt.replaceAll(\"{{service_description}}\",$('Loop Over Items').last().json.service_name +' ' + $('Loop Over Items').last().json.service_description).replaceAll(\"{{key_word}}\", $('Loop Over Items').last().json.key_word).replaceAll(\"{{company_name}}\", $('Loop Over Items').last().json.company_name);\n}\n\nreturn $input.all();"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        5728,
-        -32
-      ],
-      "id": "834df49c-22a8-4796-a32c-dfd60418209a",
-      "name": "Set prompt"
-    },
-    {
-      "parameters": {
-        "content": "ASK AI if the phrase is relevant",
-        "height": 288,
-        "width": 1056
-      },
-      "type": "n8n-nodes-base.stickyNote",
-      "typeVersion": 1,
-      "position": [
-        5536,
-        -112
-      ],
-      "id": "bc6cff6f-fefb-48f1-a8d1-24f97df02f65",
-      "name": "Sticky Note6"
     },
     {
       "parameters": {
@@ -2137,19 +2032,6 @@
     },
     {
       "parameters": {
-        "jsCode": "const workflowData = $getWorkflowStaticData('global');\nworkflowData.ai_calls = workflowData.ai_calls +1;\n\nreturn $input.all();\n"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        6320,
-        -32
-      ],
-      "id": "cbd23e71-fa4b-4b4a-bafd-58e1935e8101",
-      "name": "update calls counters2"
-    },
-    {
-      "parameters": {
         "jsCode": "const workflowData = $getWorkflowStaticData('global');\nworkflowData.embedding_calls = workflowData.embedding_calls + $input.first().json.meta.candidates_total;\nreturn $input.all();\n"
       },
       "type": "n8n-nodes-base.code",
@@ -2333,6 +2215,36 @@
           "name": "Postgres account 2"
         }
       }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "33090f58-518c-4671-a0cf-22b8b484a226",
+              "name": "resolution",
+              "value": "need AI",
+              "type": "string"
+            },
+            {
+              "id": "4f2396b9-b5c0-4e30-86c1-df42515df6af",
+              "name": "total_tokens",
+              "value": "=0",
+              "type": "number"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        8048,
+        -624
+      ],
+      "id": "6530ae7f-8af1-44c2-96ad-5b5dfbaaefd0",
+      "name": "mark need AI"
     }
   ],
   "connections": {
@@ -2412,24 +2324,6 @@
         ]
       ]
     },
-    "Обработка ответа AI": {
-      "main": [
-        [
-          {
-            "node": "mark to add",
-            "type": "main",
-            "index": 0
-          }
-        ],
-        [
-          {
-            "node": "set input params",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Get a file": {
       "main": [
         [
@@ -2473,28 +2367,6 @@
         [
           {
             "node": "refresh minus words status",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Set API JSON": {
-      "main": [
-        [
-          {
-            "node": "HTTP Request",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "HTTP Request": {
-      "main": [
-        [
-          {
-            "node": "update calls counters2",
             "type": "main",
             "index": 0
           }
@@ -2668,7 +2540,7 @@
       "main": [
         [
           {
-            "node": "Set prompt",
+            "node": "mark need AI",
             "type": "main",
             "index": 0
           }
@@ -2698,17 +2570,6 @@
         [
           {
             "node": "set input1",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Set prompt": {
-      "main": [
-        [
-          {
-            "node": "Set API JSON",
             "type": "main",
             "index": 0
           }
@@ -3055,17 +2916,6 @@
         ]
       ]
     },
-    "update calls counters2": {
-      "main": [
-        [
-          {
-            "node": "Обработка ответа AI",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "update calls counters4": {
       "main": [
         [
@@ -3197,6 +3047,17 @@
           }
         ]
       ]
+    },
+    "mark need AI": {
+      "main": [
+        [
+          {
+            "node": "read call counters",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
@@ -3241,7 +3102,7 @@
       }
     ]
   },
-  "versionId": "439b7dbd-0f66-4965-94dd-eb13cd3a05ce",
+  "versionId": "41bb1541-eefb-4ee1-ab5d-b35ff1056278",
   "triggerCount": 0,
   "shared": [
     {
