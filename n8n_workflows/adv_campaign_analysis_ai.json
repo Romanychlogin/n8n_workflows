@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-10-20T11:13:50.516Z",
-  "updatedAt": "2025-10-20T20:32:30.557Z",
+  "updatedAt": "2025-10-20T20:46:02.092Z",
   "id": "xNiuEqQOSNCSLvW5",
   "name": "ADV_campaign_analysis_AI",
   "active": false,
@@ -1423,7 +1423,7 @@
     },
     {
       "parameters": {
-        "jsCode": "// Берём строку JSON из указанного поля\nlet raw = $input.first().json?.output?.[1]?.content?.[0]?.text;\n\n// Удаляем ограждения кода ```...```\nfunction stripCodeFences(s) {\n  if (typeof s !== 'string') return s;\n  let t = s.trim();\n  if (t.startsWith('```')) {\n    t = t.replace(/^```[a-zA-Z]*\\n?/, '').replace(/```$/, '').trim();\n  }\n  return t;\n}\n\n// Безопасный парсинг JSON (с попыткой вытащить первый {...})\nfunction safeParseJSON(x) {\n  if (x == null) return null;\n  if (typeof x === 'object') return x;\n  const s = stripCodeFences(String(x));\n  try {\n    return JSON.parse(s);\n  } catch {\n    const m = s.match(/{[\\s\\S]*}/);\n    if (m) {\n      try { return JSON.parse(m[0]); } catch {}\n    }\n    return null;\n  }\n}\n\nconst obj = safeParseJSON(raw);\nif (!obj || !Array.isArray(obj.phrases)) {\n  return [];\n}\n\nconst out = [];\nfor (const it of obj.phrases) {\n  if (!it || typeof it !== 'object') continue;\n\n  const key_word      = typeof it.phrase === 'string' && it.phrase.length > 0 ? it.phrase : null;\n  const phrase_id   = typeof it.phrase_id === 'string' && it.phrase_id.length > 0 ? it.phrase_id : null;\n  const resolution  = typeof it.resolution === 'boolean' ? it.resolution : null;\n\n  // Учитываем расширенный формат: требуем, чтобы присутствовали все три входных поля,\n  // но в выход добавляем только phrase_id и resolution.\n  if (phrase && phrase_id && resolution !== null) {\n    out.push({\n      json: {\n        phrase_id,\n        resolution\n        // Если нужно включить сам текст фразы в выход:\n        , key_word\n      }\n    });\n  }\n}\n\nreturn out;"
+        "jsCode": "// Берём строку JSON из указанного поля\nlet raw = $input.first().json?.output?.[1]?.content?.[0]?.text;\n\n// Удаляем ограждения кода ```...```\nfunction stripCodeFences(s) {\n  if (typeof s !== 'string') return s;\n  let t = s.trim();\n  if (t.startsWith('```')) {\n    t = t.replace(/^```[a-zA-Z]*\\n?/, '').replace(/```$/, '').trim();\n  }\n  return t;\n}\n\n// Безопасный парсинг JSON (с попыткой вытащить первый {...})\nfunction safeParseJSON(x) {\n  if (x == null) return null;\n  if (typeof x === 'object') return x;\n  const s = stripCodeFences(String(x));\n  try {\n    return JSON.parse(s);\n  } catch {\n    const m = s.match(/{[\\s\\S]*}/);\n    if (m) {\n      try { return JSON.parse(m[0]); } catch {}\n    }\n    return null;\n  }\n}\n\nconst obj = safeParseJSON(raw);\nif (!obj || !Array.isArray(obj.phrases)) {\n  return [];\n}\n\nconst out = [];\nfor (const it of obj.phrases) {\n  if (!it || typeof it !== 'object') continue;\n\n  const key_word      = typeof it.phrase === 'string' && it.phrase.length > 0 ? it.phrase : null;\n  const phrase_id   = typeof it.phrase_id === 'string' && it.phrase_id.length > 0 ? it.phrase_id : null;\n  const resolution  = typeof it.resolution === 'boolean' ? it.resolution : null;\n\n  // Учитываем расширенный формат: требуем, чтобы присутствовали все три входных поля,\n  // но в выход добавляем только phrase_id и resolution.\n  if (key_word && phrase_id && resolution !== null) {\n    out.push({\n      json: {\n        phrase_id,\n        resolution\n        // Если нужно включить сам текст фразы в выход:\n        , key_word\n      }\n    });\n  }\n}\n\nreturn out;"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -2160,7 +2160,7 @@
       }
     ]
   },
-  "versionId": "da42d11a-5770-41fb-b173-fd9b5fce84c6",
+  "versionId": "9ffef6ea-89de-4103-92b9-25c3a0bc203d",
   "triggerCount": 0,
   "shared": [
     {
