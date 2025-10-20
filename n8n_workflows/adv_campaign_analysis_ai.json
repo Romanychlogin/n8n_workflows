@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-10-20T11:13:50.516Z",
-  "updatedAt": "2025-10-20T16:16:08.003Z",
+  "updatedAt": "2025-10-20T16:28:38.787Z",
   "id": "xNiuEqQOSNCSLvW5",
   "name": "ADV_campaign_analysis_AI",
   "active": false,
@@ -271,8 +271,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        9856,
-        -672
+        11072,
+        208
       ],
       "id": "42d63bda-f271-4a00-8872-7f837ca226ef",
       "name": "update",
@@ -295,7 +295,7 @@
           "conditions": [
             {
               "id": "60fdafa4-2c5e-4917-978b-dbc1a116f516",
-              "leftValue": "={{ JSON.parse($json.output[1].content[0].text).is_correct_phrase }}",
+              "leftValue": "={{ $json.resolution }}",
               "rightValue": "true_phrase",
               "operator": {
                 "type": "boolean",
@@ -311,8 +311,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        7120,
-        -496
+        5888,
+        -320
       ],
       "id": "cd7d73dd-916a-4025-8f12-2fe62764d05a",
       "name": "Обработка ответа AI"
@@ -381,7 +381,7 @@
     },
     {
       "parameters": {
-        "jsCode": "return [{\n  json: \n {\n  \"model\": \"gpt-5\",\n  \"input\": [\n    {\n      \"role\": \"developer\",\n      \"content\": [\n        {\n          \"type\": \"input_text\",\n          \"text\": \"# Role and Objective\\n- You are a search query analysis assistant. Your role is to identify and filter out irrelevant queries for client's services. Validate each input phrase and respond with a structured JSON object.\\n\"\n        }\n      ]\n    },\n    {\n      \"role\": \"user\",\n      \"content\": [\n        {\n          \"type\": \"input_text\",\n          \"text\": $json.my_prompt\n        }\n      ]\n    }\n  ],\n  \"text\": {\n    \"format\": {\n      \"type\": \"json_schema\",\n      \"name\": \"phrase_resolution\",\n      \"strict\": true,\n      \"schema\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"is_correct_phrase\": {\n            \"type\": \"boolean\",\n            \"description\": \"Indicates if the phrase is correct.\"\n          }\n        },\n        \"required\": [\n          \"is_correct_phrase\"\n        ],\n        \"additionalProperties\": false\n      }\n    },\n    \"verbosity\": \"low\"\n  },\n  \"reasoning\": {\n    \"effort\": \"low\",\n    \"summary\": null\n  },\n  \"tools\": [],\n  \"store\": false,\n  \"include\": [\n    \"reasoning.encrypted_content\",\n    \"web_search_call.action.sources\"\n  ]\n}\n\n}];"
+        "jsCode": "return [{\n  json: \n {\n  \"model\": \"gpt-5\",\n  \"input\": [\n    {\n      \"role\": \"developer\",\n      \"content\": [\n        {\n          \"type\": \"input_text\",\n          \"text\": \"# Role and Objective\\n- You are a search query analysis assistant. Your role is to identify and filter out irrelevant queries for client's services. Validate each input phrase and respond with a structured JSON object.\\n\"\n        }\n      ]\n    },\n    {\n      \"role\": \"user\",\n      \"content\": [\n        {\n          \"type\": \"input_text\",\n          \"text\": $json.my_prompt\n        }\n      ]\n    }\n  ],\n  \"text\": {\n    \"format\": {\n      \"type\": \"json_schema\",\n      \"name\": \"phrases_resolutions\",\n      \"strict\": true,\n      \"schema\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"phrases\": {\n            \"type\": \"array\",\n            \"description\": \"A list of entries each consisting of a phrase ID and a corresponding boolean resolution.\",\n            \"items\": {\n              \"type\": \"object\",\n              \"properties\": {\n                \"phrase_id\": {\n                  \"type\": \"string\",\n                  \"description\": \"The ID of the textual phrase.\",\n                  \"minLength\": 1\n                },\n                \"resolution\": {\n                  \"type\": \"boolean\",\n                  \"description\": \"Boolean value indicating the resolution of the phrase.\"\n                }\n              },\n              \"required\": [\n                \"phrase_id\",\n                \"resolution\"\n              ],\n              \"additionalProperties\": false\n            }\n          }\n        },\n        \"required\": [\n          \"phrases\"\n        ],\n        \"additionalProperties\": false\n      }\n    },\n    \"verbosity\": \"low\"\n  },\n  \"reasoning\": {\n    \"effort\": \"low\",\n    \"summary\": \"detailed\"\n  },\n  \"tools\": [],\n  \"store\": false,\n  \"include\": [\n    \"reasoning.encrypted_content\",\n    \"web_search_call.action.sources\"\n  ]\n}\n\n}];"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -443,7 +443,7 @@
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1.2,
       "position": [
-        7712,
+        8128,
         -224
       ],
       "id": "f5f60852-8795-4398-be7c-0de54ed6863d",
@@ -477,7 +477,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        8112,
+        8528,
         -240
       ],
       "id": "92a0598e-ca10-4f32-83b7-934fa603611d",
@@ -639,7 +639,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        11264,
+        11680,
         272
       ],
       "id": "b15f8c10-7277-4cd8-8268-7397b7d39d4e",
@@ -659,7 +659,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        11024,
+        11440,
         288
       ],
       "id": "658dc02c-f118-4106-bef5-15ed79d1f948",
@@ -692,7 +692,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        11648,
+        12064,
         304
       ],
       "id": "f7a7ee99-76a2-4d1f-89e0-74321d1fb911",
@@ -705,7 +705,7 @@
       "type": "n8n-nodes-base.stopAndError",
       "typeVersion": 1,
       "position": [
-        11888,
+        12304,
         176
       ],
       "id": "7be709a2-2d36-413b-aebd-05f1ff0a8ded",
@@ -739,7 +739,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        11472,
+        11888,
         272
       ],
       "id": "ef2ccf2a-e2d5-46a5-834b-9c7cd9732bc5",
@@ -775,7 +775,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        8992,
+        9408,
         -288
       ],
       "id": "63004840-6153-4b02-8cdf-86c07fedf3f2",
@@ -806,7 +806,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        8656,
+        9072,
         -912
       ],
       "id": "8052d647-bd8e-4826-be9f-1bb7b2cfcae0",
@@ -828,8 +828,8 @@
     {
       "parameters": {
         "content": "ASK AI if the phrase is relevant",
-        "height": 288,
-        "width": 1056
+        "height": 304,
+        "width": 1216
       },
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
@@ -907,7 +907,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        7456,
+        7872,
         -224
       ],
       "id": "1021bc24-1f46-4f9c-8311-28d07f71acf0",
@@ -1011,7 +1011,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        8368,
+        8784,
         64
       ],
       "id": "20d754ee-3ec6-4a64-a1d3-ba681e195534",
@@ -1044,7 +1044,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        9488,
+        9904,
         48
       ],
       "id": "fc238e62-4914-4fa0-95e3-58e6f7db6fa0",
@@ -1068,7 +1068,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        9856,
+        10272,
         48
       ],
       "id": "720601be-fdd4-4d37-b5dd-1a7bdad6337a",
@@ -1087,7 +1087,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        9296,
+        9712,
         48
       ],
       "id": "a601ce46-942e-4623-b504-20516e45333b",
@@ -1102,7 +1102,7 @@
       "type": "n8n-nodes-base.splitInBatches",
       "typeVersion": 3,
       "position": [
-        8800,
+        9216,
         -32
       ],
       "id": "19496feb-4ffa-4cd2-8306-ebf98f6adbce",
@@ -1126,7 +1126,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        8608,
+        9024,
         -48
       ],
       "id": "51e6fb81-73bb-4619-8467-31fc009c9e8e",
@@ -1150,7 +1150,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        8992,
+        9408,
         48
       ],
       "id": "23d1a5ad-d3a8-4cdb-aa51-0777a425ffdf",
@@ -1180,8 +1180,8 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        7072,
-        -304
+        7872,
+        -272
       ],
       "id": "abe656a2-5993-4c54-8bbc-97cdd453ce0e",
       "name": "Sticky Note4"
@@ -1195,7 +1195,7 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        8064,
+        8736,
         -128
       ],
       "id": "9c74674e-9454-4312-942c-48b1b1cd43b9",
@@ -1246,7 +1246,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        10080,
+        10496,
         48
       ],
       "id": "3165a62d-5d5c-4de6-92a5-bbdcc53106da",
@@ -1291,7 +1291,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        7904,
+        8320,
         -224
       ],
       "id": "eac938a0-0564-4643-82c7-0195086b9e1b",
@@ -1304,7 +1304,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        9680,
+        10096,
         48
       ],
       "id": "d42b665e-439a-474c-b2de-76936ac1b98f",
@@ -1317,7 +1317,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        9664,
+        10080,
         -672
       ],
       "id": "4f9e83e2-d05e-475b-ac56-53d2a33dcb44",
@@ -1353,7 +1353,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        8896,
+        9312,
         -912
       ],
       "id": "87e84447-8f55-4401-a4aa-64d1d39165d7",
@@ -1381,7 +1381,7 @@
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1.2,
       "position": [
-        9088,
+        9504,
         -912
       ],
       "id": "a25e1961-b734-43d9-a915-169f111c2068",
@@ -1396,8 +1396,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        10112,
-        -736
+        9664,
+        -480
       ],
       "id": "7c173f33-7017-4638-a32e-44a7e2d95e69",
       "name": "refresh minus words status",
@@ -1410,7 +1410,7 @@
     },
     {
       "parameters": {
-        "jsCode": "// Сколько входящих элементов агрегировать в одном выходящем (в пределах одного service_name)\nconst BATCH_SIZE = 100;\n\nfunction toIdString(v) {\n  if (typeof v === 'bigint') return v.toString();\n  if (typeof v === 'number') return Number.isFinite(v) ? Math.trunc(v).toString() : '';\n  if (typeof v === 'string') return v;\n  return v != null && v.toString ? v.toString() : '';\n}\n\nfunction toStr(v) {\n  return v == null ? '' : String(v);\n}\n\nconst inputItems = $input.all();\nconst out = [];\n\nlet i = 0;\nwhile (i < inputItems.length) {\n  // Старт новой группы по service_name\n  const first = inputItems[i]?.json ?? {};\n  const groupService = toStr(first.service_name);\n\n  // Собираем все подряд идущие элементы с тем же service_name\n  const group = [];\n  while (i < inputItems.length) {\n    const cur = inputItems[i]?.json ?? {};\n    if (toStr(cur.service_name) !== groupService) break;\n    group.push(cur);\n    i++;\n  }\n\n  // Метаданные сервиса (одинаковые в группе)\n  const svcCompany       = toStr(first.company_name);\n  const svcName          = groupService;\n  const svcDescription   = toStr(first.service_description);\n\n  // Режем группу на пачки по BATCH_SIZE\n  for (let start = 0; start < group.length; start += BATCH_SIZE) {\n    const chunk = group.slice(start, start + BATCH_SIZE);\n\n    const items = chunk.map(j => ({\n      id: toIdString(j.content_id),           // берем content_id => строка\n      phrase: toStr(j.phrase)\n    }));\n\n    out.push({\n      json: {\n        company_name: svcCompany,\n        service_name: svcName,\n        service_description: svcDescription,\n        items\n      }\n    });\n  }\n}\n\nreturn out;\n\n\n\n\n"
+        "jsCode": "// Сколько входящих элементов агрегировать в одном выходящем (в пределах одного service_name)\nconst BATCH_SIZE = 100;\n\nfunction toIdString(v) {\n  if (typeof v === 'bigint') return v.toString();\n  if (typeof v === 'number') return Number.isFinite(v) ? Math.trunc(v).toString() : '';\n  if (typeof v === 'string') return v;\n  return v != null && v.toString ? v.toString() : '';\n}\n\nfunction toStr(v) {\n  return v == null ? '' : String(v);\n}\n\nconst inputItems = $input.all();\nconst out = [];\n\nlet i = 0;\nwhile (i < inputItems.length) {\n  // Старт новой группы по service_name\n  const first = inputItems[i]?.json ?? {};\n  const groupService = toStr(first.service_name);\n\n  // Собираем все подряд идущие элементы с тем же service_name\n  const group = [];\n  while (i < inputItems.length) {\n    const cur = inputItems[i]?.json ?? {};\n    if (toStr(cur.service_name) !== groupService) break;\n    group.push(cur);\n    i++;\n  }\n\n  // Метаданные сервиса (одинаковые в группе)\n  const svcCompany       = toStr(first.company_name);\n  const svcName          = groupService;\n  const svcDescription   = toStr(first.service_description);\n\n  // Режем группу на пачки по BATCH_SIZE\n  for (let start = 0; start < group.length; start += BATCH_SIZE) {\n    const chunk = group.slice(start, start + BATCH_SIZE);\n\n    const items = chunk.map(j => ({\n      id: toIdString(j.list_id),           // берем content_id => строка\n      phrase: toStr(j.key_word)\n    }));\n\n    out.push({\n      json: {\n        company_name: svcCompany,\n        service_name: svcName,\n        service_description: svcDescription,\n        items\n      }\n    });\n  }\n}\n\nreturn out;\n\n\n\n\n"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -1420,6 +1420,32 @@
       ],
       "id": "18427422-1196-4d50-96d1-2a82077f2d8b",
       "name": "Slice  into batches strings"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nfor (const item of $input.all()) {\n  item.json.myNewField = 1;\n}\n\nreturn $input.all();"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3472,
+        -96
+      ],
+      "id": "a7b433db-3288-4f81-ae0d-c99cff6d6639",
+      "name": "Separate output items"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        4592,
+        -208
+      ],
+      "id": "d1c9513d-65b1-41d2-aba0-9268b3976ab5",
+      "name": "Loop Over Items2"
     }
   ],
   "connections": {
@@ -1445,7 +1471,7 @@
       "main": [
         [
           {
-            "node": "refresh minus words status",
+            "node": "Обработка ответа AI",
             "type": "main",
             "index": 0
           }
@@ -1657,7 +1683,7 @@
       "main": [
         [
           {
-            "node": "read call counters",
+            "node": "refresh minus words status",
             "type": "main",
             "index": 0
           }
@@ -1906,7 +1932,7 @@
       "main": [
         [
           {
-            "node": "Обработка ответа AI",
+            "node": "Separate output items",
             "type": "main",
             "index": 0
           }
@@ -1972,7 +1998,7 @@
       "main": [
         [
           {
-            "node": "Get current step and tokens saved",
+            "node": "read call counters",
             "type": "main",
             "index": 0
           }
@@ -1984,6 +2010,29 @@
         [
           {
             "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Separate output items": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items2": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Обработка ответа AI",
             "type": "main",
             "index": 0
           }
@@ -2033,7 +2082,7 @@
       }
     ]
   },
-  "versionId": "04712592-6d5d-487d-9f24-617321da508c",
+  "versionId": "424edeea-db8c-4268-9d58-2f8ed8d75c6e",
   "triggerCount": 0,
   "shared": [
     {
