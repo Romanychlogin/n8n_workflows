@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-10-20T11:14:53.972Z",
-  "updatedAt": "2025-10-20T14:40:09.711Z",
+  "updatedAt": "2025-10-20T14:53:16.813Z",
   "id": "dSYXe1nfeCvfozcQ",
   "name": "minus words vs content review",
   "active": false,
@@ -338,9 +338,9 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "INSERT INTO public.company_content_log(\n\t content_id, phrase, report_id, change_timestamp, is_deleted, company_id)\n\tSELECT\n    cc.content_id,\n    cc.phrase,\n    $2 AS report_id,\n    now() AS change_timestamp,\n    true AS is_deleted,\n    $1 AS company_id\nFROM public.company_content AS cc\nWHERE cc.company_id = $1\n  AND cc.content_id IN ($3);",
+        "query": "INSERT INTO public.company_content_log(\n\t content_id, phrase, report_id, change_timestamp, is_deleted, company_id)\n\tSELECT\n    cc.content_id,\n    cc.phrase,\n    $2 AS report_id,\n    now() AS change_timestamp,\n    true AS is_deleted,\n    $1 AS company_id\nFROM public.company_content AS cc\nWHERE cc.company_id = $1\n  AND cc.content_id IN (\n    SELECT value::bigint\n    FROM jsonb_array_elements_text($3::jsonb) AS t(value)\n  );",
         "options": {
-          "queryReplacement": "={{ $('When Executed by Another Workflow').last().json.company_id }},{{ $('When Executed by Another Workflow').last().json.import_id }},{{  $json.ids_string}}"
+          "queryReplacement": "={{ $('When Executed by Another Workflow').last().json.company_id }},{{ $('When Executed by Another Workflow').last().json.import_id }},{{  JSON.stringify($json.ids_string)}}"
         }
       },
       "type": "n8n-nodes-base.postgres",
@@ -477,7 +477,7 @@
     },
     {
       "parameters": {
-        "jsCode": "\n// 1) Берём строку JSON из указанного поля\nlet raw = $input.first().json?.output?.[1]?.content?.[0]?.text;\n\n// --- Вспомогательные функции ---\nfunction stripCodeFences(s) {\n  if (typeof s !== 'string') return s;\n  let t = s.trim();\n  // убираем ```json ... ``` или просто ```\n  if (t.startsWith('```')) {\n    t = t.replace(/^```[a-zA-Z]*\\n?/, '').replace(/```$/, '').trim();\n  }\n  return t;\n}\n\nfunction safeParseJSON(x) {\n  if (x == null) return null;\n  if (typeof x === 'object') return x; // уже объект\n  const s = stripCodeFences(String(x));\n  try {\n    return JSON.parse(s);\n  } catch (e) {\n    const m = s.match(/{[\\s\\S]*}/);\n    if (m) {\n      try { return JSON.parse(m[0]); } catch {}\n    }\n    return null;\n  }\n}\n\n// 2) Парсим и собираем ids с resolution=false\nconst obj = safeParseJSON(raw);\n\nif (!obj || !Array.isArray(obj.phrases)) {\n  // Фоллбек: ничего не нашли — ничего не трогаем в workflowData\n  return [{ json: { phrase_ids: '', count: 0, note: 'phrases not found' } }];\n}\n\n// Уберём дубли в текущей партии, сохраним порядок\nconst seen = new Set();\nconst ids = [];\nfor (const it of obj.phrases) {\n  if (!it || typeof it !== 'object') continue;\n  if (it.resolution === false && it.phrase_id != null) {\n    const idStr = String(it.phrase_id);\n    if (!seen.has(idStr)) { seen.add(idStr); ids.push(idStr); }\n  }\n}\n\nconst chunk = ids.join(',');\n\n// 3) Обновляем глобальные статические данные\nconst workflowData = $getWorkflowStaticData('global');\n\n// Приведём существующее значение к строке и уберём крайние запятые/пробелы\nconst existingRaw = (workflowData.ids_string ?? '').toString();\nconst existingClean = existingRaw.replace(/^\\s*,+|,+\\s*$/g, '').trim();\n\n// Приведём формируемый кусок к \"чистому\" виду (на всякий случай)\nconst chunkClean = chunk.replace(/^\\s*,+|,+\\s*$/g, '').trim();\n\nlet newValue = existingClean;\nif (chunkClean) {\n  if (existingClean) {\n    newValue = `${existingClean},${chunkClean}`;\n  } else {\n    newValue = chunkClean;\n  }\n}\n\n// Сохраняем обратно\nworkflowData.ids_string = newValue;\n\n// 4) Возвращаем результат ноды\nreturn [{\n  json: {\n    phrase_ids: chunkClean,             // текущая партия\n    count: ids.length,                  // сколько в текущей партии\n    global_ids_string: newValue         // итоговое значение в workflowData\n  }\n}];"
+        "jsCode": "// 1) Берём строку JSON из указанного поля\nlet raw = $input.first().json?.output?.[1]?.content?.[0]?.text;\n\n// --- Вспомогательные функции ---\nfunction stripCodeFences(s) {\n  if (typeof s !== 'string') return s;\n  let t = s.trim();\n  // убираем ```json ... ``` или просто ```\n  if (t.startsWith('```')) {\n    t = t.replace(/^```[a-zA-Z]*\\n?/, '').replace(/```$/, '').trim();\n  }\n  return t;\n}\n\nfunction safeParseJSON(x) {\n  if (x == null) return null;\n  if (typeof x === 'object') return x; // уже объект\n  const s = stripCodeFences(String(x));\n  try {\n    return JSON.parse(s);\n  } catch (e) {\n    const m = s.match(/{[\\s\\S]*}/);\n    if (m) {\n      try { return JSON.parse(m[0]); } catch {}\n    }\n    return null;\n  }\n}\n\n// 2) Парсим и собираем ids с resolution=false\nconst obj = safeParseJSON(raw);\n\nif (!obj || !Array.isArray(obj.phrases)) {\n  return [{ json: { phrase_ids: [], count: 0, note: 'phrases not found' } }];\n}\n\n// Уберём дубли в текущей партии, сохраняя порядок\nconst seen = new Set();\nconst ids = [];\nfor (const it of obj.phrases) {\n  if (!it || typeof it !== 'object') continue;\n  if (it.resolution === false && it.phrase_id != null) {\n    const idStr = String(it.phrase_id);\n    if (!seen.has(idStr)) { seen.add(idStr); ids.push(idStr); }\n  }\n}\n\n// 3) Обновляем глобальные статические данные как МАССИВ\nconst workflowData = $getWorkflowStaticData('global');\n\n// Если раньше по ошибке было строкой — превращаем в массив, иначе инициализируем пустым массивом\nif (Array.isArray(workflowData.ids_string)) {\n  // ок\n} else if (typeof workflowData.ids_string === 'string') {\n  // если где-то ранее хранилось как CSV — разделим, почистим\n  workflowData.ids_string = workflowData.ids_string\n    .split(',')\n    .map(s => s.trim())\n    .filter(Boolean);\n} else {\n  workflowData.ids_string = [];\n}\n\n// Добавляем элементы текущей партии по одному\nfor (const id of ids) {\n  workflowData.ids_string.push(id);\n\n  // Если хотите избегать дублей между запусками, замените строку выше на:\n  // if (!workflowData.ids_string.includes(id)) workflowData.ids_string.push(id);\n}\n\n// 4) Возвращаем результат\nreturn [{\n  json: {\n    phrase_ids: ids,                 // текущая партия (массив)\n    count: ids.length,               // сколько в текущей партии\n    global_ids_array: workflowData.ids_string // итоговый глобальный массив\n  }\n}];\n"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -490,7 +490,7 @@
     },
     {
       "parameters": {
-        "jsCode": "// 1) Берём строку JSON из указанного поля\nlet raw = $input.first().json?.output?.[1]?.content?.[0]?.text;\n\n// --- Вспомогательные функции ---\nfunction stripCodeFences(s) {\n  if (typeof s !== 'string') return s;\n  let t = s.trim();\n  // убираем ```json ... ``` или просто ```\n  if (t.startsWith('```')) {\n    t = t.replace(/^```[a-zA-Z]*\\n?/, '').replace(/```$/, '').trim();\n  }\n  return t;\n}\n\nfunction safeParseJSON(x) {\n  if (x == null) return null;\n  if (typeof x === 'object') return x; // уже объект\n  const s = stripCodeFences(String(x));\n  try {\n    return JSON.parse(s);\n  } catch (e) {\n    const m = s.match(/{[\\s\\S]*}/);\n    if (m) {\n      try { return JSON.parse(m[0]); } catch {}\n    }\n    return null;\n  }\n}\n\n// 2) Парсим и собираем ids отдельно для true/false (без дублей в текущей партии)\nconst obj = safeParseJSON(raw);\nif (!obj || !Array.isArray(obj.phrases)) {\n  return [{\n    json: {\n      phrase_ids_true: '',\n      count_true: 0,\n      phrase_ids_false: '',\n      count_false: 0,\n      note: 'phrases not found'\n    }\n  }];\n}\n\nconst seenTrue = new Set();\nconst seenFalse = new Set();\nconst idsTrue = [];\nconst idsFalse = [];\n\nfor (const it of obj.phrases) {\n  if (!it || typeof it !== 'object') continue;\n  const idStr = it.phrase_id != null ? String(it.phrase_id) : null;\n  if (!idStr) continue;\n\n  if (it.resolution === true) {\n    if (!seenTrue.has(idStr)) { seenTrue.add(idStr); idsTrue.push(idStr); }\n  } else if (it.resolution === false) {\n    if (!seenFalse.has(idStr)) { seenFalse.add(idStr); idsFalse.push(idStr); }\n  }\n}\n\nconst chunkTrue = idsTrue.join(',');\nconst chunkFalse = idsFalse.join(',');\n\n// 3) Обновляем глобальные статические данные\nconst workflowData = $getWorkflowStaticData('global');\n\nfunction appendCsv(existingVal, addChunk) {\n  const existingRaw = (existingVal ?? '').toString();\n  const existingClean = existingRaw.replace(/^\\s*,+|,+\\s*$/g, '').trim();\n  const chunkClean = (addChunk ?? '').toString().replace(/^\\s*,+|,+\\s*$/g, '').trim();\n  if (!chunkClean) return existingClean;         // нечего добавлять\n  if (!existingClean) return chunkClean;         // инициализация\n  return `${existingClean},${chunkClean}`;       // добавление через запятую\n}\n\nworkflowData.ids_true_string  = appendCsv(workflowData.ids_true_string,  chunkTrue);\nworkflowData.ids_false_string = appendCsv(workflowData.ids_false_string, chunkFalse);\n\n// 4) Возвращаем результат ноды\nreturn [{\n  json: {\n    phrase_ids_true: chunkTrue,\n    count_true: idsTrue.length,\n    phrase_ids_false: chunkFalse,\n    count_false: idsFalse.length,\n    global_ids_true_string: workflowData.ids_true_string,\n    global_ids_false_string: workflowData.ids_false_string\n  }\n}];"
+        "jsCode": "// 1) Берём строку JSON из указанного поля\nlet raw = $input.first().json?.output?.[1]?.content?.[0]?.text;\n\n// --- Вспомогательные функции ---\nfunction stripCodeFences(s) {\n  if (typeof s !== 'string') return s;\n  let t = s.trim();\n  if (t.startsWith('```')) {\n    t = t.replace(/^```[a-zA-Z]*\\n?/, '').replace(/```$/, '').trim();\n  }\n  return t;\n}\n\nfunction safeParseJSON(x) {\n  if (x == null) return null;\n  if (typeof x === 'object') return x;\n  const s = stripCodeFences(String(x));\n  try { return JSON.parse(s); } catch (e) {\n    const m = s.match(/{[\\s\\S]*}/);\n    if (m) { try { return JSON.parse(m[0]); } catch {}\n    }\n    return null;\n  }\n}\n\nfunction ensureArray(val) {\n  if (Array.isArray(val)) return val;\n  if (typeof val === 'string') {\n    return val.split(',').map(s => s.trim()).filter(Boolean);\n  }\n  return [];\n}\n\n// 2) Парсим и собираем ids отдельно для true/false (без дублей в текущей партии)\nconst obj = safeParseJSON(raw);\nif (!obj || !Array.isArray(obj.phrases)) {\n  return [{\n    json: {\n      phrase_ids_true: [],\n      count_true: 0,\n      phrase_ids_false: [],\n      count_false: 0,\n      note: 'phrases not found'\n    }\n  }];\n}\n\nconst seenTrue = new Set();\nconst seenFalse = new Set();\nconst idsTrue = [];\nconst idsFalse = [];\n\nfor (const it of obj.phrases) {\n  if (!it || typeof it !== 'object') continue;\n  const idStr = it.phrase_id != null ? String(it.phrase_id) : null;\n  if (!idStr) continue;\n\n  if (it.resolution === true) {\n    if (!seenTrue.has(idStr)) { seenTrue.add(idStr); idsTrue.push(idStr); }\n  } else if (it.resolution === false) {\n    if (!seenFalse.has(idStr)) { seenFalse.add(idStr); idsFalse.push(idStr); }\n  }\n}\n\n// 3) Обновляем глобальные статические данные КАК МАССИВЫ\nconst workflowData = $getWorkflowStaticData('global');\nworkflowData.ids_true_string  = ensureArray(workflowData.ids_true_string);\nworkflowData.ids_false_string = ensureArray(workflowData.ids_false_string);\n\n// Добавляем текущие партии по одному элементу\nfor (const id of idsTrue)  workflowData.ids_true_string.push(id);\n// Если хотите избегать дублей между запусками — используйте вариант ниже:\n// for (const id of idsTrue)  if (!workflowData.ids_true_string.includes(id)) workflowData.ids_true_string.push(id);\n\nfor (const id of idsFalse) workflowData.ids_false_string.push(id);\n// и аналогично можно исключать межзапусковые дубли:\n// for (const id of idsFalse) if (!workflowData.ids_false_string.includes(id)) workflowData.ids_false_string.push(id);\n\n// 4) Возвращаем результат\nreturn [{\n  json: {\n    phrase_ids_true: idsTrue,\n    count_true: idsTrue.length,\n    phrase_ids_false: idsFalse,\n    count_false: idsFalse.length,\n    global_ids_true_array: workflowData.ids_true_string,\n    global_ids_false_array: workflowData.ids_false_string\n  }\n}];"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -545,20 +545,20 @@
     },
     {
       "parameters": {
-        "jsCode": "const workflowData = $getWorkflowStaticData('global');\n\n// Инициализируем, если ещё не было\nif (typeof workflowData.ids_string !== 'string') {\n  workflowData.ids_string = String(workflowData.ids_string ?? '');\n}\n\n// Возвращаем как поле выходного элемента\nreturn [\n  { json: { ids_string: workflowData.ids_string } }\n];"
+        "jsCode": "const workflowData = $getWorkflowStaticData('global');\n\n\n\n// Возвращаем как поле выходного элемента\nreturn [\n  { json: { ids_string: workflowData.ids_string } }\n];"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
         -1392,
-        -592
+        -640
       ],
       "id": "cfebf7d8-8577-4357-bcb2-9982d911faf9",
       "name": "get ids"
     },
     {
       "parameters": {
-        "jsCode": "const workflowData = $getWorkflowStaticData('global');\n\n\n\n// Инициализируем, если ещё не было\nif (typeof workflowData.ids_true_string !== 'string') {\n  workflowData.ids_true_string = String(workflowData.ids_true_string ?? '');\n}\nif (typeof workflowData.ids_false_string !== 'string') {\n  workflowData.ids_false_string = String(workflowData.ids_false_string ?? '');\n}\n\n\n// Возвращаем как поле выходного элемента\nreturn [\n  { json: { ids_true_string: workflowData.ids_true_string,ids_false_string: workflowData.ids_false_string } }\n];"
+        "jsCode": "const workflowData = $getWorkflowStaticData('global');\n\n\n\n// Возвращаем как поле выходного элемента\nreturn [\n  { json: { ids_true_string: workflowData.ids_true_string,ids_false_string: workflowData.ids_false_string } }\n];"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -572,9 +572,9 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "INSERT INTO public.minus_words_log(\n\t minus_word_id, minus_word, report_id, change_timestamp, change_type, company_id)\n\tSELECT\n    cc.id,\n    cc.minus_word,\n    $2 AS report_id,\n    now() AS change_timestamp,\n    'deleted' AS change_type,\n    $1 AS company_id\nFROM public.minus_words AS cc\nWHERE cc.company_id = $1\n  AND cc.id IN ($3);",
+        "query": "INSERT INTO public.minus_words_log(\n\t minus_word_id, minus_word, report_id, change_timestamp, change_type, company_id)\n\tSELECT\n    cc.id,\n    cc.minus_word,\n    $2 AS report_id,\n    now() AS change_timestamp,\n    'deleted' AS change_type,\n    $1 AS company_id\nFROM public.minus_words AS cc\nWHERE cc.company_id = $1\n  AND cc.id IN (\n    SELECT value::bigint\n    FROM jsonb_array_elements_text($3::jsonb) AS t(value)\n  );",
         "options": {
-          "queryReplacement": "={{ $('When Executed by Another Workflow').last().json.company_id }},{{ $('When Executed by Another Workflow').last().json.import_id }},{{  $json.ids_false_string}}"
+          "queryReplacement": "={{ $('When Executed by Another Workflow').last().json.company_id }},{{ $('When Executed by Another Workflow').last().json.import_id }},{{  JSON.stringify($json.ids_false_string)}}"
         }
       },
       "type": "n8n-nodes-base.postgres",
@@ -595,9 +595,9 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "INSERT INTO public.minus_words_log(\n\t minus_word_id, minus_word, report_id, change_timestamp, change_type, company_id)\n\tSELECT\n    cc.id,\n    cc.minus_word,\n    $2 AS report_id,\n    now() AS change_timestamp,\n    'moved to content' AS change_type,\n    $1 AS company_id\nFROM public.minus_words AS cc\nWHERE cc.company_id = $1\n  AND cc.id IN ($3);",
+        "query": "INSERT INTO public.minus_words_log(\n\t minus_word_id, minus_word, report_id, change_timestamp, change_type, company_id)\n\tSELECT\n    cc.id,\n    cc.minus_word,\n    $2 AS report_id,\n    now() AS change_timestamp,\n    'moved to content' AS change_type,\n    $1 AS company_id\nFROM public.minus_words AS cc\nWHERE cc.company_id = $1\n  AND cc.id IN (\n    SELECT value::bigint\n    FROM jsonb_array_elements_text($3::jsonb) AS t(value)\n  );",
         "options": {
-          "queryReplacement": "={{ $('When Executed by Another Workflow').last().json.company_id }},{{ $('When Executed by Another Workflow').last().json.import_id }},{{  $('get ids1').last().json.ids_true_string}}"
+          "queryReplacement": "={{ $('When Executed by Another Workflow').last().json.company_id }},{{ $('When Executed by Another Workflow').last().json.import_id }},{{  JSON.stringify($('get ids1').last().json.ids_true_string)}}"
         }
       },
       "type": "n8n-nodes-base.postgres",
@@ -1055,7 +1055,7 @@
       }
     ]
   },
-  "versionId": "ff21b273-61e1-4b75-80ad-0a83dc2ea6c0",
+  "versionId": "1a115e14-3d04-4239-ae46-df07e99eddad",
   "triggerCount": 0,
   "shared": [
     {
