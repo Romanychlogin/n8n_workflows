@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-25T13:33:58.106Z",
-  "updatedAt": "2025-10-21T08:54:54.949Z",
+  "updatedAt": "2025-10-21T17:46:45.500Z",
   "id": "0J5cvuaSz3IhDS99",
   "name": "campaign core update",
   "active": false,
@@ -3424,7 +3424,7 @@
       "main": [
         [
           {
-            "node": "Mark_workflow_error",
+            "node": "minus words post processing",
             "type": "main",
             "index": 0
           }
@@ -4358,6 +4358,17 @@
           }
         ]
       ]
+    },
+    "update workflow tokens usage9": {
+      "main": [
+        [
+          {
+            "node": "Check if keyword need to be restricted",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
@@ -4374,7 +4385,7 @@
       }
     ]
   },
-  "versionId": "cfc5b2c6-af4e-4918-abd0-296533705ec6",
+  "versionId": "0264f0de-3431-422e-9052-18dc6f5d4adc",
   "triggerCount": 0,
   "shared": [
     {
