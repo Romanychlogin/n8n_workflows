@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-28T11:31:13.045Z",
-  "updatedAt": "2025-10-21T13:18:06.135Z",
+  "updatedAt": "2025-10-21T13:24:04.967Z",
   "id": "lBAh8kjoXRX0aGUF",
   "name": "ADS headers and texts creation services for updates",
   "active": false,
@@ -440,14 +440,14 @@
         "columns": {
           "mappingMode": "defineBelow",
           "value": {
-            "ad_header": "={{ JSON.parse($('HTTP Request').item.json.output[1].content[0].text).header }}",
-            "ad_text": "={{JSON.parse($('HTTP Request1').item.json.output[1].content[0].text).ad_text}}",
-            "ad_url": "={{JSON.parse($json.output[1].content[0].text).url + '?utm_source=yandex&utm_medium=cpc&utm_campaign={campaign_id}&utm_content={ad_id}&utm_term={keyword}.{device_type}.{region_name}&block={position_type}.{position}.{source}'}}",
-            "company_id": "={{ $('set variables').item.json.company_id }}",
-            "group_name": "={{ JSON.parse($('HTTP Request').item.json.output[1].content[0].text).header }}",
-            "service_id": "={{$('Loop Over Items').last().json.service_id}}",
-            "report_id": "={{ $('set variables').item.json.import_id }}",
-            "key_word": "={{ $('Set prompt').item.json.key_word }}"
+            "ad_header": "={{ $('Loop Over Items2').last().json.ad_header }}",
+            "ad_text": "={{ $('Loop Over Items2').last().json.ad_text }}",
+            "ad_url": "={{$('Loop Over Items2').last().json.ad_url + '?utm_source=yandex&utm_medium=cpc&utm_campaign={campaign_id}&utm_content={ad_id}&utm_term={keyword}.{device_type}.{region_name}&block={position_type}.{position}.{source}'}}",
+            "company_id": "={{ $('Loop Over Items').last().json.ItemsbyId[$('Loop Over Items2').last().json.list_id].company_id }}",
+            "group_name": "={{ $('Loop Over Items2').last().json.ad_header }}",
+            "service_id": "={{ $('Loop Over Items').last().json.ItemsbyId[$('Loop Over Items2').last().json.list_id].service_id }}",
+            "report_id": "={{ $('Loop Over Items').last().json.ItemsbyId[$('Loop Over Items2').last().json.list_id].report_id }}",
+            "key_word": "={{ $('Loop Over Items2').last().json.key_word }}"
           },
           "matchingColumns": [],
           "schema": [
@@ -863,7 +863,7 @@
           "mappingMode": "defineBelow",
           "value": {
             "is_adv_processed": "={{ true }}",
-            "list_id": "={{$('Loop Over Items').last().json.list_id}}"
+            "list_id": "=$('Loop Over Items2').last().json.list_id"
           },
           "matchingColumns": [
             "list_id"
@@ -1352,7 +1352,7 @@
     },
     {
       "parameters": {
-        "jsCode": "// Берём строку JSON из указанного поля\nlet raw = $input.first().json?.output?.[1]?.content?.[0]?.text;\n\n// Удаляем ограждения кода ```...```\nfunction stripCodeFences(s) {\n  if (typeof s !== 'string') return s;\n  let t = s.trim();\n  if (t.startsWith('```')) {\n    t = t.replace(/^```[a-zA-Z]*\\n?/, '').replace(/```$/, '').trim();\n  }\n  return t;\n}\n\n// Безопасный парсинг JSON (с попыткой вытащить первый {...})\nfunction safeParseJSON(x) {\n  if (x == null) return null;\n  if (typeof x === 'object') return x;\n  const s = stripCodeFences(String(x));\n  try {\n    return JSON.parse(s);\n  } catch {\n    const m = s.match(/{[\\s\\S]*}/);\n    if (m) {\n      try { return JSON.parse(m[0]); } catch {}\n    }\n    return null;\n  }\n}\n\nconst obj = safeParseJSON(raw);\nif (!obj || !Array.isArray(obj.phrases)) {\n  return [];\n}\n\nconst out = [];\nfor (const it of obj.phrases) {\n  if (!it || typeof it !== 'object') continue;\n\n  const ad_url      = typeof it.url_string === 'string' && it.url_string.length > 0 ? it.url_string : null;\n  const list_id   = typeof it.id === 'string' && it.id.length > 0 ? it.id : null;\n \n\n  // Учитываем расширенный формат: требуем, чтобы присутствовали все три входных поля,\n  // но в выход добавляем только phrase_id и resolution.\n  if (ad_url && list_id  !== null) {\n    out.push({\n      json: {\n        list_id,\n        ad_url,\n        ad_header:$('keywords headers and texts').last().json.ItemsbyId[list_id].header,\n        ad_text:$('keywords headers and texts').last().json.ItemsbyId[list_id].ad_text\n        \n      }\n    });\n  }\n}\n\nreturn out;"
+        "jsCode": "// Берём строку JSON из указанного поля\nlet raw = $input.first().json?.output?.[1]?.content?.[0]?.text;\n\n// Удаляем ограждения кода ```...```\nfunction stripCodeFences(s) {\n  if (typeof s !== 'string') return s;\n  let t = s.trim();\n  if (t.startsWith('```')) {\n    t = t.replace(/^```[a-zA-Z]*\\n?/, '').replace(/```$/, '').trim();\n  }\n  return t;\n}\n\n// Безопасный парсинг JSON (с попыткой вытащить первый {...})\nfunction safeParseJSON(x) {\n  if (x == null) return null;\n  if (typeof x === 'object') return x;\n  const s = stripCodeFences(String(x));\n  try {\n    return JSON.parse(s);\n  } catch {\n    const m = s.match(/{[\\s\\S]*}/);\n    if (m) {\n      try { return JSON.parse(m[0]); } catch {}\n    }\n    return null;\n  }\n}\n\nconst obj = safeParseJSON(raw);\nif (!obj || !Array.isArray(obj.phrases)) {\n  return [];\n}\n\nconst out = [];\nfor (const it of obj.phrases) {\n  if (!it || typeof it !== 'object') continue;\n\n  const ad_url      = typeof it.url_string === 'string' && it.url_string.length > 0 ? it.url_string : null;\n  const list_id   = typeof it.id === 'string' && it.id.length > 0 ? it.id : null;\n \n\n  // Учитываем расширенный формат: требуем, чтобы присутствовали все три входных поля,\n  // но в выход добавляем только phrase_id и resolution.\n  if (ad_url && list_id  !== null) {\n    out.push({\n      json: {\n        list_id,\n        ad_url,\n        ad_header:$('keywords headers and texts').last().json.ItemsbyId[list_id].header,\n        ad_text:$('keywords headers and texts').last().json.ItemsbyId[list_id].ad_text,\n        key_word:$('keywords headers and texts').last().json.ItemsbyId[list_id].phrase\n        \n      }\n    });\n  }\n}\n\nreturn out;"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -2035,7 +2035,7 @@
       }
     ]
   },
-  "versionId": "9751919f-fe34-445e-bf5a-79b062c9561b",
+  "versionId": "87ffa04d-8bb6-466f-b73f-ea37f1219191",
   "triggerCount": 0,
   "shared": [
     {
