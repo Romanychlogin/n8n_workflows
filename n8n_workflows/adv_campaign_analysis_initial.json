@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-10-20T11:13:37.232Z",
-  "updatedAt": "2025-10-20T15:50:38.622Z",
+  "updatedAt": "2025-10-21T07:16:19.829Z",
   "id": "b9eGU4g5DID0kq2E",
   "name": "ADV_campaign_analysis_initial",
   "active": false,
@@ -85,8 +85,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        2288,
-        -512
+        2112,
+        -496
       ],
       "id": "3c4a47b5-6a1a-426f-ab54-791c4cc1cb24",
       "name": "проверяем полное соответствие"
@@ -119,8 +119,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        2848,
-        -672
+        2368,
+        -704
       ],
       "id": "d1533552-c3d0-457a-bb78-bda19d2d8c53",
       "name": "Соответствие полное?"
@@ -297,8 +297,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        9648,
-        -1696
+        7456,
+        -1648
       ],
       "id": "f97102c4-6dd5-4d6c-bad8-453e7f990135",
       "name": "Помечаем что ключ совпадает",
@@ -535,8 +535,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        9648,
-        -672
+        7456,
+        -624
       ],
       "id": "430a7a95-765e-4ba1-98f1-0a7d434760bc",
       "name": "update",
@@ -719,8 +719,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        9792,
-        -1088
+        7600,
+        -1040
       ],
       "id": "0e8ffc1d-a08e-44b0-8809-2c0ae50fd4ff",
       "name": "Помечаем что найден конкурент",
@@ -753,8 +753,8 @@
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1.2,
       "position": [
-        7504,
-        -224
+        5312,
+        -176
       ],
       "id": "dd1b637f-6820-452c-8feb-f65667bd34f8",
       "name": "Execute Workflow"
@@ -781,8 +781,8 @@
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1.2,
       "position": [
-        4656,
-        -64
+        4112,
+        -128
       ],
       "id": "6f3eaa26-7d88-49c1-bfba-332397cfddbd",
       "name": "Find competitors mentions"
@@ -815,8 +815,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        7904,
-        -240
+        5712,
+        -192
       ],
       "id": "92e325e7-8985-4b88-8470-3cb0f5572b0b",
       "name": "If minuses array is empty"
@@ -977,8 +977,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        11056,
-        272
+        8864,
+        320
       ],
       "id": "f519e37d-8239-413b-b929-6f3357625eb3",
       "name": "Mark_workflow_passed_steps",
@@ -997,8 +997,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        10816,
-        288
+        8624,
+        336
       ],
       "id": "9f9db35e-7c8d-4e95-8668-ddcb51a362e3",
       "name": "Get current step and tokens saved"
@@ -1030,8 +1030,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        11440,
-        304
+        9248,
+        352
       ],
       "id": "bb8594f0-0177-426e-8f86-112a6c552b57",
       "name": "If"
@@ -1043,8 +1043,8 @@
       "type": "n8n-nodes-base.stopAndError",
       "typeVersion": 1,
       "position": [
-        11680,
-        176
+        9488,
+        224
       ],
       "id": "6f0a0a09-b56a-4f0b-b280-f61f063732be",
       "name": "Stop and Error"
@@ -1077,8 +1077,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        11264,
-        272
+        9072,
+        320
       ],
       "id": "e805448e-e73c-46e1-b856-c6b1870be3ad",
       "name": "check if termination is requested",
@@ -1116,7 +1116,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        3024,
+        2560,
         -288
       ],
       "id": "1fbe39e1-cf11-494a-b01c-8c399ed78e3a",
@@ -1150,8 +1150,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        4960,
-        -112
+        4416,
+        -176
       ],
       "id": "4c642176-95e9-48e9-910e-b685c92e2e1e",
       "name": "If competitors not found"
@@ -1180,8 +1180,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        8784,
-        -288
+        6592,
+        -240
       ],
       "id": "7da2dff4-77a9-4e3c-a17a-dc2dda9d3ca4",
       "name": "no relevant",
@@ -1200,7 +1200,7 @@
             {
               "id": "4f2396b9-b5c0-4e30-86c1-df42515df6af",
               "name": "total_tokens",
-              "value": "={{ $json.usage.total_tokens }}",
+              "value": "=0",
               "type": "number"
             }
           ]
@@ -1211,8 +1211,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        8448,
-        -912
+        6928,
+        -816
       ],
       "id": "0b64609f-741a-4e59-bc1e-e9e218abba39",
       "name": "mark to add"
@@ -1284,8 +1284,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        7248,
-        -224
+        5056,
+        -176
       ],
       "id": "31d1f3be-14a0-4342-8556-12912e26bf36",
       "name": "set input params"
@@ -1388,8 +1388,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        8160,
-        64
+        5968,
+        112
       ],
       "id": "a99209dc-fc67-4db8-af23-ca0d67ef0aa5",
       "name": "map_minus_words"
@@ -1434,8 +1434,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        7984,
-        -1104
+        5792,
+        -1056
       ],
       "id": "99d703b8-2977-4a04-b674-17f0506e7df9",
       "name": "if not exact competitor match"
@@ -1454,8 +1454,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        9280,
-        48
+        7088,
+        96
       ],
       "id": "28ec1340-bfa6-4a0b-883f-94bcf45c2074",
       "name": "Get embedding",
@@ -1478,8 +1478,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        9648,
-        48
+        7456,
+        96
       ],
       "id": "129c22d0-6263-4e30-9b09-af14cfec59ee",
       "name": "Insert minus words1",
@@ -1497,8 +1497,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        9088,
-        48
+        6896,
+        96
       ],
       "id": "15291823-1e2d-42c4-96fe-98a6710aedc4",
       "name": "Set API JSON2"
@@ -1512,8 +1512,8 @@
       "type": "n8n-nodes-base.splitInBatches",
       "typeVersion": 3,
       "position": [
-        8592,
-        -32
+        6400,
+        16
       ],
       "id": "bffa76e7-51e3-452e-b7d7-2703867bcd19",
       "name": "Loop Over Items1"
@@ -1536,8 +1536,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        8400,
-        -48
+        6208,
+        0
       ],
       "id": "02b64f47-d4ce-491c-bb30-bd98c2b66c21",
       "name": "set first_item1"
@@ -1560,8 +1560,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        8784,
-        48
+        6592,
+        96
       ],
       "id": "3e3b1022-a9e9-445d-83d9-6aa292f0b833",
       "name": "reset first_item"
@@ -1570,13 +1570,13 @@
       "parameters": {
         "content": "Check vs minus words",
         "height": 352,
-        "width": 912
+        "width": 576
       },
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        3232,
-        -224
+        2896,
+        -160
       ],
       "id": "7f515b00-9f0a-45e3-88bf-e0ed0d2b793e",
       "name": "Sticky Note7"
@@ -1603,8 +1603,8 @@
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1.2,
       "position": [
-        3424,
-        -80
+        3088,
+        -16
       ],
       "id": "c324c10c-ae52-4f1d-a44a-60a1bcb4b4fd",
       "name": "Call 'chech phrase VS minus words'"
@@ -1627,8 +1627,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        3280,
-        -80
+        2944,
+        -16
       ],
       "id": "cef2375e-b892-4428-9e61-fd6aa97031a1",
       "name": "Set threshold"
@@ -1661,8 +1661,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        4256,
-        -416
+        3616,
+        -160
       ],
       "id": "a95735ea-c6b3-4783-962c-1fb9a63ca041",
       "name": "If minus words not found"
@@ -1697,8 +1697,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        4512,
-        -64
+        3968,
+        -128
       ],
       "id": "7458b9ab-63c1-4814-ad73-8cdb0be48baf",
       "name": "set input"
@@ -1712,8 +1712,8 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        4464,
-        -192
+        3920,
+        -256
       ],
       "id": "d1727336-30be-4744-9d96-9162890829bc",
       "name": "Sticky Note8"
@@ -1742,8 +1742,8 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        7072,
-        -304
+        4880,
+        -256
       ],
       "id": "4b3982dd-01ae-4d95-870a-1955fa3a9c15",
       "name": "Sticky Note4"
@@ -1757,8 +1757,8 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        8064,
-        -128
+        5872,
+        -80
       ],
       "id": "87cb4cf3-d2d5-4c3e-9631-b3baf494cc73",
       "name": "Sticky Note5"
@@ -1811,8 +1811,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        8368,
-        -1280
+        6176,
+        -1232
       ],
       "id": "0ca3ad0d-5495-4af1-8dc9-671510f93e3c",
       "name": "Get embedding1",
@@ -1831,8 +1831,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        8176,
-        -1280
+        5984,
+        -1232
       ],
       "id": "073075d2-fdf4-40e6-bea9-74b336975d42",
       "name": "Set API JSON3"
@@ -1848,8 +1848,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        8752,
-        -1280
+        6560,
+        -1232
       ],
       "id": "7e8c0360-8a9b-46cb-af84-5f5305712880",
       "name": "Insert minus words from competitors",
@@ -1871,8 +1871,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        8928,
-        -1264
+        6736,
+        -1216
       ],
       "id": "16f27083-1abc-43cc-af4e-a63a1c6ae2b9",
       "name": "add link",
@@ -1894,8 +1894,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        9872,
-        48
+        7680,
+        96
       ],
       "id": "c068c4c0-e4fb-4528-8a0a-eea1c1dc9527",
       "name": "add link1",
@@ -1917,8 +1917,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        9104,
-        -1264
+        6912,
+        -1216
       ],
       "id": "69981893-03ec-4c27-961b-fc5bfd5c1020",
       "name": "add competitor name variant",
@@ -1949,8 +1949,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        3600,
-        -80
+        3264,
+        -16
       ],
       "id": "1df5f875-67de-44cc-a5d5-9a67d71ce5d0",
       "name": "update calls counters"
@@ -1962,8 +1962,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        4816,
-        -48
+        4272,
+        -112
       ],
       "id": "fd01f0c3-3ec5-46c8-ac94-3787e2ad32de",
       "name": "update calls counters1"
@@ -1975,8 +1975,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        7696,
-        -224
+        5504,
+        -176
       ],
       "id": "861ef920-74af-4697-87dd-446188423172",
       "name": "update calls counters3"
@@ -1988,8 +1988,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        8576,
-        -1280
+        6384,
+        -1232
       ],
       "id": "48ed2060-e66f-418e-bfd4-6d643948d78a",
       "name": "update calls counters4"
@@ -2001,8 +2001,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        9472,
-        48
+        7280,
+        96
       ],
       "id": "582c6fd8-a58f-43ed-b106-ff221530d7fa",
       "name": "update calls counters5"
@@ -2014,8 +2014,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        9456,
-        -672
+        7264,
+        -624
       ],
       "id": "0f9e0677-043b-472a-afbe-5eb6d4e90f2c",
       "name": "read call counters"
@@ -2027,8 +2027,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        9616,
-        -1104
+        7424,
+        -1056
       ],
       "id": "e9a2be3d-1798-47b9-87ab-fd11f0ab9870",
       "name": "read call counters1"
@@ -2063,8 +2063,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        8688,
-        -912
+        6496,
+        -864
       ],
       "id": "f95e760e-5c51-4bfc-b6d2-4974c19e9448",
       "name": "set input1"
@@ -2091,8 +2091,8 @@
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1.2,
       "position": [
-        8880,
-        -912
+        6688,
+        -864
       ],
       "id": "5e52a2f8-b977-4f77-9269-e1e4f10b301d",
       "name": "Add to company content"
@@ -2108,8 +2108,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        5088,
-        -352
+        4160,
+        304
       ],
       "id": "08e8b3e6-dac3-4c5c-89a5-bb94997c6f5d",
       "name": "Execute a SQL query",
@@ -2127,8 +2127,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        4896,
-        -352
+        3968,
+        304
       ],
       "id": "9e6b02df-1355-4834-86bc-ce20303a4d40",
       "name": "Code in JavaScript"
@@ -2142,8 +2142,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        9904,
-        -736
+        7712,
+        -688
       ],
       "id": "6ec72545-51d2-4720-a842-afbbe104a2e1",
       "name": "refresh minus words status",
@@ -2178,8 +2178,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        8048,
-        -624
+        5856,
+        -576
       ],
       "id": "6530ae7f-8af1-44c2-96ad-5b5dfbaaefd0",
       "name": "mark need AI"
@@ -2428,7 +2428,7 @@
       "main": [
         [
           {
-            "node": "mark to add",
+            "node": "set input1",
             "type": "main",
             "index": 0
           }
@@ -2475,7 +2475,7 @@
       "main": [
         [
           {
-            "node": "set input1",
+            "node": "read call counters",
             "type": "main",
             "index": 0
           }
@@ -2914,7 +2914,7 @@
       "main": [
         [
           {
-            "node": "read call counters",
+            "node": "mark to add",
             "type": "main",
             "index": 0
           }
@@ -3008,7 +3008,7 @@
       }
     ]
   },
-  "versionId": "d7ad16b2-467c-4508-8c81-8886db077821",
+  "versionId": "ac6556b7-b6aa-45b1-ab77-b73136c4a44a",
   "triggerCount": 0,
   "shared": [
     {
