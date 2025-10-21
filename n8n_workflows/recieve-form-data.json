@@ -1,9 +1,9 @@
 {
   "createdAt": "2025-10-21T12:43:03.776Z",
-  "updatedAt": "2025-10-21T18:56:22.078Z",
+  "updatedAt": "2025-10-21T22:19:03.932Z",
   "id": "Z5sOyh4IJtSVsD2a",
   "name": "Recieve form data",
-  "active": false,
+  "active": true,
   "isArchived": false,
   "nodes": [
     {
@@ -42,7 +42,7 @@
     },
     {
       "parameters": {
-        "jsCode": "/**\n * AlfaCRM lead/create with diagnostics & fallback (n8n \"Code (JavaScript)\")\n * Mode: Run Once for All Items\n * Создание НОВОГО лида. Если /lead недоступен (404/400) — создаём customer.\n *\n * Ожидаемые входы в item:\n * {\n *   \"alfacrm\": { \"host\": \"...\", \"email\": \"...\", \"api_key\": \"...\", \"branchId\": 1, \"x_app_key\": \"....?\" },\n *   \"utm_source\": \"...\", \"utm_medium\": \"...\", \"utm_campaign\": \"...\", \"utm_content\": \"...\", \"utm_term\": \"...\",\n *   \"yclid\": \"...\",\n *   \"lead_source_id\": 3|8, // можно не передавать — заберём из глубины, если есть\n *   \"fields\": { \"1_2\": \"Имя\", \"1_3\": \"Телефон\", \"1_7\": \"Город\" }\n * }\n */\n\n// ---------- helpers ----------\nconst notEmpty = (v) => v !== undefined && v !== null && String(v).trim() !== '';\nconst toNum = (v) => {\n  if (!notEmpty(v)) return undefined;\n  const n = Number(String(v).trim());\n  return Number.isFinite(n) ? n : undefined;\n};\nfunction asObj(maybe) {\n  if (!maybe) return {};\n  if (typeof maybe === 'object') return maybe;\n  if (typeof maybe === 'string') {\n    try { return JSON.parse(maybe); } catch { return {}; }\n  }\n  return {};\n}\n// Глубокий поиск значения по ключу\nfunction findKeyDeep(obj, keyMatcher) {\n  const seen = new Set();\n  const stack = [obj];\n  while (stack.length) {\n    const cur = stack.pop();\n    if (!cur || typeof cur !== 'object') continue;\n    if (seen.has(cur)) continue;\n    seen.add(cur);\n    if (Array.isArray(cur)) { for (const v of cur) stack.push(v); continue; }\n    for (const [k, v] of Object.entries(cur)) {\n      if (keyMatcher(k)) return v;\n      if (v && typeof v === 'object') stack.push(v);\n    }\n  }\n  return undefined;\n}\nasync function http(req) { return await this.helpers.httpRequest(req); }\n\n// ---------- API helpers ----------\nasync function login(self, { host, email, api_key, x_app_key }) {\n  const headers = { 'Accept': 'application/json', 'Content-Type': 'application/json' };\n  if (x_app_key) headers['X-APP-KEY'] = x_app_key;\n  const res = await http.call(self, {\n    method: 'POST',\n    url: `https://${host}/v2api/auth/login`,\n    headers,\n    body: { email, api_key },\n    json: true, gzip: true, timeout: 15000,\n  });\n  if (!res?.token) throw new Error('AlfaCRM auth: no token in response');\n  return res.token;\n}\n\nasync function listBranches(self, { host, token, x_app_key }) {\n  const headers = { 'Accept': 'application/json', 'Content-Type': 'application/json', 'X-ALFACRM-TOKEN': token };\n  if (x_app_key) headers['X-APP-KEY'] = x_app_key;\n  return await http.call(self, {\n    method: 'POST',\n    url: `https://${host}/v2api/branch/index`,\n    headers,\n    body: { page: 0 },\n    json: true, gzip: true, timeout: 15000,\n  });\n}\n\nasync function pingLeadIndex(self, { host, token, branchId, x_app_key }) {\n  const headers = { 'Accept': 'application/json', 'Content-Type': 'application/json', 'X-ALFACRM-TOKEN': token };\n  if (x_app_key) headers['X-APP-KEY'] = x_app_key;\n  return await http.call(self, {\n    method: 'POST',\n    url: `https://${host}/v2api/${branchId}/lead/index`,\n    headers,\n    body: { page: 0 },\n    json: true, gzip: true, timeout: 15000,\n  });\n}\n\nasync function createLead(self, { host, token, branchId, payload, x_app_key }) {\n  const headers = { 'Accept': 'application/json', 'Content-Type': 'application/json', 'X-ALFACRM-TOKEN': token };\n  if (x_app_key) headers['X-APP-KEY'] = x_app_key;\n  return await http.call(self, {\n    method: 'POST',\n    url: `https://${host}/v2api/${branchId}/lead/create`,\n    headers,\n    body: payload,\n    json: true, gzip: true, timeout: 20000,\n  });\n}\n\nasync function createCustomer(self, { host, token, branchId, payload, x_app_key }) {\n  const headers = { 'Accept': 'application/json', 'Content-Type': 'application/json', 'X-ALFACRM-TOKEN': token };\n  if (x_app_key) headers['X-APP-KEY'] = x_app_key;\n  return await http.call(self, {\n    method: 'POST',\n    url: `https://${host}/v2api/${branchId}/customer/create`,\n    headers,\n    body: payload,\n    json: true, gzip: true, timeout: 20000,\n  });\n}\n\n// ---------- payload builder ----------\nfunction buildLeadPayload(src) {\n  const {\n    utm_source, utm_medium, utm_campaign, utm_content, utm_term,\n    yclid, lead_source_id, fields, custom_value_json,\n  } = src;\n\n  const payload = {};\n\n  if (notEmpty(utm_source))   payload.utm_source = String(utm_source);\n  if (notEmpty(utm_medium))   payload.utm_medium = String(utm_medium);\n  if (notEmpty(utm_campaign)) payload.utm_campaign = String(utm_campaign);\n  if (notEmpty(utm_content))  payload.utm_content = String(utm_content);\n  if (notEmpty(utm_term))     payload.utm_term = String(utm_term);\n\n  if (notEmpty(yclid)) payload.yclid = String(yclid);\n\n  const lsid = toNum(lead_source_id);\n  if (lsid !== undefined) payload.lead_source_id = lsid;\n\n  const f = asObj(fields);\n  if (Object.keys(f).length) payload.fields = f;\n\n  if (custom_value_json && typeof custom_value_json === 'object') {\n    payload.custom_value_json = JSON.stringify(custom_value_json);\n  } else if (typeof custom_value_json === 'string' && custom_value_json.trim() !== '') {\n    payload.custom_value_json = custom_value_json;\n  }\n\n  return payload;\n}\n\n// ---------- MAIN ----------\nconst items = await $input.all();\nconst out = [];\n\nfor (const item of items) {\n  const input = item.json ?? item;\n\n  // ---- креды и филиал ----\n  const conf = input.alfacrm || {};\n  const host      = conf.host      || input.host;\n  const email     = conf.email     || input.email;\n  const api_key   = conf.api_key   || input.api_key;\n  const x_app_key = conf.x_app_key || input.x_app_key;\n\n  const branchId = toNum(\n    (conf.branchId ?? conf.branch_id ?? input.branchId ?? input.branch_id)\n  ) ?? toNum(\n    findKeyDeep(input, k => k === 'branch_id' || k === 'branch"
+        "jsCode": "/**\n * AlfaCRM create customer → then force-set contact_contacts via update\n * branch_ids = [1] (Саратов)\n * Телефон в итоге лежит только в contact_contacts.\n */\n\nasync function http(req) { return await this.helpers.httpRequest(req); }\n\nasync function login(self, { host, email, api_key }) {\n  const res = await http.call(self, {\n    method: 'POST',\n    url: `https://${host}/v2api/auth/login`,\n    headers: { 'Content-Type': 'application/json' },\n    body: { email, api_key },\n    json: true,\n  });\n  if (!res?.token) throw new Error('Auth failed');\n  return res.token;\n}\n\nasync function createCustomer(self, { host, token, payload }) {\n  return await http.call(self, {\n    method: 'POST',\n    url: `https://${host}/v2api/1/customer/create`,\n    headers: { 'Content-Type': 'application/json', 'X-ALFACRM-TOKEN': token },\n    body: payload,\n    json: true, gzip: true, timeout: 20000,\n  });\n}\n\nasync function updateCustomer(self, { host, token, id, payload }) {\n  return await http.call(self, {\n    method: 'POST',\n    url: `https://${host}/v2api/1/customer/update`,\n    qs: { id },\n    headers: { 'Content-Type': 'application/json', 'X-ALFACRM-TOKEN': token },\n    body: payload,\n    json: true, gzip: true, timeout: 20000,\n  });\n}\n\n// ---------- helpers ----------\nconst notEmpty = v => v !== undefined && v !== null && String(v).trim() !== '';\nconst toNum = v => {\n  if (!notEmpty(v)) return undefined;\n  const n = Number(String(v).trim());\n  return Number.isFinite(n) ? n : undefined;\n};\nfunction asObj(maybe) {\n  if (!maybe) return {};\n  if (typeof maybe === 'object') return maybe;\n  if (typeof maybe === 'string') { try { return JSON.parse(maybe); } catch { return {}; } }\n  return {};\n}\nfunction findKeyDeep(obj, keyMatcher) {\n  const seen = new Set(), stack = [obj];\n  while (stack.length) {\n    const cur = stack.pop();\n    if (!cur || typeof cur !== 'object') continue;\n    if (seen.has(cur)) continue;\n    seen.add(cur);\n    if (Array.isArray(cur)) { for (const v of cur) stack.push(v); continue; }\n    for (const [k, v] of Object.entries(cur)) {\n      if (keyMatcher(k)) return v;\n      if (v && typeof v === 'object') stack.push(v);\n    }\n  }\n  return undefined;\n}\n\n// ---------- MAIN ----------\nconst items = await $input.all();\nconst out = [];\n\nfor (const it of items) {\n  const input = it.json ?? it;\n  const conf = input.alfacrm || {};\n  const host = conf.host || input.host;\n  const email = conf.email || input.email;\n  const api_key = conf.api_key || input.api_key;\n  if (!host || !email || !api_key) throw new Error('Provide alfacrm.host, alfacrm.email, alfacrm.api_key');\n\n  const token = await login(this, { host, email, api_key });\n\n  // поля\n  const f = asObj(input.fields);\n  const name  = f[\"1_2\"] || input.name || \"Без имени\";\n  const phone = String(f[\"1_3\"] || input.phone || \"\").trim();\n  const city  = f[\"1_7\"] || input.city || \"\";\n\n  const lead_source_id =\n    toNum(findKeyDeep(input, k => k === 'lead_source_id')) ??\n    toNum(input.lead_source_id) ?? 3;\n\n  // utm / yclid\n  const custom_value_json = JSON.stringify({\n    utm_source:   input.utm_source   || \"\",\n    utm_medium:   input.utm_medium   || \"\",\n    utm_campaign: input.utm_campaign || \"\",\n    utm_content:  input.utm_content  || \"\",\n    utm_term:     input.utm_term     || \"\",\n    yclid:        input.yclid        || \"\",\n    etext:        input.etext        || input.custom_etext || \"\",\n  });\n\n  // CREATE: без телефонного «дубля»\n  const createPayload = {\n    name,\n    branch_ids: [1],\n    legal_type: 1,\n    is_study: 0,\n    lead_source_id,\n    ...(city ? { note: `Город: ${city}` } : {}),\n    custom_value_json,\n    ...(notEmpty(input.utm_source)   ? { custom_utm_source: input.utm_source } : {}),\n    ...(notEmpty(input.utm_medium)   ? { custom_utm_medium: input.utm_medium } : {}),\n    ...(notEmpty(input.utm_campaign) ? { custom_utm_campaign: input.utm_campaign } : {}),\n    ...(notEmpty(input.utm_content)  ? { custom_utm_content: input.utm_content } : {}),\n    ...(notEmpty(input.utm_term)     ? { custom_utm_term: input.utm_term } : {}),\n    ...(notEmpty(input.yclid)        ? { custom_yclid: input.yclid } : {}),\n    ...(notEmpty(input.etext)        ? { custom_etext: input.etext } : {}),\n  };\n\n  const created = await createCustomer(this, { host, token, payload: createPayload });\n  const id = created?.model?.id || created?.id;\n\n  // UPDATE: принудительно проставляем contact_contacts, если есть телефон\n  if (id && notEmpty(phone)) {\n    await updateCustomer(this, {\n      host, token, id,\n      payload: { contact_contacts: [phone] },\n    });\n  }\n\n  out.push({\n    json: {\n      success: true,\n      id: id ?? null,\n      sent_create: createPayload,\n      set_contact_contacts: notEmpty(phone) ? [phone] : [],\n    }\n  });\n}\n\nreturn out;"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -78,6 +78,35 @@
       ],
       "id": "01610508-3171-486f-83ee-268ac6fcafcf",
       "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "jsCode": "/**\n * AlfaCRM create customer (n8n Code)\n * branch_ids = [1] (Саратов)\n * Телефон только в contact_contacts\n */\n\nasync function http(req) { return await this.helpers.httpRequest(req); }\n\nasync function login(self, { host, email, api_key }) {\n  const res = await http.call(self, {\n    method: 'POST',\n    url: `https://${host}/v2api/auth/login`,\n    headers: { 'Content-Type': 'application/json' },\n    body: { email, api_key },\n    json: true,\n  });\n  if (!res?.token) throw new Error('Auth failed');\n  return res.token;\n}\n\nasync function createCustomer(self, { host, token, payload }) {\n  try {\n    const res = await http.call(self, {\n      method: 'POST',\n      url: `https://${host}/v2api/1/customer/create`,\n      headers: {\n        'Content-Type': 'application/json',\n        'X-ALFACRM-TOKEN': token,\n      },\n      body: payload,\n      json: true,\n      gzip: true,\n      timeout: 20000,\n    });\n    return { success: true, response: res };\n  } catch (err) {\n    return {\n      success: false,\n      status: err?.response?.statusCode,\n      error: err?.response?.body || err.message,\n    };\n  }\n}\n\n// ---------- helpers ----------\nconst notEmpty = v => v !== undefined && v !== null && String(v).trim() !== '';\nconst toNum = v => {\n  if (!notEmpty(v)) return undefined;\n  const n = Number(String(v).trim());\n  return Number.isFinite(n) ? n : undefined;\n};\nfunction asObj(maybe) {\n  if (!maybe) return {};\n  if (typeof maybe === 'object') return maybe;\n  if (typeof maybe === 'string') {\n    try { return JSON.parse(maybe); } catch { return {}; }\n  }\n  return {};\n}\nfunction findKeyDeep(obj, keyMatcher) {\n  const seen = new Set();\n  const stack = [obj];\n  while (stack.length) {\n    const cur = stack.pop();\n    if (!cur || typeof cur !== 'object') continue;\n    if (seen.has(cur)) continue;\n    seen.add(cur);\n    if (Array.isArray(cur)) { for (const v of cur) stack.push(v); continue; }\n    for (const [k, v] of Object.entries(cur)) {\n      if (keyMatcher(k)) return v;\n      if (v && typeof v === 'object') stack.push(v);\n    }\n  }\n  return undefined;\n}\n\n// ---------- MAIN ----------\nconst items = await $input.all();\nconst out = [];\n\nfor (const item of items) {\n  const input = item.json ?? item;\n  const conf = input.alfacrm || {};\n\n  const host = conf.host || input.host;\n  const email = conf.email || input.email;\n  const api_key = conf.api_key || input.api_key;\n  if (!host || !email || !api_key) {\n    throw new Error('Provide alfacrm.host, alfacrm.email, alfacrm.api_key');\n  }\n\n  const token = await login(this, { host, email, api_key });\n\n  const lead_source_id =\n    toNum(findKeyDeep(input, k => k === 'lead_source_id')) ??\n    toNum(input.lead_source_id) ?? 3;\n\n  const f = asObj(input.fields);\n  const name  = f[\"1_2\"] || input.name || \"Без имени\";\n  const phone = String(f[\"1_3\"] || input.phone || \"\").trim();\n  const city  = f[\"1_7\"] || input.city || \"\";\n\n  const utm_source   = input.utm_source   || \"\";\n  const utm_medium   = input.utm_medium   || \"\";\n  const utm_campaign = input.utm_campaign || \"\";\n  const utm_content  = input.utm_content  || \"\";\n  const utm_term     = input.utm_term     || \"\";\n  const yclid        = input.yclid        || \"\";\n\n  const custom_value_json = JSON.stringify({\n    utm_source, utm_medium, utm_campaign, utm_content, utm_term, yclid,\n  });\n\n  const payload = {\n    name,\n    branch_ids: [1],\n    legal_type: 1,\n    is_study: 0,\n    lead_source_id,\n    ...(notEmpty(phone) ? { contact_contacts: [phone] } : {}),\n    ...(city ? { note: `Город: ${city}` } : {}),\n    ...(notEmpty(utm_source)   ? { custom_utm_source: utm_source } : {}),\n    ...(notEmpty(utm_medium)   ? { custom_utm_medium: utm_medium } : {}),\n    ...(notEmpty(utm_campaign) ? { custom_utm_campaign: utm_campaign } : {}),\n    ...(notEmpty(utm_content)  ? { custom_utm_content: utm_content } : {}),\n    ...(notEmpty(utm_term)     ? { custom_utm_term: utm_term } : {}),\n    ...(notEmpty(yclid)        ? { custom_yclid: yclid } : {}),\n    custom_value_json,\n  };\n\n  const res = await createCustomer(this, { host, token, payload });\n  out.push({ json: { success: res.success, response: res.response, sent: payload } });\n}\n\nreturn out;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1072,
+        192
+      ],
+      "id": "f04389da-da52-4fed-93f6-99354e7af20a",
+      "name": "Code in JavaScript1"
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "{\n  \"alfacrm\": {\n    \"host\": \"kiberonesaratov.s20.online\",\n    \"email\": \"antonkarzhavin1@yandex.ru\",\n    \"api_key\": \"656b9709-9547-11f0-b9b8-3cecefbdd1ae\"\n  },\n  \"fields\": { \"1_2\": \"Антон Тест111\", \"1_3\": \"+381601111111\", \"1_7\": \"Саратов\" },\n  \"lead_source_id\": 8,\n  \"etext\": \"Кнопка «записаться»\",\n  \"utm_source\": \"yandex\",\n  \"utm_medium\": \"cpc\",\n  \"utm_campaign\": \"brand_search\",\n  \"utm_content\": \"cta_top\",\n  \"utm_term\": \"киберон саратов\",\n  \"yclid\": \"1234567890\"\n}",
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        640,
+        144
+      ],
+      "id": "49a47b42-83c2-49da-b93c-377cf4b4216c",
+      "name": "Set CRM data1"
     }
   ],
   "connections": {
@@ -124,6 +153,22 @@
           }
         ]
       ]
+    },
+    "Send Lead data to CRM": {
+      "main": [
+        []
+      ]
+    },
+    "Set CRM data1": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
@@ -131,53 +176,9 @@
   },
   "staticData": null,
   "meta": null,
-  "pinData": {
-    "Webhook": [
-      {
-        "json": {
-          "headers": {
-            "host": "n8n-main-production-4310.up.railway.app",
-            "user-agent": "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Mobile Safari/537.36",
-            "content-length": "765",
-            "accept": "*/*",
-            "accept-encoding": "gzip, deflate, br, zstd",
-            "accept-language": "en-US,en-RU;q=0.9,en;q=0.8,ru-RU;q=0.7,ru;q=0.6",
-            "content-type": "text/plain",
-            "origin": "https://saratov-okt.kiber-one.com",
-            "priority": "u=4, i",
-            "referer": "https://saratov-okt.kiber-one.com/",
-            "sec-ch-ua": "\"Google Chrome\";v=\"141\", \"Not?A_Brand\";v=\"8\", \"Chromium\";v=\"141\"",
-            "sec-ch-ua-mobile": "?1",
-            "sec-ch-ua-platform": "\"Android\"",
-            "sec-fetch-dest": "empty",
-            "sec-fetch-mode": "no-cors",
-            "sec-fetch-site": "cross-site",
-            "sec-fetch-storage-access": "active",
-            "x-forwarded-for": "109.245.225.208",
-            "x-forwarded-host": "n8n-main-production-4310.up.railway.app",
-            "x-forwarded-proto": "https",
-            "x-railway-edge": "railway/europe-west4-drams3a",
-            "x-railway-request-id": "xwZ-kUstSB2cUD6ejUJq2g",
-            "x-real-ip": "109.245.225.208",
-            "x-request-start": "1761051146534"
-          },
-          "params": {},
-          "query": {},
-          "body": "{\"event\":\"form_submit_success\",\"form_id\":\"26073\",\"matchedBy\":\"xhr\",\"transport\":\"xhr\",\"endpoint_url\":\"https://saratov-okt.kiber-one.com/redizayn-2/glavnaya/tretiy-blok/block3-form/\",\"status\":200,\"page_url\":\"https://saratov-okt.kiber-one.com/\",\"referrer\":\"https://saratov.kiber-one.com/\",\"user_agent\":\"Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Mobile Safari/537.36\",\"ts\":1761051146179,\"utm_source\":\"\",\"utm_medium\":\"\",\"utm_campaign\":\"\",\"utm_content\":\"\",\"utm_term\":\"\",\"yclid\":\"\",\"fields\":{\"1_2\":\"n8n\",\"1_3\":\"64736763\",\"1_7\":\"Belgrade\",\"1_6\":\"on\",\"2_9\":\"on\",\"name\":\"\",\"form_name\":\"FormConstructorForm\",\"form_id\":\"26073\",\"sendsave\":\"Оставить+заявку\"},\"ym_client_id\":\"1760992627805758156\"}",
-          "webhookUrl": "https://n8n-main-production-4310.up.railway.app/webhook-test/add0a254-19eb-4e02-b02e-344a6f26a86e",
-          "executionMode": "test"
-        },
-        "binary": {
-          "data": {
-            "data": "eyJldmVudCI6ImZvcm1fc3VibWl0X3N1Y2Nlc3MiLCJmb3JtX2lkIjoiMjYwNzMiLCJtYXRjaGVkQnkiOiJ4aHIiLCJ0cmFuc3BvcnQiOiJ4aHIiLCJlbmRwb2ludF91cmwiOiJodHRwczovL3NhcmF0b3Ytb2t0LmtpYmVyLW9uZS5jb20vcmVkaXpheW4tMi9nbGF2bmF5YS90cmV0aXktYmxvay9ibG9jazMtZm9ybS8iLCJzdGF0dXMiOjIwMCwicGFnZV91cmwiOiJodHRwczovL3NhcmF0b3Ytb2t0LmtpYmVyLW9uZS5jb20vIiwicmVmZXJyZXIiOiJodHRwczovL3NhcmF0b3Yua2liZXItb25lLmNvbS8iLCJ1c2VyX2FnZW50IjoiTW96aWxsYS81LjAgKExpbnV4OyBBbmRyb2lkIDYuMDsgTmV4dXMgNSBCdWlsZC9NUkE1OE4pIEFwcGxlV2ViS2l0LzUzNy4zNiAoS0hUTUwsIGxpa2UgR2Vja28pIENocm9tZS8xNDEuMC4wLjAgTW9iaWxlIFNhZmFyaS81MzcuMzYiLCJ0cyI6MTc2MTA1MTE0NjE3OSwidXRtX3NvdXJjZSI6IiIsInV0bV9tZWRpdW0iOiIiLCJ1dG1fY2FtcGFpZ24iOiIiLCJ1dG1fY29udGVudCI6IiIsInV0bV90ZXJtIjoiIiwieWNsaWQiOiIiLCJmaWVsZHMiOnsiMV8yIjoibjhuIiwiMV8zIjoiNjQ3MzY3NjMiLCIxXzciOiJCZWxncmFkZSIsIjFfNiI6Im9uIiwiMl85Ijoib24iLCJuYW1lIjoiIiwiZm9ybV9uYW1lIjoiRm9ybUNvbnN0cnVjdG9yRm9ybSIsImZvcm1faWQiOiIyNjA3MyIsInNlbmRzYXZlIjoi0J7RgdGC0LDQstC40YLRjCvQt9Cw0Y/QstC60YMifSwieW1fY2xpZW50X2lkIjoiMTc2MDk5MjYyNzgwNTc1ODE1NiJ9",
-            "mimeType": "text/plain"
-          }
-        }
-      }
-    ]
-  },
-  "versionId": "bb800df3-1e1d-48fd-ba13-537f0a1203c8",
-  "triggerCount": 0,
+  "pinData": {},
+  "versionId": "b4d322ef-ef51-43fd-86c9-29f2b796d7d3",
+  "triggerCount": 1,
   "shared": [
     {
       "createdAt": "2025-10-21T12:43:03.776Z",
