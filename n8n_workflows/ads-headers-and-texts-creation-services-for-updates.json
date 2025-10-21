@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-28T11:31:13.045Z",
-  "updatedAt": "2025-10-21T09:25:49.227Z",
+  "updatedAt": "2025-10-21T09:34:03.256Z",
   "id": "lBAh8kjoXRX0aGUF",
   "name": "ADS headers and texts creation services for updates",
   "active": false,
@@ -157,7 +157,7 @@
       "parameters": {
         "content": "создаем ссылку",
         "height": 448,
-        "width": 896
+        "width": 1040
       },
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
@@ -735,8 +735,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        -240,
-        48
+        -976,
+        272
       ],
       "id": "76a6fdf6-5653-49ad-8c6d-95c601ee1978",
       "name": "Mark_workflow_total_steps",
@@ -755,8 +755,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        0,
-        48
+        -784,
+        288
       ],
       "id": "47d27189-c7f0-4576-97fe-028978c98916",
       "name": "Init total counter"
@@ -833,8 +833,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        -544,
-        32
+        -1152,
+        256
       ],
       "id": "219ea3ec-1645-49e9-931c-be1cce66f7c1",
       "name": "get total steps",
@@ -2035,7 +2035,7 @@
       }
     ]
   },
-  "versionId": "0c0d96fa-5c30-4046-82a5-ec97508007af",
+  "versionId": "674604bc-5a55-4c04-9fa7-a643b98e51f3",
   "triggerCount": 0,
   "shared": [
     {
