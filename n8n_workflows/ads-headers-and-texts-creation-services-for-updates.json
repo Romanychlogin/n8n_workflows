@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-28T11:31:13.045Z",
-  "updatedAt": "2025-10-21T13:34:48.084Z",
+  "updatedAt": "2025-10-21T13:55:16.190Z",
   "id": "lBAh8kjoXRX0aGUF",
   "name": "ADS headers and texts creation services for updates",
   "active": false,
@@ -1221,37 +1221,21 @@
     },
     {
       "parameters": {
-        "operation": "select",
-        "schema": {
-          "__rl": true,
-          "mode": "list",
-          "value": "public"
-        },
-        "table": {
-          "__rl": true,
-          "value": "service_urls",
-          "mode": "list",
-          "cachedResultName": "service_urls"
-        },
-        "returnAll": true,
-        "where": {
-          "values": [
-            {
-              "column": "service_id",
-              "value": "={{ $json.service_id }}"
-            }
-          ]
-        },
-        "options": {}
+        "operation": "executeQuery",
+        "query": "select * from service_urls where service_id=$1",
+        "options": {
+          "queryReplacement": "={{ $json.service_id }}"
+        }
       },
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        656,
-        -176
+        672,
+        -144
       ],
       "id": "f5652581-bcc8-48a4-a441-11d3f4e8fc7c",
       "name": "get service urls",
+      "executeOnce": true,
       "credentials": {
         "postgres": {
           "id": "Hx2VFmUi5WO2K4QX",
@@ -1267,7 +1251,7 @@
       "typeVersion": 2,
       "position": [
         832,
-        -176
+        -144
       ],
       "id": "fe3edef7-fcff-4365-8b43-93b4705ef623",
       "name": "string for service urls"
@@ -2035,7 +2019,7 @@
       }
     ]
   },
-  "versionId": "8dd01164-98fc-4b21-a335-1264eed1502e",
+  "versionId": "1355de78-d8e1-438f-9fde-81cb4ae3d288",
   "triggerCount": 0,
   "shared": [
     {
