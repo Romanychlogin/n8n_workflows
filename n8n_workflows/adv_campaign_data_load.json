@@ -1161,9 +1161,9 @@
   },
   "staticData": {
     "global": {
-      "steps_passed": 1500,
+      "steps_passed": 2576,
       "tokens_used": 0,
-      "step": 0
+      "step": 76
     }
   },
   "meta": {
