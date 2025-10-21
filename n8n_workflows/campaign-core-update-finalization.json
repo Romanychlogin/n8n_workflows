@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-10-16T07:25:00.123Z",
-  "updatedAt": "2025-10-16T07:41:27.042Z",
+  "updatedAt": "2025-10-21T17:50:39.143Z",
   "id": "sLocyhmCeTBxhA88",
   "name": "campaign core update finalization",
   "active": false,
@@ -84,7 +84,7 @@
         "operation": "executeQuery",
         "query": "update report_import set processed_date=now() where import_id=$1",
         "options": {
-          "queryReplacement": ""
+          "queryReplacement": "={{ $('When Executed by Another Workflow').item.json.import_id }}"
         }
       },
       "type": "n8n-nodes-base.postgres",
@@ -105,9 +105,9 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "BEGIN;\n\nWITH ins AS (\n  INSERT INTO ads_list\n    (group_name, key_word, ad_header, ad_text, group_id,\n     ad_url, company_id, service_id, report_id, update_required, campaign_id)\n  SELECT\n    group_name, key_word, ad_header, ad_text, group_id,\n    ad_url, company_id, service_id, report_id, false, campaign_id\n  FROM public.current_ads_list \n  ),\ndel AS (\n  DELETE FROM public.current_ads_list c\n  USING ins\n  WHERE c.ad_id = ins.ad_id\n  RETURNING 1\n)\nSELECT\n  (SELECT count(*) FROM ins) AS inserted_or_updated,\n  (SELECT count(*) FROM del) AS deleted_from_current;\n\nCOMMIT;",
+        "query": "BEGIN;\n\nWITH ins AS (\n  INSERT INTO ads_list\n    (group_name, key_word, ad_header, ad_text, group_id,\n     ad_url, company_id, service_id, report_id, update_required, campaign_id)\n  SELECT\n    group_name, key_word, ad_header, ad_text, group_id,\n    ad_url, company_id, service_id, report_id, false, campaign_id\n  FROM public.current_ads_list where company_id=$1 and report_id=$2\n  ),\ndel AS (\n  DELETE FROM public.current_ads_list c\n  USING ins\n  WHERE c.ad_id = ins.ad_id\n  RETURNING 1\n)\nSELECT\n  (SELECT count(*) FROM ins) AS inserted_or_updated,\n  (SELECT count(*) FROM del) AS deleted_from_current;\n\nCOMMIT;",
         "options": {
-          "queryReplacement": "={{ $('When Executed by Another Workflow').item.json.company_id }},{{$json.used_keyword }}"
+          "queryReplacement": "={{ $('When Executed by Another Workflow').item.json.company_id }},{{ $('When Executed by Another Workflow').item.json.import_id }}"
         }
       },
       "type": "n8n-nodes-base.postgres",
@@ -202,14 +202,16 @@
     "When Executed by Another Workflow": [
       {
         "json": {
+          "id": "sLocyhmCeTBxhA88",
+          "root_execution_id": 128059,
           "company_id": 1,
-          "root_execution_id": 74293,
-          "import_id": 5
+          "threshhold": "0.79",
+          "import_id": "5"
         }
       }
     ]
   },
-  "versionId": "c278aa2e-1fa9-450a-bf5d-09c0f0af2322",
+  "versionId": "59abfb8b-e4b4-456d-bf7e-f976fe8613d9",
   "triggerCount": 0,
   "shared": [
     {
