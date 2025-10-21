@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-10-20T11:13:37.232Z",
-  "updatedAt": "2025-10-21T07:16:19.829Z",
+  "updatedAt": "2025-10-21T07:29:52.597Z",
   "id": "b9eGU4g5DID0kq2E",
   "name": "ADV_campaign_analysis_initial",
   "active": false,
@@ -868,19 +868,6 @@
       ],
       "id": "2e073f34-e3a2-42a9-be05-83404b6a24bf",
       "name": "set variables"
-    },
-    {
-      "parameters": {
-        "content": "добавить обработку кейса когда есть конверсии"
-      },
-      "type": "n8n-nodes-base.stickyNote",
-      "typeVersion": 1,
-      "position": [
-        1744,
-        -624
-      ],
-      "id": "14d9fcbc-b396-4aaf-a7f8-93af326ba2fb",
-      "name": "Sticky Note3"
     },
     {
       "parameters": {
@@ -3008,7 +2995,7 @@
       }
     ]
   },
-  "versionId": "ac6556b7-b6aa-45b1-ab77-b73136c4a44a",
+  "versionId": "d8196fe1-a151-4992-9e65-fc9750128351",
   "triggerCount": 0,
   "shared": [
     {
