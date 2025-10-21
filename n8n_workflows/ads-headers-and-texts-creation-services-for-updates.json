@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-28T11:31:13.045Z",
-  "updatedAt": "2025-10-21T15:21:24.414Z",
+  "updatedAt": "2025-10-21T15:23:36.595Z",
   "id": "lBAh8kjoXRX0aGUF",
   "name": "ADS headers and texts creation services for updates",
   "active": false,
@@ -1245,7 +1245,7 @@
     },
     {
       "parameters": {
-        "jsCode": "// Собираем массив service_url из всех входящих items\nlet urls = $input\n  .all()\n  .map(it => it.json?.service_url)\n  .filter(v => typeof v === 'string')       // только строки\n  .map(s => s.trim())                        // убираем пробелы по краям\n  .filter(Boolean);                          // отбрасываем пустые\n\n// (Опционально) нормализуем: убираем дубли\nurls = [...new Set(urls)];\n\n// (Опционально) валидируем как URL и снова чистим\nurls = urls.filter(u => {\n  try { new URL(u); return true; } catch { return false; }\n});\n\nreturn [{ json: { urls, count: urls.length } }];"
+        "jsCode": "\n\n// 1) Собираем и чистим массив URL'ов\nlet urls = [];\nfor (const { json } of $input.all()) {\n  const v = json?.service_url;\n  if (v == null) continue;\n  const s = String(v).trim();\n  if (s) urls.push(s);\n}\n\n\n\n\n\n// 4) Возвращаем и массив, и строку\nreturn [{ json: { urls,  count: urls.length } }];"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -2019,7 +2019,7 @@
       }
     ]
   },
-  "versionId": "af5285c2-0991-4931-b579-ec83687b799d",
+  "versionId": "09313fc4-8e78-4a5a-86f9-d1262c4e1238",
   "triggerCount": 0,
   "shared": [
     {
