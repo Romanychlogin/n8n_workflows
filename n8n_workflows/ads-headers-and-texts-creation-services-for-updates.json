@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-28T11:31:13.045Z",
-  "updatedAt": "2025-10-21T13:55:16.190Z",
+  "updatedAt": "2025-10-21T15:21:24.414Z",
   "id": "lBAh8kjoXRX0aGUF",
   "name": "ADS headers and texts creation services for updates",
   "active": false,
@@ -373,7 +373,7 @@
     },
     {
       "parameters": {
-        "jsCode": "\n\nreturn [{\n  json: \n  {\n  \"model\": \"gpt-5\",\n  \"input\": [\n    {\n      \"role\": \"developer\",\n      \"content\": [\n        {\n          \"type\": \"input_text\",\n          \"text\": \"Strictly follow provided instructions and response format\"\n        }\n      ]\n    },\n    {\n      \"role\": \"user\",\n      \"content\": [\n        {\n          \"type\": \"input_text\",\n          \"text\": $json.my_prompt\n        }\n      ]\n    }\n  ],\n  \"text\": {\n    \"format\": {\n      \"type\": \"json_schema\",\n      \"name\": \"url_strings\",\n      \"strict\": true,\n      \"schema\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"url_strings\": {\n            \"type\": \"array\",\n            \"description\": \"List of URL objects.\",\n            \"items\": {\n              \"type\": \"object\",\n              \"properties\": {\n                \"url_string\": {\n                  \"type\": \"string\",\n                  \"enum\": [$('string for service urls').last().json.joined],\n                  \"description\": \"A valid URL from the allowed list.\"\n                },\n                \"id\": {\n                  \"type\": \"string\",\n                  \"description\": \"Unique identifier for the URL object.\",\n                  \"minLength\": 1\n                }\n              },\n              \"required\": [\n                \"url_string\",\n                \"id\"\n              ],\n              \"additionalProperties\": false\n            },\n            \"minItems\": 0\n          }\n        },\n        \"required\": [\n          \"url_strings\"\n        ],\n        \"additionalProperties\": false\n      }\n    },\n    \"verbosity\": \"low\"\n  },\n  \"reasoning\": {\n    \"effort\": \"minimal\",\n    \"summary\": \"auto\"\n  },\n  \"tools\": [],\n  \"store\": false,\n  \"include\": [\n    \"reasoning.encrypted_content\",\n    \"web_search_call.action.sources\"\n  ]\n}\n  \n\n}];"
+        "jsCode": "const urlEnum = $('string for service urls').last().json.urls ?? [];\n\nreturn [{\n  json: {\n    model: \"gpt-5\",\n    input: [\n      { role: \"system\", content: [{ type: \"text\", text: \"Strictly follow provided instructions and response format\" }] },\n      { role: \"user\",   content: [{ type: \"text\", text: $json.my_prompt }] }\n    ],\n    response_format: {\n      type: \"json_schema\",\n      json_schema: {\n        name: \"url_strings\",\n        strict: true,\n        schema: {\n          type: \"object\",\n          properties: {\n            url_strings: {\n              type: \"array\",\n              description: \"List of URL objects.\",\n              items: {\n                type: \"object\",\n                properties: {\n                  url_string: {\n                    type: \"string\",\n                    enum: urlEnum, // <-- массив строк из первой ноды\n                    description: \"A valid URL from the allowed list.\"\n                  },\n                  id: {\n                    type: \"string\",\n                    description: \"Unique identifier for the URL object.\",\n                    minLength: 1\n                  }\n                },\n                required: [\"url_string\", \"id\"],\n                additionalProperties: false\n              },\n              minItems: 0\n            }\n          },\n          required: [\"url_strings\"],\n          additionalProperties: false\n        }\n      }\n    },\n    reasoning: { effort: \"minimal\", summary: \"auto\" },\n    store: false,\n    include: [\"reasoning.encrypted_content\", \"web_search_call.action.sources\"]\n  }\n}];"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -1245,7 +1245,7 @@
     },
     {
       "parameters": {
-        "jsCode": "// Собираем service_url из ВСЕХ входящих items и делаем одну строку: \"url1\",\"url2\",...\nconst urls = $input.all()\n  .map(it => it.json?.service_url)\n  .filter(v => v !== undefined && v !== null && String(v).trim() !== '')\n  .map(v => String(v).trim())\n  // экранируем двойные кавычки внутри значений\n  .map(s => s.replace(/\"/g, '\\\\\"'));\n\n// Если нужно убрать дубли — раскомментируйте следующую строку:\n// const urls = [...new Set(urls)];\n\nconst joined = `\"${urls.join('\",\"')}\"`;\n\nreturn [{ json: { joined, count: urls.length } }];"
+        "jsCode": "// Собираем массив service_url из всех входящих items\nlet urls = $input\n  .all()\n  .map(it => it.json?.service_url)\n  .filter(v => typeof v === 'string')       // только строки\n  .map(s => s.trim())                        // убираем пробелы по краям\n  .filter(Boolean);                          // отбрасываем пустые\n\n// (Опционально) нормализуем: убираем дубли\nurls = [...new Set(urls)];\n\n// (Опционально) валидируем как URL и снова чистим\nurls = urls.filter(u => {\n  try { new URL(u); return true; } catch { return false; }\n});\n\nreturn [{ json: { urls, count: urls.length } }];"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -2019,7 +2019,7 @@
       }
     ]
   },
-  "versionId": "1355de78-d8e1-438f-9fde-81cb4ae3d288",
+  "versionId": "af5285c2-0991-4931-b579-ec83687b799d",
   "triggerCount": 0,
   "shared": [
     {
