@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-10-21T12:43:03.776Z",
-  "updatedAt": "2025-10-21T12:43:20.205Z",
+  "updatedAt": "2025-10-21T13:11:02.390Z",
   "id": "Z5sOyh4IJtSVsD2a",
   "name": "Recieve form data",
   "active": false,
@@ -8,8 +8,11 @@
   "nodes": [
     {
       "parameters": {
+        "httpMethod": "POST",
         "path": "add0a254-19eb-4e02-b02e-344a6f26a86e",
-        "options": {}
+        "options": {
+          "rawBody": true
+        }
       },
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2.1,
@@ -20,16 +23,160 @@
       "id": "53703b18-b0c9-4def-a05e-6591c46fc7ec",
       "name": "Webhook",
       "webhookId": "add0a254-19eb-4e02-b02e-344a6f26a86e"
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "{\n  \"alfacrm\": {\n    \"host\": \"kiberonesaratov.s20.online\",\n    \"email\": \"antonkarzhavin1@yandex.ru\",\n    \"api_key\": \"656b9709-9547-11f0-b9b8-3cecefbdd1ae\",\n    \"lead_source_id\": 1,\n    \"branch_ids\": 1,\n  }\n}",
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        512,
+        0
+      ],
+      "id": "bfa32a75-2fb1-4ecb-a0f9-1c7e2982656c",
+      "name": "Set CRM data"
+    },
+    {
+      "parameters": {
+        "jsCode": "/**\n * AlfaCRM lead/create (n8n \"Code (JavaScript)\" node) — Run Once for All Items\n * Создание НОВОГО лида по имеющимся данным (UTM, yclid, lead_source_id, fields).\n */\n\n// ---------- helpers ----------\nconst notEmpty = (v) => v !== undefined && v !== null && String(v).trim() !== '';\nconst toNum = (v) => {\n  if (!notEmpty(v)) return undefined;\n  const n = Number(String(v).trim());\n  return Number.isFinite(n) ? n : undefined;\n};\nfunction asObj(maybe) {\n  if (!maybe) return {};\n  if (typeof maybe === 'object') return maybe;\n  if (typeof maybe === 'string') {\n    try { return JSON.parse(maybe); } catch { return {}; }\n  }\n  return {};\n}\n// Глубокий поиск значения по ключу (true если имя ключа совпадает)\nfunction findKeyDeep(obj, keyMatcher) {\n  const seen = new Set();\n  const stack = [obj];\n  while (stack.length) {\n    const cur = stack.pop();\n    if (!cur || typeof cur !== 'object') continue;\n    if (seen.has(cur)) continue;\n    seen.add(cur);\n    if (Array.isArray(cur)) { for (const v of cur) stack.push(v); continue; }\n    for (const [k, v] of Object.entries(cur)) {\n      if (keyMatcher(k)) return v;\n      if (v && typeof v === 'object') stack.push(v);\n    }\n  }\n  return undefined;\n}\nasync function http(req) { return await this.helpers.httpRequest(req); }\n\nasync function login(self, { host, email, api_key, x_app_key }) {\n  const headers = { 'Accept': 'application/json', 'Content-Type': 'application/json' };\n  if (x_app_key) headers['X-APP-KEY'] = x_app_key;\n  const res = await http.call(self, {\n    method: 'POST',\n    url: `https://${host}/v2api/auth/login`,\n    headers,\n    body: { email, api_key },\n    json: true, gzip: true, timeout: 15000,\n  });\n  if (!res?.token) throw new Error('AlfaCRM auth: no token in response');\n  return res.token;\n}\n\nasync function createLead(self, { host, token, branchId, payload, x_app_key }) {\n  const headers = {\n    'Accept': 'application/json',\n    'Content-Type': 'application/json',\n    'X-ALFACRM-TOKEN': token,\n  };\n  if (x_app_key) headers['X-APP-KEY'] = x_app_key;\n\n  return await http.call(self, {\n    method: 'POST',\n    url: `https://${host}/v2api/${branchId}/lead/create`,\n    headers,\n    body: payload,\n    json: true, gzip: true, timeout: 20000,\n  });\n}\n\n// Соберём payload для lead/create; аккуратно добавляем только непустые поля\nfunction buildLeadPayload(src) {\n  const {\n    utm_source, utm_medium, utm_campaign, utm_content, utm_term,\n    yclid, lead_source_id, fields, custom_value_json,\n  } = src;\n\n  const payload = {};\n\n  // UTM: если заданы — добавляем\n  if (notEmpty(utm_source))   payload.utm_source = String(utm_source);\n  if (notEmpty(utm_medium))   payload.utm_medium = String(utm_medium);\n  if (notEmpty(utm_campaign)) payload.utm_campaign = String(utm_campaign);\n  if (notEmpty(utm_content))  payload.utm_content = String(utm_content);\n  if (notEmpty(utm_term))     payload.utm_term = String(utm_term);\n\n  // yclid: как строку\n  if (notEmpty(yclid)) payload.yclid = String(yclid);\n\n  // lead_source_id: строго число\n  const lsid = toNum(lead_source_id);\n  if (lsid !== undefined) payload.lead_source_id = lsid;\n\n  // fields: объект вида {\"1_2\": \"Имя\", \"1_3\": \"Телефон\", \"...\": \"...\"}\n  const f = asObj(fields);\n  if (Object.keys(f).length) payload.fields = f;\n\n  // приклеим custom_value_json как строку\n  if (custom_value_json && typeof custom_value_json === 'object') {\n    payload.custom_value_json = JSON.stringify(custom_value_json);\n  } else if (typeof custom_value_json === 'string' && custom_value_json.trim() !== '') {\n    payload.custom_value_json = custom_value_json;\n  }\n\n  return payload;\n}\n\n// ---------- MAIN ----------\nconst items = await $input.all();\nconst out = [];\n\nfor (const item of items) {\n  const input = item.json ?? item;\n\n  // ---- креды и филиал ----\n  const conf = input.alfacrm || {};\n  const host      = conf.host      || input.host;\n  const email     = conf.email     || input.email;\n  const api_key   = conf.api_key   || input.api_key;\n  const x_app_key = conf.x_app_key || input.x_app_key;\n  const branchId  = toNum(conf.branchId || input.branchId || input.branch_id);\n\n  if (!host || !email || !api_key) {\n    throw new Error('Provide alfacrm.host, alfacrm.email, alfacrm.api_key');\n  }\n  if (!branchId) {\n    throw new Error('Provide alfacrm.branchId (numeric)');\n  }\n\n  // ---- берём lead_source_id из предыдущих нод, если уже рассчитан ----\n  const deepLeadSource = findKeyDeep(input, k => k === 'lead_source_id');\n  const lead_source_id = (toNum(deepLeadSource) ?? toNum(input.lead_source_id));\n\n  // ---- соберём custom_value_json для аудита (опционально) ----\n  const audit = {\n    __source: 'n8n lead/create',\n    received_at: new Date().toISOString(),\n    raw_min: {\n      utm_source: input.utm_source, utm_medium: input.utm_medium, utm_campaign: input.utm_campaign,\n      utm_content: input.utm_content, utm_term: input.utm_term, yclid: input.yclid,\n      lead_source_id: lead_source_id ?? input.lead_source_id,\n    }\n  };\n\n  // ---- подготовим payload ----\n  const payload = buildLeadPayload({\n    utm_source:  input.utm_source,\n    utm_medium:  input.utm_medium,\n    utm_campaign:input.utm_campaign,\n    utm_content: input.utm_content,\n    utm_term:    input.utm_term,\n    yclid:       input.yclid,\n    lead_source_id,\n    fields:      input.fields,       // ожидается { \"1_2\": \"Имя\", \"1_3\": \"Телефон\", \"1_7\": \"Город\" }\n    custom_value_json: audit,        // можно убрать, если не нужно\n  });\n\n  // ---- вызовы API ----\n  let token = await login(this, { host, email, api_key, x_app_key });\n\n  try {\n    const res = await createLead(this, { host, token, branchId, payload, x_app_key });\n    out.push({ json: { success: true, response: res, sent: payload, branchId } });\n  } catch (err) {\n    const status = err?.statusCode || err?.response?.statusCode;\n    if (status === 401) {\n      token = await login(this, { host, email, api_key, x_app_key });\n      const res2 = await createLead(this, { host, token, branchId, payload, x_app_key });\n      out.push({ json: { success: true, response: res2, sent: payload, branchId, retried: true } });\n    } else {\n      throw new Error(`AlfaCRM lead/create failed: ${JSON.stringify(err?.response?.body || err)}`);\n    }\n  }\n}\n\nreturn out;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1056,
+        0
+      ],
+      "id": "4d3da4ba-604a-465f-9de8-3a1d247a97f8",
+      "name": "Send Lead data to CRM"
+    },
+    {
+      "parameters": {
+        "jsCode": "// n8n Code (JavaScript) — Run Once for All Items\nconst items = await $input.all();\n\n// --- helpers ---\nconst notEmpty = v => v !== undefined && v !== null && String(v).trim() !== '';\n\nfunction tryParseJSON(s) {\n  if (typeof s !== 'string') return s;\n  try { return JSON.parse(s); } catch { return s; }\n}\n\nfunction getQueryParam(url, name) {\n  try { return new URL(String(url)).searchParams.get(name); } catch { return null; }\n}\n\n/**\n * Рекурсивно находит ВСЕ ключи \"lead_source_id\" и подменяет значение.\n * Сохраняет тип: если раньше было \"40\" (string), запишет \"8\"/\"3\" как строку.\n * Возвращает количество замен.\n */\nfunction replaceLeadSourceId(obj, newValNumber) {\n  let count = 0;\n  const stack = [obj];\n  const seen = new Set();\n\n  while (stack.length) {\n    const cur = stack.pop();\n    if (!cur || typeof cur !== 'object') continue;\n    if (seen.has(cur)) continue;\n    seen.add(cur);\n\n    if (Array.isArray(cur)) {\n      for (const v of cur) if (v && typeof v === 'object') stack.push(v);\n      continue;\n    }\n\n    for (const [k, v] of Object.entries(cur)) {\n      if (k === 'lead_source_id') {\n        const keepString = typeof v === 'string';\n        cur[k] = keepString ? String(newValNumber) : newValNumber;\n        count++;\n      }\n      if (v && typeof v === 'object') stack.push(v);\n    }\n  }\n  return count;\n}\n\nfor (const item of items) {\n  const src = item.json ?? item;\n\n  // --- где взять yclid ---\n  let yclid = src.yclid ?? src.yclidid ?? null;\n\n  // из page_url (?yclid=...)\n  if (!notEmpty(yclid) && src.page_url) {\n    const q = getQueryParam(src.page_url, 'yclid');\n    if (notEmpty(q)) yclid = q;\n  }\n\n  // из custom_value_json (если там хранится)\n  if (!notEmpty(yclid) && src.custom_value_json) {\n    const cv = tryParseJSON(src.custom_value_json);\n    if (cv && typeof cv === 'object' && 'yclid' in cv && notEmpty(cv.yclid)) {\n      yclid = cv.yclid;\n    }\n  }\n\n  const newVal = notEmpty(yclid) ? 8 : 3;\n\n  // подменяем ВЕЗДЕ, где уже есть lead_source_id\n  const replaced = replaceLeadSourceId(src, newVal);\n\n  // лог для проверки\n  console.log({ resolved_yclid: yclid ?? null, new_lead_source_id: newVal, replaced_keys: replaced });\n\n  // если нужно также гарантированно обновить верхнеуровневое значение (которое ты показал в примере),\n  // и оно есть в корне — продублируем:\n  if ('lead_source_id' in src) {\n    src.lead_source_id = typeof src.lead_source_id === 'string' ? String(newVal) : newVal;\n  }\n\n  // записываем обратно в item\n  if (item.json) item.json = src; else Object.assign(item, src);\n}\n\nreturn items;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        800,
+        0
+      ],
+      "id": "cdd34478-ee50-4557-997e-8864a9764def",
+      "name": "update lead_source_id"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Code (Function) node\n// Вход: $json.body = строка с JSON\n// Выход: нормальный объект, доступный далее как $json\nconst raw = $json.body || '';\nlet parsed = {};\ntry { parsed = JSON.parse(raw); } catch(e) {}\nreturn [{ ...parsed, _raw: raw }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        288,
+        0
+      ],
+      "id": "01610508-3171-486f-83ee-268ac6fcafcf",
+      "name": "Code in JavaScript"
     }
   ],
-  "connections": {},
+  "connections": {
+    "Set CRM data": {
+      "main": [
+        [
+          {
+            "node": "update lead_source_id",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "update lead_source_id": {
+      "main": [
+        [
+          {
+            "node": "Send Lead data to CRM",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Set CRM data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
   "settings": {
     "executionOrder": "v1"
   },
   "staticData": null,
   "meta": null,
-  "pinData": {},
-  "versionId": "52b9c7a8-eb4d-4bb1-b2e2-9cd4a780c84e",
+  "pinData": {
+    "Webhook": [
+      {
+        "json": {
+          "headers": {
+            "host": "n8n-main-production-4310.up.railway.app",
+            "user-agent": "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Mobile Safari/537.36",
+            "content-length": "765",
+            "accept": "*/*",
+            "accept-encoding": "gzip, deflate, br, zstd",
+            "accept-language": "en-US,en-RU;q=0.9,en;q=0.8,ru-RU;q=0.7,ru;q=0.6",
+            "content-type": "text/plain",
+            "origin": "https://saratov-okt.kiber-one.com",
+            "priority": "u=4, i",
+            "referer": "https://saratov-okt.kiber-one.com/",
+            "sec-ch-ua": "\"Google Chrome\";v=\"141\", \"Not?A_Brand\";v=\"8\", \"Chromium\";v=\"141\"",
+            "sec-ch-ua-mobile": "?1",
+            "sec-ch-ua-platform": "\"Android\"",
+            "sec-fetch-dest": "empty",
+            "sec-fetch-mode": "no-cors",
+            "sec-fetch-site": "cross-site",
+            "sec-fetch-storage-access": "active",
+            "x-forwarded-for": "109.245.225.208",
+            "x-forwarded-host": "n8n-main-production-4310.up.railway.app",
+            "x-forwarded-proto": "https",
+            "x-railway-edge": "railway/europe-west4-drams3a",
+            "x-railway-request-id": "xwZ-kUstSB2cUD6ejUJq2g",
+            "x-real-ip": "109.245.225.208",
+            "x-request-start": "1761051146534"
+          },
+          "params": {},
+          "query": {},
+          "body": "{\"event\":\"form_submit_success\",\"form_id\":\"26073\",\"matchedBy\":\"xhr\",\"transport\":\"xhr\",\"endpoint_url\":\"https://saratov-okt.kiber-one.com/redizayn-2/glavnaya/tretiy-blok/block3-form/\",\"status\":200,\"page_url\":\"https://saratov-okt.kiber-one.com/\",\"referrer\":\"https://saratov.kiber-one.com/\",\"user_agent\":\"Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Mobile Safari/537.36\",\"ts\":1761051146179,\"utm_source\":\"\",\"utm_medium\":\"\",\"utm_campaign\":\"\",\"utm_content\":\"\",\"utm_term\":\"\",\"yclid\":\"\",\"fields\":{\"1_2\":\"n8n\",\"1_3\":\"64736763\",\"1_7\":\"Belgrade\",\"1_6\":\"on\",\"2_9\":\"on\",\"name\":\"\",\"form_name\":\"FormConstructorForm\",\"form_id\":\"26073\",\"sendsave\":\"Оставить+заявку\"},\"ym_client_id\":\"1760992627805758156\"}",
+          "webhookUrl": "https://n8n-main-production-4310.up.railway.app/webhook-test/add0a254-19eb-4e02-b02e-344a6f26a86e",
+          "executionMode": "test"
+        },
+        "binary": {
+          "data": {
+            "data": "eyJldmVudCI6ImZvcm1fc3VibWl0X3N1Y2Nlc3MiLCJmb3JtX2lkIjoiMjYwNzMiLCJtYXRjaGVkQnkiOiJ4aHIiLCJ0cmFuc3BvcnQiOiJ4aHIiLCJlbmRwb2ludF91cmwiOiJodHRwczovL3NhcmF0b3Ytb2t0LmtpYmVyLW9uZS5jb20vcmVkaXpheW4tMi9nbGF2bmF5YS90cmV0aXktYmxvay9ibG9jazMtZm9ybS8iLCJzdGF0dXMiOjIwMCwicGFnZV91cmwiOiJodHRwczovL3NhcmF0b3Ytb2t0LmtpYmVyLW9uZS5jb20vIiwicmVmZXJyZXIiOiJodHRwczovL3NhcmF0b3Yua2liZXItb25lLmNvbS8iLCJ1c2VyX2FnZW50IjoiTW96aWxsYS81LjAgKExpbnV4OyBBbmRyb2lkIDYuMDsgTmV4dXMgNSBCdWlsZC9NUkE1OE4pIEFwcGxlV2ViS2l0LzUzNy4zNiAoS0hUTUwsIGxpa2UgR2Vja28pIENocm9tZS8xNDEuMC4wLjAgTW9iaWxlIFNhZmFyaS81MzcuMzYiLCJ0cyI6MTc2MTA1MTE0NjE3OSwidXRtX3NvdXJjZSI6IiIsInV0bV9tZWRpdW0iOiIiLCJ1dG1fY2FtcGFpZ24iOiIiLCJ1dG1fY29udGVudCI6IiIsInV0bV90ZXJtIjoiIiwieWNsaWQiOiIiLCJmaWVsZHMiOnsiMV8yIjoibjhuIiwiMV8zIjoiNjQ3MzY3NjMiLCIxXzciOiJCZWxncmFkZSIsIjFfNiI6Im9uIiwiMl85Ijoib24iLCJuYW1lIjoiIiwiZm9ybV9uYW1lIjoiRm9ybUNvbnN0cnVjdG9yRm9ybSIsImZvcm1faWQiOiIyNjA3MyIsInNlbmRzYXZlIjoi0J7RgdGC0LDQstC40YLRjCvQt9Cw0Y/QstC60YMifSwieW1fY2xpZW50X2lkIjoiMTc2MDk5MjYyNzgwNTc1ODE1NiJ9",
+            "mimeType": "text/plain"
+          }
+        }
+      }
+    ]
+  },
+  "versionId": "7abdefb3-b2bc-4260-8a7c-28a1468ecec2",
   "triggerCount": 0,
   "shared": [
     {
