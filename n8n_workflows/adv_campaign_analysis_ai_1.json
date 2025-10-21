@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-10-21T08:50:29.906Z",
-  "updatedAt": "2025-10-21T08:50:29.906Z",
+  "updatedAt": "2025-10-21T09:35:29.166Z",
   "id": "yMTPv7g4OJZnlboH",
   "name": "ADV_campaign_analysis_AI_1",
   "active": false,
@@ -334,8 +334,7 @@
           "cachedResultUrl": "https://github.com/Romanychlogin/n8n_prompts"
         },
         "filePath": "key_phrases_analysis.txt",
-        "additionalParameters": {},
-        "path": "c345d318-f9ce-477f-abcb-2c486dd9a39a"
+        "additionalParameters": {}
       },
       "type": "n8n-nodes-base.github",
       "typeVersion": 1.1,
@@ -759,13 +758,13 @@
             {
               "id": "bb72a340-789e-459b-80c9-f1c2b454ed57",
               "name": "resolution",
-              "value": "={{\"no relevant, minuses: \"+$('Execute Workflow').item.json.non_matches.map(String).join(', ')}}",
+              "value": "=need AI",
               "type": "string"
             },
             {
               "id": "2f7246f7-a167-46be-9212-edc599a35ff3",
               "name": "total_tokens",
-              "value": "={{$('HTTP Request').length\n  ? ($('HTTP Request').last().json.usage.total_tokens ?? 0)\n  : 0 }}",
+              "value": "=0",
               "type": "number"
             }
           ]
@@ -1995,7 +1994,7 @@
       }
     ]
   },
-  "versionId": "41c27d2d-1b59-4b1f-bf16-0e83eed0be1e",
+  "versionId": "5f743885-4f3c-4a8f-94af-5d7487208e90",
   "triggerCount": 0,
   "shared": [
     {
