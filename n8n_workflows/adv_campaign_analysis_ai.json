@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-10-20T11:13:50.516Z",
-  "updatedAt": "2025-10-21T08:10:35.669Z",
+  "updatedAt": "2025-10-21T08:13:27.344Z",
   "id": "xNiuEqQOSNCSLvW5",
   "name": "ADV_campaign_analysis_AI",
   "active": false,
@@ -1292,7 +1292,7 @@
     },
     {
       "parameters": {
-        "jsCode": "// Сколько входящих элементов агрегировать в одном выходящем (в пределах одного service_name)\nconst BATCH_SIZE = 100;\n\nfunction toIdString(v) {\n  if (typeof v === 'bigint') return v.toString();\n  if (typeof v === 'number') return Number.isFinite(v) ? Math.trunc(v).toString() : '';\n  if (typeof v === 'string') return v;\n  return v != null && v.toString ? v.toString() : '';\n}\n\nfunction toStr(v) {\n  return v == null ? '' : String(v);\n}\n\nconst inputItems = $input.all();\nconst out = [];\n\nlet i = 0;\nwhile (i < inputItems.length) {\n  // Старт новой группы по service_name\n  const first = inputItems[i]?.json ?? {};\n  const groupService = toStr(first.service_name);\n\n  // Собираем все подряд идущие элементы с тем же service_name\n  const group = [];\n  while (i < inputItems.length) {\n    const cur = inputItems[i]?.json ?? {};\n    if (toStr(cur.service_name) !== groupService) break;\n    group.push(cur);\n    i++;\n  }\n\n  // Метаданные сервиса (одинаковые в группе)\n  const svcCompany       = toStr(first.company_name);\n  const svcName          = groupService;\n  const svcDescription   = toStr(first.service_description);\n\n  // Режем группу на пачки по BATCH_SIZE\n  for (let start = 0; start < group.length; start += BATCH_SIZE) {\n    const chunk = group.slice(start, start + BATCH_SIZE);\n\n    const items = chunk.map(j => ({\n      id: toIdString(j.list_id),           // берем content_id => строка\n      phrase: toStr(j.key_word),\n      count_views:toIdString(j.count_views),\n      embedding_calls:toIdString(j.embedding_calls)\n    }));\n    const ItemsbyId = Object.fromEntries(\n    items.map(o => [o.id, o]) \n    );\n    out.push({\n      json: {\n        company_name: svcCompany,\n        service_name: svcName,\n        service_description: svcDescription,\n        items,\n        ItemsbyId \n      }\n    });\n  }\n}\n\nreturn out;\n\n\n\n\n"
+        "jsCode": "// Сколько входящих элементов агрегировать в одном выходящем (в пределах одного service_name)\nconst BATCH_SIZE = 100;\n\nfunction toIdString(v) {\n  if (typeof v === 'bigint') return v.toString();\n  if (typeof v === 'number') return Number.isFinite(v) ? Math.trunc(v).toString() : '';\n  if (typeof v === 'string') return v;\n  return v != null && v.toString ? v.toString() : '';\n}\n\nfunction toStr(v) {\n  return v == null ? '' : String(v);\n}\n\nconst inputItems = $input.all();\nconst out = [];\n\nlet i = 0;\nwhile (i < inputItems.length) {\n  // Старт новой группы по service_name\n  const first = inputItems[i]?.json ?? {};\n  const groupService = toStr(first.service_name);\n\n  // Собираем все подряд идущие элементы с тем же service_name\n  const group = [];\n  while (i < inputItems.length) {\n    const cur = inputItems[i]?.json ?? {};\n    if (toStr(cur.service_name) !== groupService) break;\n    group.push(cur);\n    i++;\n  }\n\n  // Метаданные сервиса (одинаковые в группе)\n  const svcCompany       = toStr(first.company_name);\n  const svcName          = groupService;\n  const svcDescription   = toStr(first.service_description);\n\n  // Режем группу на пачки по BATCH_SIZE\n  for (let start = 0; start < group.length; start += BATCH_SIZE) {\n    const chunk = group.slice(start, start + BATCH_SIZE);\n\n    const items = chunk.map(j => ({\n      id: toIdString(j.list_id),           // берем content_id => строка\n      phrase: toStr(j.key_word)\n    }));\n    const items_ext = chunk.map(j => ({\n      id: toIdString(j.list_id),           // берем content_id => строка\n      phrase: toStr(j.key_word),\n      count_views:toIdString(j.count_views),\n      embedding_calls:toIdString(j.embedding_calls)\n    }));\n    const ItemsbyId = Object.fromEntries(\n    items_ext.map(o => [o.id, o]) \n    );\n    out.push({\n      json: {\n        company_name: svcCompany,\n        service_name: svcName,\n        service_description: svcDescription,\n        items,\n        ItemsbyId \n      }\n    });\n  }\n}\n\nreturn out;\n\n\n\n\n"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -1994,7 +1994,7 @@
       }
     ]
   },
-  "versionId": "770597d6-94d4-47e8-8bc3-d1ceefe07dab",
+  "versionId": "9f5a1fa3-2927-43a0-9627-ac44fe4e3d63",
   "triggerCount": 0,
   "shared": [
     {
