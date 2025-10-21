@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-10-20T11:13:50.516Z",
-  "updatedAt": "2025-10-20T20:46:02.092Z",
+  "updatedAt": "2025-10-21T04:50:23.068Z",
   "id": "xNiuEqQOSNCSLvW5",
   "name": "ADV_campaign_analysis_AI",
   "active": false,
@@ -63,7 +63,7 @@
           "mappingMode": "defineBelow",
           "value": {
             "resolution": "={{ $json.resolution}}",
-            "list_id": "={{ $('Loop Over Items').last().json.list_id }}",
+            "list_id": "={{ $('Loop Over Items2').last().json.phrase_id }}",
             "ai_response_tokens": "=0",
             "ai_calls": "={{ $json.ai_calls }}",
             "embedding_calls": "={{ $json.embedding_calls }}"
@@ -775,8 +775,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        9408,
-        -288
+        9600,
+        -400
       ],
       "id": "63004840-6153-4b02-8cdf-86c07fedf3f2",
       "name": "no relevant",
@@ -884,7 +884,7 @@
             {
               "id": "26a3b4cf-c374-4833-8b03-55dcf4df1097",
               "name": "args.company_id",
-              "value": "={{ $('Loop Over Items').last().json.company_id }}",
+              "value": "={{ $('When Executed by Another Workflow').last().json.company_id }}",
               "type": "number"
             },
             {
@@ -1006,7 +1006,7 @@
     },
     {
       "parameters": {
-        "jsCode": "// Достаём массив competitors\n\n\n// Разворачиваем каждый объект в отдельный item\nreturn $json.non_matches.map((c, index) => ({\n  json: {\n    index,\n    minus_word: c.toLowerCase(),\n    list_id:$('Loop Over Items').last().json.list_id    \n  }\n}));"
+        "jsCode": "// Достаём массив competitors\n\n\n// Разворачиваем каждый объект в отдельный item\nreturn $json.non_matches.map((c, index) => ({\n  json: {\n    index,\n    minus_word: c.toLowerCase(),\n    list_id: $('Loop Over Items2').last().json.phrase_id \n  }\n}));"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -1336,13 +1336,13 @@
             {
               "id": "224cde67-d787-4cce-8db0-4ca43a3c4fbe",
               "name": "company_id",
-              "value": "={{ $('Loop Over Items').last().json.company_id }}",
+              "value": "={{ $('When Executed by Another Workflow').last().json.company_id }}",
               "type": "string"
             },
             {
               "id": "18575e26-d5ea-458a-8414-b924427f3aa3",
               "name": "report_id",
-              "value": "={{ $('Loop Over Items').last().json.report_id }}",
+              "value": "={{ $('When Executed by Another Workflow').last().json.import_id }}",
               "type": "string"
             }
           ]
@@ -1396,11 +1396,12 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        9664,
-        -480
+        9392,
+        -256
       ],
       "id": "7c173f33-7017-4638-a32e-44a7e2d95e69",
       "name": "refresh minus words status",
+      "executeOnce": true,
       "credentials": {
         "postgres": {
           "id": "Hx2VFmUi5WO2K4QX",
@@ -1733,7 +1734,7 @@
       "main": [
         [
           {
-            "node": "refresh minus words status",
+            "node": "read call counters",
             "type": "main",
             "index": 0
           }
@@ -1902,7 +1903,7 @@
       "main": [
         [
           {
-            "node": "no relevant",
+            "node": "refresh minus words status",
             "type": "main",
             "index": 0
           }
@@ -2048,7 +2049,7 @@
       "main": [
         [
           {
-            "node": "read call counters",
+            "node": "no relevant",
             "type": "main",
             "index": 0
           }
@@ -2160,7 +2161,7 @@
       }
     ]
   },
-  "versionId": "9ffef6ea-89de-4103-92b9-25c3a0bc203d",
+  "versionId": "f6aba5a3-1502-4091-a388-417ed774a89c",
   "triggerCount": 0,
   "shared": [
     {
