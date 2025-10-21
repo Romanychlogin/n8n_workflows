@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-28T11:31:13.045Z",
-  "updatedAt": "2025-10-21T13:04:33.642Z",
+  "updatedAt": "2025-10-21T13:18:06.135Z",
   "id": "lBAh8kjoXRX0aGUF",
   "name": "ADS headers and texts creation services for updates",
   "active": false,
@@ -373,7 +373,7 @@
     },
     {
       "parameters": {
-        "jsCode": "\n\nreturn [{\n  json: \n {\n  \"model\": \"gpt-5\",\n  \"input\": [\n    {\n      \"role\": \"user\",\n      \"content\": [\n        {\n          \"type\": \"input_text\",\n          \"text\": $json.my_prompt\n        }\n      ]\n    }\n  ],\n  \"text\": {\n    \"format\": {\n      \"type\": \"json_schema\",\n      \"name\": \"url_string\",\n      \"strict\": true,\n      \"schema\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"url\": {\n            \"type\": \"string\",\n            \"enum\": [$('string for service urls').last().json.joined],\n            \"description\": \"A valid URL string\"\n          }\n        },\n        \"required\": [\n          \"url\"\n        ],\n        \"additionalProperties\": false\n      }\n    },\n    \"verbosity\": \"low\"\n  },\n  \"reasoning\": {\n    \"effort\": \"minimal\",\n    \"summary\": null\n  },\n  \"tools\": [],\n  \"store\": false,\n  \"include\": [\n    \"reasoning.encrypted_content\",\n    \"web_search_call.action.sources\"\n  ]\n}\n\n}];"
+        "jsCode": "\n\nreturn [{\n  json: \n  {\n  \"model\": \"gpt-5\",\n  \"input\": [\n    {\n      \"role\": \"developer\",\n      \"content\": [\n        {\n          \"type\": \"input_text\",\n          \"text\": \"Strictly follow provided instructions and response format\"\n        }\n      ]\n    },\n    {\n      \"role\": \"user\",\n      \"content\": [\n        {\n          \"type\": \"input_text\",\n          \"text\": $json.my_prompt\n        }\n      ]\n    }\n  ],\n  \"text\": {\n    \"format\": {\n      \"type\": \"json_schema\",\n      \"name\": \"url_strings\",\n      \"strict\": true,\n      \"schema\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"url_strings\": {\n            \"type\": \"array\",\n            \"description\": \"List of URL objects.\",\n            \"items\": {\n              \"type\": \"object\",\n              \"properties\": {\n                \"url_string\": {\n                  \"type\": \"string\",\n                  \"enum\": [$('string for service urls').last().json.joined],\n                  \"description\": \"A valid URL from the allowed list.\"\n                },\n                \"id\": {\n                  \"type\": \"string\",\n                  \"description\": \"Unique identifier for the URL object.\",\n                  \"minLength\": 1\n                }\n              },\n              \"required\": [\n                \"url_string\",\n                \"id\"\n              ],\n              \"additionalProperties\": false\n            },\n            \"minItems\": 0\n          }\n        },\n        \"required\": [\n          \"url_strings\"\n        ],\n        \"additionalProperties\": false\n      }\n    },\n    \"verbosity\": \"low\"\n  },\n  \"reasoning\": {\n    \"effort\": \"minimal\",\n    \"summary\": \"auto\"\n  },\n  \"tools\": [],\n  \"store\": false,\n  \"include\": [\n    \"reasoning.encrypted_content\",\n    \"web_search_call.action.sources\"\n  ]\n}\n  \n\n}];"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -413,7 +413,7 @@
     },
     {
       "parameters": {
-        "jsCode": "const workflowData = $getWorkflowStaticData('global');\nlet my_prompt = workflowData.my_prompt_url.data;\n\nfor (const item of $input.all()) {\n  item.json.my_prompt = my_prompt.replaceAll(\"{{company_description}}\", workflowData.company_description_with_url).replaceAll(\"{{key_word}}\", $('Set prompt').first().json.key_word).replaceAll(\"{{ad_header}}\",JSON.parse($('HTTP Request').first().json.output[1].content[0].text).header).replaceAll(\"{{ad_text}}\",JSON.parse($input.first().json.output[1].content[0].text).ad_text);\n}\n\nreturn $input.all();"
+        "jsCode": "const workflowData = $getWorkflowStaticData('global');\nlet my_prompt = workflowData.my_prompt_url.data;\n\nfor (const item of $input.all()) {\n  item.json.my_prompt = my_prompt.replaceAll(\"{{company_description}}\", workflowData.company_description_with_url).replaceAll(\"{{key_word_header_ad_text}}\", JSON.stringify($json.Items));\n}\n\nreturn $input.all();"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -1352,13 +1352,13 @@
     },
     {
       "parameters": {
-        "jsCode": "// Берём строку JSON из указанного поля\nlet raw = $input.first().json?.output?.[1]?.content?.[0]?.text;\n\n// Удаляем ограждения кода ```...```\nfunction stripCodeFences(s) {\n  if (typeof s !== 'string') return s;\n  let t = s.trim();\n  if (t.startsWith('```')) {\n    t = t.replace(/^```[a-zA-Z]*\\n?/, '').replace(/```$/, '').trim();\n  }\n  return t;\n}\n\n// Безопасный парсинг JSON (с попыткой вытащить первый {...})\nfunction safeParseJSON(x) {\n  if (x == null) return null;\n  if (typeof x === 'object') return x;\n  const s = stripCodeFences(String(x));\n  try {\n    return JSON.parse(s);\n  } catch {\n    const m = s.match(/{[\\s\\S]*}/);\n    if (m) {\n      try { return JSON.parse(m[0]); } catch {}\n    }\n    return null;\n  }\n}\n\nconst obj = safeParseJSON(raw);\nif (!obj || !Array.isArray(obj.phrases)) {\n  return [];\n}\n\nconst out = [];\nfor (const it of obj.phrases) {\n  if (!it || typeof it !== 'object') continue;\n\n  const key_word      = typeof it.phrase === 'string' && it.phrase.length > 0 ? it.phrase : null;\n  const phrase_id   = typeof it.phrase_id === 'string' && it.phrase_id.length > 0 ? it.phrase_id : null;\n  const resolution  = typeof it.resolution === 'boolean' ? it.resolution : null;\n\n  // Учитываем расширенный формат: требуем, чтобы присутствовали все три входных поля,\n  // но в выход добавляем только phrase_id и resolution.\n  if (key_word && phrase_id && resolution !== null) {\n    out.push({\n      json: {\n        phrase_id,\n        resolution\n        // Если нужно включить сам текст фразы в выход:\n        , key_word\n      }\n    });\n  }\n}\n\nreturn out;"
+        "jsCode": "// Берём строку JSON из указанного поля\nlet raw = $input.first().json?.output?.[1]?.content?.[0]?.text;\n\n// Удаляем ограждения кода ```...```\nfunction stripCodeFences(s) {\n  if (typeof s !== 'string') return s;\n  let t = s.trim();\n  if (t.startsWith('```')) {\n    t = t.replace(/^```[a-zA-Z]*\\n?/, '').replace(/```$/, '').trim();\n  }\n  return t;\n}\n\n// Безопасный парсинг JSON (с попыткой вытащить первый {...})\nfunction safeParseJSON(x) {\n  if (x == null) return null;\n  if (typeof x === 'object') return x;\n  const s = stripCodeFences(String(x));\n  try {\n    return JSON.parse(s);\n  } catch {\n    const m = s.match(/{[\\s\\S]*}/);\n    if (m) {\n      try { return JSON.parse(m[0]); } catch {}\n    }\n    return null;\n  }\n}\n\nconst obj = safeParseJSON(raw);\nif (!obj || !Array.isArray(obj.phrases)) {\n  return [];\n}\n\nconst out = [];\nfor (const it of obj.phrases) {\n  if (!it || typeof it !== 'object') continue;\n\n  const ad_url      = typeof it.url_string === 'string' && it.url_string.length > 0 ? it.url_string : null;\n  const list_id   = typeof it.id === 'string' && it.id.length > 0 ? it.id : null;\n \n\n  // Учитываем расширенный формат: требуем, чтобы присутствовали все три входных поля,\n  // но в выход добавляем только phrase_id и resolution.\n  if (ad_url && list_id  !== null) {\n    out.push({\n      json: {\n        list_id,\n        ad_url,\n        ad_header:$('keywords headers and texts').last().json.ItemsbyId[list_id].header,\n        ad_text:$('keywords headers and texts').last().json.ItemsbyId[list_id].ad_text\n        \n      }\n    });\n  }\n}\n\nreturn out;"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        4944,
-        -528
+        4928,
+        -544
       ],
       "id": "8ea8675a-bac8-4fc7-a544-d04ffbd81ca8",
       "name": "Separate output items"
@@ -2035,7 +2035,7 @@
       }
     ]
   },
-  "versionId": "a57b099d-98b6-4257-8030-950801a86f59",
+  "versionId": "9751919f-fe34-445e-bf5a-79b062c9561b",
   "triggerCount": 0,
   "shared": [
     {
