@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-10-20T11:13:50.516Z",
-  "updatedAt": "2025-10-21T05:16:24.815Z",
+  "updatedAt": "2025-10-21T05:29:49.461Z",
   "id": "xNiuEqQOSNCSLvW5",
   "name": "ADV_campaign_analysis_AI",
   "active": false,
@@ -1444,8 +1444,8 @@
       "type": "n8n-nodes-base.splitInBatches",
       "typeVersion": 3,
       "position": [
-        4720,
-        400
+        4736,
+        368
       ],
       "id": "d1c9513d-65b1-41d2-aba0-9268b3976ab5",
       "name": "Loop Over Items2"
@@ -1522,7 +1522,7 @@
       "main": [
         [
           {
-            "node": "Обработка ответа AI",
+            "node": "Loop Over Items2",
             "type": "main",
             "index": 0
           }
@@ -2161,7 +2161,7 @@
       }
     ]
   },
-  "versionId": "c692a50a-ce44-4ebf-ace6-a0c587d21dcf",
+  "versionId": "4fb28550-17b2-4b4d-a3e0-7f002e329827",
   "triggerCount": 0,
   "shared": [
     {
