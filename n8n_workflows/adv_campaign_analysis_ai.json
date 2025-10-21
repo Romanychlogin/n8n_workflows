@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-10-20T11:13:50.516Z",
-  "updatedAt": "2025-10-21T05:08:57.694Z",
+  "updatedAt": "2025-10-21T05:16:24.815Z",
   "id": "xNiuEqQOSNCSLvW5",
   "name": "ADV_campaign_analysis_AI",
   "active": false,
@@ -1062,7 +1062,7 @@
         "operation": "executeQuery",
         "query": "INSERT INTO public.minus_words\n  (minus_word_embedding, minus_word,  company_id, comment, weight)\nVALUES\n  ($1::vector, $2, $3, $4, $5)\nON CONFLICT (company_id, minus_word) DO UPDATE\nSET weight = COALESCE(minus_words.weight, 0) + COALESCE(EXCLUDED.weight, 0)\nRETURNING id;",
         "options": {
-          "queryReplacement": "=[\n  { \"value\": \"={{'[' + $json.data[0].embedding.map(e => Number(e)).join(',') + ']'}}\" },\n  { \"value\": \"={{ $('Loop Over Items1').item.json.minus_word }}\" },\n  { \"value\": \"={{ $('When Executed by Another Workflow').last().json.company_id }}\" },\n  { \"value\": \"={{ 'added from the core update from the report:'+ $('When Executed by Another Workflow').last().json.import_id}}\" },\n  { \"value\": \"={{ $('Loop Over Items').item.json.count_views }}\" }\n]"
+          "queryReplacement": "=[\n  { \"value\": \"={{'[' + $json.data[0].embedding.map(e => Number(e)).join(',') + ']'}}\" },\n  { \"value\": \"={{ $('Loop Over Items1').item.json.minus_word }}\" },\n  { \"value\": \"={{ $('When Executed by Another Workflow').last().json.company_id }}\" },\n  { \"value\": \"={{ 'added from the core update from the report:'+ $('When Executed by Another Workflow').last().json.import_id}}\" },\n  { \"value\": \"={{ $('Loop Over Items').last().json.ItemsbyId[$('Loop Over Items2').last().json.phrase_id].count_views }}\" }\n]"
         }
       },
       "type": "n8n-nodes-base.postgres",
@@ -1240,7 +1240,7 @@
         "operation": "executeQuery",
         "query": "INSERT INTO minus_words_origin(\n\tminus_word_id, list_id, origin_weight)\n\tVALUES ($1, $2, $3);",
         "options": {
-          "queryReplacement": "=[{{ $json.id }},{{ $('Loop Over Items2').last().json.phrase_id }},{{ $('Loop Over Items').item.json.count_views }}]"
+          "queryReplacement": "=[{{ $json.id }},{{ $('Loop Over Items2').last().json.phrase_id }},{{ $('Loop Over Items').last().json.ItemsbyId[$('Loop Over Items2').last().json.phrase_id].count_views }}]"
         }
       },
       "type": "n8n-nodes-base.postgres",
@@ -1260,13 +1260,13 @@
     },
     {
       "parameters": {
-        "jsCode": "const workflowData = $getWorkflowStaticData('global');\nworkflowData.ai_calls = 0;\nworkflowData.embedding_calls = 0;\n\nconst byId = Object.fromEntries(\n  $json.items.map(o => [o.id, o]) // ключ лучше привести к строке\n);\n\n// доступ:\nconst row42 = byId['9155'];\nreturn [{ json: { keys: Object.keys(byId), sample_42: byId['9155'],countviews:byId['9155'].count_views } }]\n//return $input.all();\n"
+        "jsCode": "const workflowData = $getWorkflowStaticData('global');\nworkflowData.ai_calls = 0;\nworkflowData.embedding_calls = $('Loop Over Items').last().json.ItemsbyId[$('Loop Over Items2').last().json.phrase_id].embedding_calls;\nreturn $input.all();\n"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        2144,
-        -96
+        5408,
+        -16
       ],
       "id": "b811b260-33ea-4eab-8199-bbb213262432",
       "name": "Init calls counters"
@@ -1411,7 +1411,7 @@
     },
     {
       "parameters": {
-        "jsCode": "// Сколько входящих элементов агрегировать в одном выходящем (в пределах одного service_name)\nconst BATCH_SIZE = 100;\n\nfunction toIdString(v) {\n  if (typeof v === 'bigint') return v.toString();\n  if (typeof v === 'number') return Number.isFinite(v) ? Math.trunc(v).toString() : '';\n  if (typeof v === 'string') return v;\n  return v != null && v.toString ? v.toString() : '';\n}\n\nfunction toStr(v) {\n  return v == null ? '' : String(v);\n}\n\nconst inputItems = $input.all();\nconst out = [];\n\nlet i = 0;\nwhile (i < inputItems.length) {\n  // Старт новой группы по service_name\n  const first = inputItems[i]?.json ?? {};\n  const groupService = toStr(first.service_name);\n\n  // Собираем все подряд идущие элементы с тем же service_name\n  const group = [];\n  while (i < inputItems.length) {\n    const cur = inputItems[i]?.json ?? {};\n    if (toStr(cur.service_name) !== groupService) break;\n    group.push(cur);\n    i++;\n  }\n\n  // Метаданные сервиса (одинаковые в группе)\n  const svcCompany       = toStr(first.company_name);\n  const svcName          = groupService;\n  const svcDescription   = toStr(first.service_description);\n\n  // Режем группу на пачки по BATCH_SIZE\n  for (let start = 0; start < group.length; start += BATCH_SIZE) {\n    const chunk = group.slice(start, start + BATCH_SIZE);\n\n    const items = chunk.map(j => ({\n      id: toIdString(j.list_id),           // берем content_id => строка\n      phrase: toStr(j.key_word),\n      count_views:toIdString(j.count_views)\n    }));\n\n    out.push({\n      json: {\n        company_name: svcCompany,\n        service_name: svcName,\n        service_description: svcDescription,\n        items\n      }\n    });\n  }\n}\n\nreturn out;\n\n\n\n\n"
+        "jsCode": "// Сколько входящих элементов агрегировать в одном выходящем (в пределах одного service_name)\nconst BATCH_SIZE = 100;\n\nfunction toIdString(v) {\n  if (typeof v === 'bigint') return v.toString();\n  if (typeof v === 'number') return Number.isFinite(v) ? Math.trunc(v).toString() : '';\n  if (typeof v === 'string') return v;\n  return v != null && v.toString ? v.toString() : '';\n}\n\nfunction toStr(v) {\n  return v == null ? '' : String(v);\n}\n\nconst inputItems = $input.all();\nconst out = [];\n\nlet i = 0;\nwhile (i < inputItems.length) {\n  // Старт новой группы по service_name\n  const first = inputItems[i]?.json ?? {};\n  const groupService = toStr(first.service_name);\n\n  // Собираем все подряд идущие элементы с тем же service_name\n  const group = [];\n  while (i < inputItems.length) {\n    const cur = inputItems[i]?.json ?? {};\n    if (toStr(cur.service_name) !== groupService) break;\n    group.push(cur);\n    i++;\n  }\n\n  // Метаданные сервиса (одинаковые в группе)\n  const svcCompany       = toStr(first.company_name);\n  const svcName          = groupService;\n  const svcDescription   = toStr(first.service_description);\n\n  // Режем группу на пачки по BATCH_SIZE\n  for (let start = 0; start < group.length; start += BATCH_SIZE) {\n    const chunk = group.slice(start, start + BATCH_SIZE);\n\n    const items = chunk.map(j => ({\n      id: toIdString(j.list_id),           // берем content_id => строка\n      phrase: toStr(j.key_word),\n      count_views:toIdString(j.count_views),\n      embedding_calls:toIdString(j.embedding_calls)\n    }));\n    const ItemsbyId = Object.fromEntries(\n    items.map(o => [o.id, o]) \n    );\n    out.push({\n      json: {\n        company_name: svcCompany,\n        service_name: svcName,\n        service_description: svcDescription,\n        items,\n        ItemsbyId \n      }\n    });\n  }\n}\n\nreturn out;\n\n\n\n\n"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -1492,8 +1492,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        5296,
-        128
+        5088,
+        224
       ],
       "id": "a972476f-24be-4274-a651-d71635124654",
       "name": "reset first_item1"
@@ -1511,7 +1511,7 @@
         ],
         [
           {
-            "node": "Init calls counters",
+            "node": "Set prompt",
             "type": "main",
             "index": 0
           }
@@ -1972,7 +1972,7 @@
       "main": [
         [
           {
-            "node": "Set prompt",
+            "node": "Обработка ответа AI",
             "type": "main",
             "index": 0
           }
@@ -2111,7 +2111,7 @@
       "main": [
         [
           {
-            "node": "Обработка ответа AI",
+            "node": "Init calls counters",
             "type": "main",
             "index": 0
           }
@@ -2161,7 +2161,7 @@
       }
     ]
   },
-  "versionId": "abd48828-5243-4e38-a572-0895f63ca36b",
+  "versionId": "c692a50a-ce44-4ebf-ace6-a0c587d21dcf",
   "triggerCount": 0,
   "shared": [
     {
