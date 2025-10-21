@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-10-16T07:25:00.123Z",
-  "updatedAt": "2025-10-21T17:50:39.143Z",
+  "updatedAt": "2025-10-21T17:58:14.909Z",
   "id": "sLocyhmCeTBxhA88",
   "name": "campaign core update finalization",
   "active": false,
@@ -105,7 +105,7 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "BEGIN;\n\nWITH ins AS (\n  INSERT INTO ads_list\n    (group_name, key_word, ad_header, ad_text, group_id,\n     ad_url, company_id, service_id, report_id, update_required, campaign_id)\n  SELECT\n    group_name, key_word, ad_header, ad_text, group_id,\n    ad_url, company_id, service_id, report_id, false, campaign_id\n  FROM public.current_ads_list where company_id=$1 and report_id=$2\n  ),\ndel AS (\n  DELETE FROM public.current_ads_list c\n  USING ins\n  WHERE c.ad_id = ins.ad_id\n  RETURNING 1\n)\nSELECT\n  (SELECT count(*) FROM ins) AS inserted_or_updated,\n  (SELECT count(*) FROM del) AS deleted_from_current;\n\nCOMMIT;",
+        "query": "BEGIN;\n\nINSERT INTO public.ads_list (\n  group_name, key_word, ad_header, ad_text, group_id,\n  ad_url, company_id, service_id, report_id, update_required, campaign_id\n)\nSELECT\n  group_name, key_word, ad_header, ad_text, group_id,\n  ad_url, company_id, service_id, report_id, false, campaign_id\nFROM public.current_ads_list\nWHERE company_id = $1 AND report_id = $2;\n\nDELETE FROM public.current_ads_list\nWHERE company_id = $1 AND report_id = $2;\n\nCOMMIT;",
         "options": {
           "queryReplacement": "={{ $('When Executed by Another Workflow').item.json.company_id }},{{ $('When Executed by Another Workflow').item.json.import_id }}"
         }
@@ -194,7 +194,13 @@
     "availableInMCP": false,
     "errorWorkflow": "v2Z32ISEUzsFYnZw"
   },
-  "staticData": null,
+  "staticData": {
+    "global": {
+      "steps_passed": 0,
+      "tokens_used": 0,
+      "step": 0
+    }
+  },
   "meta": {
     "templateCredsSetupCompleted": true
   },
@@ -203,7 +209,7 @@
       {
         "json": {
           "id": "sLocyhmCeTBxhA88",
-          "root_execution_id": 128059,
+          "root_execution_id": 128071,
           "company_id": 1,
           "threshhold": "0.79",
           "import_id": "5"
@@ -211,7 +217,7 @@
       }
     ]
   },
-  "versionId": "59abfb8b-e4b4-456d-bf7e-f976fe8613d9",
+  "versionId": "9e840648-5209-4a76-90b0-1cb474eb7645",
   "triggerCount": 0,
   "shared": [
     {
