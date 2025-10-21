@@ -1,0 +1,45 @@
+{
+  "createdAt": "2025-10-21T12:43:03.776Z",
+  "updatedAt": "2025-10-21T12:43:20.205Z",
+  "id": "Z5sOyh4IJtSVsD2a",
+  "name": "Recieve form data",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "path": "add0a254-19eb-4e02-b02e-344a6f26a86e",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "53703b18-b0c9-4def-a05e-6591c46fc7ec",
+      "name": "Webhook",
+      "webhookId": "add0a254-19eb-4e02-b02e-344a6f26a86e"
+    }
+  ],
+  "connections": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": {},
+  "versionId": "52b9c7a8-eb4d-4bb1-b2e2-9cd4a780c84e",
+  "triggerCount": 0,
+  "shared": [
+    {
+      "createdAt": "2025-10-21T12:43:03.776Z",
+      "updatedAt": "2025-10-21T12:43:03.776Z",
+      "role": "workflow:owner",
+      "workflowId": "Z5sOyh4IJtSVsD2a",
+      "projectId": "spKmbJLU4mvACXIB"
+    }
+  ],
+  "tags": [],
+  "file_name": "recieve-form-data.json"
+}
