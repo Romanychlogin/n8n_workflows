@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-10-20T11:14:53.972Z",
-  "updatedAt": "2025-10-20T17:25:34.245Z",
+  "updatedAt": "2025-10-21T07:28:01.440Z",
   "id": "dSYXe1nfeCvfozcQ",
   "name": "minus words vs content review",
   "active": false,
@@ -13,8 +13,8 @@
       "type": "n8n-nodes-base.executeWorkflowTrigger",
       "typeVersion": 1.1,
       "position": [
-        -3328,
-        -416
+        -4080,
+        -384
       ],
       "id": "291d5162-89da-4303-9cca-c5035fe9301b",
       "name": "When Executed by Another Workflow"
@@ -30,8 +30,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        1536,
-        -800
+        1344,
+        -1296
       ],
       "id": "bab4fa97-bd10-4819-ae2b-73b08c7bc74b",
       "name": "Mark_workflow_completed",
@@ -54,8 +54,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        -3056,
-        -416
+        -3808,
+        -384
       ],
       "id": "96866a0e-abc5-4743-b073-7534819b37b5",
       "name": "Mark_workwlow_started",
@@ -73,8 +73,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1120,
-        -816
+        1024,
+        -1168
       ],
       "id": "68cb8b05-9d21-4074-a3dc-3fdabb0326f4",
       "name": "Init total counter"
@@ -90,11 +90,12 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        -1968,
+        -2160,
         -400
       ],
       "id": "22cf5131-f5bd-420f-b192-0e20113a70b7",
       "name": "Get matched minus words and content",
+      "alwaysOutputData": true,
       "credentials": {
         "postgres": {
           "id": "4YkdFJcdTgzo9hkz",
@@ -119,7 +120,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        -2208,
+        -2336,
         -400
       ],
       "id": "5dde924d-173d-4dd1-a0b0-9451473cf7c9",
@@ -215,8 +216,8 @@
       "type": "n8n-nodes-base.github",
       "typeVersion": 1.1,
       "position": [
-        -2832,
-        -432
+        -3584,
+        -400
       ],
       "id": "1c6a0c3e-a9c6-4e39-95b5-b243ff372221",
       "name": "Get a file",
@@ -236,8 +237,8 @@
       "type": "n8n-nodes-base.extractFromFile",
       "typeVersion": 1,
       "position": [
-        -2624,
-        -432
+        -3376,
+        -400
       ],
       "id": "a8e0755c-cbbc-459b-9d48-c939c353eaa6",
       "name": "Extract from File1"
@@ -249,8 +250,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -2416,
-        -432
+        -3168,
+        -400
       ],
       "id": "6cffc52c-33de-498e-91c0-e0f364690068",
       "name": "Code1"
@@ -266,8 +267,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        -2288,
-        -672
+        -2912,
+        -416
       ],
       "id": "47cc6569-583b-45bb-816e-a3a99717f530",
       "name": "Services list",
@@ -285,8 +286,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -2080,
-        -672
+        -2704,
+        -416
       ],
       "id": "0f356692-3e64-4d95-b2de-cdd2f0dc37e6",
       "name": "Code in JavaScript1"
@@ -302,8 +303,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        -1872,
-        -672
+        -2496,
+        -416
       ],
       "id": "40bce46b-2f27-4306-a8c9-f8df1da3ea45",
       "name": "get company name",
@@ -325,7 +326,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        -960,
+        -1056,
         -672
       ],
       "id": "876c6cc5-e8be-4062-b24a-d17c8a8549cd",
@@ -348,7 +349,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        -1136,
+        -1232,
         -672
       ],
       "id": "4b586ba2-d758-49aa-ac0d-44b2c44464b2",
@@ -371,11 +372,12 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        -752,
+        -848,
         -672
       ],
       "id": "99a3e8e6-93e0-4dba-832c-0ef517094485",
       "name": "Get matched minus words and content1",
+      "alwaysOutputData": true,
       "credentials": {
         "postgres": {
           "id": "4YkdFJcdTgzo9hkz",
@@ -390,8 +392,8 @@
       "type": "n8n-nodes-base.splitInBatches",
       "typeVersion": 3,
       "position": [
-        -224,
-        -672
+        -688,
+        464
       ],
       "id": "bfa1c2e6-4ff5-414c-8689-081a2a099366",
       "name": "Loop Over Items1"
@@ -403,8 +405,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        176,
-        -656
+        -288,
+        480
       ],
       "id": "3ebc0ae5-372f-436b-854a-83216df12e90",
       "name": "Set API JSON1"
@@ -423,8 +425,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        336,
-        -656
+        -128,
+        480
       ],
       "id": "3575ab45-8a47-401c-9cfd-bda34e78f9dd",
       "name": "HTTP Request1",
@@ -445,8 +447,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        0,
-        -656
+        -464,
+        480
       ],
       "id": "35e7182a-3f69-4253-b4a6-96b7ea58b896",
       "name": "Set prompt1"
@@ -471,8 +473,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -496,
-        -672
+        -928,
+        464
       ],
       "id": "5cfda860-a1f5-442c-9836-6403ef395c53",
       "name": "Slice  into batches strings2"
@@ -497,8 +499,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        512,
-        -656
+        48,
+        480
       ],
       "id": "6f8afa5b-97c2-48fc-8f18-e27dcb2b1c51",
       "name": "aggregate ids into ids_string1"
@@ -511,32 +513,11 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        608,
-        -864
+        16,
+        288
       ],
       "id": "5d03e10e-347e-4ef5-a148-0f771d3d03fc",
       "name": "move relevant minus words into content",
-      "credentials": {
-        "postgres": {
-          "id": "Hx2VFmUi5WO2K4QX",
-          "name": "Postgres account 2"
-        }
-      },
-      "disabled": true
-    },
-    {
-      "parameters": {
-        "operation": "executeQuery",
-        "options": {}
-      },
-      "type": "n8n-nodes-base.postgres",
-      "typeVersion": 2.6,
-      "position": [
-        800,
-        -848
-      ],
-      "id": "fca9705d-108e-4857-b6ee-8bf6004f461f",
-      "name": "delete other suspicious minus_words",
       "credentials": {
         "postgres": {
           "id": "Hx2VFmUi5WO2K4QX",
@@ -553,7 +534,7 @@
       "typeVersion": 2,
       "position": [
         -1392,
-        -640
+        -672
       ],
       "id": "cfebf7d8-8577-4357-bcb2-9982d911faf9",
       "name": "get ids"
@@ -565,8 +546,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -96,
-        -848
+        -560,
+        288
       ],
       "id": "8a8a2d1d-815c-4ab7-89e7-f3864a51bb79",
       "name": "get ids1"
@@ -576,14 +557,14 @@
         "operation": "executeQuery",
         "query": "INSERT INTO public.minus_words_log(\n\t minus_word_id, minus_word, report_id, change_timestamp, change_type, company_id)\n\tSELECT\n    cc.id,\n    cc.minus_word,\n    $2 AS report_id,\n    now() AS change_timestamp,\n    'deleted' AS change_type,\n    $1 AS company_id\nFROM public.minus_words AS cc\nWHERE cc.company_id = $1\n  AND cc.id IN (\n    SELECT value::bigint\n    FROM jsonb_array_elements_text($3::jsonb) AS t(value)\n  );",
         "options": {
-          "queryReplacement": "={{ $('When Executed by Another Workflow').last().json.company_id }},{{ $('When Executed by Another Workflow').last().json.import_id }},{{  JSON.stringify($json.ids_false_string)}}"
+          "queryReplacement": "={{ $('When Executed by Another Workflow').last().json.company_id }},{{ $('When Executed by Another Workflow').last().json.import_id }},{{  JSON.stringify($json.ids)}}"
         }
       },
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        128,
-        -848
+        112,
+        -720
       ],
       "id": "9cb1c6a4-1602-4e45-9bc8-ed2048703d0f",
       "name": "log del changes",
@@ -605,8 +586,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        336,
-        -848
+        -224,
+        320
       ],
       "id": "f78f96f2-b7ab-40db-8cbc-9845d218c348",
       "name": "log move changes",
@@ -636,12 +617,12 @@
       "parameters": {
         "content": "Удаляем нерелевнтный контент",
         "height": 368,
-        "width": 960
+        "width": 848
       },
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        -1280,
+        -1488,
         -896
       ],
       "id": "da2ceedc-46a7-48c6-be30-a88e91c201ae",
@@ -656,11 +637,130 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        -240,
-        -912
+        -704,
+        224
       ],
       "id": "0aa061e7-31b2-4a78-9397-1d72ad48093e",
       "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "d27bd43b-9c58-4c64-87ba-c82c2ccd45d1",
+              "leftValue": "={{ $input.first().json }}",
+              "rightValue": "",
+              "operator": {
+                "type": "object",
+                "operation": "empty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -1952,
+        -1008
+      ],
+      "id": "15246044-1a7e-4c97-b624-7938b7b557c8",
+      "name": "If1"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "d27bd43b-9c58-4c64-87ba-c82c2ccd45d1",
+              "leftValue": "={{ $input.first().json }}",
+              "rightValue": "",
+              "operator": {
+                "type": "object",
+                "operation": "empty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -656,
+        -1008
+      ],
+      "id": "fa7155d7-3ffd-4a91-ad73-180be2fe574b",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "jsCode": "function toIdString(v) {\n  if (typeof v === 'bigint') return v.toString();\n  if (typeof v === 'number') return Number.isFinite(v) ? Math.trunc(v).toString() : '';\n  if (v == null) return '';\n  return String(v);\n}\n\nconst ids = $input.all()\n  .map(({ json }) => json?.id)\n  .filter(v => v !== undefined && v !== null)\n  .map(toIdString);\n\nreturn [{ json: { ids, count: ids.length } }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -96,
+        -720
+      ],
+      "id": "d9a06b3d-318c-47cb-b546-8dc5a00bc169",
+      "name": "aggregate output"
+    },
+    {
+      "parameters": {
+        "content": "Удаляем все минус слова совпадающие с контентом кроме базовых",
+        "height": 368,
+        "width": 640
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -128,
+        -896
+      ],
+      "id": "df30b0e4-e3e2-4587-8efb-460dd12efe14",
+      "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "delete from minus_words where id IN (\n    SELECT value::bigint\n    FROM jsonb_array_elements_text($1::jsonb) AS t(value)\n  );",
+        "options": {
+          "queryReplacement": "={{  JSON.stringify($('aggregate output').last().json.ids)}}"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        352,
+        -720
+      ],
+      "id": "fca9705d-108e-4857-b6ee-8bf6004f461f",
+      "name": "delete suspicious minus_words",
+      "credentials": {
+        "postgres": {
+          "id": "4YkdFJcdTgzo9hkz",
+          "name": "PGvector"
+        }
+      }
     }
   ],
   "connections": {
@@ -706,7 +806,7 @@
       "main": [
         [
           {
-            "node": "Slice  into batches strings",
+            "node": "If1",
             "type": "main",
             "index": 0
           }
@@ -918,7 +1018,7 @@
       "main": [
         [
           {
-            "node": "Slice  into batches strings2",
+            "node": "If",
             "type": "main",
             "index": 0
           }
@@ -971,13 +1071,7 @@
     },
     "move relevant minus words into content": {
       "main": [
-        [
-          {
-            "node": "delete other suspicious minus_words",
-            "type": "main",
-            "index": 0
-          }
-        ]
+        []
       ]
     },
     "get ids": {
@@ -993,6 +1087,63 @@
     },
     "get ids1": {
       "main": [
+        []
+      ]
+    },
+    "log del changes": {
+      "main": [
+        [
+          {
+            "node": "delete suspicious minus_words",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "log move changes": {
+      "main": [
+        []
+      ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "Init total counter",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Slice  into batches strings",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Init total counter",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "aggregate output",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "aggregate output": {
+      "main": [
         [
           {
             "node": "log del changes",
@@ -1002,33 +1153,11 @@
         ]
       ]
     },
-    "log del changes": {
-      "main": [
-        [
-          {
-            "node": "log move changes",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "delete other suspicious minus_words": {
+    "delete suspicious minus_words": {
       "main": [
         [
           {
             "node": "Init total counter",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "log move changes": {
-      "main": [
-        [
-          {
-            "node": "move relevant minus words into content",
             "type": "main",
             "index": 0
           }
@@ -1057,7 +1186,7 @@
       }
     ]
   },
-  "versionId": "6f28d607-e027-4ca6-8bbc-2df0e1411fe3",
+  "versionId": "6363d90e-c410-4c77-a2e9-fbf614745db1",
   "triggerCount": 0,
   "shared": [
     {
