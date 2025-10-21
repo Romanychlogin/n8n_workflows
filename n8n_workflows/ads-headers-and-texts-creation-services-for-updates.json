@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-28T11:31:13.045Z",
-  "updatedAt": "2025-10-16T15:50:42.156Z",
+  "updatedAt": "2025-10-21T09:10:48.058Z",
   "id": "lBAh8kjoXRX0aGUF",
   "name": "ADS headers and texts creation services for updates",
   "active": false,
@@ -15,7 +15,7 @@
       "type": "n8n-nodes-base.splitInBatches",
       "typeVersion": 3,
       "position": [
-        1424,
+        1504,
         -176
       ],
       "id": "339fe02b-ad75-4e32-9d50-2089c9aff64b",
@@ -188,7 +188,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        176,
+        160,
         -240
       ],
       "id": "f4e87d72-97f5-47cc-a4c1-ac98e7a68350",
@@ -623,8 +623,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        1232,
-        -224
+        1360,
+        -256
       ],
       "id": "1d88ae07-0d96-4cca-9acd-8a3efbf6b843",
       "name": "set first_item1"
@@ -1087,7 +1087,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        448,
+        464,
         -240
       ],
       "id": "a1f18792-306e-4081-99bf-d7b7ee592f91",
@@ -1194,37 +1194,14 @@
     },
     {
       "parameters": {
-        "operation": "executeQuery",
-        "query": "WITH clean AS (\n  SELECT *\n  FROM current_list f\n  WHERE f.company_id = $1\n    AND f.report_id  = $2\n    AND f.service_id  = $3\n    AND f.resolution = 'to add'\n    AND NOT EXISTS (\n      SELECT 1\n      FROM current_list s\n      WHERE s.company_id = f.company_id\n        AND s.report_id  = f.report_id\n        AND s.key_word   = f.key_word\n        AND s.resolution = 'same key'\n    )\n),\nranked AS (\n  SELECT\n    c.*,\n    ROW_NUMBER() OVER (\n      PARTITION BY c.key_word\n      ORDER BY c.list_id   -- при необходимости поменяй на created_at\n    ) AS rn\n  FROM clean c\n)\nSELECT *\nFROM ranked\nWHERE rn = 1;",
-        "options": {
-          "queryReplacement": "=[{{ $('set variables').item.json.company_id }},{{ $('set variables').item.json.import_id }},{{ $json.service_id }}]"
-        }
-      },
-      "type": "n8n-nodes-base.postgres",
-      "typeVersion": 2.6,
-      "position": [
-        320,
-        -240
-      ],
-      "id": "57b6a039-9828-4ffd-9fc3-49bb872b76ed",
-      "name": "Execute a SQL query",
-      "alwaysOutputData": true,
-      "credentials": {
-        "postgres": {
-          "id": "Hx2VFmUi5WO2K4QX",
-          "name": "Postgres account 2"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "content": "key word обрезать до 7 слов!!!!!!"
+        "content": "key word обрезать до 7 слов!!!!!!",
+        "height": 192
       },
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        1056,
-        -672
+        1856,
+        -416
       ],
       "id": "43ea249a-77b6-44f9-b702-25f60003283f",
       "name": "Sticky Note4"
@@ -1236,8 +1213,8 @@
       "type": "n8n-nodes-base.merge",
       "typeVersion": 3.2,
       "position": [
-        1088,
-        -272
+        1008,
+        -256
       ],
       "id": "e8df1c17-c260-4bee-b18f-26b9363b6c81",
       "name": "Merge"
@@ -1270,7 +1247,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        624,
+        656,
         -176
       ],
       "id": "f5652581-bcc8-48a4-a441-11d3f4e8fc7c",
@@ -1322,6 +1299,43 @@
       ],
       "id": "be5c7cc8-c0cb-4b87-a82d-970a64cbee22",
       "name": "prepare key words"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Сколько входящих элементов агрегировать в одном выходящем (в пределах одного service_name)\nconst BATCH_SIZE = 100;\n\nfunction toIdString(v) {\n  if (typeof v === 'bigint') return v.toString();\n  if (typeof v === 'number') return Number.isFinite(v) ? Math.trunc(v).toString() : '';\n  if (typeof v === 'string') return v;\n  return v != null && v.toString ? v.toString() : '';\n}\n\nfunction toStr(v) {\n  return v == null ? '' : String(v);\n}\n\nconst inputItems = $input.all();\nconst out = [];\n\nlet i = 0;\nwhile (i < inputItems.length) {\n  // Старт новой группы по service_name\n  const first = inputItems[i]?.json ?? {};\n  const groupService = toStr(first.service_name);\n\n  // Собираем все подряд идущие элементы с тем же service_name\n  const group = [];\n  while (i < inputItems.length) {\n    const cur = inputItems[i]?.json ?? {};\n    if (toStr(cur.service_name) !== groupService) break;\n    group.push(cur);\n    i++;\n  }\n\n  // Метаданные сервиса (одинаковые в группе)\n  const svcCompany       = toStr(first.company_name);\n  const svcName          = groupService;\n  const svcDescription   = toStr(first.service_description);\n\n  // Режем группу на пачки по BATCH_SIZE\n  for (let start = 0; start < group.length; start += BATCH_SIZE) {\n    const chunk = group.slice(start, start + BATCH_SIZE);\n\n    const items = chunk.map(j => ({\n      id: toIdString(j.list_id),           // берем content_id => строка\n      phrase: toStr(j.key_word)\n    }));\n    const items_ext = chunk.map(j => ({\n      id: toIdString(j.list_id),           // берем content_id => строка\n      phrase: toStr(j.key_word),\n      report_id: toStr(j.report_id),\n      service_id:toIdString(j.service_id),\n      company_id:toIdString(j.company_id)\n    }));\n    const ItemsbyId = Object.fromEntries(\n    items_ext.map(o => [o.id, o]) \n    );\n    out.push({\n      json: {\n        company_name: svcCompany,\n        service_name: svcName,\n        service_description: svcDescription,\n        items,\n        ItemsbyId \n      }\n    });\n  }\n}\n\nreturn out;\n\n\n\n\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1168,
+        -320
+      ],
+      "id": "f9b58881-201d-4ff1-90ea-39e641d8da09",
+      "name": "Slice  into batches strings"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "WITH clean AS (\n  SELECT *\n  FROM current_list f\n  WHERE f.company_id = $1\n    AND f.report_id  = $2\n    AND f.service_id  = $3\n    AND f.resolution = 'to add'\n    AND NOT EXISTS (\n      SELECT 1\n      FROM current_list s\n      WHERE s.company_id = f.company_id\n        AND s.report_id  = f.report_id\n        AND s.key_word   = f.key_word\n        AND s.resolution = 'same key'\n    )\n),\nranked AS (\n  SELECT\n    c.*,\n    ROW_NUMBER() OVER (\n      PARTITION BY c.key_word\n      ORDER BY c.list_id   -- при необходимости поменяй на created_at\n    ) AS rn\n  FROM clean c\n)\nSELECT *\nFROM ranked\nWHERE rn = 1;",
+        "options": {
+          "queryReplacement": "=[{{ $('set variables').item.json.company_id }},{{ $('set variables').item.json.import_id }},{{ $json.service_id }}]"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        320,
+        -240
+      ],
+      "id": "57b6a039-9828-4ffd-9fc3-49bb872b76ed",
+      "name": "Get report items to add",
+      "alwaysOutputData": true,
+      "credentials": {
+        "postgres": {
+          "id": "Hx2VFmUi5WO2K4QX",
+          "name": "Postgres account 2"
+        }
+      }
     }
   ],
   "connections": {
@@ -1402,7 +1416,7 @@
       "main": [
         [
           {
-            "node": "Execute a SQL query",
+            "node": "Get report items to add",
             "type": "main",
             "index": 0
           }
@@ -1765,22 +1779,11 @@
         ]
       ]
     },
-    "Execute a SQL query": {
-      "main": [
-        [
-          {
-            "node": "If empty",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Merge": {
       "main": [
         [
           {
-            "node": "set first_item1",
+            "node": "Slice  into batches strings",
             "type": "main",
             "index": 0
           }
@@ -1814,6 +1817,28 @@
         [
           {
             "node": "Set prompt",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Slice  into batches strings": {
+      "main": [
+        [
+          {
+            "node": "set first_item1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get report items to add": {
+      "main": [
+        [
+          {
+            "node": "If empty",
             "type": "main",
             "index": 0
           }
@@ -1859,7 +1884,7 @@
       }
     ]
   },
-  "versionId": "61ab5c60-3d93-42a5-b094-3ae8f960513d",
+  "versionId": "07e8e78c-27b3-40ae-8940-5314fe598623",
   "triggerCount": 0,
   "shared": [
     {
