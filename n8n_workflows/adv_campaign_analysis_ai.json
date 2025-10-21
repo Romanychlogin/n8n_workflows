@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-10-20T11:13:50.516Z",
-  "updatedAt": "2025-10-21T05:29:49.461Z",
+  "updatedAt": "2025-10-21T07:10:47.135Z",
   "id": "xNiuEqQOSNCSLvW5",
   "name": "ADV_campaign_analysis_AI",
   "active": false,
@@ -654,7 +654,7 @@
     },
     {
       "parameters": {
-        "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nconst workflowData = $getWorkflowStaticData('global');\nworkflowData.steps_passed = workflowData.steps_passed+1; // update steps counter\nlet step_tokens_used = 0;// безопасное чтение данных другой ноды\n\nfunction safeAll(nodeName) {\n  try {\n    return $(nodeName).all();        // вернёт массив items этой ноды\n  } catch (_e) {\n    return [];                       // нода не исполнялась — вернём пусто\n  }\n}\n\n// пример для HTTP Request1 — если нода не выполнялась, токены = 0\nconst httpItems = safeAll('HTTP Request');\n//const httpItems1 = safeAll('HTTP Request1');\nstep_tokens_used = httpItems.length\n  ? (httpItems[0]?.json?.usage?.total_tokens ?? 0)\n  : 0;\n\n //set used tokens here!!!!\nworkflowData.tokens_used = workflowData.tokens_used+step_tokens_used;\nfor (const item of $input.all()) {\n  item.json.steps_passed = workflowData.steps_passed;\n  item.json.tokens_used = workflowData.tokens_used\n}\n\nreturn $input.all();"
+        "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nconst workflowData = $getWorkflowStaticData('global');\nworkflowData.steps_passed = workflowData.steps_passed+$('Slice  into batches strings').last().json.items.length; // update steps counter\nlet step_tokens_used = 0;// безопасное чтение данных другой ноды\n\nfunction safeAll(nodeName) {\n  try {\n    return $(nodeName).all();        // вернёт массив items этой ноды\n  } catch (_e) {\n    return [];                       // нода не исполнялась — вернём пусто\n  }\n}\n\n// пример для HTTP Request1 — если нода не выполнялась, токены = 0\nconst httpItems = safeAll('HTTP Request');\n//const httpItems1 = safeAll('HTTP Request1');\nstep_tokens_used = httpItems.length\n  ? (httpItems[0]?.json?.usage?.total_tokens ?? 0)\n  : 0;\n\n //set used tokens here!!!!\nworkflowData.tokens_used = workflowData.tokens_used+step_tokens_used;\nfor (const item of $input.all()) {\n  item.json.steps_passed = workflowData.steps_passed;\n  item.json.tokens_used = workflowData.tokens_used\n}\n\nreturn $input.all();"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -806,8 +806,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        9072,
-        -912
+        9760,
+        -864
       ],
       "id": "8052d647-bd8e-4826-be9f-1bb7b2cfcae0",
       "name": "mark to add"
@@ -1533,7 +1533,7 @@
       "main": [
         [
           {
-            "node": "mark to add",
+            "node": "set input1",
             "type": "main",
             "index": 0
           }
@@ -1745,7 +1745,7 @@
       "main": [
         [
           {
-            "node": "set input1",
+            "node": "read call counters",
             "type": "main",
             "index": 0
           }
@@ -2038,7 +2038,7 @@
       "main": [
         [
           {
-            "node": "read call counters",
+            "node": "mark to add",
             "type": "main",
             "index": 0
           }
@@ -2161,7 +2161,7 @@
       }
     ]
   },
-  "versionId": "4fb28550-17b2-4b4d-a3e0-7f002e329827",
+  "versionId": "a7d2e3f0-9731-4bd3-85b2-6472936e11a7",
   "triggerCount": 0,
   "shared": [
     {
