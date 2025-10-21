@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-25T13:33:58.106Z",
-  "updatedAt": "2025-10-21T17:46:45.500Z",
+  "updatedAt": "2025-10-21T19:56:55.035Z",
   "id": "0J5cvuaSz3IhDS99",
   "name": "campaign core update",
   "active": false,
@@ -265,7 +265,7 @@
             {
               "id": "8939fde5-d7b7-4679-a9dc-4c20aec9614d",
               "name": "yandex_report_dropbox_file_path",
-              "value": "https://www.dropbox.com/scl/fi/9kr6iebx4q6cstzp2xuwb/2025-09-04_2025-09-24_searchquery_kiberone-saratov.csv?rlkey=cew8cc5k2rfbq5wrco9inb4eu&dl=1",
+              "value": "https://www.dropbox.com/scl/fi/lsi4k8here3an7gw3i0k2/2025-09-25_2025-10-10_searchquery_kiberone-saratov.csv?rlkey=lju12ky359ltnduc5sh492hle&dl=1",
               "type": "string"
             },
             {
@@ -4385,7 +4385,7 @@
       }
     ]
   },
-  "versionId": "0264f0de-3431-422e-9052-18dc6f5d4adc",
+  "versionId": "ace3d763-3111-4b9a-ba85-52c0c9b2f9b0",
   "triggerCount": 0,
   "shared": [
     {
