@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-28T11:31:13.045Z",
-  "updatedAt": "2025-10-21T16:27:55.853Z",
+  "updatedAt": "2025-10-21T16:38:59.175Z",
   "id": "lBAh8kjoXRX0aGUF",
   "name": "ADS headers and texts creation services for updates",
   "active": false,
@@ -863,7 +863,7 @@
           "mappingMode": "defineBelow",
           "value": {
             "is_adv_processed": "={{ true }}",
-            "list_id": "=$('Loop Over Items2').last().json.list_id"
+            "list_id": "={{$('Loop Over Items2').last().json.list_id}}"
           },
           "matchingColumns": [
             "list_id"
@@ -2019,7 +2019,7 @@
       }
     ]
   },
-  "versionId": "54574803-9527-4e9f-9b80-ee8091bc0880",
+  "versionId": "a6e03ef7-7c65-4b13-87aa-21638aedfcb4",
   "triggerCount": 0,
   "shared": [
     {
