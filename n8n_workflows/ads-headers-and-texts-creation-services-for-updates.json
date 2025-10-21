@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-28T11:31:13.045Z",
-  "updatedAt": "2025-10-21T13:24:04.967Z",
+  "updatedAt": "2025-10-21T13:34:48.084Z",
   "id": "lBAh8kjoXRX0aGUF",
   "name": "ADS headers and texts creation services for updates",
   "active": false,
@@ -1326,7 +1326,7 @@
     },
     {
       "parameters": {
-        "jsCode": "// 1) Читаем строку JSON из указанного поля\nlet raw = $input.first().json?.output?.[1]?.content?.[0]?.text;\n\n// Минимальная чистка и парсинг\nfunction stripCodeFences(s) {\n  if (typeof s !== 'string') return s;\n  let t = s.trim();\n  if (t.startsWith('```')) t = t.replace(/^```[a-zA-Z]*\\n?/, '').replace(/```$/, '').trim();\n  return t;\n}\nfunction parseJson(s) {\n  const t = stripCodeFences(String(s ?? ''));\n  try { return JSON.parse(t); } catch { return null; }\n}\n\nconst obj = parseJson(raw);\nif (!obj || !Array.isArray(obj.headers)) return [];\n\n// 2) Прямой доступ к словарю ItemsbyId\nconst itemsById = $('Loop Over Items').last().json?.ItemsbyId ?? {};\n\n// 3) Собираем выход\nconst out = [];\nfor (const h of obj.headers) {\n  if (!h || typeof h !== 'object') continue;\n  const id = String(h.id ?? '');\n  const header = String(h.header ?? '');\n  if (!id || !header) continue;\n\n  const phrase = String(itemsById[id]?.phrase ?? '');\n  out.push({ json: { phrase, header, id } });\n}\n\nconst ItemsbyId = Object.fromEntries(\n    out.map(o => [o.id, o]) \n    );\n\nreturn [{\n      json: {\n        Items:out,\n        ItemsbyId \n      }];"
+        "jsCode": "// 1) Читаем строку JSON из указанного поля\nlet raw = $input.first().json?.output?.[1]?.content?.[0]?.text;\n\n// Минимальная чистка и парсинг\nfunction stripCodeFences(s) {\n  if (typeof s !== 'string') return s;\n  let t = s.trim();\n  if (t.startsWith('```')) t = t.replace(/^```[a-zA-Z]*\\n?/, '').replace(/```$/, '').trim();\n  return t;\n}\nfunction parseJson(s) {\n  const t = stripCodeFences(String(s ?? ''));\n  try { return JSON.parse(t); } catch { return null; }\n}\n\nconst obj = parseJson(raw);\nif (!obj || !Array.isArray(obj.headers)) {\n  return [{ json: { Items: [], ItemsbyId: {} } }];\n}\n\n// 2) Прямой доступ к словарю ItemsbyId из указанной ноды\nconst sourceItemsById = $('Loop Over Items').last().json?.ItemsbyId ?? {};\n\n// 3) Собираем массив элементов { phrase, header, id }\nconst Items = [];\nfor (const h of obj.headers) {\n  if (!h || typeof h !== 'object') continue;\n  const id = String(h.id ?? '');\n  const header = String(h.header ?? '');\n  if (!id || !header) continue;\n\n  const phrase = String(sourceItemsById[id]?.phrase ?? '');\n  Items.push({ phrase, header, id });\n}\n\n// 4) Строим словарь по id -> объект\nconst ItemsbyId = Object.fromEntries(\n  Items.map(it => [it.id, it])\n);\n\n// 5) Возвращаем один элемент с полями Items и ItemsbyId\nreturn [{\n  json: {\n    Items,\n    ItemsbyId\n  }\n}];"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -1339,7 +1339,7 @@
     },
     {
       "parameters": {
-        "jsCode": "// 1) Читаем строку JSON из указанного поля\nlet raw = $input.first().json?.output?.[1]?.content?.[0]?.text;\n\n// Минимальная чистка и парсинг\nfunction stripCodeFences(s) {\n  if (typeof s !== 'string') return s;\n  let t = s.trim();\n  if (t.startsWith('```')) t = t.replace(/^```[a-zA-Z]*\\n?/, '').replace(/```$/, '').trim();\n  return t;\n}\nfunction parseJson(s) {\n  const t = stripCodeFences(String(s ?? ''));\n  try { return JSON.parse(t); } catch { return null; }\n}\n\nconst obj = parseJson(raw);\nif (!obj || !Array.isArray(obj.headers)) return [];\n\n// 2) Прямой доступ к словарю ItemsbyId\nconst itemsById = $('keywords and headers').last().json?.ItemsbyId ?? {};\n\n// 3) Собираем выход\nconst out = [];\nfor (const h of obj.ad_texts) {\n  if (!h || typeof h !== 'object') continue;\n  const id = String(h.id ?? '');\n  const ad_text = String(h.ad_text ?? '');\n  if (!id || !ad_text) continue;\n\n  const phrase = String(itemsById[id]?.phrase ?? '');\n  const header = String(itemsById[id]?.header ?? '');\n  out.push({ json: { phrase, header,ad_text, id } });\n}\n\nconst ItemsbyId = Object.fromEntries(\n    out.map(o => [o.id, o]) \n    );\n\nreturn [{\n      json: {\n        Items:out,\n        ItemsbyId \n      }];"
+        "jsCode": "// 1) Читаем строку JSON из указанного поля\nlet raw = $input.first().json?.output?.[1]?.content?.[0]?.text;\n\n// Минимальная чистка и парсинг\nfunction stripCodeFences(s) {\n  if (typeof s !== 'string') return s;\n  let t = s.trim();\n  if (t.startsWith('```')) t = t.replace(/^```[a-zA-Z]*\\n?/, '').replace(/```$/, '').trim();\n  return t;\n}\nfunction parseJson(s) {\n  const t = stripCodeFences(String(s ?? ''));\n  try { return JSON.parse(t); } catch { return null; }\n}\n\nconst obj = parseJson(raw);\nif (!obj || !Array.isArray(obj.ad_texts)) {\n  return [{ json: { Items: [], ItemsbyId: {}, note: 'ad_texts not found' } }];\n}\n\n// 2) Прямой доступ к словарю ItemsbyId из указанной ноды\nconst itemsById = $('keywords and headers').last().json?.ItemsbyId ?? {};\n\n// 3) Собираем выход\nconst Items = [];\nfor (const h of obj.ad_texts) {\n  if (!h || typeof h !== 'object') continue;\n\n  const id = String(h.id ?? '');\n  const ad_text = String(h.ad_text ?? '');\n  if (!id || !ad_text) continue;\n\n  const src = itemsById[id] ?? {};\n  const phrase = src?.phrase != null ? String(src.phrase) : '';\n  const header = src?.header != null ? String(src.header) : '';\n\n  Items.push({ phrase, header, ad_text, id });\n}\n\n// 4) Индекс по id -> объект\nconst ItemsbyId = Object.fromEntries(Items.map(o => [o.id, o]));\n\n// 5) Возврат\nreturn [{\n  json: {\n    Items,\n    ItemsbyId\n  }\n}];"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -2035,7 +2035,7 @@
       }
     ]
   },
-  "versionId": "87ffa04d-8bb6-466f-b73f-ea37f1219191",
+  "versionId": "8dd01164-98fc-4b21-a335-1264eed1502e",
   "triggerCount": 0,
   "shared": [
     {
