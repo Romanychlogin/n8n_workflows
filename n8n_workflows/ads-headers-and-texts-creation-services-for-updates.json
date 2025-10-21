@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-28T11:31:13.045Z",
-  "updatedAt": "2025-10-21T15:23:36.595Z",
+  "updatedAt": "2025-10-21T15:59:57.646Z",
   "id": "lBAh8kjoXRX0aGUF",
   "name": "ADS headers and texts creation services for updates",
   "active": false,
@@ -373,7 +373,7 @@
     },
     {
       "parameters": {
-        "jsCode": "const urlEnum = $('string for service urls').last().json.urls ?? [];\n\nreturn [{\n  json: {\n    model: \"gpt-5\",\n    input: [\n      { role: \"system\", content: [{ type: \"text\", text: \"Strictly follow provided instructions and response format\" }] },\n      { role: \"user\",   content: [{ type: \"text\", text: $json.my_prompt }] }\n    ],\n    response_format: {\n      type: \"json_schema\",\n      json_schema: {\n        name: \"url_strings\",\n        strict: true,\n        schema: {\n          type: \"object\",\n          properties: {\n            url_strings: {\n              type: \"array\",\n              description: \"List of URL objects.\",\n              items: {\n                type: \"object\",\n                properties: {\n                  url_string: {\n                    type: \"string\",\n                    enum: urlEnum, // <-- массив строк из первой ноды\n                    description: \"A valid URL from the allowed list.\"\n                  },\n                  id: {\n                    type: \"string\",\n                    description: \"Unique identifier for the URL object.\",\n                    minLength: 1\n                  }\n                },\n                required: [\"url_string\", \"id\"],\n                additionalProperties: false\n              },\n              minItems: 0\n            }\n          },\n          required: [\"url_strings\"],\n          additionalProperties: false\n        }\n      }\n    },\n    reasoning: { effort: \"minimal\", summary: \"auto\" },\n    store: false,\n    include: [\"reasoning.encrypted_content\", \"web_search_call.action.sources\"]\n  }\n}];"
+        "jsCode": "const urlEnum = $('string for service urls').last().json.urls ?? [];\n\nreturn [{\n  json:{\n  \"model\": \"gpt-5\",\n  \"input\": [\n    {\n      \"role\": \"developer\",\n      \"content\": [\n        {\n          \"type\": \"input_text\",\n          \"text\": \"Strictly follow provided instructions and response format\"\n        }\n      ]\n    },\n    {\n      \"role\": \"user\",\n      \"content\": [\n        {\n          \"type\": \"input_text\",\n          \"text\": $json.my_prompt\n        }\n      ]\n    }\n  ],\n  \"text\": {\n    \"format\": {\n      \"type\": \"json_schema\",\n      \"name\": \"url_strings\",\n      \"strict\": true,\n      \"schema\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"url_strings\": {\n            \"type\": \"array\",\n            \"description\": \"List of URL objects.\",\n            \"items\": {\n              \"type\": \"object\",\n              \"properties\": {\n                \"url_string\": {\n                  \"type\": \"string\",\n                  \"enum\": JSON.stringify(urlEnum),\n                  \"description\": \"A valid URL from the allowed list.\"\n                },\n                \"id\": {\n                  \"type\": \"string\",\n                  \"description\": \"Unique identifier for the URL object.\",\n                  \"minLength\": 1\n                }\n              },\n              \"required\": [\n                \"url_string\",\n                \"id\"\n              ],\n              \"additionalProperties\": false\n            },\n            \"minItems\": 0\n          }\n        },\n        \"required\": [\n          \"url_strings\"\n        ],\n        \"additionalProperties\": false\n      }\n    },\n    \"verbosity\": \"low\"\n  },\n  \"reasoning\": {\n    \"effort\": \"minimal\",\n    \"summary\": \"auto\"\n  },\n  \n  \"store\": false,\n  \"include\": [\n    \"reasoning.encrypted_content\",\n    \"web_search_call.action.sources\"\n  ]\n}\n}];"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -2019,7 +2019,7 @@
       }
     ]
   },
-  "versionId": "09313fc4-8e78-4a5a-86f9-d1262c4e1238",
+  "versionId": "021054e2-2763-4e6c-9032-4ad3a91ce628",
   "triggerCount": 0,
   "shared": [
     {
