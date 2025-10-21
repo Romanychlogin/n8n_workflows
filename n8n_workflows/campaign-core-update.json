@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-25T13:33:58.106Z",
-  "updatedAt": "2025-10-21T19:56:55.035Z",
+  "updatedAt": "2025-10-21T20:11:50.554Z",
   "id": "0J5cvuaSz3IhDS99",
   "name": "campaign core update",
   "active": false,
@@ -445,7 +445,7 @@
             {
               "id": "6e3154c1-d961-4edb-8615-648bfee279e1",
               "name": "import_id",
-              "value": "={{ $('company_record_id').item.json.import_id }}",
+              "value": "={{ $('company_record_id').item.json.report_id }}",
               "type": "number"
             }
           ]
@@ -787,7 +787,7 @@
             {
               "id": "242e22ab-d73d-4b1f-b148-3cd44943fe6f",
               "name": "import_id",
-              "value": "={{ $('company_record_id').item.json.import_id }}",
+              "value": "={{ $('company_record_id').item.json.report_id }}",
               "type": "string"
             }
           ]
@@ -870,8 +870,10 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "select * from report_import where import_id=(select max(import_id) from report_import)",
-        "options": {}
+        "query": "select import_id as report_id, company_id from report_import where import_id=(select max(import_id) from report_import where company_id=$1)",
+        "options": {
+          "queryReplacement": "={{ $('Set variables').last().json.company_id }}"
+        }
       },
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
@@ -891,14 +893,7 @@
     {
       "parameters": {
         "assignments": {
-          "assignments": [
-            {
-              "id": "4dcef6dc-af71-47eb-9f11-3223f5cbab28",
-              "name": "",
-              "value": "",
-              "type": "string"
-            }
-          ]
+          "assignments": []
         },
         "includeOtherFields": true,
         "options": {}
@@ -1081,7 +1076,7 @@
             {
               "id": "242e22ab-d73d-4b1f-b148-3cd44943fe6f",
               "name": "import_id",
-              "value": "={{ $('company_record_id').item.json.import_id }}",
+              "value": "={{ $('company_record_id').item.json.report_id }}",
               "type": "string"
             }
           ]
@@ -1307,7 +1302,7 @@
             {
               "id": "6e3154c1-d961-4edb-8615-648bfee279e1",
               "name": "import_id",
-              "value": "={{ $('company_record_id').item.json.import_id }}",
+              "value": "={{ $('company_record_id').item.json.report_id }}",
               "type": "number"
             }
           ]
@@ -1644,7 +1639,7 @@
             {
               "id": "242e22ab-d73d-4b1f-b148-3cd44943fe6f",
               "name": "import_id",
-              "value": "={{ $('company_record_id').item.json.import_id }}",
+              "value": "={{ $('company_record_id').item.json.report_id }}",
               "type": "string"
             }
           ]
@@ -2119,7 +2114,7 @@
             {
               "id": "242e22ab-d73d-4b1f-b148-3cd44943fe6f",
               "name": "import_id",
-              "value": "={{ $('company_record_id').item.json.import_id }}",
+              "value": "={{ $('company_record_id').item.json.report_id }}",
               "type": "string"
             }
           ]
@@ -2402,7 +2397,7 @@
             {
               "id": "6e3154c1-d961-4edb-8615-648bfee279e1",
               "name": "import_id",
-              "value": "={{ $('company_record_id').item.json.import_id }}",
+              "value": "={{ $('company_record_id').item.json.report_id }}",
               "type": "number"
             }
           ]
@@ -2720,7 +2715,7 @@
             {
               "id": "242e22ab-d73d-4b1f-b148-3cd44943fe6f",
               "name": "import_id",
-              "value": "={{ $('company_record_id').item.json.import_id }}",
+              "value": "={{ $('company_record_id').item.json.report_id }}",
               "type": "string"
             },
             {
@@ -2975,7 +2970,7 @@
             {
               "id": "6e3154c1-d961-4edb-8615-648bfee279e1",
               "name": "import_id",
-              "value": "={{ $('company_record_id').item.json.import_id }}",
+              "value": "={{ $('company_record_id').item.json.report_id }}",
               "type": "number"
             }
           ]
@@ -4385,7 +4380,7 @@
       }
     ]
   },
-  "versionId": "ace3d763-3111-4b9a-ba85-52c0c9b2f9b0",
+  "versionId": "fb6e2e3c-89ac-4092-9321-2132deb0610a",
   "triggerCount": 0,
   "shared": [
     {
