@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-30T12:45:50.445Z",
-  "updatedAt": "2025-10-06T13:07:32.419Z",
+  "updatedAt": "2025-10-21T20:21:02.589Z",
   "id": "c0NgmBzgLxUE7Wno",
   "name": "ADV_campaign_get_service",
   "active": false,
@@ -591,7 +591,7 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "select * from current_list where report_id=(select max(import_id) from report_import where company_id=$1) and service_id is null\n",
+        "query": "select * from current_list where report_id=(select max(import_id) from report_import where company_id=$1) and (service_id is null or service_id=0)\n",
         "options": {
           "queryReplacement": "={{ $('set variables').item.json.company_id }}"
         }
@@ -945,7 +945,7 @@
       }
     ]
   },
-  "versionId": "22e1f791-499c-4f82-bac8-495002763fa4",
+  "versionId": "abef190c-face-428a-af3e-c4242c0c9399",
   "triggerCount": 0,
   "shared": [
     {
