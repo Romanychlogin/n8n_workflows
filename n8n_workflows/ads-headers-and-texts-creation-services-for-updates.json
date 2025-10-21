@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-28T11:31:13.045Z",
-  "updatedAt": "2025-10-21T13:00:03.188Z",
+  "updatedAt": "2025-10-21T13:04:33.642Z",
   "id": "lBAh8kjoXRX0aGUF",
   "name": "ADS headers and texts creation services for updates",
   "active": false,
@@ -236,7 +236,7 @@
     },
     {
       "parameters": {
-        "jsCode": "const workflowData = $getWorkflowStaticData('global');\nlet my_prompt = workflowData.my_prompt_text.data;\n\nfor (const item of $input.all()) {\n  item.json.my_prompt = my_prompt.replaceAll(\"{{company_description}}\", workflowData.company_description).replaceAll(\"{{key_words_headers}}\", $('Set prompt').first().json.key_word);\n}\n\nreturn $input.all();"
+        "jsCode": "const workflowData = $getWorkflowStaticData('global');\nlet my_prompt = workflowData.my_prompt_text.data;\n\nfor (const item of $input.all()) {\n  item.json.my_prompt = my_prompt.replaceAll(\"{{company_description}}\", workflowData.company_description).replaceAll(\"{{key_words_ad_headers}}\", JSON.stringify($json.Items));\n}\n\nreturn $input.all();"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -1339,7 +1339,7 @@
     },
     {
       "parameters": {
-        "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nfor (const item of $input.all()) {\n  item.json.myNewField = 1;\n}\n\nreturn $input.all();"
+        "jsCode": "// 1) Читаем строку JSON из указанного поля\nlet raw = $input.first().json?.output?.[1]?.content?.[0]?.text;\n\n// Минимальная чистка и парсинг\nfunction stripCodeFences(s) {\n  if (typeof s !== 'string') return s;\n  let t = s.trim();\n  if (t.startsWith('```')) t = t.replace(/^```[a-zA-Z]*\\n?/, '').replace(/```$/, '').trim();\n  return t;\n}\nfunction parseJson(s) {\n  const t = stripCodeFences(String(s ?? ''));\n  try { return JSON.parse(t); } catch { return null; }\n}\n\nconst obj = parseJson(raw);\nif (!obj || !Array.isArray(obj.headers)) return [];\n\n// 2) Прямой доступ к словарю ItemsbyId\nconst itemsById = $('keywords and headers').last().json?.ItemsbyId ?? {};\n\n// 3) Собираем выход\nconst out = [];\nfor (const h of obj.ad_texts) {\n  if (!h || typeof h !== 'object') continue;\n  const id = String(h.id ?? '');\n  const ad_text = String(h.ad_text ?? '');\n  if (!id || !ad_text) continue;\n\n  const phrase = String(itemsById[id]?.phrase ?? '');\n  const header = String(itemsById[id]?.header ?? '');\n  out.push({ json: { phrase, header,ad_text, id } });\n}\n\nconst ItemsbyId = Object.fromEntries(\n    out.map(o => [o.id, o]) \n    );\n\nreturn [{\n      json: {\n        Items:out,\n        ItemsbyId \n      }];"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -2035,7 +2035,7 @@
       }
     ]
   },
-  "versionId": "aae0bafa-75e9-471e-b1b1-ff6fa5ab7f8e",
+  "versionId": "a57b099d-98b6-4257-8030-950801a86f59",
   "triggerCount": 0,
   "shared": [
     {
