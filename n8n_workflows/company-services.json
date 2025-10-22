@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-10T14:56:27.610Z",
-  "updatedAt": "2025-10-22T16:38:47.882Z",
+  "updatedAt": "2025-10-22T16:44:36.501Z",
   "id": "5Se0CY4jTtS5g7n3",
   "name": "company services",
   "active": false,
@@ -43,8 +43,8 @@
       "type": "n8n-nodes-base.github",
       "typeVersion": 1.1,
       "position": [
-        -240,
-        64
+        -416,
+        96
       ],
       "id": "20b12beb-1a52-48df-b940-2ffd4994f7e4",
       "name": "Get a file1",
@@ -64,8 +64,8 @@
       "type": "n8n-nodes-base.extractFromFile",
       "typeVersion": 1,
       "position": [
-        -80,
-        64
+        -208,
+        128
       ],
       "id": "45d05415-2f30-4487-b906-0614fd2f4ecf",
       "name": "Extract from File2"
@@ -77,8 +77,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        128,
-        64
+        48,
+        128
       ],
       "id": "9e5d0c31-eff1-4c35-86d7-d2198770c331",
       "name": "Code3"
@@ -97,8 +97,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        2272,
-        -144
+        1904,
+        -192
       ],
       "id": "a2abd329-0d5f-4585-8e52-137fb63dc717",
       "name": "HTTP Request",
@@ -117,8 +117,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        2016,
-        -176
+        1712,
+        -208
       ],
       "id": "8d9261b7-57f6-4d96-90ae-4ae6b72dba86",
       "name": "Set API JSON"
@@ -130,7 +130,7 @@
       "type": "n8n-nodes-base.splitInBatches",
       "typeVersion": 3,
       "position": [
-        2928,
+        2800,
         80
       ],
       "id": "52edc5a1-4572-45dd-b48c-fe8668a2ebb7",
@@ -234,8 +234,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        3216,
-        96
+        4144,
+        160
       ],
       "id": "62a64ba7-b2d8-4b5e-99e7-6cffd28f874c",
       "name": "Insert rows in a table",
@@ -248,13 +248,13 @@
     },
     {
       "parameters": {
-        "jsCode": "// Берём первый item из входных данных\nconst input = JSON.parse($json.output[1].content[0].text);\nconst company_id=$('SET company').first().json.company_id\n// Достаём массив competitors\nconst variants = input.service;\n\n// Разворачиваем каждый объект в отдельный item\nreturn variants.map((c, index) => ({\n  json: {\n    index,\n    service_name: c.service_name,\n    service_url: c.service_url,\n    service_description: c.service_description,\n    company_id:company_id\n    \n  }\n}));"
+        "jsCode": "// Берём первый item из входных данных\nconst input = JSON.parse($json.output[1].content[0].text);\nconst company_id=$('When Executed by Another Workflow').first().json.company_id\n// Достаём массив competitors\nconst variants = input.service_listings;\n\n// Разворачиваем каждый объект в отдельный item\nreturn variants.map((c, index) => ({\n  json: {\n    index,\n    service_name: c.service_name,\n    service_url: c.service_url\n    company_id:company_id\n    \n  }\n}));"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        2528,
-        80
+        2224,
+        -32
       ],
       "id": "48224588-2811-489a-b615-3762e170d773",
       "name": "Parse JSON"
@@ -266,7 +266,7 @@
       "type": "n8n-nodes-base.executeWorkflowTrigger",
       "typeVersion": 1.1,
       "position": [
-        -672,
+        -944,
         80
       ],
       "id": "e1bb5f44-7d7d-4a76-a14a-49a1127f66cd",
@@ -283,7 +283,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        -480,
+        -688,
         80
       ],
       "id": "00dc5a94-3c5c-4d7b-8498-e369248111c6",
@@ -307,7 +307,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        3136,
+        3344,
         -160
       ],
       "id": "6506b2bc-0455-4b8d-a494-7947c1fdd87c",
@@ -348,8 +348,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1744,
-        -176
+        1424,
+        -224
       ],
       "id": "9b692ab7-941a-414a-8127-93630973a8d0",
       "name": "Set prompt"
@@ -378,8 +378,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        3696,
-        96
+        4544,
+        128
       ],
       "id": "141a0bca-e21d-4acf-bfcc-3b96d11e0938",
       "name": "Mark_workflow_passed_steps",
@@ -398,8 +398,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        3456,
-        112
+        4320,
+        128
       ],
       "id": "18e87029-f008-4df2-a7ea-e6af7def0e6f",
       "name": "Get current step and tokens saved"
@@ -411,8 +411,8 @@
       "type": "n8n-nodes-base.stopAndError",
       "typeVersion": 1,
       "position": [
-        4320,
-        0
+        5040,
+        -192
       ],
       "id": "7705ff83-9613-4400-b432-a3d8fbb96566",
       "name": "Stop and Error"
@@ -445,8 +445,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        3904,
-        96
+        4800,
+        160
       ],
       "id": "46b21f50-e94b-4649-ad8e-0f3fa02af708",
       "name": "check if termination is requested",
@@ -484,8 +484,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        4112,
-        96
+        4976,
+        192
       ],
       "id": "3ef8876e-950c-439a-a9c1-b0f504058731",
       "name": "If1"
@@ -501,8 +501,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        2672,
-        -176
+        2592,
+        -240
       ],
       "id": "0d31e54c-d3dd-40ac-bc7b-45d4ef984acf",
       "name": "Mark_workflow_total_steps",
@@ -521,8 +521,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        2848,
-        -176
+        2784,
+        -272
       ],
       "id": "bd738d46-4a08-4265-8f9f-344e03385655",
       "name": "Init total counter"
@@ -753,6 +753,181 @@
       ],
       "id": "f31e1cd7-5e91-4cd7-b758-8627f2ab6bcd",
       "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.openai.com/v1/responses",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "openAiApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{$json}}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        3776,
+        160
+      ],
+      "id": "8dd9d8eb-f8c4-443e-a4d1-d976f8805f0c",
+      "name": "HTTP Request1",
+      "retryOnFail": true,
+      "credentials": {
+        "openAiApi": {
+          "id": "m4NScyhZzV3hBcTr",
+          "name": "OpenAi Yads"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "return [{\n  json: \n {\n  \"model\": \"gpt-5\",\n  \"input\": [\n    {\n      \"role\": \"developer\",\n      \"content\": [\n        {\n          \"type\": \"input_text\",\n          \"text\": \"Отвечай только валидным JSON\"\n        }\n      ]\n    },\n    {\n      \"role\": \"user\",\n      \"content\": [\n        {\n          \"type\": \"input_text\",\n          \"text\": $json.my_prompt\n        }\n      ]\n    }\n  ],\n  \"text\": {\n    \"format\": {\n      \"type\": \"json_schema\",\n      \"name\": \"service_listings\",\n      \"strict\": true,\n      \"schema\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"service_listing\": {\n            \"type\": \"array\",\n            \"description\": \"service_listing, each as a name, URL and description row.\",\n            \"items\": {\n              \"type\": \"object\",\n              \"properties\": {\n                \"service_name\": {\n                  \"type\": \"string\",\n                  \"description\": \"The name of the service\",\n                  \"minLength\": 1\n                },\n                \"service_url\": {\n                  \"type\": \"string\",\n                  \"description\": \"The root URL where the service is available\",\n                  \"minLength\": 1\n                }\n              },\n              \"required\": [\n                \"service_name\",\n                \"service_url\"\n              ],\n              \"additionalProperties\": false\n            }\n          }\n        },\n        \"required\": [\n          \"service_listing\"\n        ],\n        \"additionalProperties\": false\n      }\n    },\n    \"verbosity\": \"medium\"\n  },\n  \"reasoning\": {\n    \"effort\": \"low\",\n    \"summary\": \"auto\"\n  },\n  \"tools\": [],\n  \"store\": false,\n  \"include\": [\n    \"reasoning.encrypted_content\",\n    \"web_search_call.action.sources\"\n  ]\n}\n\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3600,
+        160
+      ],
+      "id": "5cee08e4-34d6-4871-b2ce-2ca5dc82e82e",
+      "name": "Set API JSON1"
+    },
+    {
+      "parameters": {
+        "jsCode": "const workflowData = $getWorkflowStaticData('global');\nlet my_prompt = workflowData.my_prompt.data;\n\n\n// Собираем my_prompt\nitem.json.my_prompt = String(my_prompt)\n  .replaceAll('{{ccompany_name}}', $('When Executed by Another Workflow').first().json.company_name)\n  .replaceAll('{{services_list}}', $('When Executed by Another Workflow').first().json.services_description);\n\nreturn item;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3440,
+        160
+      ],
+      "id": "eedec487-dca0-40b7-8d70-3b1b8e3cd2e8",
+      "name": "Set prompt1"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "7FoU9Spu4KwNDAMk",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/7FoU9Spu4KwNDAMk",
+          "cachedResultName": "Get sitemap"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {}
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.3,
+      "position": [
+        3248,
+        176
+      ],
+      "id": "9a249ccf-9df4-401c-9c35-a96ea9237c8c",
+      "name": "Call 'Get sitemap'"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "7a906ff8-159a-46c0-90a1-26c53d1db81a",
+              "name": "baseUrl",
+              "value": "={{$json.service_url}}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        3040,
+        176
+      ],
+      "id": "22a38405-4970-4198-9158-869edd82b844",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nfor (const item of $input.all()) {\n  item.json.myNewField = 1;\n}\n\nreturn $input.all();"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3936,
+        176
+      ],
+      "id": "96085421-d4c5-4af0-90dc-c96a027c56d8",
+      "name": "Parse response"
+    },
+    {
+      "parameters": {
+        "resource": "file",
+        "operation": "get",
+        "owner": {
+          "__rl": true,
+          "value": "Romanychlogin",
+          "mode": "name"
+        },
+        "repository": {
+          "__rl": true,
+          "value": "n8n_prompts",
+          "mode": "list",
+          "cachedResultName": "n8n_prompts",
+          "cachedResultUrl": "https://github.com/Romanychlogin/n8n_prompts"
+        },
+        "filePath": "company_services_details.txt",
+        "additionalParameters": {}
+      },
+      "type": "n8n-nodes-base.github",
+      "typeVersion": 1.1,
+      "position": [
+        -416,
+        320
+      ],
+      "id": "bdf520e2-0d50-40b0-a667-7f85a393c61e",
+      "name": "Get a file",
+      "webhookId": "87cb7d0c-6971-44f5-a103-a1ac454e96fe",
+      "credentials": {
+        "githubApi": {
+          "id": "JQAFAcMNS9Ylyb0V",
+          "name": "GitHub account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "text",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        -208,
+        352
+      ],
+      "id": "aa6a6776-2d5a-4040-8d86-f9489e1ed499",
+      "name": "Extract from File4"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Function-Node (Run Once)\nconst workflowData = $getWorkflowStaticData('global');\nworkflowData.my_prompt_details = items[0].json;\nreturn items;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        48,
+        352
+      ],
+      "id": "89f06aa9-1fdd-496b-b665-8c3fa90b4353",
+      "name": "Code"
     }
   ],
   "connections": {
@@ -782,7 +957,7 @@
       "main": [
         [
           {
-            "node": "If no content",
+            "node": "Get a file",
             "type": "main",
             "index": 0
           }
@@ -822,7 +997,7 @@
         ],
         [
           {
-            "node": "Insert rows in a table",
+            "node": "Edit Fields",
             "type": "main",
             "index": 0
           }
@@ -1060,6 +1235,105 @@
           }
         ]
       ]
+    },
+    "Set API JSON1": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set prompt1": {
+      "main": [
+        [
+          {
+            "node": "Set API JSON1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Call 'Get sitemap'",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Call 'Get sitemap'": {
+      "main": [
+        [
+          {
+            "node": "Set prompt1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request1": {
+      "main": [
+        [
+          {
+            "node": "Parse response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse response": {
+      "main": [
+        [
+          {
+            "node": "Insert rows in a table",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get a file": {
+      "main": [
+        [
+          {
+            "node": "Extract from File4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File4": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "If no content",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
@@ -1084,7 +1358,7 @@
       }
     ]
   },
-  "versionId": "8633aa31-f7f4-4f1e-a77a-b112aefcb97c",
+  "versionId": "c362afa8-e32e-44bb-9c5c-6bd6121b1aee",
   "triggerCount": 0,
   "shared": [
     {
