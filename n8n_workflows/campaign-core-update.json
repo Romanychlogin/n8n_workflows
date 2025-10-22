@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-25T13:33:58.106Z",
-  "updatedAt": "2025-10-22T12:01:04.983Z",
+  "updatedAt": "2025-10-22T19:52:04.968Z",
   "id": "0J5cvuaSz3IhDS99",
   "name": "campaign core update",
   "active": false,
@@ -2721,7 +2721,7 @@
             {
               "id": "f48771b4-4bf8-4ff4-8481-3d863668dd08",
               "name": "minus_words",
-              "value": "={{ $('Call SUB3').item.json.minus_words }",
+              "value": "={{ $('Call SUB3').item.json.minus_words }}",
               "type": "string"
             }
           ]
@@ -4380,7 +4380,7 @@
       }
     ]
   },
-  "versionId": "8b123ef3-478c-49e4-8ba5-23a79e3d75e3",
+  "versionId": "6027fbcf-aceb-4b9d-9c8b-40015731c905",
   "triggerCount": 0,
   "shared": [
     {
