@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-10T14:56:27.610Z",
-  "updatedAt": "2025-10-22T12:20:09.461Z",
+  "updatedAt": "2025-10-22T12:28:01.052Z",
   "id": "5Se0CY4jTtS5g7n3",
   "name": "company services",
   "active": false,
@@ -125,21 +125,6 @@
     },
     {
       "parameters": {
-        "url": "={{$json[\"url\"]}}",
-        "responseFormat": "file",
-        "options": {}
-      },
-      "id": "5e52ad3d-3042-4154-b7b4-e8787b8444d7",
-      "name": "Download File1",
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 2,
-      "position": [
-        960,
-        256
-      ]
-    },
-    {
-      "parameters": {
         "operation": "text",
         "destinationKey": "data_content",
         "options": {}
@@ -147,8 +132,8 @@
       "type": "n8n-nodes-base.extractFromFile",
       "typeVersion": 1,
       "position": [
-        1296,
-        272
+        1632,
+        496
       ],
       "id": "eb121860-49a5-4078-a18e-1aae96675334",
       "name": "Extract from File1"
@@ -640,6 +625,66 @@
       ],
       "id": "f5fed606-03d5-41ce-8c09-3d4ee1ee24ea",
       "name": "Loop Over Items1"
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "operation": "download",
+        "path": "={{ $json.pathDisplay }}"
+      },
+      "type": "n8n-nodes-base.dropbox",
+      "typeVersion": 1,
+      "position": [
+        928,
+        272
+      ],
+      "id": "20b31a58-9171-443c-ad4d-30c3dfb7442a",
+      "name": "Download a file",
+      "credentials": {
+        "dropboxOAuth2Api": {
+          "id": "AugpA5e12rWISfZ5",
+          "name": "Dropbox OAuth"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "d05a18fa-91ef-463f-af7b-80c4b63cfb29"
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.3,
+      "position": [
+        1232,
+        304
+      ],
+      "id": "f0782227-ca8c-4c11-b0c6-6e4830980654",
+      "name": "Switch"
     }
   ],
   "connections": {
@@ -681,17 +726,6 @@
         [
           {
             "node": "HTTP Request",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Download File1": {
-      "main": [
-        [
-          {
-            "node": "Extract from File1",
             "type": "main",
             "index": 0
           }
@@ -888,7 +922,18 @@
         [],
         [
           {
-            "node": "Download File1",
+            "node": "Download a file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download a file": {
+      "main": [
+        [
+          {
+            "node": "Switch",
             "type": "main",
             "index": 0
           }
@@ -913,12 +958,12 @@
           "threshhold": "0.88",
           "company_name": "Первый визовый центр Курган",
           "services_description": "Визы:    http://krg45.visa-rf.ru/ АТЭС:    http://krg45.apec-first.ru/",
-          "user_content_dropbox_folder": "/Test content folder for Kurgan"
+          "user_content_dropbox_folder": "/Test_content_folder_for_Kurgan"
         }
       }
     ]
   },
-  "versionId": "770b5535-ca9c-45e6-96eb-c9edbba701c3",
+  "versionId": "4d33518b-34c9-40ae-b1b1-e39bcee8c417",
   "triggerCount": 0,
   "shared": [
     {
