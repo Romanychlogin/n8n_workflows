@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-10-20T11:13:37.232Z",
-  "updatedAt": "2025-10-21T07:29:52.597Z",
+  "updatedAt": "2025-10-22T08:23:51.878Z",
   "id": "b9eGU4g5DID0kq2E",
   "name": "ADV_campaign_analysis_initial",
   "active": false,
@@ -1156,7 +1156,7 @@
             {
               "id": "2f7246f7-a167-46be-9212-edc599a35ff3",
               "name": "total_tokens",
-              "value": "={{$('HTTP Request').length\n  ? ($('HTTP Request').last().json.usage.total_tokens ?? 0)\n  : 0 }}",
+              "value": "=0",
               "type": "number"
             }
           ]
@@ -2976,7 +2976,7 @@
         "data": "Для фразы пользователя {{key_word}} не релевантной сервису {{service_name}} компании {{company_name}} доступен следующий список ключевых слов {{minus_words}}. \nВерни сокращенный список состоящий строго не более чем из двух минус слов, обеспечивающих блокировку широкого класса подобных нерелевантных запросов.\nТребования к минус-словам:\nРазрешено использовать только элементы входящего списка. Любое видоизменение элементов запрещено\nИспользуй минимально возможную комбинацию слов.\nМинус-слова должны однозначно исключать нерелевантные запросы.\n"
       },
       "ai_calls": 0,
-      "embedding_calls": 24
+      "embedding_calls": 29
     }
   },
   "meta": {
@@ -2986,16 +2986,16 @@
     "When Executed by Another Workflow": [
       {
         "json": {
-          "id": "wZGLxMCCmOnDJZ1o",
-          "root_execution_id": 109705,
+          "id": "b9eGU4g5DID0kq2E",
+          "root_execution_id": 130067,
           "company_id": 1,
           "threshhold": "0.79",
-          "import_id": 5
+          "import_id": 6
         }
       }
     ]
   },
-  "versionId": "d8196fe1-a151-4992-9e65-fc9750128351",
+  "versionId": "c631ccc6-1505-4aea-b282-533068f189b6",
   "triggerCount": 0,
   "shared": [
     {
