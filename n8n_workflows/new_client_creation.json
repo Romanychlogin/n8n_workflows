@@ -1,7 +1,7 @@
 {
-  "createdAt": "2025-09-19T08:56:54.078Z",
-  "updatedAt": "2025-10-17T09:23:10.940Z",
-  "id": "wycPS2KeZkmdbajx",
+  "createdAt": "2025-10-22T11:42:51.794Z",
+  "updatedAt": "2025-10-22T11:42:51.794Z",
+  "id": "EgFFe1spvxMBXwgw",
   "name": "New_client_creation",
   "active": false,
   "isArchived": false,
@@ -9,18 +9,18 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "INSERT INTO business_processes_states (business_process_id, company_id,n8n_workflow_execution_id, started)\nSELECT MAX(business_process_id), $2,$3, NOW()\nFROM public.business_processes\nWHERE n8n_process_name = $1;",
+        "query": "INSERT INTO business_processes_states (business_process_id,n8n_workflow_execution_id, started)\nSELECT MAX(business_process_id), $2, NOW()\nFROM public.business_processes\nWHERE n8n_process_name = $1;",
         "options": {
-          "queryReplacement": "=[{{$workflow.name}},{{$json.company_id}},{{$execution.id}}]"
+          "queryReplacement": "=[{{$workflow.name}},{{$execution.id}}]"
         }
       },
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        -288,
+        -464,
         -240
       ],
-      "id": "5dec9739-98cc-4a55-ac22-0be8c06fb134",
+      "id": "295a0597-5557-4f6a-b346-6f1d8a7cf23b",
       "name": "Mark_workwlow_started",
       "credentials": {
         "postgres": {
@@ -34,10 +34,10 @@
       "type": "n8n-nodes-base.manualTrigger",
       "typeVersion": 1,
       "position": [
-        -976,
+        -1152,
         -240
       ],
-      "id": "3d3c4785-920e-4e82-9390-6db96b8861ba",
+      "id": "d952eb39-072a-4476-b753-0b2442047480",
       "name": "When clicking ‘Execute workflow’"
     },
     {
@@ -47,10 +47,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -80,
+        -256,
         -240
       ],
-      "id": "0ed6f698-5902-4000-a114-c3b7e22cdac7",
+      "id": "faaeb9a2-05af-4263-9b30-acdaa0e1e58b",
       "name": "Init total counter"
     },
     {
@@ -64,35 +64,11 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        2272,
-        768
+        2752,
+        5376
       ],
-      "id": "3bbb392f-da13-41c4-8219-932c6fddb68e",
+      "id": "d656bd8d-862a-46a5-99de-356bc7f92e48",
       "name": "Mark_workflow_completed",
-      "executeOnce": true,
-      "credentials": {
-        "postgres": {
-          "id": "4YkdFJcdTgzo9hkz",
-          "name": "PGvector"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "operation": "executeQuery",
-        "query": "update business_processes_states set steps_passed=$3 where business_process_id=(select MAX(business_process_id) from business_processes where n8n_process_name=$1) and n8n_workflow_execution_id=$2",
-        "options": {
-          "queryReplacement": "=[{{$workflow.name}},{{$execution.id}},{{$json.steps_passed}}]"
-        }
-      },
-      "type": "n8n-nodes-base.postgres",
-      "typeVersion": 2.6,
-      "position": [
-        1888,
-        -208
-      ],
-      "id": "42b0d487-3fc5-45cb-99f8-38ff61951060",
-      "name": "Mark_workflow_passed_steps",
       "executeOnce": true,
       "credentials": {
         "postgres": {
@@ -108,27 +84,27 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1600,
-        -208
+        2368,
+        -320
       ],
-      "id": "dd0b2cbe-60fc-440d-a4dd-8ad340c76697",
+      "id": "a6c803fa-dda7-4bbc-abf5-0dbdba49d310",
       "name": "Get current step saved"
     },
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "WITH cutoff AS (\n  SELECT MAX(st2.started) AS last_finished_started\n  FROM public.business_processes_states st2\n  JOIN public.business_processes bp2\n    ON bp2.business_process_id = st2.business_process_id\n  WHERE bp2.n8n_process_name = $1\n    AND st2.finished IS NOT NULL\n),\nmain AS (\n  SELECT st.*\n  FROM public.business_processes_states st\n  JOIN public.business_processes bp\n    ON bp.business_process_id = st.business_process_id\n  CROSS JOIN cutoff c\n  WHERE bp.n8n_process_name = $1\n    AND st.finished IS NULL\n    AND (c.last_finished_started IS NULL OR st.started > c.last_finished_started)\n)\nSELECT\n  s.business_process_state_id,\n  s.business_process_id,\n  s.started,\n  s.finished,\n  s.error_message,\n  s.n8n_workflow_execution_id,\n  s.n8n_workflow_root_execution_id\nFROM main m\nJOIN public.business_processes_states s\n  ON s.n8n_workflow_root_execution_id = m.n8n_workflow_execution_id\nJOIN public.business_processes p\n  ON p.business_process_id = s.business_process_id\nWHERE p.n8n_process_name = $2\nORDER BY s.started desc;",
+        "query": "WITH cutoff AS (\n  SELECT MAX(st2.started) AS last_finished_started\n  FROM public.business_processes_states st2\n  JOIN public.business_processes bp2\n    ON bp2.business_process_id = st2.business_process_id\n  WHERE bp2.n8n_process_name = $1\n    AND st2.company_id = $3\n    AND st2.finished IS NOT NULL\n),\nmain AS (\n  SELECT st.*\n  FROM public.business_processes_states st\n  JOIN public.business_processes bp\n    ON bp.business_process_id = st.business_process_id\n  CROSS JOIN cutoff c\n  WHERE bp.n8n_process_name = $1\n    AND st.company_id = $3 \n    AND st.finished IS NULL\n    AND (c.last_finished_started IS NULL OR st.started > c.last_finished_started)\n)\nSELECT\n  s.business_process_state_id,\n  s.business_process_id,\n  s.started,\n  s.finished,\n  s.error_message,\n  s.n8n_workflow_execution_id,\n  s.n8n_workflow_root_execution_id\nFROM main m\nJOIN public.business_processes_states s\n  ON s.n8n_workflow_root_execution_id = m.n8n_workflow_execution_id\nJOIN public.business_processes p\n  ON p.business_process_id = s.business_process_id\nWHERE p.n8n_process_name = $2\n  AND s.company_id = $3\nORDER BY s.started desc;",
         "options": {
-          "queryReplacement": "=[{{$workflow.name}},{{$json.workflow_name}}]"
+          "queryReplacement": "=[{{$workflow.name}},{{$json.workflow_name}},{{ $('Set variables').item.json.company_id }}]"
         }
       },
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        528,
-        -240
+        624,
+        -320
       ],
-      "id": "554593fc-e67b-4ac6-83d7-3eb0a582e0e6",
+      "id": "839d82ed-f699-40c9-abaa-d58552738309",
       "name": "Execute a SQL query",
       "alwaysOutputData": true,
       "credentials": {
@@ -137,29 +113,6 @@
           "name": "PGvector"
         }
       }
-    },
-    {
-      "parameters": {
-        "assignments": {
-          "assignments": [
-            {
-              "id": "99e6bb89-0b33-4e72-b5be-2e118b69afa2",
-              "name": "workflow_name",
-              "value": " company services",
-              "type": "string"
-            }
-          ]
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.set",
-      "typeVersion": 3.4,
-      "position": [
-        352,
-        -240
-      ],
-      "id": "85d4c0ac-3ba5-4cc2-829c-9848d27a6a95",
-      "name": "set workflow name"
     },
     {
       "parameters": {
@@ -189,10 +142,10 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        720,
-        -240
+        848,
+        -320
       ],
-      "id": "9ebdf675-3010-4d4f-967f-83efddcde907",
+      "id": "4d79407a-b395-4e34-b8c5-c72dcede1b5f",
       "name": "If SUB process  already executed",
       "executeOnce": true
     },
@@ -216,10 +169,10 @@
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1.2,
       "position": [
-        1408,
-        -224
+        1616,
+        -208
       ],
-      "id": "33ea698b-6533-4a44-8039-316eb3dd7166",
+      "id": "88592f0f-f7e5-431e-8d1f-9b1fa547157a",
       "name": "Call SUB"
     },
     {
@@ -227,16 +180,16 @@
         "operation": "executeQuery",
         "query": "update business_processes_states set steps_total=$3 where business_process_id=(select MAX(business_process_id) from business_processes where n8n_process_name=$1) and n8n_workflow_execution_id=$2",
         "options": {
-          "queryReplacement": "=[{{$workflow.name}},{{$execution.id}},{{ 2 }}]"
+          "queryReplacement": "=[{{$workflow.name}},{{$execution.id}},{{ 4 }}]"
         }
       },
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        112,
+        -64,
         -240
       ],
-      "id": "0a287779-f23d-494f-84a3-ec168922b9dc",
+      "id": "9313512a-1045-462d-918d-80f7282234b5",
       "name": "Mark_workflow_total_steps(manually)",
       "executeOnce": true,
       "credentials": {
@@ -251,16 +204,16 @@
         "operation": "executeQuery",
         "query": "SELECT id\nFROM workflow_entity\nWHERE name = $1\nORDER BY id DESC\nLIMIT 1;",
         "options": {
-          "queryReplacement": "={{ $('set workflow name').item.json.workflow_name }}"
+          "queryReplacement": "={{ $('ADV_campaign_data_load').item.json.workflow_name }}"
         }
       },
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        960,
-        -224
+        1168,
+        -208
       ],
-      "id": "9a2c9318-687c-46a3-b8f4-8d917c9337da",
+      "id": "f10ee30f-5007-4b9b-b45a-6800ce615ea4",
       "name": "get workflow id by name",
       "credentials": {
         "postgres": {
@@ -281,44 +234,14 @@
             },
             {
               "id": "fda82fe6-7e78-49d2-8130-43cb54ef5d8a",
-              "name": "company_id",
-              "value": "={{ $('Execute a SQL query2').item.json.company_id }}",
-              "type": "number"
+              "name": "yandex_report_dropbox_file_path",
+              "value": "={{ $('Set variables').item.json.yandex_report_dropbox_file_path }}",
+              "type": "string"
             },
             {
               "id": "da41f8d6-0b51-4e6c-91c3-96c8ca5d1659",
               "name": "threshhold",
               "value": "={{ $('Set variables').item.json.threshhold }}",
-              "type": "string"
-            },
-            {
-              "id": "48e226e1-eec4-4875-abbe-f3bf61e9d335",
-              "name": "company_name",
-              "value": "={{ $('Set variables').item.json.company_name }}",
-              "type": "string"
-            },
-            {
-              "id": "4cf917dc-0b21-4e3e-817f-503d04a054c0",
-              "name": "yandex_id",
-              "value": "={{ $('Set variables').item.json.yandex_id }}",
-              "type": "number"
-            },
-            {
-              "id": "6c7abd86-fe5e-4fd8-9b45-8052122d62ee",
-              "name": "yandex_region",
-              "value": "={{ $('Set variables').item.json.yandex_region }}",
-              "type": "string"
-            },
-            {
-              "id": "608ffe3a-1151-49e8-9fd5-934995944be7",
-              "name": "services_description_url",
-              "value": "={{ $('Set variables').item.json.services_description_url}}",
-              "type": "string"
-            },
-            {
-              "id": "74ffc861-c15d-4994-bedd-a920ad81d955",
-              "name": "user_content_dropbox_folder",
-              "value": "={{ $('Set variables').item.json.user_content_dropbox_folder}}",
               "type": "string"
             }
           ]
@@ -329,10 +252,10 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        1152,
-        -224
+        1360,
+        -208
       ],
-      "id": "1f65542d-fa65-41af-95fc-fdfe5235b826",
+      "id": "ea388ea4-90e1-47d2-8ee8-6fe3d0bd40bd",
       "name": "set input data for SUB"
     },
     {
@@ -340,45 +263,27 @@
         "assignments": {
           "assignments": [
             {
-              "id": "5b3485a2-cb50-486a-932c-fc27de0a25da",
-              "name": "company_name",
-              "value": "Kartica Trebica",
-              "type": "string"
-            },
-            {
-              "id": "84d45310-3810-4151-88b4-4782f16e6319",
-              "name": "company_url",
-              "value": "https://karticatrebica.rs/stats-beta/",
-              "type": "string"
-            },
-            {
-              "id": "b6898b14-3324-4cee-a1ae-32b2d48b4afe",
-              "name": "threshhold",
-              "value": 0.88,
-              "type": "number"
-            },
-            {
-              "id": "f85ed5f7-e09e-4e66-8998-89d0d8058173",
-              "name": "yandex_region",
-              "value": "Сербия",
-              "type": "string"
-            },
-            {
-              "id": "748715ad-66a5-4f92-842f-c446553809cd",
-              "name": "yandex_id",
-              "value": 0,
-              "type": "number"
-            },
-            {
-              "id": "119ce8c7-ac5a-4e9f-9e21-a3a6a0282081",
-              "name": "services_description_url",
-              "value": "https://www.dropbox.com/scl/fi/90f3et27d0wd4w9waiui8/.txt?rlkey=bgnaia5wvs9ymss29ou0mf2dg&dl=1",
-              "type": "string"
-            },
-            {
               "id": "8939fde5-d7b7-4679-a9dc-4c20aec9614d",
-              "name": "user_content_dropbox_folder",
+              "name": "yandex_report_dropbox_file_path",
+              "value": "https://www.dropbox.com/scl/fi/lsi4k8here3an7gw3i0k2/2025-09-25_2025-10-10_searchquery_kiberone-saratov.csv?rlkey=lju12ky359ltnduc5sh492hle&dl=1",
+              "type": "string"
+            },
+            {
+              "id": "c39715db-2173-438e-9e3b-8e20372ebf86",
+              "name": "threshhold",
+              "value": 0.79,
+              "type": "number"
+            },
+            {
+              "id": "da89c9d1-35e4-43af-a686-0fb39952aec2",
+              "name": "report_id",
               "value": "",
+              "type": "string"
+            },
+            {
+              "id": "4fa84724-3629-46f5-928d-203f2a6dcf99",
+              "name": "company_id",
+              "value": "1",
               "type": "string"
             }
           ]
@@ -391,7 +296,7 @@
         -736,
         -240
       ],
-      "id": "0e26ee11-0f73-47ff-bdf5-a1266789373d",
+      "id": "faa19b9e-e81f-4b7f-8cbd-d05c34048393",
       "name": "Set variables"
     },
     {
@@ -405,10 +310,10 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        1872,
-        368
+        2240,
+        864
       ],
-      "id": "51202aca-c2d4-4088-a71e-be908529148e",
+      "id": "41da02ee-5467-4a8d-942e-b518eeeb0563",
       "name": "Mark_workflow_passed_steps1",
       "executeOnce": true,
       "credentials": {
@@ -425,10 +330,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1632,
-        368
+        1936,
+        704
       ],
-      "id": "8e4e0b31-684f-4b0e-9aed-db8e7f647f10",
+      "id": "7abca762-9a2d-434a-a64f-1c02746ff765",
       "name": "Get current step saved1"
     },
     {
@@ -459,10 +364,10 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        816,
-        256
+        960,
+        768
       ],
-      "id": "f694893c-fd9f-49af-86a9-5c3e8831a1ec",
+      "id": "cb535d49-e8e1-4dcf-934a-560ae3aad83a",
       "name": "If SUB process  already executed1",
       "executeOnce": true
     },
@@ -486,10 +391,10 @@
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1.2,
       "position": [
-        1392,
-        368
+        1712,
+        896
       ],
-      "id": "1821d75b-b10f-4f7c-bbf0-565d2005b3e2",
+      "id": "44a94f9d-6441-45bd-b571-947779c5fc09",
       "name": "Call SUB1"
     },
     {
@@ -497,16 +402,16 @@
         "operation": "executeQuery",
         "query": "SELECT id\nFROM workflow_entity\nWHERE name = $1\nORDER BY id DESC\nLIMIT 1;",
         "options": {
-          "queryReplacement": "={{ $('ADS headers and texts creation services').item.json.workflow_name }}"
+          "queryReplacement": "={{ $('ADV_campaign_analysis_initial').item.json.workflow_name }}"
         }
       },
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        1008,
-        272
+        1152,
+        816
       ],
-      "id": "c82ffd90-0bc9-4ff8-98c8-4fa79d156524",
+      "id": "0757dfec-3f38-40d7-b3d7-956e8ea542b2",
       "name": "get workflow id by name1",
       "credentials": {
         "postgres": {
@@ -528,7 +433,7 @@
             {
               "id": "fda82fe6-7e78-49d2-8130-43cb54ef5d8a",
               "name": "company_id",
-              "value": "={{ $('Execute a SQL query2').item.json.company_id }}",
+              "value": "={{ $('company_record_id').item.json.company_id }}",
               "type": "number"
             },
             {
@@ -538,10 +443,10 @@
               "type": "string"
             },
             {
-              "id": "48e226e1-eec4-4875-abbe-f3bf61e9d335",
-              "name": "company_name",
-              "value": "={{ $('Set variables').item.json.company_name }}",
-              "type": "string"
+              "id": "6e3154c1-d961-4edb-8615-648bfee279e1",
+              "name": "import_id",
+              "value": "={{ $('company_record_id').item.json.report_id }}",
+              "type": "number"
             }
           ]
         },
@@ -551,10 +456,10 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        1200,
-        368
+        1344,
+        880
       ],
-      "id": "5b0be902-b179-4092-b708-2b26a228f8eb",
+      "id": "2a6ff6f7-c3a0-4036-9efb-99202c077ffa",
       "name": "set input data for SUB1"
     },
     {
@@ -566,29 +471,131 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        -352,
-        -496
+        -416,
+        -576
       ],
-      "id": "14b20dda-c4cc-42d5-b08e-d74a37a5fa93",
+      "id": "ac7d851d-b37c-4445-a13f-2cfbdf794927",
       "name": "Sticky Note"
     },
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "WITH cutoff AS (\n  SELECT MAX(st2.started) AS last_finished_started\n  FROM public.business_processes_states st2\n  JOIN public.business_processes bp2\n    ON bp2.business_process_id = st2.business_process_id\n  WHERE bp2.n8n_process_name = $1\n    AND st2.finished IS NOT NULL\n),\nmain AS (\n  SELECT st.*\n  FROM public.business_processes_states st\n  JOIN public.business_processes bp\n    ON bp.business_process_id = st.business_process_id\n  CROSS JOIN cutoff c\n  WHERE bp.n8n_process_name = $1\n    AND st.finished IS NULL\n    AND (c.last_finished_started IS NULL OR st.started > c.last_finished_started)\n)\nSELECT\n  s.business_process_state_id,\n  s.business_process_id,\n  s.started,\n  s.finished,\n  s.error_message,\n  s.n8n_workflow_execution_id,\n  s.n8n_workflow_root_execution_id\nFROM main m\nJOIN public.business_processes_states s\n  ON s.n8n_workflow_root_execution_id = m.n8n_workflow_execution_id\nJOIN public.business_processes p\n  ON p.business_process_id = s.business_process_id\nWHERE p.n8n_process_name = $2\nORDER BY s.started desc;",
+        "query": "WITH cutoff AS (\n  SELECT MAX(st2.started) AS last_finished_started\n  FROM public.business_processes_states st2\n  JOIN public.business_processes bp2\n    ON bp2.business_process_id = st2.business_process_id\n  WHERE bp2.n8n_process_name = $1\n    AND st2.company_id = $3\n    AND st2.finished IS NOT NULL\n),\nmain AS (\n  SELECT st.*\n  FROM public.business_processes_states st\n  JOIN public.business_processes bp\n    ON bp.business_process_id = st.business_process_id\n  CROSS JOIN cutoff c\n  WHERE bp.n8n_process_name = $1\n    AND st.company_id = $3 \n    AND st.finished IS NULL\n    AND (c.last_finished_started IS NULL OR st.started > c.last_finished_started)\n)\nSELECT\n  s.business_process_state_id,\n  s.business_process_id,\n  s.started,\n  s.finished,\n  s.error_message,\n  s.n8n_workflow_execution_id,\n  s.n8n_workflow_root_execution_id\nFROM main m\nJOIN public.business_processes_states s\n  ON s.n8n_workflow_root_execution_id = m.n8n_workflow_execution_id\nJOIN public.business_processes p\n  ON p.business_process_id = s.business_process_id\nWHERE p.n8n_process_name = $2\n  AND s.company_id = $3\nORDER BY s.started desc;",
         "options": {
-          "queryReplacement": "=[{{$workflow.name}},{{$json.workflow_name}}]"
+          "queryReplacement": "=[{{$workflow.name}},{{$json.workflow_name}},{{ $('company_record_id').item.json.company_id }}]"
         }
       },
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        656,
-        256
+        592,
+        768
       ],
-      "id": "011225cf-bf8f-4d6d-bd7f-27c06acbf743",
+      "id": "2db9d552-2a70-4a0c-bf2c-be56714dd980",
       "name": "Execute a SQL query1",
       "alwaysOutputData": true,
+      "credentials": {
+        "postgres": {
+          "id": "4YkdFJcdTgzo9hkz",
+          "name": "PGvector"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "update business_processes_states set  tokens_used_type=$3,company_id=$4, tokens_used=tokens_used+(select bps.tokens_used from business_processes bp1,business_processes_states bps,business_processes_states bps2 where bp1.n8n_process_name=$2 and bp1.business_process_id=bps.business_process_id and  bps.n8n_workflow_root_execution_id=bps2.n8n_workflow_execution_id  and bps.finished is not null and bps2.n8n_workflow_execution_id=$1 order by bps2.business_process_state_id desc LIMIT 1) where n8n_workflow_execution_id=$1;\n",
+        "options": {
+          "queryReplacement": "=[{{$execution.id}},{{$('ADV_campaign_data_load').item.json.workflow_name}},{{ 'gpt-5' }},{{ $('company_record_id').item.json.company_id }}]"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        2720,
+        -208
+      ],
+      "id": "b3b01f04-51b1-4809-928c-834a8748543d",
+      "name": "update workflow tokens usage",
+      "executeOnce": true,
+      "credentials": {
+        "postgres": {
+          "id": "4YkdFJcdTgzo9hkz",
+          "name": "PGvector"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "workflow 1\n",
+        "height": 512,
+        "width": 2848
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        80,
+        -448
+      ],
+      "id": "ee734491-6299-497a-867f-f98603dc43e2",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "workflow\n",
+        "height": 448,
+        "width": 2368
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        272,
+        640
+      ],
+      "id": "c6d44036-3337-4192-9561-c6eede968e8c",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "update business_processes_states set  tokens_used_type=$3, tokens_used=tokens_used+(select bps.tokens_used from business_processes bp1,business_processes_states bps,business_processes_states bps2 where bp1.n8n_process_name=$2 and bp1.business_process_id=bps.business_process_id and  bps.n8n_workflow_root_execution_id=bps2.n8n_workflow_execution_id  and bps.finished is not null and bps2.n8n_workflow_execution_id=$1 order by bps2.business_process_state_id desc LIMIT 1) where n8n_workflow_execution_id=$1;\n",
+        "options": {
+          "queryReplacement": "=[{{$execution.id}},{{$('ADV_campaign_data_load').item.json.workflow_name}},{{ 'gpt-5' }}]"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        2448,
+        864
+      ],
+      "id": "24f98e6c-722f-4ac4-81ee-be86c4bc13bb",
+      "name": "update workflow tokens usage1",
+      "executeOnce": true,
+      "credentials": {
+        "postgres": {
+          "id": "4YkdFJcdTgzo9hkz",
+          "name": "PGvector"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "update business_processes_states set steps_passed=$3 where business_process_id=(select MAX(business_process_id) from business_processes where n8n_process_name=$1) and n8n_workflow_execution_id=$2",
+        "options": {
+          "queryReplacement": "=[{{$workflow.name}},{{$execution.id}},{{$json.steps_passed}}]"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        2528,
+        -208
+      ],
+      "id": "36b0539f-ae1e-4064-ba25-9f7edfa72df7",
+      "name": "Mark_workflow_passed_steps_and_company_id",
+      "executeOnce": true,
       "credentials": {
         "postgres": {
           "id": "4YkdFJcdTgzo9hkz",
@@ -603,7 +610,7 @@
             {
               "id": "99e6bb89-0b33-4e72-b5be-2e118b69afa2",
               "name": "workflow_name",
-              "value": "ADS headers and texts creation services",
+              "value": "ADV_campaign_data_load",
               "type": "string"
             }
           ]
@@ -613,34 +620,26 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        464,
-        256
-      ],
-      "id": "b298355d-7800-4eab-9b7f-22d262582506",
-      "name": "ADS headers and texts creation services"
-    },
-    {
-      "parameters": {
-        "operation": "executeQuery",
-        "query": "INSERT INTO public.companies (company_name,company_url,yandex_id,yandex_region)\nVALUES ($1,$2,$3,$4)\nON CONFLICT (company_name)\nDO UPDATE SET company_name = EXCLUDED.company_name\nRETURNING company_id;",
-        "options": {
-          "queryReplacement": "=[{{$json.company_name}},{{$json.company_url}},{{$json.yandex_id}},{{$json.yandex_region}}]"
-        }
-      },
-      "type": "n8n-nodes-base.postgres",
-      "typeVersion": 2.6,
-      "position": [
-        -528,
+        176,
         -240
       ],
-      "id": "0b3b2877-6bd0-4793-b070-77602660fb8a",
-      "name": "Execute a SQL query2",
-      "credentials": {
-        "postgres": {
-          "id": "4YkdFJcdTgzo9hkz",
-          "name": "PGvector"
-        }
-      }
+      "id": "7e0165dd-fa53-4199-91e8-7fdfd2e5957c",
+      "name": "ADV_campaign_data_load"
+    },
+    {
+      "parameters": {
+        "content": "1)В dropbox ссылке поменять в конце 0 на 1 !!!!! \n2)задать report_id только если нужно обработать записи не последнего загруженного отчета, без загрузки!!!\n3)если надо учесть предыдущую загрузку то явно укажи company_id ",
+        "height": 320,
+        "width": 336
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -848,
+        -416
+      ],
+      "id": "07e227e5-f50e-4fd0-92ec-450b033bedd5",
+      "name": "Sticky Note4"
     },
     {
       "parameters": {
@@ -653,11 +652,11 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        0,
-        256
+        2320,
+        2608
       ],
-      "id": "dba99c77-bbe4-43b0-b622-e4a07cf76bd5",
-      "name": "Mark_skipped_workflow_passed",
+      "id": "d01a16fe-549d-412f-829a-db71f0d42fd3",
+      "name": "Mark_workflow_passed_steps",
       "executeOnce": true,
       "credentials": {
         "postgres": {
@@ -673,101 +672,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -192,
-        256
+        2112,
+        2432
       ],
-      "id": "c218867a-2292-4454-8e70-b19dbdb6b9e0",
-      "name": "Mark skipped step passed"
-    },
-    {
-      "parameters": {
-        "operation": "executeQuery",
-        "query": "update business_processes_states set  tokens_used_type=$3, tokens_used=tokens_used+(select bps.tokens_used from business_processes bp1,business_processes_states bps,business_processes_states bps2 where bp1.n8n_process_name=$2 and bp1.business_process_id=bps.business_process_id and  bps.n8n_workflow_root_execution_id=bps2.n8n_workflow_execution_id  and bps.finished is not null and bps2.n8n_workflow_execution_id=$1 order by bps2.business_process_state_id desc LIMIT 1) where n8n_workflow_execution_id=$1;\n",
-        "options": {
-          "queryReplacement": "=[{{$execution.id}},{{$('set workflow name').item.json.workflow_name}},{{ 'gpt-5' }}]"
-        }
-      },
-      "type": "n8n-nodes-base.postgres",
-      "typeVersion": 2.6,
-      "position": [
-        224,
-        256
-      ],
-      "id": "b5479a50-f6d9-46d5-a1b0-0d89ba669a47",
-      "name": "update workflow tokens usage",
-      "executeOnce": true,
-      "credentials": {
-        "postgres": {
-          "id": "4YkdFJcdTgzo9hkz",
-          "name": "PGvector"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "content": "workflow 1\n",
-        "height": 384,
-        "width": 1712
-      },
-      "type": "n8n-nodes-base.stickyNote",
-      "typeVersion": 1,
-      "position": [
-        336,
-        -320
-      ],
-      "id": "1ae73495-6b4c-47e0-bd23-13d2081f6fec",
-      "name": "Sticky Note1"
-    },
-    {
-      "parameters": {
-        "content": "workflow 1\n",
-        "height": 448,
-        "width": 1696
-      },
-      "type": "n8n-nodes-base.stickyNote",
-      "typeVersion": 1,
-      "position": [
-        416,
-        128
-      ],
-      "id": "f94c1429-ea32-4066-a8f6-1f0a949d8584",
-      "name": "Sticky Note2"
-    },
-    {
-      "parameters": {
-        "operation": "executeQuery",
-        "query": "update business_processes_states set steps_passed=$3 where business_process_id=(select MAX(business_process_id) from business_processes where n8n_process_name=$1) and n8n_workflow_execution_id=$2",
-        "options": {
-          "queryReplacement": "=[{{$workflow.name}},{{$execution.id}},{{$json.steps_passed}}]"
-        }
-      },
-      "type": "n8n-nodes-base.postgres",
-      "typeVersion": 2.6,
-      "position": [
-        1824,
-        960
-      ],
-      "id": "8ad99904-25d2-402e-8d98-a0bafaa2e4df",
-      "name": "Mark_workflow_passed_steps2",
-      "executeOnce": true,
-      "credentials": {
-        "postgres": {
-          "id": "4YkdFJcdTgzo9hkz",
-          "name": "PGvector"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nconst workflowData = $getWorkflowStaticData('global');\nworkflowData.steps_passed = workflowData.steps_passed+1; // update steps counter\nfor (const item of $input.all()) {\n  item.json.steps_passed =workflowData.steps_passed;\n}\n\nreturn $input.all();"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        1584,
-        960
-      ],
-      "id": "d1a7017e-54fa-4dfa-a103-8c4f82c1b4a8",
+      "id": "8aee3834-9caf-4819-ba58-a89008cec7f8",
       "name": "Get current step saved2"
     },
     {
@@ -798,10 +706,10 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        768,
-        848
+        1008,
+        2496
       ],
-      "id": "45967ee5-535c-40ca-82bc-f4ba68dce1c7",
+      "id": "4b04275b-73ab-4c80-931d-a11ad86102f4",
       "name": "If SUB process  already executed2",
       "executeOnce": true
     },
@@ -825,10 +733,10 @@
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1.2,
       "position": [
-        1344,
-        960
+        1760,
+        2624
       ],
-      "id": "d008f2ec-91fb-45a0-98c9-d555e95aaa5b",
+      "id": "0b9b7cb6-1f24-44b3-b4bb-1dbf40518b93",
       "name": "Call SUB2"
     },
     {
@@ -836,16 +744,16 @@
         "operation": "executeQuery",
         "query": "SELECT id\nFROM workflow_entity\nWHERE name = $1\nORDER BY id DESC\nLIMIT 1;",
         "options": {
-          "queryReplacement": "={{ $('ADS headers and texts creation services1').item.json.workflow_name }}"
+          "queryReplacement": "={{ $('ADS headers and texts creation services for updates').item.json.workflow_name }}"
         }
       },
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        960,
-        864
+        1200,
+        2544
       ],
-      "id": "d2fa0a50-6bf8-4045-86e4-c304149c6e82",
+      "id": "3cb74e4d-a2bb-4567-a30d-5eeb609c4592",
       "name": "get workflow id by name2",
       "credentials": {
         "postgres": {
@@ -867,7 +775,7 @@
             {
               "id": "fda82fe6-7e78-49d2-8130-43cb54ef5d8a",
               "name": "company_id",
-              "value": "={{ $('Execute a SQL query2').item.json.company_id }}",
+              "value": "={{ $('company_record_id').item.json.company_id }}",
               "type": "number"
             },
             {
@@ -877,9 +785,9 @@
               "type": "string"
             },
             {
-              "id": "48e226e1-eec4-4875-abbe-f3bf61e9d335",
-              "name": "company_name",
-              "value": "={{ $('Set variables').item.json.company_name }}",
+              "id": "242e22ab-d73d-4b1f-b148-3cd44943fe6f",
+              "name": "import_id",
+              "value": "={{ $('company_record_id').item.json.report_id }}",
               "type": "string"
             }
           ]
@@ -890,28 +798,28 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        1152,
-        960
+        1392,
+        2608
       ],
-      "id": "0997c638-3359-42fe-a877-facb92ddbaf3",
+      "id": "a0c11e70-f898-42c5-95fd-714062298d1c",
       "name": "set input data for SUB2"
     },
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "WITH cutoff AS (\n  SELECT MAX(st2.started) AS last_finished_started\n  FROM public.business_processes_states st2\n  JOIN public.business_processes bp2\n    ON bp2.business_process_id = st2.business_process_id\n  WHERE bp2.n8n_process_name = $1\n    AND st2.finished IS NOT NULL\n),\nmain AS (\n  SELECT st.*\n  FROM public.business_processes_states st\n  JOIN public.business_processes bp\n    ON bp.business_process_id = st.business_process_id\n  CROSS JOIN cutoff c\n  WHERE bp.n8n_process_name = $1\n    AND st.finished IS NULL\n    AND (c.last_finished_started IS NULL OR st.started > c.last_finished_started)\n)\nSELECT\n  s.business_process_state_id,\n  s.business_process_id,\n  s.started,\n  s.finished,\n  s.error_message,\n  s.n8n_workflow_execution_id,\n  s.n8n_workflow_root_execution_id\nFROM main m\nJOIN public.business_processes_states s\n  ON s.n8n_workflow_root_execution_id = m.n8n_workflow_execution_id\nJOIN public.business_processes p\n  ON p.business_process_id = s.business_process_id\nWHERE p.n8n_process_name = $2\nORDER BY s.started desc;",
+        "query": "WITH cutoff AS (\n  SELECT MAX(st2.started) AS last_finished_started\n  FROM public.business_processes_states st2\n  JOIN public.business_processes bp2\n    ON bp2.business_process_id = st2.business_process_id\n  WHERE bp2.n8n_process_name = $1\n    AND st2.company_id = $3\n    AND st2.finished IS NOT NULL\n),\nmain AS (\n  SELECT st.*\n  FROM public.business_processes_states st\n  JOIN public.business_processes bp\n    ON bp.business_process_id = st.business_process_id\n  CROSS JOIN cutoff c\n  WHERE bp.n8n_process_name = $1\n    AND st.company_id = $3 \n    AND st.finished IS NULL\n    AND (c.last_finished_started IS NULL OR st.started > c.last_finished_started)\n)\nSELECT\n  s.business_process_state_id,\n  s.business_process_id,\n  s.started,\n  s.finished,\n  s.error_message,\n  s.n8n_workflow_execution_id,\n  s.n8n_workflow_root_execution_id\nFROM main m\nJOIN public.business_processes_states s\n  ON s.n8n_workflow_root_execution_id = m.n8n_workflow_execution_id\nJOIN public.business_processes p\n  ON p.business_process_id = s.business_process_id\nWHERE p.n8n_process_name = $2\n  AND s.company_id = $3\nORDER BY s.started desc;",
         "options": {
-          "queryReplacement": "=[{{$workflow.name}},{{$json.workflow_name}}]"
+          "queryReplacement": "=[{{$workflow.name}},{{$json.workflow_name}},{{ $('company_record_id').item.json.company_id }}]"
         }
       },
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        608,
-        848
+        640,
+        2496
       ],
-      "id": "05869120-e7cd-4a2d-ac65-279991d6ab5a",
-      "name": "Execute a SQL query3",
+      "id": "3643f797-56ba-45af-aab6-a93308c9e158",
+      "name": "Execute a SQL query2",
       "alwaysOutputData": true,
       "credentials": {
         "postgres": {
@@ -922,12 +830,91 @@
     },
     {
       "parameters": {
+        "content": "workflow\n",
+        "height": 448,
+        "width": 2368
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        304,
+        2368
+      ],
+      "id": "b37aae53-efe0-4945-bc84-b61159699ba4",
+      "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "update business_processes_states set  tokens_used_type=$3, tokens_used=tokens_used+(select bps.tokens_used from business_processes bp1,business_processes_states bps,business_processes_states bps2 where bp1.n8n_process_name=$2 and bp1.business_process_id=bps.business_process_id and  bps.n8n_workflow_root_execution_id=bps2.n8n_workflow_execution_id  and bps.finished is not null and bps2.n8n_workflow_execution_id=$1 order by bps2.business_process_state_id desc LIMIT 1) where n8n_workflow_execution_id=$1;\n",
+        "options": {
+          "queryReplacement": "=[{{$execution.id}},{{$('ADV_campaign_data_load').item.json.workflow_name}},{{ 'gpt-5' }}]"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        2528,
+        2608
+      ],
+      "id": "12453fa0-517a-44b2-860c-a86110a26044",
+      "name": "update workflow tokens usage2",
+      "executeOnce": true,
+      "credentials": {
+        "postgres": {
+          "id": "4YkdFJcdTgzo9hkz",
+          "name": "PGvector"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "select import_id as report_id, company_id from report_import where import_id=(select max(import_id) from report_import where company_id=$1)",
+        "options": {
+          "queryReplacement": "={{ $('Set variables').last().json.company_id }}"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        1440,
+        -384
+      ],
+      "id": "e78d9982-ac3c-4ea3-b91a-ca145984466d",
+      "name": "get company_id from lust succeed report ",
+      "credentials": {
+        "postgres": {
+          "id": "Hx2VFmUi5WO2K4QX",
+          "name": "Postgres account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": []
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2192,
+        -288
+      ],
+      "id": "2be49b5d-544a-456e-a3ba-718f6f96a4a1",
+      "name": "company_record_id"
+    },
+    {
+      "parameters": {
         "assignments": {
           "assignments": [
             {
               "id": "99e6bb89-0b33-4e72-b5be-2e118b69afa2",
               "name": "workflow_name",
-              "value": "ADS headers and texts creation services",
+              "value": "ADS headers and texts creation services for updates",
               "type": "string"
             }
           ]
@@ -937,11 +924,11 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        416,
-        848
+        448,
+        2496
       ],
-      "id": "5616b8ee-8407-4519-b25b-41ba1a838cf1",
-      "name": "ADS headers and texts creation services1"
+      "id": "3f792c3c-f35d-4a89-951b-b10c00be7301",
+      "name": "ADS headers and texts creation services for updates"
     },
     {
       "parameters": {
@@ -954,11 +941,11 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        -48,
-        848
+        2272,
+        3216
       ],
-      "id": "ea2e5814-1828-45d3-b5e4-597c40253162",
-      "name": "Mark_skipped_workflow_passed1",
+      "id": "be2d20ae-ea16-4a95-b1aa-b781f64066bc",
+      "name": "Mark_workflow_passed_steps2",
       "executeOnce": true,
       "credentials": {
         "postgres": {
@@ -974,28 +961,193 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -240,
-        848
+        2032,
+        3056
       ],
-      "id": "60b7a614-c57d-4719-816b-2b76b198ab05",
-      "name": "Mark skipped step passed1"
+      "id": "ef1b06f6-56cb-4588-9df8-b6ac057eac34",
+      "name": "Get current step saved3"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "e2626a1e-412c-4f6f-89a8-ca5da5106302",
+              "leftValue": "={{$json.finished}}",
+              "rightValue": "",
+              "operator": {
+                "type": "dateTime",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1008,
+        3104
+      ],
+      "id": "e8c4dcad-e9b8-40d0-8ab5-0901b31c41ca",
+      "name": "If SUB process  already executed3",
+      "executeOnce": true
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "={{$json.id}}",
+          "mode": "id"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        1792,
+        3216
+      ],
+      "id": "a8d76ec0-e493-45b8-a57a-f1dae4a63137",
+      "name": "Call SUB3"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT id\nFROM workflow_entity\nWHERE name = $1\nORDER BY id DESC\nLIMIT 1;",
+        "options": {
+          "queryReplacement": "={{ $('minus words post processing').item.json.workflow_name }}"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        1200,
+        3152
+      ],
+      "id": "e87d7ef4-5f54-4b80-9acf-2f612e01d3a0",
+      "name": "get workflow id by name3",
+      "credentials": {
+        "postgres": {
+          "id": "hNuVeLeeeSX0vLBj",
+          "name": "n8n service"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "15eb020b-bb6f-4c77-a103-718f49630cd6",
+              "name": "=root_execution_id",
+              "value": "={{ $execution.id }}",
+              "type": "number"
+            },
+            {
+              "id": "fda82fe6-7e78-49d2-8130-43cb54ef5d8a",
+              "name": "company_id",
+              "value": "={{ $('company_record_id').item.json.company_id }}",
+              "type": "number"
+            },
+            {
+              "id": "da41f8d6-0b51-4e6c-91c3-96c8ca5d1659",
+              "name": "threshhold",
+              "value": "={{ $('Set variables').item.json.threshhold }}",
+              "type": "string"
+            },
+            {
+              "id": "242e22ab-d73d-4b1f-b148-3cd44943fe6f",
+              "name": "import_id",
+              "value": "={{ $('company_record_id').item.json.report_id }}",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1392,
+        3216
+      ],
+      "id": "6446fe6c-5dbc-40ee-bd29-77457bb77551",
+      "name": "set input data for SUB3"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "WITH cutoff AS (\n  SELECT MAX(st2.started) AS last_finished_started\n  FROM public.business_processes_states st2\n  JOIN public.business_processes bp2\n    ON bp2.business_process_id = st2.business_process_id\n  WHERE bp2.n8n_process_name = $1\n    AND st2.company_id = $3\n    AND st2.finished IS NOT NULL\n),\nmain AS (\n  SELECT st.*\n  FROM public.business_processes_states st\n  JOIN public.business_processes bp\n    ON bp.business_process_id = st.business_process_id\n  CROSS JOIN cutoff c\n  WHERE bp.n8n_process_name = $1\n    AND st.company_id = $3 \n    AND st.finished IS NULL\n    AND (c.last_finished_started IS NULL OR st.started > c.last_finished_started)\n)\nSELECT\n  s.business_process_state_id,\n  s.business_process_id,\n  s.started,\n  s.finished,\n  s.error_message,\n  s.n8n_workflow_execution_id,\n  s.n8n_workflow_root_execution_id\nFROM main m\nJOIN public.business_processes_states s\n  ON s.n8n_workflow_root_execution_id = m.n8n_workflow_execution_id\nJOIN public.business_processes p\n  ON p.business_process_id = s.business_process_id\nWHERE p.n8n_process_name = $2\n  AND s.company_id = $3\nORDER BY s.started desc;",
+        "options": {
+          "queryReplacement": "=[{{$workflow.name}},{{$json.workflow_name}},{{ $('company_record_id').item.json.company_id }}]"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        640,
+        3104
+      ],
+      "id": "a50c72b7-fb44-497f-b4d6-4a36d2aaf33f",
+      "name": "Execute a SQL query3",
+      "alwaysOutputData": true,
+      "credentials": {
+        "postgres": {
+          "id": "4YkdFJcdTgzo9hkz",
+          "name": "PGvector"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "workflow\n",
+        "height": 448,
+        "width": 2368
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        304,
+        2976
+      ],
+      "id": "c19dc263-6675-4367-89f1-eb8b4b97e650",
+      "name": "Sticky Note5"
     },
     {
       "parameters": {
         "operation": "executeQuery",
         "query": "update business_processes_states set  tokens_used_type=$3, tokens_used=tokens_used+(select bps.tokens_used from business_processes bp1,business_processes_states bps,business_processes_states bps2 where bp1.n8n_process_name=$2 and bp1.business_process_id=bps.business_process_id and  bps.n8n_workflow_root_execution_id=bps2.n8n_workflow_execution_id  and bps.finished is not null and bps2.n8n_workflow_execution_id=$1 order by bps2.business_process_state_id desc LIMIT 1) where n8n_workflow_execution_id=$1;\n",
         "options": {
-          "queryReplacement": "=[{{$execution.id}},{{$('set workflow name').item.json.workflow_name}},{{ 'gpt-5' }}]"
+          "queryReplacement": "=[{{$execution.id}},{{$('ADV_campaign_data_load').item.json.workflow_name}},{{ 'gpt-5' }}]"
         }
       },
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        176,
-        848
+        2464,
+        3216
       ],
-      "id": "49dac10d-e2a2-457c-b723-22f345992a80",
-      "name": "update workflow tokens usage1",
+      "id": "2d57b671-e933-4675-acae-2b081f57737d",
+      "name": "update workflow tokens usage3",
       "executeOnce": true,
       "credentials": {
         "postgres": {
@@ -1006,18 +1158,1920 @@
     },
     {
       "parameters": {
-        "content": "workflow 1\n",
+        "operation": "executeQuery",
+        "query": "update business_processes_states set steps_passed=$3 where business_process_id=(select MAX(business_process_id) from business_processes where n8n_process_name=$1) and n8n_workflow_execution_id=$2",
+        "options": {
+          "queryReplacement": "=[{{$workflow.name}},{{$execution.id}},{{$json.steps_passed}}]"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        2240,
+        336
+      ],
+      "id": "78ae3d49-1c0b-4afd-a1fd-bf0faf3ecd7f",
+      "name": "Mark_workflow_passed_steps3",
+      "executeOnce": true,
+      "credentials": {
+        "postgres": {
+          "id": "4YkdFJcdTgzo9hkz",
+          "name": "PGvector"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nconst workflowData = $getWorkflowStaticData('global');\nworkflowData.steps_passed = workflowData.steps_passed+1; // update steps counter\nfor (const item of $input.all()) {\n  item.json.steps_passed =workflowData.steps_passed;\n}\n\nreturn $input.all();"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2000,
+        176
+      ],
+      "id": "69529f23-2098-4a81-9280-77b159f3da1f",
+      "name": "Get current step saved4"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "e2626a1e-412c-4f6f-89a8-ca5da5106302",
+              "leftValue": "={{$json.finished}}",
+              "rightValue": "",
+              "operator": {
+                "type": "dateTime",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        976,
+        240
+      ],
+      "id": "1f4a2b21-c8d0-4a59-9d39-4103f3930547",
+      "name": "If SUB process  already executed4",
+      "executeOnce": true
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "={{$json.id}}",
+          "mode": "id"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        1760,
+        336
+      ],
+      "id": "1fed4ed3-1276-49fa-8d94-be30b60fcc80",
+      "name": "Call SUB4"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT id\nFROM workflow_entity\nWHERE name = $1\nORDER BY id DESC\nLIMIT 1;",
+        "options": {
+          "queryReplacement": "={{ $('ADV_campaign_get_service').item.json.workflow_name }}"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        1168,
+        288
+      ],
+      "id": "2d4b469f-8c72-444f-8349-ab75e0b08a6a",
+      "name": "get workflow id by name4",
+      "credentials": {
+        "postgres": {
+          "id": "hNuVeLeeeSX0vLBj",
+          "name": "n8n service"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "15eb020b-bb6f-4c77-a103-718f49630cd6",
+              "name": "=root_execution_id",
+              "value": "={{ $execution.id }}",
+              "type": "number"
+            },
+            {
+              "id": "fda82fe6-7e78-49d2-8130-43cb54ef5d8a",
+              "name": "company_id",
+              "value": "={{ $('company_record_id').item.json.company_id }}",
+              "type": "number"
+            },
+            {
+              "id": "da41f8d6-0b51-4e6c-91c3-96c8ca5d1659",
+              "name": "threshhold",
+              "value": "={{ $('Set variables').item.json.threshhold }}",
+              "type": "string"
+            },
+            {
+              "id": "6e3154c1-d961-4edb-8615-648bfee279e1",
+              "name": "import_id",
+              "value": "={{ $('company_record_id').item.json.report_id }}",
+              "type": "number"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1360,
+        352
+      ],
+      "id": "923b7c87-0451-45de-9421-7b5a553f2a8a",
+      "name": "set input data for SUB4"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "WITH cutoff AS (\n  SELECT MAX(st2.started) AS last_finished_started\n  FROM public.business_processes_states st2\n  JOIN public.business_processes bp2\n    ON bp2.business_process_id = st2.business_process_id\n  WHERE bp2.n8n_process_name = $1\n    AND st2.company_id = $3\n    AND st2.finished IS NOT NULL\n),\nmain AS (\n  SELECT st.*\n  FROM public.business_processes_states st\n  JOIN public.business_processes bp\n    ON bp.business_process_id = st.business_process_id\n  CROSS JOIN cutoff c\n  WHERE bp.n8n_process_name = $1\n    AND st.company_id = $3 \n    AND st.finished IS NULL\n    AND (c.last_finished_started IS NULL OR st.started > c.last_finished_started)\n)\nSELECT\n  s.business_process_state_id,\n  s.business_process_id,\n  s.started,\n  s.finished,\n  s.error_message,\n  s.n8n_workflow_execution_id,\n  s.n8n_workflow_root_execution_id\nFROM main m\nJOIN public.business_processes_states s\n  ON s.n8n_workflow_root_execution_id = m.n8n_workflow_execution_id\nJOIN public.business_processes p\n  ON p.business_process_id = s.business_process_id\nWHERE p.n8n_process_name = $2\n  AND s.company_id = $3\nORDER BY s.started desc;",
+        "options": {
+          "queryReplacement": "=[{{$workflow.name}},{{$json.workflow_name}},{{ $('company_record_id').item.json.company_id }}]"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        608,
+        240
+      ],
+      "id": "d7af5e98-2050-4690-ae64-dbd4b741dc1d",
+      "name": "Execute a SQL query4",
+      "alwaysOutputData": true,
+      "credentials": {
+        "postgres": {
+          "id": "4YkdFJcdTgzo9hkz",
+          "name": "PGvector"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "workflow \n",
         "height": 448,
-        "width": 1696
+        "width": 2368
       },
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        368,
-        720
+        272,
+        112
       ],
-      "id": "27409476-1679-42eb-8186-ca55f401af6a",
-      "name": "Sticky Note3"
+      "id": "a085e4d4-088b-4f0c-a0b8-70ea4cfd95fe",
+      "name": "Sticky Note8"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "update business_processes_states set  tokens_used_type=$3, tokens_used=tokens_used+(select bps.tokens_used from business_processes bp1,business_processes_states bps,business_processes_states bps2 where bp1.n8n_process_name=$2 and bp1.business_process_id=bps.business_process_id and  bps.n8n_workflow_root_execution_id=bps2.n8n_workflow_execution_id  and bps.finished is not null and bps2.n8n_workflow_execution_id=$1 order by bps2.business_process_state_id desc LIMIT 1) where n8n_workflow_execution_id=$1;\n",
+        "options": {
+          "queryReplacement": "=[{{$execution.id}},{{$('ADV_campaign_data_load').item.json.workflow_name}},{{ 'gpt-5' }}]"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        2448,
+        336
+      ],
+      "id": "1f152ed9-7306-4520-adda-9111544a6c8f",
+      "name": "update workflow tokens usage4",
+      "executeOnce": true,
+      "credentials": {
+        "postgres": {
+          "id": "4YkdFJcdTgzo9hkz",
+          "name": "PGvector"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "99e6bb89-0b33-4e72-b5be-2e118b69afa2",
+              "name": "workflow_name",
+              "value": "ADV_campaign_get_service",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        416,
+        240
+      ],
+      "id": "100b8502-3390-48c1-8647-afc4317ece8c",
+      "name": "ADV_campaign_get_service"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "update business_processes_states set error_happened=NOW(),error_message='execution completed but not marked finished' where business_process_id=(select MAX(business_process_id) from business_processes where n8n_process_name=$1) and n8n_workflow_execution_id=$2",
+        "options": {
+          "queryReplacement": "=[{{$workflow.name}},{{$execution.id}}]"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        2864,
+        2544
+      ],
+      "id": "cf54b187-2a27-418c-9c8a-80637ad7ce7e",
+      "name": "Mark_workflow_error",
+      "executeOnce": true,
+      "credentials": {
+        "postgres": {
+          "id": "4YkdFJcdTgzo9hkz",
+          "name": "PGvector"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "d2f57e53-4fdb-4cda-ba54-625ed2e91e80",
+              "leftValue": "={{ $('Set variables').item.json.report_id }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1856,
+        -320
+      ],
+      "id": "5cb3c976-3234-4b64-b5a4-0dcc74574285",
+      "name": "If report_id manually set"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "9d0812dd-afb7-4a56-843f-97736d5766d2",
+              "name": "",
+              "value": "",
+              "type": "string"
+            },
+            {
+              "id": "e7e14827-e3bc-43d2-913e-39c68158f227",
+              "name": "import_id",
+              "value": "={{ $('Set variables').item.json.report_id }}",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2064,
+        -400
+      ],
+      "id": "f0f5af8b-5c6c-4fbd-a61e-b8398db4d269",
+      "name": "override report_id"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "update business_processes_states set steps_passed=$3 where business_process_id=(select MAX(business_process_id) from business_processes where n8n_process_name=$1) and n8n_workflow_execution_id=$2",
+        "options": {
+          "queryReplacement": "=[{{$workflow.name}},{{$execution.id}},{{$json.steps_passed}}]"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        2288,
+        4240
+      ],
+      "id": "bd03d50e-d712-4b96-869e-8e29cb110d38",
+      "name": "Mark_workflow_passed_steps4",
+      "executeOnce": true,
+      "credentials": {
+        "postgres": {
+          "id": "4YkdFJcdTgzo9hkz",
+          "name": "PGvector"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nconst workflowData = $getWorkflowStaticData('global');\nworkflowData.steps_passed = workflowData.steps_passed+1; // update steps counter\nfor (const item of $input.all()) {\n  item.json.steps_passed =workflowData.steps_passed;\n}\n\nreturn $input.all();"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2048,
+        4080
+      ],
+      "id": "ddb4d93e-adfb-4f13-98cd-829b288ad8c2",
+      "name": "Get current step saved5"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "e2626a1e-412c-4f6f-89a8-ca5da5106302",
+              "leftValue": "={{$json.finished}}",
+              "rightValue": "",
+              "operator": {
+                "type": "dateTime",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1024,
+        4128
+      ],
+      "id": "1913e947-1886-4099-8912-13c0d0f94023",
+      "name": "If SUB process  already executed5",
+      "executeOnce": true
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "={{$json.id}}",
+          "mode": "id"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        1808,
+        4240
+      ],
+      "id": "c72a8ee6-6fb4-4b8a-8b1c-cc1cddb070b8",
+      "name": "Call SUB5"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT id\nFROM workflow_entity\nWHERE name = $1\nORDER BY id DESC\nLIMIT 1;",
+        "options": {
+          "queryReplacement": "={{ $('Check if keyword need to be restricted').item.json.workflow_name }}"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        1216,
+        4176
+      ],
+      "id": "00074668-3e48-4572-bafe-c3472f0bce52",
+      "name": "get workflow id by name5",
+      "credentials": {
+        "postgres": {
+          "id": "hNuVeLeeeSX0vLBj",
+          "name": "n8n service"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "15eb020b-bb6f-4c77-a103-718f49630cd6",
+              "name": "=root_execution_id",
+              "value": "={{ $execution.id }}",
+              "type": "number"
+            },
+            {
+              "id": "fda82fe6-7e78-49d2-8130-43cb54ef5d8a",
+              "name": "company_id",
+              "value": "={{ $('company_record_id').item.json.company_id }}",
+              "type": "number"
+            },
+            {
+              "id": "da41f8d6-0b51-4e6c-91c3-96c8ca5d1659",
+              "name": "threshhold",
+              "value": "={{ $('Set variables').item.json.threshhold }}",
+              "type": "string"
+            },
+            {
+              "id": "242e22ab-d73d-4b1f-b148-3cd44943fe6f",
+              "name": "import_id",
+              "value": "={{ $('company_record_id').item.json.report_id }}",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1408,
+        4240
+      ],
+      "id": "fccac053-148d-45e5-8dc4-6b2a7918cf27",
+      "name": "set input data for SUB5"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "WITH cutoff AS (\n  SELECT MAX(st2.started) AS last_finished_started\n  FROM public.business_processes_states st2\n  JOIN public.business_processes bp2\n    ON bp2.business_process_id = st2.business_process_id\n  WHERE bp2.n8n_process_name = $1\n    AND st2.company_id = $3\n    AND st2.finished IS NOT NULL\n),\nmain AS (\n  SELECT st.*\n  FROM public.business_processes_states st\n  JOIN public.business_processes bp\n    ON bp.business_process_id = st.business_process_id\n  CROSS JOIN cutoff c\n  WHERE bp.n8n_process_name = $1\n    AND st.company_id = $3 \n    AND st.finished IS NULL\n    AND (c.last_finished_started IS NULL OR st.started > c.last_finished_started)\n)\nSELECT\n  s.business_process_state_id,\n  s.business_process_id,\n  s.started,\n  s.finished,\n  s.error_message,\n  s.n8n_workflow_execution_id,\n  s.n8n_workflow_root_execution_id\nFROM main m\nJOIN public.business_processes_states s\n  ON s.n8n_workflow_root_execution_id = m.n8n_workflow_execution_id\nJOIN public.business_processes p\n  ON p.business_process_id = s.business_process_id\nWHERE p.n8n_process_name = $2\n  AND s.company_id = $3\nORDER BY s.started desc;",
+        "options": {
+          "queryReplacement": "=[{{$workflow.name}},{{$json.workflow_name}},{{ $('company_record_id').item.json.company_id }}]"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        656,
+        4128
+      ],
+      "id": "e4e40806-0229-4ef5-ab8b-424f47c616cf",
+      "name": "Execute a SQL query5",
+      "alwaysOutputData": true,
+      "credentials": {
+        "postgres": {
+          "id": "4YkdFJcdTgzo9hkz",
+          "name": "PGvector"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "workflow\n",
+        "height": 448,
+        "width": 2368
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        320,
+        4000
+      ],
+      "id": "97037fa4-1ca6-458a-a70e-f5b6817a4c30",
+      "name": "Sticky Note9"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "update business_processes_states set  tokens_used_type=$3, tokens_used=tokens_used+(select bps.tokens_used from business_processes bp1,business_processes_states bps,business_processes_states bps2 where bp1.n8n_process_name=$2 and bp1.business_process_id=bps.business_process_id and  bps.n8n_workflow_root_execution_id=bps2.n8n_workflow_execution_id  and bps.finished is not null and bps2.n8n_workflow_execution_id=$1 order by bps2.business_process_state_id desc LIMIT 1) where n8n_workflow_execution_id=$1;\n",
+        "options": {
+          "queryReplacement": "=[{{$execution.id}},{{$('ADV_campaign_data_load').item.json.workflow_name}},{{ 'gpt-5' }}]"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        2480,
+        4240
+      ],
+      "id": "3d54602a-d3a8-4dd4-ab1f-874912dfb6e1",
+      "name": "update workflow tokens usage5",
+      "executeOnce": true,
+      "credentials": {
+        "postgres": {
+          "id": "4YkdFJcdTgzo9hkz",
+          "name": "PGvector"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "99e6bb89-0b33-4e72-b5be-2e118b69afa2",
+              "name": "workflow_name",
+              "value": "Check if keyword need to be restricted",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        464,
+        4128
+      ],
+      "id": "c11dbdfa-478b-492b-82f0-e1293483aa93",
+      "name": "Check if keyword need to be restricted"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "update business_processes_states set steps_passed=$3 where business_process_id=(select MAX(business_process_id) from business_processes where n8n_process_name=$1) and n8n_workflow_execution_id=$2",
+        "options": {
+          "queryReplacement": "=[{{$workflow.name}},{{$execution.id}},{{$json.steps_passed}}]"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        2272,
+        4880
+      ],
+      "id": "4306be8f-5db5-438b-aca2-0f916e71cd4d",
+      "name": "Mark_workflow_passed_steps5",
+      "executeOnce": true,
+      "credentials": {
+        "postgres": {
+          "id": "4YkdFJcdTgzo9hkz",
+          "name": "PGvector"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nconst workflowData = $getWorkflowStaticData('global');\nworkflowData.steps_passed = workflowData.steps_passed+1; // update steps counter\nfor (const item of $input.all()) {\n  item.json.steps_passed =workflowData.steps_passed;\n}\n\nreturn $input.all();"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2032,
+        4720
+      ],
+      "id": "09548f48-5440-4602-8617-570a5e863d73",
+      "name": "Get current step saved6"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "e2626a1e-412c-4f6f-89a8-ca5da5106302",
+              "leftValue": "={{$json.finished}}",
+              "rightValue": "",
+              "operator": {
+                "type": "dateTime",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1008,
+        4768
+      ],
+      "id": "715ef721-de0f-4f11-9c4f-80f9f97c04a5",
+      "name": "If SUB process  already executed6",
+      "executeOnce": true
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "={{$json.id}}",
+          "mode": "id"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        1792,
+        4880
+      ],
+      "id": "fa5b183c-e4e5-4e25-9e7c-b0591f14e146",
+      "name": "Call SUB6"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT id\nFROM workflow_entity\nWHERE name = $1\nORDER BY id DESC\nLIMIT 1;",
+        "options": {
+          "queryReplacement": "={{ $('minus words vs content review').item.json.workflow_name }}"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        1200,
+        4816
+      ],
+      "id": "fe2f81d1-ebcb-46df-8ebd-8129ce12c45f",
+      "name": "get workflow id by name6",
+      "credentials": {
+        "postgres": {
+          "id": "hNuVeLeeeSX0vLBj",
+          "name": "n8n service"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "15eb020b-bb6f-4c77-a103-718f49630cd6",
+              "name": "=root_execution_id",
+              "value": "={{ $execution.id }}",
+              "type": "number"
+            },
+            {
+              "id": "fda82fe6-7e78-49d2-8130-43cb54ef5d8a",
+              "name": "company_id",
+              "value": "={{ $('company_record_id').item.json.company_id }}",
+              "type": "number"
+            },
+            {
+              "id": "da41f8d6-0b51-4e6c-91c3-96c8ca5d1659",
+              "name": "threshhold",
+              "value": "={{ $('Set variables').item.json.threshhold }}",
+              "type": "string"
+            },
+            {
+              "id": "242e22ab-d73d-4b1f-b148-3cd44943fe6f",
+              "name": "import_id",
+              "value": "={{ $('company_record_id').item.json.import_id }}",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1392,
+        4880
+      ],
+      "id": "fe424958-d594-45f9-a64d-f2c0a9434efc",
+      "name": "set input data for SUB6"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "WITH cutoff AS (\n  SELECT MAX(st2.started) AS last_finished_started\n  FROM public.business_processes_states st2\n  JOIN public.business_processes bp2\n    ON bp2.business_process_id = st2.business_process_id\n  WHERE bp2.n8n_process_name = $1\n    AND st2.company_id = $3\n    AND st2.finished IS NOT NULL\n),\nmain AS (\n  SELECT st.*\n  FROM public.business_processes_states st\n  JOIN public.business_processes bp\n    ON bp.business_process_id = st.business_process_id\n  CROSS JOIN cutoff c\n  WHERE bp.n8n_process_name = $1\n    AND st.company_id = $3 \n    AND st.finished IS NULL\n    AND (c.last_finished_started IS NULL OR st.started > c.last_finished_started)\n)\nSELECT\n  s.business_process_state_id,\n  s.business_process_id,\n  s.started,\n  s.finished,\n  s.error_message,\n  s.n8n_workflow_execution_id,\n  s.n8n_workflow_root_execution_id\nFROM main m\nJOIN public.business_processes_states s\n  ON s.n8n_workflow_root_execution_id = m.n8n_workflow_execution_id\nJOIN public.business_processes p\n  ON p.business_process_id = s.business_process_id\nWHERE p.n8n_process_name = $2\n  AND s.company_id = $3\nORDER BY s.started desc;",
+        "options": {
+          "queryReplacement": "=[{{$workflow.name}},{{$json.workflow_name}},{{ $('company_record_id').item.json.company_id }}]"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        640,
+        4768
+      ],
+      "id": "a0364ca8-3525-4375-9852-142fb003bacf",
+      "name": "Execute a SQL query6",
+      "alwaysOutputData": true,
+      "credentials": {
+        "postgres": {
+          "id": "4YkdFJcdTgzo9hkz",
+          "name": "PGvector"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "workflow\n",
+        "height": 448,
+        "width": 2368
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        320,
+        4640
+      ],
+      "id": "8fe056c6-d370-4856-9d46-2fa030ad7683",
+      "name": "Sticky Note10"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "update business_processes_states set  tokens_used_type=$3, tokens_used=tokens_used+(select bps.tokens_used from business_processes bp1,business_processes_states bps,business_processes_states bps2 where bp1.n8n_process_name=$2 and bp1.business_process_id=bps.business_process_id and  bps.n8n_workflow_root_execution_id=bps2.n8n_workflow_execution_id  and bps.finished is not null and bps2.n8n_workflow_execution_id=$1 order by bps2.business_process_state_id desc LIMIT 1) where n8n_workflow_execution_id=$1;\n",
+        "options": {
+          "queryReplacement": "=[{{$execution.id}},{{$('ADV_campaign_data_load').item.json.workflow_name}},{{ 'gpt-5' }}]"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        2464,
+        4880
+      ],
+      "id": "09d82bde-ddbb-42bc-a34e-baa4e247973c",
+      "name": "update workflow tokens usage6",
+      "executeOnce": true,
+      "credentials": {
+        "postgres": {
+          "id": "4YkdFJcdTgzo9hkz",
+          "name": "PGvector"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "update business_processes_states set steps_passed=$3 where business_process_id=(select MAX(business_process_id) from business_processes where n8n_process_name=$1) and n8n_workflow_execution_id=$2",
+        "options": {
+          "queryReplacement": "=[{{$workflow.name}},{{$execution.id}},{{$json.steps_passed}}]"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        2272,
+        5376
+      ],
+      "id": "337f85f5-14c9-4d3c-b744-0e4b2a7967ca",
+      "name": "Mark_workflow_passed_steps6",
+      "executeOnce": true,
+      "credentials": {
+        "postgres": {
+          "id": "4YkdFJcdTgzo9hkz",
+          "name": "PGvector"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nconst workflowData = $getWorkflowStaticData('global');\nworkflowData.steps_passed = workflowData.steps_passed+1; // update steps counter\nfor (const item of $input.all()) {\n  item.json.steps_passed =workflowData.steps_passed;\n}\n\nreturn $input.all();"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2032,
+        5216
+      ],
+      "id": "cf610bfb-fdda-4167-b82d-ed049ff08e82",
+      "name": "Get current step saved7"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "e2626a1e-412c-4f6f-89a8-ca5da5106302",
+              "leftValue": "={{$json.finished}}",
+              "rightValue": "",
+              "operator": {
+                "type": "dateTime",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1008,
+        5264
+      ],
+      "id": "7747630c-f4b4-4f4d-b64b-ea18267517af",
+      "name": "If SUB process  already executed7",
+      "executeOnce": true
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "={{$json.id}}",
+          "mode": "id"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        1792,
+        5376
+      ],
+      "id": "a7c8d659-5db2-4d1d-9cd8-7ab094dce973",
+      "name": "Call SUB7"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT id\nFROM workflow_entity\nWHERE name = $1\nORDER BY id DESC\nLIMIT 1;",
+        "options": {
+          "queryReplacement": "={{ $('campaign core update finalization').item.json.workflow_name }}"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        1200,
+        5312
+      ],
+      "id": "d7eeb4cd-6947-44ce-b8cd-41b572ba8f8d",
+      "name": "get workflow id by name7",
+      "credentials": {
+        "postgres": {
+          "id": "hNuVeLeeeSX0vLBj",
+          "name": "n8n service"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "15eb020b-bb6f-4c77-a103-718f49630cd6",
+              "name": "=root_execution_id",
+              "value": "={{ $execution.id }}",
+              "type": "number"
+            },
+            {
+              "id": "fda82fe6-7e78-49d2-8130-43cb54ef5d8a",
+              "name": "company_id",
+              "value": "={{ $('company_record_id').item.json.company_id }}",
+              "type": "number"
+            },
+            {
+              "id": "da41f8d6-0b51-4e6c-91c3-96c8ca5d1659",
+              "name": "threshhold",
+              "value": "={{ $('Set variables').item.json.threshhold }}",
+              "type": "string"
+            },
+            {
+              "id": "242e22ab-d73d-4b1f-b148-3cd44943fe6f",
+              "name": "import_id",
+              "value": "={{ $('company_record_id').item.json.report_id }}",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1392,
+        5376
+      ],
+      "id": "08617e73-7cc7-41f8-a7e6-89eb5f3c91cc",
+      "name": "set input data for SUB7"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "WITH cutoff AS (\n  SELECT MAX(st2.started) AS last_finished_started\n  FROM public.business_processes_states st2\n  JOIN public.business_processes bp2\n    ON bp2.business_process_id = st2.business_process_id\n  WHERE bp2.n8n_process_name = $1\n    AND st2.company_id = $3\n    AND st2.finished IS NOT NULL\n),\nmain AS (\n  SELECT st.*\n  FROM public.business_processes_states st\n  JOIN public.business_processes bp\n    ON bp.business_process_id = st.business_process_id\n  CROSS JOIN cutoff c\n  WHERE bp.n8n_process_name = $1\n    AND st.company_id = $3 \n    AND st.finished IS NULL\n    AND (c.last_finished_started IS NULL OR st.started > c.last_finished_started)\n)\nSELECT\n  s.business_process_state_id,\n  s.business_process_id,\n  s.started,\n  s.finished,\n  s.error_message,\n  s.n8n_workflow_execution_id,\n  s.n8n_workflow_root_execution_id\nFROM main m\nJOIN public.business_processes_states s\n  ON s.n8n_workflow_root_execution_id = m.n8n_workflow_execution_id\nJOIN public.business_processes p\n  ON p.business_process_id = s.business_process_id\nWHERE p.n8n_process_name = $2\n  AND s.company_id = $3\nORDER BY s.started desc;",
+        "options": {
+          "queryReplacement": "=[{{$workflow.name}},{{$json.workflow_name}},{{ $('company_record_id').item.json.company_id }}]"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        640,
+        5264
+      ],
+      "id": "a14088f9-902c-4ee0-ba44-71c57ebb59b3",
+      "name": "Execute a SQL query7",
+      "alwaysOutputData": true,
+      "credentials": {
+        "postgres": {
+          "id": "4YkdFJcdTgzo9hkz",
+          "name": "PGvector"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "workflow\n",
+        "height": 448,
+        "width": 2368
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        320,
+        5136
+      ],
+      "id": "29fd0b20-ccdb-44ae-be9f-71af1c932998",
+      "name": "Sticky Note11"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "update business_processes_states set  tokens_used_type=$3, tokens_used=tokens_used+(select bps.tokens_used from business_processes bp1,business_processes_states bps,business_processes_states bps2 where bp1.n8n_process_name=$2 and bp1.business_process_id=bps.business_process_id and  bps.n8n_workflow_root_execution_id=bps2.n8n_workflow_execution_id  and bps.finished is not null and bps2.n8n_workflow_execution_id=$1 order by bps2.business_process_state_id desc LIMIT 1) where n8n_workflow_execution_id=$1;\n",
+        "options": {
+          "queryReplacement": "=[{{$execution.id}},{{$('ADV_campaign_data_load').item.json.workflow_name}},{{ 'gpt-5' }}]"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        2464,
+        5376
+      ],
+      "id": "9be4d292-015e-4525-9b24-7c2db078c7bb",
+      "name": "update workflow tokens usage7",
+      "executeOnce": true,
+      "credentials": {
+        "postgres": {
+          "id": "4YkdFJcdTgzo9hkz",
+          "name": "PGvector"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "99e6bb89-0b33-4e72-b5be-2e118b69afa2",
+              "name": "workflow_name",
+              "value": "campaign core update finalization",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        448,
+        5264
+      ],
+      "id": "82666033-78d4-4b33-ad35-fd9bbe2a2d6d",
+      "name": "campaign core update finalization"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "d2f57e53-4fdb-4cda-ba54-625ed2e91e80",
+              "leftValue": "={{ $('Set variables').item.json.company_id }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        416,
+        -224
+      ],
+      "id": "a57c1e49-7721-41f7-b0b1-bf4deafc4445",
+      "name": "If company_id manually set"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "update business_processes_states set steps_passed=$3 where business_process_id=(select MAX(business_process_id) from business_processes where n8n_process_name=$1) and n8n_workflow_execution_id=$2",
+        "options": {
+          "queryReplacement": "=[{{$workflow.name}},{{$execution.id}},{{$json.steps_passed}}]"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        2272,
+        1984
+      ],
+      "id": "54d9c69b-ef78-404c-b28e-9f7db6da26b5",
+      "name": "Mark_workflow_passed_steps7",
+      "executeOnce": true,
+      "credentials": {
+        "postgres": {
+          "id": "4YkdFJcdTgzo9hkz",
+          "name": "PGvector"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nconst workflowData = $getWorkflowStaticData('global');\nworkflowData.steps_passed = workflowData.steps_passed+1; // update steps counter\nfor (const item of $input.all()) {\n  item.json.steps_passed =workflowData.steps_passed;\n}\n\nreturn $input.all();"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1968,
+        1824
+      ],
+      "id": "c46657fa-dc12-4dc1-b714-ba7e241333ab",
+      "name": "Get current step saved8"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "e2626a1e-412c-4f6f-89a8-ca5da5106302",
+              "leftValue": "={{$json.finished}}",
+              "rightValue": "",
+              "operator": {
+                "type": "dateTime",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        992,
+        1888
+      ],
+      "id": "fd30238b-69c7-482f-b4d1-90dd52a60174",
+      "name": "If SUB process  already executed8",
+      "executeOnce": true
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "={{$json.id}}",
+          "mode": "id"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        1744,
+        2016
+      ],
+      "id": "60b8bff0-7d0c-4d9b-9c53-4100a743a4cb",
+      "name": "Call SUB8"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT id\nFROM workflow_entity\nWHERE name = $1\nORDER BY id DESC\nLIMIT 1;",
+        "options": {
+          "queryReplacement": "={{ $('ADV_campaign_analysis_AI').item.json.workflow_name }}"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        1184,
+        1936
+      ],
+      "id": "7f7cb064-b3b7-407d-83ad-3ae3ba6545b0",
+      "name": "get workflow id by name8",
+      "credentials": {
+        "postgres": {
+          "id": "hNuVeLeeeSX0vLBj",
+          "name": "n8n service"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "15eb020b-bb6f-4c77-a103-718f49630cd6",
+              "name": "=root_execution_id",
+              "value": "={{ $execution.id }}",
+              "type": "number"
+            },
+            {
+              "id": "fda82fe6-7e78-49d2-8130-43cb54ef5d8a",
+              "name": "company_id",
+              "value": "={{ $('company_record_id').item.json.company_id }}",
+              "type": "number"
+            },
+            {
+              "id": "da41f8d6-0b51-4e6c-91c3-96c8ca5d1659",
+              "name": "threshhold",
+              "value": "={{ $('Set variables').item.json.threshhold }}",
+              "type": "string"
+            },
+            {
+              "id": "6e3154c1-d961-4edb-8615-648bfee279e1",
+              "name": "import_id",
+              "value": "={{ $('company_record_id').item.json.report_id }}",
+              "type": "number"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1376,
+        2000
+      ],
+      "id": "81bccd83-a324-451a-bb93-309a8f053e20",
+      "name": "set input data for SUB8"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "WITH cutoff AS (\n  SELECT MAX(st2.started) AS last_finished_started\n  FROM public.business_processes_states st2\n  JOIN public.business_processes bp2\n    ON bp2.business_process_id = st2.business_process_id\n  WHERE bp2.n8n_process_name = $1\n    AND st2.company_id = $3\n    AND st2.finished IS NOT NULL\n),\nmain AS (\n  SELECT st.*\n  FROM public.business_processes_states st\n  JOIN public.business_processes bp\n    ON bp.business_process_id = st.business_process_id\n  CROSS JOIN cutoff c\n  WHERE bp.n8n_process_name = $1\n    AND st.company_id = $3 \n    AND st.finished IS NULL\n    AND (c.last_finished_started IS NULL OR st.started > c.last_finished_started)\n)\nSELECT\n  s.business_process_state_id,\n  s.business_process_id,\n  s.started,\n  s.finished,\n  s.error_message,\n  s.n8n_workflow_execution_id,\n  s.n8n_workflow_root_execution_id\nFROM main m\nJOIN public.business_processes_states s\n  ON s.n8n_workflow_root_execution_id = m.n8n_workflow_execution_id\nJOIN public.business_processes p\n  ON p.business_process_id = s.business_process_id\nWHERE p.n8n_process_name = $2\n  AND s.company_id = $3\nORDER BY s.started desc;",
+        "options": {
+          "queryReplacement": "=[{{$workflow.name}},{{$json.workflow_name}},{{ $('company_record_id').item.json.company_id }}]"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        624,
+        1888
+      ],
+      "id": "53af5922-6be9-4dda-ab2f-4c7173e28532",
+      "name": "Execute a SQL query8",
+      "alwaysOutputData": true,
+      "credentials": {
+        "postgres": {
+          "id": "4YkdFJcdTgzo9hkz",
+          "name": "PGvector"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "workflow\n",
+        "height": 448,
+        "width": 2368
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        304,
+        1760
+      ],
+      "id": "fcd9a9a1-1a51-43d1-8b33-37ed661dc725",
+      "name": "Sticky Note6"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "update business_processes_states set  tokens_used_type=$3, tokens_used=tokens_used+(select bps.tokens_used from business_processes bp1,business_processes_states bps,business_processes_states bps2 where bp1.n8n_process_name=$2 and bp1.business_process_id=bps.business_process_id and  bps.n8n_workflow_root_execution_id=bps2.n8n_workflow_execution_id  and bps.finished is not null and bps2.n8n_workflow_execution_id=$1 order by bps2.business_process_state_id desc LIMIT 1) where n8n_workflow_execution_id=$1;\n",
+        "options": {
+          "queryReplacement": "=[{{$execution.id}},{{$('ADV_campaign_data_load').item.json.workflow_name}},{{ 'gpt-5' }}]"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        2480,
+        1984
+      ],
+      "id": "f7fddaaf-811c-4c30-9bec-a4a7c773b3b7",
+      "name": "update workflow tokens usage8",
+      "executeOnce": true,
+      "credentials": {
+        "postgres": {
+          "id": "4YkdFJcdTgzo9hkz",
+          "name": "PGvector"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "99e6bb89-0b33-4e72-b5be-2e118b69afa2",
+              "name": "workflow_name",
+              "value": "ADV_campaign_analysis_initial",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        400,
+        768
+      ],
+      "id": "88c38d67-1dfc-4c4c-b633-57404af695b6",
+      "name": "ADV_campaign_analysis_initial"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "99e6bb89-0b33-4e72-b5be-2e118b69afa2",
+              "name": "workflow_name",
+              "value": "ADV_campaign_analysis_AI",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        432,
+        1888
+      ],
+      "id": "f5cbeb6c-fb92-4ef9-8f9a-868dee25eefb",
+      "name": "ADV_campaign_analysis_AI"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "99e6bb89-0b33-4e72-b5be-2e118b69afa2",
+              "name": "workflow_name",
+              "value": "minus words post processing",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        448,
+        3104
+      ],
+      "id": "d1edbdf0-2675-487b-9bc3-e64e70e3910b",
+      "name": "minus words post processing"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "99e6bb89-0b33-4e72-b5be-2e118b69afa2",
+              "name": "workflow_name",
+              "value": "minus words vs content review",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        448,
+        4768
+      ],
+      "id": "da021306-3948-4397-a140-8ba2a90663d3",
+      "name": "minus words vs content review"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "update business_processes_states set steps_passed=$3 where business_process_id=(select MAX(business_process_id) from business_processes where n8n_process_name=$1) and n8n_workflow_execution_id=$2",
+        "options": {
+          "queryReplacement": "=[{{$workflow.name}},{{$execution.id}},{{$json.steps_passed}}]"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        2272,
+        3728
+      ],
+      "id": "6d790299-5069-4a7d-9566-a6b90392ac48",
+      "name": "Mark_workflow_passed_steps8",
+      "executeOnce": true,
+      "credentials": {
+        "postgres": {
+          "id": "4YkdFJcdTgzo9hkz",
+          "name": "PGvector"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nconst workflowData = $getWorkflowStaticData('global');\nworkflowData.steps_passed = workflowData.steps_passed+1; // update steps counter\nfor (const item of $input.all()) {\n  item.json.steps_passed =workflowData.steps_passed;\n}\n\nreturn $input.all();"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2032,
+        3568
+      ],
+      "id": "5f0c47dc-d364-4c8e-9e7a-45f773dc53cf",
+      "name": "Get current step saved9"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "e2626a1e-412c-4f6f-89a8-ca5da5106302",
+              "leftValue": "={{$json.finished}}",
+              "rightValue": "",
+              "operator": {
+                "type": "dateTime",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1008,
+        3616
+      ],
+      "id": "28ee36e8-7e39-4cd7-82d9-8b1ca5b8475b",
+      "name": "If SUB process  already executed9",
+      "executeOnce": true
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "={{$json.id}}",
+          "mode": "id"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        1792,
+        3728
+      ],
+      "id": "09b00c7c-406b-452d-ab24-04f42c954122",
+      "name": "Call SUB9"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT id\nFROM workflow_entity\nWHERE name = $1\nORDER BY id DESC\nLIMIT 1;",
+        "options": {
+          "queryReplacement": "={{ $('extract data for updates with header').item.json.workflow_name }}"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        1200,
+        3664
+      ],
+      "id": "04c0a987-99c6-435b-bad2-4172d506f624",
+      "name": "get workflow id by name9",
+      "credentials": {
+        "postgres": {
+          "id": "hNuVeLeeeSX0vLBj",
+          "name": "n8n service"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "15eb020b-bb6f-4c77-a103-718f49630cd6",
+              "name": "=root_execution_id",
+              "value": "={{ $execution.id }}",
+              "type": "number"
+            },
+            {
+              "id": "fda82fe6-7e78-49d2-8130-43cb54ef5d8a",
+              "name": "company_id",
+              "value": "={{ $('company_record_id').item.json.company_id }}",
+              "type": "number"
+            },
+            {
+              "id": "da41f8d6-0b51-4e6c-91c3-96c8ca5d1659",
+              "name": "threshhold",
+              "value": "={{ $('Set variables').item.json.threshhold }}",
+              "type": "string"
+            },
+            {
+              "id": "242e22ab-d73d-4b1f-b148-3cd44943fe6f",
+              "name": "import_id",
+              "value": "={{ $('company_record_id').item.json.report_id }}",
+              "type": "string"
+            },
+            {
+              "id": "f48771b4-4bf8-4ff4-8481-3d863668dd08",
+              "name": "minus_words",
+              "value": "={{ $('Call SUB3').item.json.minus_words }",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1392,
+        3728
+      ],
+      "id": "41cb5091-ef9c-4adf-a76f-7ff49916c22e",
+      "name": "set input data for SUB9"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "WITH cutoff AS (\n  SELECT MAX(st2.started) AS last_finished_started\n  FROM public.business_processes_states st2\n  JOIN public.business_processes bp2\n    ON bp2.business_process_id = st2.business_process_id\n  WHERE bp2.n8n_process_name = $1\n    AND st2.company_id = $3\n    AND st2.finished IS NOT NULL\n),\nmain AS (\n  SELECT st.*\n  FROM public.business_processes_states st\n  JOIN public.business_processes bp\n    ON bp.business_process_id = st.business_process_id\n  CROSS JOIN cutoff c\n  WHERE bp.n8n_process_name = $1\n    AND st.company_id = $3 \n    AND st.finished IS NULL\n    AND (c.last_finished_started IS NULL OR st.started > c.last_finished_started)\n)\nSELECT\n  s.business_process_state_id,\n  s.business_process_id,\n  s.started,\n  s.finished,\n  s.error_message,\n  s.n8n_workflow_execution_id,\n  s.n8n_workflow_root_execution_id\nFROM main m\nJOIN public.business_processes_states s\n  ON s.n8n_workflow_root_execution_id = m.n8n_workflow_execution_id\nJOIN public.business_processes p\n  ON p.business_process_id = s.business_process_id\nWHERE p.n8n_process_name = $2\n  AND s.company_id = $3\nORDER BY s.started desc;",
+        "options": {
+          "queryReplacement": "=[{{$workflow.name}},{{$json.workflow_name}},{{ $('company_record_id').item.json.company_id }}]"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        640,
+        3616
+      ],
+      "id": "40885e56-f657-436f-8e5b-4a1c4d2d5ff9",
+      "name": "Execute a SQL query9",
+      "alwaysOutputData": true,
+      "credentials": {
+        "postgres": {
+          "id": "4YkdFJcdTgzo9hkz",
+          "name": "PGvector"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "workflow\n",
+        "height": 448,
+        "width": 2368
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        304,
+        3488
+      ],
+      "id": "1756fb08-90e8-4e57-9c43-471c31a4d51f",
+      "name": "Sticky Note7"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "update business_processes_states set  tokens_used_type=$3, tokens_used=tokens_used+(select bps.tokens_used from business_processes bp1,business_processes_states bps,business_processes_states bps2 where bp1.n8n_process_name=$2 and bp1.business_process_id=bps.business_process_id and  bps.n8n_workflow_root_execution_id=bps2.n8n_workflow_execution_id  and bps.finished is not null and bps2.n8n_workflow_execution_id=$1 order by bps2.business_process_state_id desc LIMIT 1) where n8n_workflow_execution_id=$1;\n",
+        "options": {
+          "queryReplacement": "=[{{$execution.id}},{{$('ADV_campaign_data_load').item.json.workflow_name}},{{ 'gpt-5' }}]"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        2464,
+        3728
+      ],
+      "id": "a05b771a-123e-40a0-82a0-eadc06f971b4",
+      "name": "update workflow tokens usage9",
+      "executeOnce": true,
+      "credentials": {
+        "postgres": {
+          "id": "4YkdFJcdTgzo9hkz",
+          "name": "PGvector"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "99e6bb89-0b33-4e72-b5be-2e118b69afa2",
+              "name": "workflow_name",
+              "value": "extract data for updates with header",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        448,
+        3616
+      ],
+      "id": "e9a568a2-e6ea-4241-8a19-de38cfda38c7",
+      "name": "extract data for updates with header"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "update business_processes_states set steps_passed=$3 where business_process_id=(select MAX(business_process_id) from business_processes where n8n_process_name=$1) and n8n_workflow_execution_id=$2",
+        "options": {
+          "queryReplacement": "=[{{$workflow.name}},{{$execution.id}},{{$json.steps_passed}}]"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        2272,
+        1376
+      ],
+      "id": "459476d3-791e-40b5-8442-c4a38b67a5ec",
+      "name": "Mark_workflow_passed_steps9",
+      "executeOnce": true,
+      "credentials": {
+        "postgres": {
+          "id": "4YkdFJcdTgzo9hkz",
+          "name": "PGvector"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nconst workflowData = $getWorkflowStaticData('global');\nworkflowData.steps_passed = workflowData.steps_passed+1; // update steps counter\nfor (const item of $input.all()) {\n  item.json.steps_passed =workflowData.steps_passed;\n}\n\nreturn $input.all();"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1968,
+        1216
+      ],
+      "id": "9685b4a1-8884-4809-a382-9df871130053",
+      "name": "Get current step saved10"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "e2626a1e-412c-4f6f-89a8-ca5da5106302",
+              "leftValue": "={{$json.finished}}",
+              "rightValue": "",
+              "operator": {
+                "type": "dateTime",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        992,
+        1280
+      ],
+      "id": "4e17f41e-4267-4d26-b98f-355e1b6875a1",
+      "name": "If SUB process  already executed10",
+      "executeOnce": true
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "={{$json.id}}",
+          "mode": "id"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        1744,
+        1408
+      ],
+      "id": "7e753495-fdf8-42aa-9013-c9d7743d4de2",
+      "name": "Call SUB10"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT id\nFROM workflow_entity\nWHERE name = $1\nORDER BY id DESC\nLIMIT 1;",
+        "options": {
+          "queryReplacement": "={{ $('ADV_campaign_analysis_AI_1').item.json.workflow_name }}"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        1184,
+        1328
+      ],
+      "id": "ec303149-bead-49b8-8a36-dbf607d66c00",
+      "name": "get workflow id by name10",
+      "credentials": {
+        "postgres": {
+          "id": "hNuVeLeeeSX0vLBj",
+          "name": "n8n service"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "15eb020b-bb6f-4c77-a103-718f49630cd6",
+              "name": "=root_execution_id",
+              "value": "={{ $execution.id }}",
+              "type": "number"
+            },
+            {
+              "id": "fda82fe6-7e78-49d2-8130-43cb54ef5d8a",
+              "name": "company_id",
+              "value": "={{ $('company_record_id').item.json.company_id }}",
+              "type": "number"
+            },
+            {
+              "id": "da41f8d6-0b51-4e6c-91c3-96c8ca5d1659",
+              "name": "threshhold",
+              "value": "={{ $('Set variables').item.json.threshhold }}",
+              "type": "string"
+            },
+            {
+              "id": "6e3154c1-d961-4edb-8615-648bfee279e1",
+              "name": "import_id",
+              "value": "={{ $('company_record_id').item.json.report_id }}",
+              "type": "number"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1376,
+        1392
+      ],
+      "id": "53578d32-357f-4a9c-84ca-7790f7f938dc",
+      "name": "set input data for SUB10"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "WITH cutoff AS (\n  SELECT MAX(st2.started) AS last_finished_started\n  FROM public.business_processes_states st2\n  JOIN public.business_processes bp2\n    ON bp2.business_process_id = st2.business_process_id\n  WHERE bp2.n8n_process_name = $1\n    AND st2.company_id = $3\n    AND st2.finished IS NOT NULL\n),\nmain AS (\n  SELECT st.*\n  FROM public.business_processes_states st\n  JOIN public.business_processes bp\n    ON bp.business_process_id = st.business_process_id\n  CROSS JOIN cutoff c\n  WHERE bp.n8n_process_name = $1\n    AND st.company_id = $3 \n    AND st.finished IS NULL\n    AND (c.last_finished_started IS NULL OR st.started > c.last_finished_started)\n)\nSELECT\n  s.business_process_state_id,\n  s.business_process_id,\n  s.started,\n  s.finished,\n  s.error_message,\n  s.n8n_workflow_execution_id,\n  s.n8n_workflow_root_execution_id\nFROM main m\nJOIN public.business_processes_states s\n  ON s.n8n_workflow_root_execution_id = m.n8n_workflow_execution_id\nJOIN public.business_processes p\n  ON p.business_process_id = s.business_process_id\nWHERE p.n8n_process_name = $2\n  AND s.company_id = $3\nORDER BY s.started desc;",
+        "options": {
+          "queryReplacement": "=[{{$workflow.name}},{{$json.workflow_name}},{{ $('company_record_id').item.json.company_id }}]"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        624,
+        1280
+      ],
+      "id": "95a23e11-d368-471d-a76c-25bc5690d47f",
+      "name": "Execute a SQL query10",
+      "alwaysOutputData": true,
+      "credentials": {
+        "postgres": {
+          "id": "4YkdFJcdTgzo9hkz",
+          "name": "PGvector"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "workflow\n",
+        "height": 448,
+        "width": 2368
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        304,
+        1152
+      ],
+      "id": "19495ff7-2c7a-461d-a6a2-1eda1ba12e71",
+      "name": "Sticky Note12"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "update business_processes_states set  tokens_used_type=$3, tokens_used=tokens_used+(select bps.tokens_used from business_processes bp1,business_processes_states bps,business_processes_states bps2 where bp1.n8n_process_name=$2 and bp1.business_process_id=bps.business_process_id and  bps.n8n_workflow_root_execution_id=bps2.n8n_workflow_execution_id  and bps.finished is not null and bps2.n8n_workflow_execution_id=$1 order by bps2.business_process_state_id desc LIMIT 1) where n8n_workflow_execution_id=$1;\n",
+        "options": {
+          "queryReplacement": "=[{{$execution.id}},{{$('ADV_campaign_data_load').item.json.workflow_name}},{{ 'gpt-5' }}]"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        2480,
+        1376
+      ],
+      "id": "8cbd9a56-f25e-4674-8953-8c3dce48afd0",
+      "name": "update workflow tokens usage10",
+      "executeOnce": true,
+      "credentials": {
+        "postgres": {
+          "id": "4YkdFJcdTgzo9hkz",
+          "name": "PGvector"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "99e6bb89-0b33-4e72-b5be-2e118b69afa2",
+              "name": "workflow_name",
+              "value": "ADV_campaign_analysis_AI_1",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        432,
+        1280
+      ],
+      "id": "265e4bc0-528f-4f3e-969a-ce3f55c5521e",
+      "name": "ADV_campaign_analysis_AI_1"
     }
   ],
   "connections": {
@@ -1058,7 +3112,7 @@
       "main": [
         [
           {
-            "node": "Mark_workflow_passed_steps",
+            "node": "Mark_workflow_passed_steps_and_company_id",
             "type": "main",
             "index": 0
           }
@@ -1076,22 +3130,11 @@
         ]
       ]
     },
-    "set workflow name": {
-      "main": [
-        [
-          {
-            "node": "Execute a SQL query",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "If SUB process  already executed": {
       "main": [
         [
           {
-            "node": "Mark skipped step passed",
+            "node": "get company_id from lust succeed report ",
             "type": "main",
             "index": 0
           }
@@ -1109,18 +3152,7 @@
       "main": [
         [
           {
-            "node": "Get current step saved",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Mark_workflow_passed_steps": {
-      "main": [
-        [
-          {
-            "node": "update workflow tokens usage",
+            "node": "If report_id manually set",
             "type": "main",
             "index": 0
           }
@@ -1131,7 +3163,7 @@
       "main": [
         [
           {
-            "node": "set workflow name",
+            "node": "ADV_campaign_data_load",
             "type": "main",
             "index": 0
           }
@@ -1164,7 +3196,7 @@
       "main": [
         [
           {
-            "node": "Execute a SQL query2",
+            "node": "Mark_workwlow_started",
             "type": "main",
             "index": 0
           }
@@ -1186,7 +3218,7 @@
       "main": [
         [
           {
-            "node": "Mark skipped step passed1",
+            "node": "Get current step saved1",
             "type": "main",
             "index": 0
           }
@@ -1255,29 +3287,29 @@
         ]
       ]
     },
-    "ADS headers and texts creation services": {
+    "update workflow tokens usage": {
       "main": [
         [
           {
-            "node": "Execute a SQL query1",
+            "node": "ADV_campaign_get_service",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Execute a SQL query2": {
+    "update workflow tokens usage1": {
       "main": [
         [
           {
-            "node": "Mark_workwlow_started",
+            "node": "ADV_campaign_analysis_AI_1",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Mark_skipped_workflow_passed": {
+    "Mark_workflow_passed_steps_and_company_id": {
       "main": [
         [
           {
@@ -1288,22 +3320,22 @@
         ]
       ]
     },
-    "Mark skipped step passed": {
+    "ADV_campaign_data_load": {
       "main": [
         [
           {
-            "node": "Mark_skipped_workflow_passed",
+            "node": "If company_id manually set",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "update workflow tokens usage": {
+    "Mark_workflow_passed_steps": {
       "main": [
         [
           {
-            "node": "ADS headers and texts creation services",
+            "node": "update workflow tokens usage2",
             "type": "main",
             "index": 0
           }
@@ -1314,7 +3346,7 @@
       "main": [
         [
           {
-            "node": "Mark_workflow_passed_steps2",
+            "node": "Mark_workflow_passed_steps",
             "type": "main",
             "index": 0
           }
@@ -1325,7 +3357,7 @@
       "main": [
         [
           {
-            "node": "Mark_workflow_completed",
+            "node": "Get current step saved2",
             "type": "main",
             "index": 0
           }
@@ -1372,7 +3404,7 @@
         ]
       ]
     },
-    "Execute a SQL query3": {
+    "Execute a SQL query2": {
       "main": [
         [
           {
@@ -1383,44 +3415,44 @@
         ]
       ]
     },
-    "ADS headers and texts creation services1": {
+    "update workflow tokens usage2": {
       "main": [
         [
           {
-            "node": "Execute a SQL query3",
+            "node": "minus words post processing",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Mark_skipped_workflow_passed1": {
+    "get company_id from lust succeed report ": {
       "main": [
         [
           {
-            "node": "update workflow tokens usage1",
+            "node": "If report_id manually set",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Mark skipped step passed1": {
+    "company_record_id": {
       "main": [
         [
           {
-            "node": "Mark_skipped_workflow_passed1",
+            "node": "Get current step saved",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "update workflow tokens usage1": {
+    "ADS headers and texts creation services for updates": {
       "main": [
         [
           {
-            "node": "ADS headers and texts creation services1",
+            "node": "Execute a SQL query2",
             "type": "main",
             "index": 0
           }
@@ -1431,7 +3463,902 @@
       "main": [
         [
           {
+            "node": "update workflow tokens usage3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get current step saved3": {
+      "main": [
+        [
+          {
+            "node": "Mark_workflow_passed_steps2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If SUB process  already executed3": {
+      "main": [
+        [
+          {
+            "node": "Get current step saved3",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "get workflow id by name3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Call SUB3": {
+      "main": [
+        [
+          {
+            "node": "Get current step saved3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "get workflow id by name3": {
+      "main": [
+        [
+          {
+            "node": "set input data for SUB3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "set input data for SUB3": {
+      "main": [
+        [
+          {
+            "node": "Call SUB3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute a SQL query3": {
+      "main": [
+        [
+          {
+            "node": "If SUB process  already executed3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mark_workflow_passed_steps3": {
+      "main": [
+        [
+          {
+            "node": "update workflow tokens usage4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get current step saved4": {
+      "main": [
+        [
+          {
+            "node": "Mark_workflow_passed_steps3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If SUB process  already executed4": {
+      "main": [
+        [
+          {
+            "node": "Get current step saved4",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "get workflow id by name4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Call SUB4": {
+      "main": [
+        [
+          {
+            "node": "Get current step saved4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "get workflow id by name4": {
+      "main": [
+        [
+          {
+            "node": "set input data for SUB4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "set input data for SUB4": {
+      "main": [
+        [
+          {
+            "node": "Call SUB4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute a SQL query4": {
+      "main": [
+        [
+          {
+            "node": "If SUB process  already executed4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "update workflow tokens usage4": {
+      "main": [
+        [
+          {
+            "node": "ADV_campaign_analysis_initial",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "ADV_campaign_get_service": {
+      "main": [
+        [
+          {
+            "node": "Execute a SQL query4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If report_id manually set": {
+      "main": [
+        [
+          {
+            "node": "override report_id",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "company_record_id",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "override report_id": {
+      "main": [
+        [
+          {
+            "node": "company_record_id",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mark_workflow_passed_steps4": {
+      "main": [
+        [
+          {
+            "node": "update workflow tokens usage5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get current step saved5": {
+      "main": [
+        [
+          {
+            "node": "Mark_workflow_passed_steps4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If SUB process  already executed5": {
+      "main": [
+        [
+          {
+            "node": "Get current step saved5",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "get workflow id by name5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Call SUB5": {
+      "main": [
+        [
+          {
+            "node": "Get current step saved5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "get workflow id by name5": {
+      "main": [
+        [
+          {
+            "node": "set input data for SUB5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "set input data for SUB5": {
+      "main": [
+        [
+          {
+            "node": "Call SUB5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute a SQL query5": {
+      "main": [
+        [
+          {
+            "node": "If SUB process  already executed5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check if keyword need to be restricted": {
+      "main": [
+        [
+          {
+            "node": "Execute a SQL query5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "update workflow tokens usage3": {
+      "main": [
+        [
+          {
+            "node": "extract data for updates with header",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mark_workflow_passed_steps5": {
+      "main": [
+        [
+          {
+            "node": "update workflow tokens usage6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get current step saved6": {
+      "main": [
+        [
+          {
+            "node": "Mark_workflow_passed_steps5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If SUB process  already executed6": {
+      "main": [
+        [
+          {
+            "node": "Get current step saved6",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "get workflow id by name6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Call SUB6": {
+      "main": [
+        [
+          {
+            "node": "Get current step saved6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "get workflow id by name6": {
+      "main": [
+        [
+          {
+            "node": "set input data for SUB6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "set input data for SUB6": {
+      "main": [
+        [
+          {
+            "node": "Call SUB6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute a SQL query6": {
+      "main": [
+        [
+          {
+            "node": "If SUB process  already executed6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "update workflow tokens usage5": {
+      "main": [
+        [
+          {
+            "node": "minus words vs content review",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mark_workflow_passed_steps6": {
+      "main": [
+        [
+          {
+            "node": "update workflow tokens usage7",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get current step saved7": {
+      "main": [
+        [
+          {
+            "node": "Mark_workflow_passed_steps6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If SUB process  already executed7": {
+      "main": [
+        [
+          {
+            "node": "Get current step saved7",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "get workflow id by name7",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Call SUB7": {
+      "main": [
+        [
+          {
+            "node": "Get current step saved7",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "get workflow id by name7": {
+      "main": [
+        [
+          {
+            "node": "set input data for SUB7",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "set input data for SUB7": {
+      "main": [
+        [
+          {
+            "node": "Call SUB7",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute a SQL query7": {
+      "main": [
+        [
+          {
+            "node": "If SUB process  already executed7",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "update workflow tokens usage6": {
+      "main": [
+        [
+          {
+            "node": "campaign core update finalization",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "campaign core update finalization": {
+      "main": [
+        [
+          {
+            "node": "Execute a SQL query7",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "update workflow tokens usage7": {
+      "main": [
+        [
+          {
             "node": "Mark_workflow_completed",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If company_id manually set": {
+      "main": [
+        [
+          {
+            "node": "Execute a SQL query",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "get workflow id by name",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mark_workflow_passed_steps7": {
+      "main": [
+        [
+          {
+            "node": "update workflow tokens usage8",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get current step saved8": {
+      "main": [
+        [
+          {
+            "node": "Mark_workflow_passed_steps7",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If SUB process  already executed8": {
+      "main": [
+        [
+          {
+            "node": "Get current step saved8",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "get workflow id by name8",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Call SUB8": {
+      "main": [
+        [
+          {
+            "node": "Get current step saved8",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "get workflow id by name8": {
+      "main": [
+        [
+          {
+            "node": "set input data for SUB8",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "set input data for SUB8": {
+      "main": [
+        [
+          {
+            "node": "Call SUB8",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute a SQL query8": {
+      "main": [
+        [
+          {
+            "node": "If SUB process  already executed8",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "update workflow tokens usage8": {
+      "main": [
+        [
+          {
+            "node": "ADS headers and texts creation services for updates",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "ADV_campaign_analysis_initial": {
+      "main": [
+        [
+          {
+            "node": "Execute a SQL query1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "ADV_campaign_analysis_AI": {
+      "main": [
+        [
+          {
+            "node": "Execute a SQL query8",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "minus words post processing": {
+      "main": [
+        [
+          {
+            "node": "Execute a SQL query3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "minus words vs content review": {
+      "main": [
+        [
+          {
+            "node": "Execute a SQL query6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mark_workflow_passed_steps8": {
+      "main": [
+        [
+          {
+            "node": "update workflow tokens usage9",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get current step saved9": {
+      "main": [
+        [
+          {
+            "node": "Mark_workflow_passed_steps8",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If SUB process  already executed9": {
+      "main": [
+        [
+          {
+            "node": "Get current step saved9",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "get workflow id by name9",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Call SUB9": {
+      "main": [
+        [
+          {
+            "node": "Get current step saved9",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "get workflow id by name9": {
+      "main": [
+        [
+          {
+            "node": "set input data for SUB9",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "set input data for SUB9": {
+      "main": [
+        [
+          {
+            "node": "Call SUB9",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute a SQL query9": {
+      "main": [
+        [
+          {
+            "node": "If SUB process  already executed9",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "extract data for updates with header": {
+      "main": [
+        [
+          {
+            "node": "Execute a SQL query9",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mark_workflow_passed_steps9": {
+      "main": [
+        [
+          {
+            "node": "update workflow tokens usage10",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get current step saved10": {
+      "main": [
+        [
+          {
+            "node": "Mark_workflow_passed_steps9",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If SUB process  already executed10": {
+      "main": [
+        [
+          {
+            "node": "Get current step saved10",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "get workflow id by name10",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Call SUB10": {
+      "main": [
+        [
+          {
+            "node": "Get current step saved10",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "get workflow id by name10": {
+      "main": [
+        [
+          {
+            "node": "set input data for SUB10",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "set input data for SUB10": {
+      "main": [
+        [
+          {
+            "node": "Call SUB10",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute a SQL query10": {
+      "main": [
+        [
+          {
+            "node": "If SUB process  already executed10",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "update workflow tokens usage10": {
+      "main": [
+        [
+          {
+            "node": "ADV_campaign_analysis_AI",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "ADV_campaign_analysis_AI_1": {
+      "main": [
+        [
+          {
+            "node": "Execute a SQL query10",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "update workflow tokens usage9": {
+      "main": [
+        [
+          {
+            "node": "Check if keyword need to be restricted",
             "type": "main",
             "index": 0
           }
@@ -1453,14 +4380,14 @@
       }
     ]
   },
-  "versionId": "f644f7ad-1dfc-4b43-8300-c0f108cd0986",
+  "versionId": "10e4ebe8-8d38-4680-845a-788a6129f556",
   "triggerCount": 0,
   "shared": [
     {
-      "createdAt": "2025-09-19T08:56:54.078Z",
-      "updatedAt": "2025-09-19T08:56:54.078Z",
+      "createdAt": "2025-10-22T11:42:51.794Z",
+      "updatedAt": "2025-10-22T11:42:51.794Z",
       "role": "workflow:owner",
-      "workflowId": "wycPS2KeZkmdbajx",
+      "workflowId": "EgFFe1spvxMBXwgw",
       "projectId": "spKmbJLU4mvACXIB"
     }
   ],
