@@ -1,0 +1,102 @@
+{
+  "createdAt": "2025-10-22T13:51:50.209Z",
+  "updatedAt": "2025-10-22T14:01:06.060Z",
+  "id": "7FoU9Spu4KwNDAMk",
+  "name": "Get sitemap",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -672,
+        -48
+      ],
+      "id": "d02dcf29-5748-4e9e-a102-c00198b46f9f",
+      "name": "When Executed by Another Workflow"
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.baseUrl.replace(/\\/+$/,'') + '/robots.txt' }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -464,
+        -48
+      ],
+      "id": "98fbb3ba-2fc8-4533-a105-756b250ee75d",
+      "name": "HTTP Request",
+      "retryOnFail": true
+    },
+    {
+      "parameters": {
+        "jsCode": "// Берём базовый URL и настройки\nconst base = ($('When Executed by Another Workflow').first().json.baseUrl || '').trim().replace(/\\/+$/, '');\nconst MAX_DEPTH = Number($('When Executed by Another Workflow').first().json.MAX_DEPTH ?? 3);\nconst SAME_HOST_ONLY = Boolean($('When Executed by Another Workflow').first().json.SAME_HOST_ONLY ?? true);\n\n// Пытаемся вытащить Sitemap: из robots.txt\nconst robots = String($json.data || '');\nlet found = [];\nfor (const line of robots.split(/\\r?\\n/)) {\n  const m = line.match(/^\\s*sitemap:\\s*(.+?)\\s*$/i);\n  if (m && m[1]) found.push(m[1].trim());\n}\n\n// Если не нашли — используем типичные пути\nif (found.length === 0) {\n  found = [\n    '/sitemap.xml',\n    '/sitemap_index.xml',\n    '/sitemap.xml.gz',\n    '/sitemap-index.xml',\n  ].map(p => base + p);\n}\n\n// Нормализация/абсолютизация и дедуп\nconst seen = new Set();\nconst out = [];\nfor (let u of found) {\n  if (!/^[a-z]+:\\/\\//i.test(u)) {\n    u = base + (u.startsWith('/') ? '' : '/') + u;\n  }\n  if (!seen.has(u)) {\n    seen.add(u);\n    out.push({\n      json: { type: 'sitemap', loc: u, depth: 0, base, MAX_DEPTH, SAME_HOST_ONLY },\n    });\n  }\n}\nreturn out;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -256,
+        -48
+      ],
+      "id": "17900db5-6a56-4b53-b3ba-7f41c0bf6413",
+      "name": "Code in JavaScript"
+    }
+  ],
+  "connections": {
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": {
+    "When Executed by Another Workflow": [
+      {
+        "json": {
+          "baseUrl": "https://saratov-okt.kiber-one.com/",
+          "MAX_DEPTH": "3",
+          "SAME_HOST_ONLY": "true"
+        }
+      }
+    ]
+  },
+  "versionId": "0a1e7afc-9990-4119-aa89-dab848e5e739",
+  "triggerCount": 0,
+  "shared": [
+    {
+      "createdAt": "2025-10-22T13:51:50.209Z",
+      "updatedAt": "2025-10-22T13:51:50.209Z",
+      "role": "workflow:owner",
+      "workflowId": "7FoU9Spu4KwNDAMk",
+      "projectId": "spKmbJLU4mvACXIB"
+    }
+  ],
+  "tags": [],
+  "file_name": "get-sitemap.json"
+}
