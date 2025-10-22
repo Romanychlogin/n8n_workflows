@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-10-21T08:50:29.906Z",
-  "updatedAt": "2025-10-21T09:35:29.166Z",
+  "updatedAt": "2025-10-22T08:20:49.567Z",
   "id": "yMTPv7g4OJZnlboH",
   "name": "ADV_campaign_analysis_AI_1",
   "active": false,
@@ -271,8 +271,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        7184,
-        48
+        5296,
+        16
       ],
       "id": "131a6af0-ca4f-472b-9638-adc44e43004d",
       "name": "update",
@@ -420,68 +420,6 @@
           "name": "OpenAi Yads"
         }
       }
-    },
-    {
-      "parameters": {
-        "workflowId": {
-          "__rl": true,
-          "value": "bhBscYglbFhVyIcL",
-          "mode": "list",
-          "cachedResultUrl": "/workflow/bhBscYglbFhVyIcL",
-          "cachedResultName": "Check minuses API tool"
-        },
-        "workflowInputs": {
-          "mappingMode": "defineBelow",
-          "value": {},
-          "matchingColumns": [],
-          "schema": [],
-          "attemptToConvertTypes": false,
-          "convertFieldsToString": true
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.executeWorkflow",
-      "typeVersion": 1.2,
-      "position": [
-        4512,
-        -432
-      ],
-      "id": "bcee3e14-47a9-4392-8ddd-6554a20f0052",
-      "name": "Execute Workflow"
-    },
-    {
-      "parameters": {
-        "conditions": {
-          "options": {
-            "caseSensitive": true,
-            "leftValue": "",
-            "typeValidation": "strict",
-            "version": 2
-          },
-          "conditions": [
-            {
-              "id": "0b8b9cb2-368a-4ef4-b4b4-560b030f71f4",
-              "leftValue": "={{ $json.non_matches }}",
-              "rightValue": "",
-              "operator": {
-                "type": "array",
-                "operation": "empty",
-                "singleValue": true
-              }
-            }
-          ],
-          "combinator": "and"
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.if",
-      "typeVersion": 2.2,
-      "position": [
-        4800,
-        -432
-      ],
-      "id": "9233e533-97e5-40ac-bc6d-e03d2e5debb3",
-      "name": "If minuses array is empty"
     },
     {
       "parameters": {
@@ -639,8 +577,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        7696,
-        32
+        5808,
+        0
       ],
       "id": "d0863025-59a0-444b-90d2-17a44ef3f295",
       "name": "Mark_workflow_passed_steps",
@@ -659,8 +597,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        7440,
-        48
+        5552,
+        16
       ],
       "id": "632cf3d1-003c-48c5-ab27-083b76d6e252",
       "name": "Get current step and tokens saved"
@@ -692,8 +630,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        8080,
-        64
+        6192,
+        32
       ],
       "id": "192476a3-64cd-4c46-a6c6-d58472773ca5",
       "name": "If"
@@ -705,8 +643,8 @@
       "type": "n8n-nodes-base.stopAndError",
       "typeVersion": 1,
       "position": [
-        8320,
-        -64
+        6432,
+        -96
       ],
       "id": "b4406a8b-4519-4d55-b3b2-7d01f1bf94c9",
       "name": "Stop and Error"
@@ -739,8 +677,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        7904,
-        32
+        6016,
+        0
       ],
       "id": "6f6df168-5d77-41a2-92de-5812feeaa7f8",
       "name": "check if termination is requested",
@@ -775,8 +713,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        6064,
-        -736
+        4368,
+        -656
       ],
       "id": "6875959e-a735-49f5-91d5-e7025e99c9df",
       "name": "no relevant",
@@ -806,7 +744,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        4944,
+        4656,
         -1024
       ],
       "id": "814d4209-fc7d-4126-a283-7634066788c8",
@@ -879,211 +817,6 @@
     },
     {
       "parameters": {
-        "assignments": {
-          "assignments": [
-            {
-              "id": "26a3b4cf-c374-4833-8b03-55dcf4df1097",
-              "name": "args.company_id",
-              "value": "={{ $('When Executed by Another Workflow').last().json.company_id }}",
-              "type": "number"
-            },
-            {
-              "id": "ec583710-a44c-47de-ba3f-ebbfaa229fb1",
-              "name": "args.phrase",
-              "value": "={{ $('Loop Over Items2').last().json.key_word }}",
-              "type": "string"
-            },
-            {
-              "id": "bf431c92-c6e4-41ab-b8b1-ee33acf9e25f",
-              "name": "args.threshold",
-              "value": 0.8,
-              "type": "number"
-            }
-          ]
-        },
-        "includeOtherFields": true,
-        "options": {}
-      },
-      "type": "n8n-nodes-base.set",
-      "typeVersion": 3.4,
-      "position": [
-        4384,
-        -560
-      ],
-      "id": "83a9c482-6a17-4903-8331-b741a88bcf69",
-      "name": "set input params"
-    },
-    {
-      "parameters": {
-        "jsCode": "// Достаём массив competitors\n\n\n// Разворачиваем каждый объект в отдельный item\nreturn $json.non_matches.map((c, index) => ({\n  json: {\n    index,\n    minus_word: c.toLowerCase(),\n    list_id: $('Loop Over Items2').last().json.phrase_id \n  }\n}));"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        5184,
-        -192
-      ],
-      "id": "77124e47-642e-4aba-97d6-b63b1eafa964",
-      "name": "map_minus_words"
-    },
-    {
-      "parameters": {
-        "method": "POST",
-        "url": "https://api.openai.com/v1/embeddings",
-        "authentication": "predefinedCredentialType",
-        "nodeCredentialType": "openAiApi",
-        "sendBody": true,
-        "specifyBody": "json",
-        "jsonBody": "={{$json}}",
-        "options": {}
-      },
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.2,
-      "position": [
-        6176,
-        -208
-      ],
-      "id": "050b64b9-74cd-40a9-a1dc-0306fdfb5552",
-      "name": "Get embedding",
-      "retryOnFail": true,
-      "credentials": {
-        "openAiApi": {
-          "id": "m4NScyhZzV3hBcTr",
-          "name": "OpenAi Yads"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "operation": "executeQuery",
-        "query": "INSERT INTO public.minus_words\n  (minus_word_embedding, minus_word,  company_id, comment, weight)\nVALUES\n  ($1::vector, $2, $3, $4, $5)\nON CONFLICT (company_id, minus_word) DO UPDATE\nSET weight = COALESCE(minus_words.weight, 0) + COALESCE(EXCLUDED.weight, 0)\nRETURNING id;",
-        "options": {
-          "queryReplacement": "=[\n  { \"value\": \"={{'[' + $json.data[0].embedding.map(e => Number(e)).join(',') + ']'}}\" },\n  { \"value\": \"={{ $('Loop Over Items1').item.json.minus_word }}\" },\n  { \"value\": \"={{ $('When Executed by Another Workflow').last().json.company_id }}\" },\n  { \"value\": \"={{ 'added from the core update from the report:'+ $('When Executed by Another Workflow').last().json.import_id}}\" },\n  { \"value\": \"={{ $('Loop Over Items').last().json.ItemsbyId[$('Loop Over Items2').last().json.phrase_id].count_views }}\" }\n]"
-        }
-      },
-      "type": "n8n-nodes-base.postgres",
-      "typeVersion": 2.6,
-      "position": [
-        6512,
-        -208
-      ],
-      "id": "e068927c-9f4b-47e5-beff-6face4127078",
-      "name": "Insert minus words1",
-      "credentials": {
-        "postgres": {
-          "id": "4YkdFJcdTgzo9hkz",
-          "name": "PGvector"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "jsCode": "return [{\n  json: {\n  \"model\": \"text-embedding-3-small\",\n  \"input\": $json.minus_word\n}\n}];"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        5984,
-        -208
-      ],
-      "id": "6b055129-7b2f-4aa8-91ea-726ed0db6474",
-      "name": "Set API JSON2"
-    },
-    {
-      "parameters": {
-        "options": {
-          "reset": "={{ $json.is_first }}"
-        }
-      },
-      "type": "n8n-nodes-base.splitInBatches",
-      "typeVersion": 3,
-      "position": [
-        5616,
-        -288
-      ],
-      "id": "b29d05bf-4bb8-4c90-adef-ed8f12032408",
-      "name": "Loop Over Items1"
-    },
-    {
-      "parameters": {
-        "assignments": {
-          "assignments": [
-            {
-              "id": "ebafa31d-edf7-41c0-a06e-e884ad9595ea",
-              "name": "is_first",
-              "value": "=true",
-              "type": "boolean"
-            }
-          ]
-        },
-        "includeOtherFields": true,
-        "options": {}
-      },
-      "type": "n8n-nodes-base.set",
-      "typeVersion": 3.4,
-      "position": [
-        5424,
-        -304
-      ],
-      "id": "f7716038-d75b-491c-933c-6ccc2cd8125d",
-      "name": "set first_item1"
-    },
-    {
-      "parameters": {
-        "assignments": {
-          "assignments": [
-            {
-              "id": "ebafa31d-edf7-41c0-a06e-e884ad9595ea",
-              "name": "is_first",
-              "value": "=false",
-              "type": "boolean"
-            }
-          ]
-        },
-        "includeOtherFields": true,
-        "options": {}
-      },
-      "type": "n8n-nodes-base.set",
-      "typeVersion": 3.4,
-      "position": [
-        5808,
-        -208
-      ],
-      "id": "f6b777ea-9efe-4a1d-846c-d043065fdbf4",
-      "name": "reset first_item"
-    },
-    {
-      "parameters": {
-        "content": "get possible minus words filtered by the content",
-        "height": 416,
-        "width": 624
-      },
-      "type": "n8n-nodes-base.stickyNote",
-      "typeVersion": 1,
-      "position": [
-        4368,
-        -640
-      ],
-      "id": "cf3ab059-0dda-4aef-be6b-70b0dc2d7b43",
-      "name": "Sticky Note4"
-    },
-    {
-      "parameters": {
-        "content": "save minus words data",
-        "height": 496,
-        "width": 1728
-      },
-      "type": "n8n-nodes-base.stickyNote",
-      "typeVersion": 1,
-      "position": [
-        5136,
-        -384
-      ],
-      "id": "66d2427b-0c2b-48d2-81ef-b8b6cbca422c",
-      "name": "Sticky Note5"
-    },
-    {
-      "parameters": {
         "conditions": {
           "options": {
             "caseSensitive": true,
@@ -1118,29 +851,6 @@
     },
     {
       "parameters": {
-        "operation": "executeQuery",
-        "query": "INSERT INTO minus_words_origin(\n\tminus_word_id, list_id, origin_weight)\n\tVALUES ($1, $2, $3);",
-        "options": {
-          "queryReplacement": "=[{{ $json.id }},{{ $('Loop Over Items2').last().json.phrase_id }},{{ $('Loop Over Items').last().json.ItemsbyId[$('Loop Over Items2').last().json.phrase_id].count_views }}]"
-        }
-      },
-      "type": "n8n-nodes-base.postgres",
-      "typeVersion": 2.6,
-      "position": [
-        6672,
-        -208
-      ],
-      "id": "ad0ec9b8-d9cf-4157-a313-f7886fb31d6c",
-      "name": "add link1",
-      "credentials": {
-        "postgres": {
-          "id": "Hx2VFmUi5WO2K4QX",
-          "name": "Postgres account 2"
-        }
-      }
-    },
-    {
-      "parameters": {
         "jsCode": "const workflowData = $getWorkflowStaticData('global');\nworkflowData.ai_calls = 0;\nworkflowData.embedding_calls = $('Loop Over Items').last().json.ItemsbyId[$('Loop Over Items2').last().json.phrase_id].embedding_calls;\nreturn $input.all();\n"
       },
       "type": "n8n-nodes-base.code",
@@ -1167,39 +877,13 @@
     },
     {
       "parameters": {
-        "jsCode": "const workflowData = $getWorkflowStaticData('global');\nworkflowData.embedding_calls = workflowData.embedding_calls + $input.first().json.meta.candidates_total;\nreturn $input.all();\n"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        4656,
-        -432
-      ],
-      "id": "6dda4f53-f987-4fc1-a348-643f92549406",
-      "name": "update calls counters3"
-    },
-    {
-      "parameters": {
-        "jsCode": "const workflowData = $getWorkflowStaticData('global');\nworkflowData.embedding_calls = workflowData.embedding_calls + 1;\nreturn $input.all();\n"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        6352,
-        -208
-      ],
-      "id": "29c81cca-93a7-4451-bd12-0e2ed3667f24",
-      "name": "update calls counters5"
-    },
-    {
-      "parameters": {
         "jsCode": "const workflowData = $getWorkflowStaticData('global');\nfor (const item of $input.all()) {\n  item.json.embedding_calls = workflowData.embedding_calls;\n  item.json.ai_calls = workflowData.ai_calls;\n  \n}\n\nreturn $input.all();\n"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        6384,
-        -1056
+        4928,
+        -1024
       ],
       "id": "e18bc4f9-6df3-4478-a0c4-ff56c883ac10",
       "name": "read call counters"
@@ -1234,7 +918,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        4496,
+        4208,
         -1072
       ],
       "id": "461603d2-6e6a-4c7e-8c9a-d149cd3f3b86",
@@ -1262,33 +946,11 @@
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1.2,
       "position": [
-        4688,
+        4400,
         -1072
       ],
       "id": "aa515a6d-d6d4-46ae-a4ed-a04181a1c704",
       "name": "Add to company content"
-    },
-    {
-      "parameters": {
-        "operation": "executeQuery",
-        "query": "UPDATE public.minus_words mw\nSET is_verified = true\nFROM (\n  SELECT org.minus_word_id\n  FROM public.minus_words_origin org\n  GROUP BY org.minus_word_id\n  HAVING COUNT(*) >= 2\n) v\nWHERE mw.id = v.minus_word_id\n  AND COALESCE(mw.is_verified, false) = false;",
-        "options": {}
-      },
-      "type": "n8n-nodes-base.postgres",
-      "typeVersion": 2.6,
-      "position": [
-        5872,
-        -480
-      ],
-      "id": "51e4e8ca-3a7b-443b-bdcb-13eac393339e",
-      "name": "refresh minus words status",
-      "executeOnce": true,
-      "credentials": {
-        "postgres": {
-          "id": "Hx2VFmUi5WO2K4QX",
-          "name": "Postgres account 2"
-        }
-      }
     },
     {
       "parameters": {
@@ -1421,7 +1083,7 @@
         ],
         [
           {
-            "node": "set input params",
+            "node": "no relevant",
             "type": "main",
             "index": 0
           }
@@ -1471,35 +1133,6 @@
         [
           {
             "node": "update calls counters2",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Execute Workflow": {
-      "main": [
-        [
-          {
-            "node": "update calls counters3",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "If minuses array is empty": {
-      "main": [
-        [
-          {
-            "node": "no relevant",
-            "type": "main",
-            "index": 0
-          }
-        ],
-        [
-          {
-            "node": "map_minus_words",
             "type": "main",
             "index": 0
           }
@@ -1677,101 +1310,6 @@
         ]
       ]
     },
-    "set input params": {
-      "main": [
-        [
-          {
-            "node": "Execute Workflow",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "map_minus_words": {
-      "main": [
-        [
-          {
-            "node": "set first_item1",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Get embedding": {
-      "main": [
-        [
-          {
-            "node": "update calls counters5",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Set API JSON2": {
-      "main": [
-        [
-          {
-            "node": "Get embedding",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Insert minus words1": {
-      "main": [
-        [
-          {
-            "node": "add link1",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Loop Over Items1": {
-      "main": [
-        [
-          {
-            "node": "refresh minus words status",
-            "type": "main",
-            "index": 0
-          }
-        ],
-        [
-          {
-            "node": "reset first_item",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "set first_item1": {
-      "main": [
-        [
-          {
-            "node": "Loop Over Items1",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "reset first_item": {
-      "main": [
-        [
-          {
-            "node": "Set API JSON2",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "If anything to analise": {
       "main": [
         [
@@ -1784,17 +1322,6 @@
         [
           {
             "node": "Slice  into batches strings",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "add link1": {
-      "main": [
-        [
-          {
-            "node": "Loop Over Items1",
             "type": "main",
             "index": 0
           }
@@ -1817,28 +1344,6 @@
         [
           {
             "node": "Separate output items",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "update calls counters3": {
-      "main": [
-        [
-          {
-            "node": "If minuses array is empty",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "update calls counters5": {
-      "main": [
-        [
-          {
-            "node": "Insert minus words1",
             "type": "main",
             "index": 0
           }
@@ -1872,17 +1377,6 @@
         [
           {
             "node": "mark to add",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "refresh minus words status": {
-      "main": [
-        [
-          {
-            "node": "no relevant",
             "type": "main",
             "index": 0
           }
@@ -1994,7 +1488,7 @@
       }
     ]
   },
-  "versionId": "5f743885-4f3c-4a8f-94af-5d7487208e90",
+  "versionId": "e985f0e1-3fe0-45a7-a028-5db312504a7f",
   "triggerCount": 0,
   "shared": [
     {
