@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-10-21T08:50:29.906Z",
-  "updatedAt": "2025-10-22T08:20:49.567Z",
+  "updatedAt": "2025-10-22T19:57:06.251Z",
   "id": "yMTPv7g4OJZnlboH",
   "name": "ADV_campaign_analysis_AI_1",
   "active": false,
@@ -271,7 +271,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        5296,
+        5104,
         16
       ],
       "id": "131a6af0-ca4f-472b-9638-adc44e43004d",
@@ -311,8 +311,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        4048,
-        -608
+        4096,
+        -144
       ],
       "id": "a1019dcd-24ab-4b64-84db-155e044d2977",
       "name": "Обработка ответа AI"
@@ -577,8 +577,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        5808,
-        0
+        5552,
+        32
       ],
       "id": "d0863025-59a0-444b-90d2-17a44ef3f295",
       "name": "Mark_workflow_passed_steps",
@@ -597,8 +597,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        5552,
-        16
+        5328,
+        32
       ],
       "id": "632cf3d1-003c-48c5-ab27-083b76d6e252",
       "name": "Get current step and tokens saved"
@@ -630,8 +630,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        6192,
-        32
+        5904,
+        80
       ],
       "id": "192476a3-64cd-4c46-a6c6-d58472773ca5",
       "name": "If"
@@ -643,8 +643,8 @@
       "type": "n8n-nodes-base.stopAndError",
       "typeVersion": 1,
       "position": [
-        6432,
-        -96
+        6112,
+        -64
       ],
       "id": "b4406a8b-4519-4d55-b3b2-7d01f1bf94c9",
       "name": "Stop and Error"
@@ -677,8 +677,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        6016,
-        0
+        5744,
+        48
       ],
       "id": "6f6df168-5d77-41a2-92de-5812feeaa7f8",
       "name": "check if termination is requested",
@@ -713,8 +713,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        4368,
-        -656
+        4384,
+        -112
       ],
       "id": "6875959e-a735-49f5-91d5-e7025e99c9df",
       "name": "no relevant",
@@ -744,8 +744,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        4656,
-        -1024
+        4672,
+        -352
       ],
       "id": "814d4209-fc7d-4126-a283-7634066788c8",
       "name": "mark to add"
@@ -882,8 +882,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        4928,
-        -1024
+        4800,
+        -96
       ],
       "id": "e18bc4f9-6df3-4478-a0c4-ff56c883ac10",
       "name": "read call counters"
@@ -918,8 +918,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        4208,
-        -1072
+        4272,
+        -368
       ],
       "id": "461603d2-6e6a-4c7e-8c9a-d149cd3f3b86",
       "name": "set input1"
@@ -946,8 +946,8 @@
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1.2,
       "position": [
-        4400,
-        -1072
+        4464,
+        -368
       ],
       "id": "aa515a6d-d6d4-46ae-a4ed-a04181a1c704",
       "name": "Add to company content"
@@ -1488,7 +1488,7 @@
       }
     ]
   },
-  "versionId": "e985f0e1-3fe0-45a7-a028-5db312504a7f",
+  "versionId": "17f896c0-7618-48ae-9c96-0c52c4dec4d8",
   "triggerCount": 0,
   "shared": [
     {
