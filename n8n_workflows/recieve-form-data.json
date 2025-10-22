@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-10-21T12:43:03.776Z",
-  "updatedAt": "2025-10-22T11:49:00.300Z",
+  "updatedAt": "2025-10-22T17:18:40.460Z",
   "id": "Z5sOyh4IJtSVsD2a",
   "name": "Recieve form data",
   "active": true,
@@ -95,7 +95,7 @@
     {
       "parameters": {
         "mode": "raw",
-        "jsonOutput": "{\n  \"alfacrm\": {\n    \"host\": \"kiberonesaratov.s20.online\",\n    \"email\": \"antonkarzhavin1@yandex.ru\",\n    \"api_key\": \"656b9709-9547-11f0-b9b8-3cecefbdd1ae\"\n  },\n  \"fields\": { \"1_2\": \"Антон Тест111\", \"1_3\": \"+381601111111\", \"1_7\": \"Саратов\" },\n  \"lead_source_id\": 8,\n  \"etext\": \"Кнопка «записаться»\",\n  \"utm_source\": \"yandex\",\n  \"utm_medium\": \"cpc\",\n  \"utm_campaign\": \"brand_search\",\n  \"utm_content\": \"cta_top\",\n  \"utm_term\": \"киберон саратов\",\n  \"yclid\": \"1234567890\"\n}",
+        "jsonOutput": "{\n  \"alfacrm\": {\n    \"host\": \"kiberonesaratov.s20.online\",\n    \"email\": \"antonkarzhavin1@yandex.ru\",\n    \"api_key\": \"656b9709-9547-11f0-b9b8-3cecefbdd1ae\"\n  },\n  \"fields\": {\n  \"legal_type\": 1,\n  \"is_study\": 0,\n  \"branch_ids\": [1],\n  \"lead_source_id\": \"40\",\n  \"name\": \"test-from-n8n\",\n  \"contact_contacts\": [\"+79171234567\"]\n}\n}",
         "includeOtherFields": true,
         "options": {}
       },
@@ -147,7 +147,7 @@
       "main": [
         [
           {
-            "node": "Set CRM data",
+            "node": "Set CRM data1",
             "type": "main",
             "index": 0
           }
@@ -176,8 +176,52 @@
   },
   "staticData": null,
   "meta": null,
-  "pinData": {},
-  "versionId": "67829a1b-b947-4cfa-bd47-a93cd4321a3a",
+  "pinData": {
+    "Webhook": [
+      {
+        "json": {
+          "headers": {
+            "host": "n8n-main-production-4310.up.railway.app",
+            "user-agent": "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Mobile Safari/537.36",
+            "content-length": "774",
+            "accept": "*/*",
+            "accept-encoding": "gzip, deflate, br, zstd",
+            "accept-language": "en-US,en-RU;q=0.9,en;q=0.8,ru-RU;q=0.7,ru;q=0.6",
+            "content-type": "text/plain",
+            "origin": "https://saratov-okt.kiber-one.com",
+            "priority": "u=4, i",
+            "referer": "https://saratov-okt.kiber-one.com/",
+            "sec-ch-ua": "\"Google Chrome\";v=\"141\", \"Not?A_Brand\";v=\"8\", \"Chromium\";v=\"141\"",
+            "sec-ch-ua-mobile": "?1",
+            "sec-ch-ua-platform": "\"Android\"",
+            "sec-fetch-dest": "empty",
+            "sec-fetch-mode": "no-cors",
+            "sec-fetch-site": "cross-site",
+            "sec-fetch-storage-access": "active",
+            "x-forwarded-for": "82.214.82.138",
+            "x-forwarded-host": "n8n-main-production-4310.up.railway.app",
+            "x-forwarded-proto": "https",
+            "x-railway-edge": "railway/europe-west4-drams3a",
+            "x-railway-request-id": "ADSrySz4TPmyyQzuw9P4nw",
+            "x-real-ip": "82.214.82.138",
+            "x-request-start": "1761133759423"
+          },
+          "params": {},
+          "query": {},
+          "body": "{\"event\":\"form_submit_success\",\"form_id\":\"26073\",\"matchedBy\":\"xhr\",\"transport\":\"xhr\",\"endpoint_url\":\"https://saratov-okt.kiber-one.com/redizayn-2/glavnaya/tretiy-blok/block3-form/\",\"status\":200,\"page_url\":\"https://saratov-okt.kiber-one.com/\",\"referrer\":\"https://saratov.kiber-one.com/\",\"user_agent\":\"Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Mobile Safari/537.36\",\"ts\":1761133759302,\"utm_source\":\"\",\"utm_medium\":\"\",\"utm_campaign\":\"\",\"utm_content\":\"\",\"utm_term\":\"\",\"yclid\":\"\",\"fields\":{\"1_2\":\"n8n+post\",\"1_3\":\"+79117932216\",\"1_7\":\"Belgarde\",\"1_6\":\"on\",\"2_9\":\"on\",\"name\":\"\",\"form_name\":\"FormConstructorForm\",\"form_id\":\"26073\",\"sendsave\":\"Оставить+заявку\"},\"ym_client_id\":\"1760992627805758156\"}",
+          "webhookUrl": "https://n8n-main-production-4310.up.railway.app/webhook/add0a254-19eb-4e02-b02e-344a6f26a86e",
+          "executionMode": "production"
+        },
+        "binary": {
+          "data": {
+            "data": "eyJldmVudCI6ImZvcm1fc3VibWl0X3N1Y2Nlc3MiLCJmb3JtX2lkIjoiMjYwNzMiLCJtYXRjaGVkQnkiOiJ4aHIiLCJ0cmFuc3BvcnQiOiJ4aHIiLCJlbmRwb2ludF91cmwiOiJodHRwczovL3NhcmF0b3Ytb2t0LmtpYmVyLW9uZS5jb20vcmVkaXpheW4tMi9nbGF2bmF5YS90cmV0aXktYmxvay9ibG9jazMtZm9ybS8iLCJzdGF0dXMiOjIwMCwicGFnZV91cmwiOiJodHRwczovL3NhcmF0b3Ytb2t0LmtpYmVyLW9uZS5jb20vIiwicmVmZXJyZXIiOiJodHRwczovL3NhcmF0b3Yua2liZXItb25lLmNvbS8iLCJ1c2VyX2FnZW50IjoiTW96aWxsYS81LjAgKExpbnV4OyBBbmRyb2lkIDYuMDsgTmV4dXMgNSBCdWlsZC9NUkE1OE4pIEFwcGxlV2ViS2l0LzUzNy4zNiAoS0hUTUwsIGxpa2UgR2Vja28pIENocm9tZS8xNDEuMC4wLjAgTW9iaWxlIFNhZmFyaS81MzcuMzYiLCJ0cyI6MTc2MTEzMzc1OTMwMiwidXRtX3NvdXJjZSI6IiIsInV0bV9tZWRpdW0iOiIiLCJ1dG1fY2FtcGFpZ24iOiIiLCJ1dG1fY29udGVudCI6IiIsInV0bV90ZXJtIjoiIiwieWNsaWQiOiIiLCJmaWVsZHMiOnsiMV8yIjoibjhuK3Bvc3QiLCIxXzMiOiIrNzkxMTc5MzIyMTYiLCIxXzciOiJCZWxnYXJkZSIsIjFfNiI6Im9uIiwiMl85Ijoib24iLCJuYW1lIjoiIiwiZm9ybV9uYW1lIjoiRm9ybUNvbnN0cnVjdG9yRm9ybSIsImZvcm1faWQiOiIyNjA3MyIsInNlbmRzYXZlIjoi0J7RgdGC0LDQstC40YLRjCvQt9Cw0Y/QstC60YMifSwieW1fY2xpZW50X2lkIjoiMTc2MDk5MjYyNzgwNTc1ODE1NiJ9",
+            "mimeType": "text/plain"
+          }
+        }
+      }
+    ]
+  },
+  "versionId": "7cbc2b7f-70d7-46b1-965f-a7a0f0598287",
   "triggerCount": 1,
   "shared": [
     {
