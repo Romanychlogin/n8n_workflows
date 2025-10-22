@@ -347,7 +347,13 @@
     "availableInMCP": false,
     "errorWorkflow": "v2Z32ISEUzsFYnZw"
   },
-  "staticData": null,
+  "staticData": {
+    "global": {
+      "steps_passed": 0,
+      "tokens_used": 0,
+      "step": 0
+    }
+  },
   "meta": {
     "templateCredsSetupCompleted": true
   },
