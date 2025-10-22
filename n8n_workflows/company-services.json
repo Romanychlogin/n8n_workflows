@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-10T14:56:27.610Z",
-  "updatedAt": "2025-10-22T12:40:32.454Z",
+  "updatedAt": "2025-10-22T12:45:53.954Z",
   "id": "5Se0CY4jTtS5g7n3",
   "name": "company services",
   "active": false,
@@ -670,54 +670,6 @@
               },
               "renameOutput": true,
               "outputKey": "pdf"
-            },
-            {
-              "conditions": {
-                "options": {
-                  "caseSensitive": true,
-                  "leftValue": "",
-                  "typeValidation": "strict",
-                  "version": 2
-                },
-                "conditions": [
-                  {
-                    "id": "c7098d3e-a67d-4d04-ac4d-d7c7c6d987fa",
-                    "leftValue": "={{ $json.name }}",
-                    "rightValue": ".xlsx",
-                    "operator": {
-                      "type": "string",
-                      "operation": "contains"
-                    }
-                  }
-                ],
-                "combinator": "and"
-              },
-              "renameOutput": true,
-              "outputKey": "xlsx"
-            },
-            {
-              "conditions": {
-                "options": {
-                  "caseSensitive": true,
-                  "leftValue": "",
-                  "typeValidation": "strict",
-                  "version": 2
-                },
-                "conditions": [
-                  {
-                    "id": "91a2595f-ab9d-4ded-b26f-2b7836c2dd07",
-                    "leftValue": "={{ $json.name }}",
-                    "rightValue": ".rtf",
-                    "operator": {
-                      "type": "string",
-                      "operation": "contains"
-                    }
-                  }
-                ],
-                "combinator": "and"
-              },
-              "renameOutput": true,
-              "outputKey": "rtf"
             }
           ]
         },
@@ -764,20 +716,6 @@
     },
     {
       "parameters": {
-        "operation": "xlsx",
-        "options": {}
-      },
-      "type": "n8n-nodes-base.extractFromFile",
-      "typeVersion": 1,
-      "position": [
-        1648,
-        432
-      ],
-      "id": "1f000db8-7289-49a9-b160-d833a263c4d7",
-      "name": "Extract from File4"
-    },
-    {
-      "parameters": {
         "content": "Добавить анализ других файлов через AI"
       },
       "type": "n8n-nodes-base.stickyNote",
@@ -788,20 +726,6 @@
       ],
       "id": "c1b39af2-9d2f-4cf5-b97a-1583453be513",
       "name": "Sticky Note3"
-    },
-    {
-      "parameters": {
-        "operation": "rtf",
-        "options": {}
-      },
-      "type": "n8n-nodes-base.extractFromFile",
-      "typeVersion": 1,
-      "position": [
-        1584,
-        624
-      ],
-      "id": "451bb4b9-9f03-479c-a0e2-524bf543ffde",
-      "name": "Extract from File5"
     }
   ],
   "connections": {
@@ -1064,20 +988,6 @@
         ],
         [
           {
-            "node": "Extract from File4",
-            "type": "main",
-            "index": 0
-          }
-        ],
-        [
-          {
-            "node": "Extract from File5",
-            "type": "main",
-            "index": 0
-          }
-        ],
-        [
-          {
             "node": "Loop Over Items1",
             "type": "main",
             "index": 0
@@ -1108,7 +1018,7 @@
       }
     ]
   },
-  "versionId": "7464aa0e-7e9c-4cbd-bbcc-d8a3d398b430",
+  "versionId": "beef7e25-3538-4e00-beef-1d4d2fb99237",
   "triggerCount": 0,
   "shared": [
     {
