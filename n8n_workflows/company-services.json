@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-10T14:56:27.610Z",
-  "updatedAt": "2025-10-22T12:45:53.954Z",
+  "updatedAt": "2025-10-22T16:38:47.882Z",
   "id": "5Se0CY4jTtS5g7n3",
   "name": "company services",
   "active": false,
@@ -97,28 +97,28 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        2304,
-        80
+        2272,
+        -144
       ],
       "id": "a2abd329-0d5f-4585-8e52-137fb63dc717",
       "name": "HTTP Request",
       "retryOnFail": true,
       "credentials": {
         "openAiApi": {
-          "id": "V8R8KiZKXscJQ1sL",
-          "name": "OpenAi account"
+          "id": "m4NScyhZzV3hBcTr",
+          "name": "OpenAi Yads"
         }
       }
     },
     {
       "parameters": {
-        "jsCode": "const workflowData = $getWorkflowStaticData('global');\nconst my_prompt = workflowData.git_prompt.data;\n\nreturn [{\n  json: \n {\n  \"model\": \"gpt-5\",\n  \"input\": [\n    {\n      \"role\": \"developer\",\n      \"content\": [\n        {\n          \"type\": \"input_text\",\n          \"text\": \"Выводи только валидный JSON-массив объектов в формате: [{\\\"service_name\\\": string, \\\"service_url\\\": string, \\\"service_description\\\": string}]. Не добавляй комментариев или форматирования вне этого массива.\\n\\n'''\\nФормат вывода:\\n- Массив объектов JSON.\\n- Каждый объект должен содержать поля:\\n  - \\\"service_name\\\": (обязательно, string) — название сервиса.\\n  - \\\"service_url\\\": (опционально, string) — адрес сервиса. Если адрес не идентифицирован - передай null\\n  - \\\"service_description\\\": (опционально, string) —полное описание сервиса. Если если описание не идентифицированино  - передай null\"\n        }\n      ]\n    },\n    {\n      \"role\": \"user\",\n      \"content\": [\n        {\n          \"type\": \"input_text\",\n          \"text\": $json.my_prompt \n        }\n      ]\n    }\n  ],\n  \"text\": {\n    \"format\": {\n      \"type\": \"json_schema\",\n      \"name\": \"service_listing\",\n      \"strict\": true,\n      \"schema\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"service\": {\n            \"type\": \"array\",\n            \"description\": \"service_listing, each as a name, URL and description row.\",\n            \"items\": {\n              \"type\": \"object\",\n              \"properties\": {\n                \"service_name\": {\n                  \"type\": \"string\",\n                  \"description\": \"The name of the service\",\n                  \"minLength\": 1\n                },\n                \"service_url\": {\n                  \"type\": \"string\",\n                  \"description\": \"The URL where the service is available\",\n                  \"minLength\": 1\n                },\n                \"service_description\": {\n                  \"type\": \"string\",\n                  \"description\": \"Detailed description of the service\",\n                  \"minLength\": 1\n                }\n              },\n              \"required\": [\n                \"service_name\",\n                \"service_url\",\n                \"service_description\"\n              ],\n              \"additionalProperties\": false\n            }\n          }\n        },\n        \"required\": [\n          \"service\"\n        ],\n        \"additionalProperties\": false\n      }\n    },\n    \"verbosity\": \"medium\"\n  },\n  \"reasoning\": {\n    \"effort\": \"medium\",\n    \"summary\": null\n  },\n  \"tools\": [],\n  \"store\": false,\n  \"include\": [\n    \"reasoning.encrypted_content\",\n    \"web_search_call.action.sources\"\n  ]\n}\n\n}];"
+        "jsCode": "return [{\n  json: \n {\n  \"model\": \"gpt-5\",\n  \"input\": [\n    {\n      \"role\": \"developer\",\n      \"content\": [\n        {\n          \"type\": \"input_text\",\n          \"text\": \"Отвечай только валидным JSON\"\n        }\n      ]\n    },\n    {\n      \"role\": \"user\",\n      \"content\": [\n        {\n          \"type\": \"input_text\",\n          \"text\": $json.my_prompt\n        }\n      ]\n    }\n  ],\n  \"text\": {\n    \"format\": {\n      \"type\": \"json_schema\",\n      \"name\": \"service_listings\",\n      \"strict\": true,\n      \"schema\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"service_listing\": {\n            \"type\": \"array\",\n            \"description\": \"service_listing, each as a name, URL and description row.\",\n            \"items\": {\n              \"type\": \"object\",\n              \"properties\": {\n                \"service_name\": {\n                  \"type\": \"string\",\n                  \"description\": \"The name of the service\",\n                  \"minLength\": 1\n                },\n                \"service_url\": {\n                  \"type\": \"string\",\n                  \"description\": \"The root URL where the service is available\",\n                  \"minLength\": 1\n                }\n              },\n              \"required\": [\n                \"service_name\",\n                \"service_url\"\n              ],\n              \"additionalProperties\": false\n            }\n          }\n        },\n        \"required\": [\n          \"service_listing\"\n        ],\n        \"additionalProperties\": false\n      }\n    },\n    \"verbosity\": \"medium\"\n  },\n  \"reasoning\": {\n    \"effort\": \"low\",\n    \"summary\": \"auto\"\n  },\n  \"tools\": [],\n  \"store\": false,\n  \"include\": [\n    \"reasoning.encrypted_content\",\n    \"web_search_call.action.sources\"\n  ]\n}\n\n}];"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        2144,
-        80
+        2016,
+        -176
       ],
       "id": "8d9261b7-57f6-4d96-90ae-4ae6b72dba86",
       "name": "Set API JSON"
@@ -343,13 +343,13 @@
     },
     {
       "parameters": {
-        "jsCode": "const workflowData = $getWorkflowStaticData('global');\nlet my_prompt = workflowData.my_prompt.data;\n\nconst wf = $('When Executed by Another Workflow').first().json;\nconst companyName   = wf?.company_name ?? '';\nconst dropboxFolder = wf?.user_content_dropbox_folder ?? '';\n\nconst dataServices  = $input.first()?.json?.data_services ?? '';\n// Если папка пуста — подставляем пустую строку, иначе можно подставить содержимое (если оно у вас есть)\nconst companyContent = dropboxFolder ? ($input.first()?.json?.company_content ?? '') : '';\n\n// Собираем my_prompt\nitem.json.my_prompt = String(my_prompt)\n  .replaceAll('{{ccompany_name}}', companyName)\n  .replaceAll('{{services_list}}', dataServices)\n  .replaceAll('{{company_content}}', companyContent);\n\nreturn item;"
+        "jsCode": "const workflowData = $getWorkflowStaticData('global');\nlet my_prompt = workflowData.my_prompt.data;\n\n\n// Собираем my_prompt\nitem.json.my_prompt = String(my_prompt)\n  .replaceAll('{{ccompany_name}}', $('When Executed by Another Workflow').first().json.company_name)\n  .replaceAll('{{services_list}}', $('When Executed by Another Workflow').first().json.services_description);\n\nreturn item;"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1968,
-        96
+        1744,
+        -176
       ],
       "id": "9b692ab7-941a-414a-8127-93630973a8d0",
       "name": "Set prompt"
@@ -361,8 +361,8 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        1120,
-        -48
+        912,
+        -256
       ],
       "id": "f0f1f790-b0e2-496c-98ed-9b7af81237b3",
       "name": "Sticky Note1"
@@ -689,6 +689,7 @@
     {
       "parameters": {
         "operation": "text",
+        "destinationKey": "=data {{ $json.name }}",
         "options": {}
       },
       "type": "n8n-nodes-base.extractFromFile",
@@ -726,6 +727,32 @@
       ],
       "id": "c1b39af2-9d2f-4cf5-b97a-1583453be513",
       "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Берём все входные элементы\nconst items = $input.all();\n\n// Имя файла из узла \"Switch\"\nconst fileName = String($('Switch').last().json?.name ?? 'unnamed').trim();\n\n// Собираем содержимое из входа (json.data), приводим к строке и фильтруем пустое\nconst contents = items\n  .map(i => i.json?.data)\n  .map(v => (v == null ? '' : String(v)))\n  .map(s => s.replace(/\\r\\n/g, '\\n')) // нормализация перевода строк\n  .filter(s => s.length > 0);\n\n// Если нечего добавлять — просто вернём текущее состояние\nconst block = contents.length ? `${fileName}\\n${contents.join('\\n')}` : '';\n\n// Глобальное хранилище\nconst workflowData = $getWorkflowStaticData('global');\n\n// Инициализируем, если не было\nif (typeof workflowData.UserContent !== 'string') {\n  workflowData.UserContent = '';\n}\n\n// Дописываем по правилу: \\n + Название файла + \\n + содержимое\nif (block) {\n  workflowData.UserContent += (workflowData.UserContent ? '\\n' : '') + block;\n}\n\n// Можно вернуть текущее значение для отладки/передачи дальше\nreturn [\n  {\n    json: {\n      fileName,\n      appended: Boolean(block),\n      length: workflowData.UserContent.length,\n      preview_tail: workflowData.UserContent.slice(-500) // последние 500 символов для проверки\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1840,
+        384
+      ],
+      "id": "d8823a8e-43da-41d2-821d-549400ca9ce9",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "content": "Разделить по этапам 1)идентифицируем сервисы и сохраняем 2)для каждого сервиса запрашиваем структуру сайта из внешнего сервиса\n"
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        2224,
+        352
+      ],
+      "id": "f31e1cd7-5e91-4cd7-b758-8627f2ab6bcd",
+      "name": "Sticky Note2"
     }
   ],
   "connections": {
@@ -949,7 +976,13 @@
     },
     "Loop Over Items1": {
       "main": [
-        [],
+        [
+          {
+            "node": "Set prompt",
+            "type": "main",
+            "index": 0
+          }
+        ],
         [
           {
             "node": "Download a file",
@@ -994,6 +1027,39 @@
           }
         ]
       ]
+    },
+    "Extract from File3": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
@@ -1018,7 +1084,7 @@
       }
     ]
   },
-  "versionId": "beef7e25-3538-4e00-beef-1d4d2fb99237",
+  "versionId": "8633aa31-f7f4-4f1e-a77a-b112aefcb97c",
   "triggerCount": 0,
   "shared": [
     {
