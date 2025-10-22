@@ -1,9 +1,9 @@
 {
   "createdAt": "2025-10-21T12:43:03.776Z",
-  "updatedAt": "2025-10-21T22:39:40.115Z",
+  "updatedAt": "2025-10-22T11:49:00.300Z",
   "id": "Z5sOyh4IJtSVsD2a",
   "name": "Recieve form data",
-  "active": false,
+  "active": true,
   "isArchived": false,
   "nodes": [
     {
@@ -177,7 +177,7 @@
   "staticData": null,
   "meta": null,
   "pinData": {},
-  "versionId": "d8fb1e35-30b4-49e9-80c7-0cc7ccc12586",
+  "versionId": "67829a1b-b947-4cfa-bd47-a93cd4321a3a",
   "triggerCount": 1,
   "shared": [
     {
