@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-10-22T11:42:51.794Z",
-  "updatedAt": "2025-10-22T11:42:51.794Z",
+  "updatedAt": "2025-10-22T13:33:56.915Z",
   "id": "EgFFe1spvxMBXwgw",
   "name": "New_client_creation",
   "active": false,
@@ -264,26 +264,38 @@
           "assignments": [
             {
               "id": "8939fde5-d7b7-4679-a9dc-4c20aec9614d",
-              "name": "yandex_report_dropbox_file_path",
-              "value": "https://www.dropbox.com/scl/fi/lsi4k8here3an7gw3i0k2/2025-09-25_2025-10-10_searchquery_kiberone-saratov.csv?rlkey=lju12ky359ltnduc5sh492hle&dl=1",
+              "name": "company_name",
+              "value": "",
               "type": "string"
             },
             {
               "id": "c39715db-2173-438e-9e3b-8e20372ebf86",
-              "name": "threshhold",
-              "value": 0.79,
-              "type": "number"
+              "name": "company_url",
+              "value": "",
+              "type": "string"
             },
             {
               "id": "da89c9d1-35e4-43af-a686-0fb39952aec2",
-              "name": "report_id",
+              "name": "yandex_region",
               "value": "",
               "type": "string"
             },
             {
               "id": "4fa84724-3629-46f5-928d-203f2a6dcf99",
-              "name": "company_id",
+              "name": "yandex_id",
               "value": "1",
+              "type": "string"
+            },
+            {
+              "id": "1130b561-fa7d-4e01-a902-e309dfce34d9",
+              "name": "services_description",
+              "value": "",
+              "type": "string"
+            },
+            {
+              "id": "79ccdc8c-5200-44ac-bb66-55abb2cedf30",
+              "name": "user_content_dropbox_folder",
+              "value": "",
               "type": "string"
             }
           ]
@@ -625,21 +637,6 @@
       ],
       "id": "7e0165dd-fa53-4199-91e8-7fdfd2e5957c",
       "name": "ADV_campaign_data_load"
-    },
-    {
-      "parameters": {
-        "content": "1)В dropbox ссылке поменять в конце 0 на 1 !!!!! \n2)задать report_id только если нужно обработать записи не последнего загруженного отчета, без загрузки!!!\n3)если надо учесть предыдущую загрузку то явно укажи company_id ",
-        "height": 320,
-        "width": 336
-      },
-      "type": "n8n-nodes-base.stickyNote",
-      "typeVersion": 1,
-      "position": [
-        -848,
-        -416
-      ],
-      "id": "07e227e5-f50e-4fd0-92ec-450b033bedd5",
-      "name": "Sticky Note4"
     },
     {
       "parameters": {
@@ -4380,7 +4377,7 @@
       }
     ]
   },
-  "versionId": "10e4ebe8-8d38-4680-845a-788a6129f556",
+  "versionId": "df211ec2-d09b-4e53-86d1-4e8ebdc992ec",
   "triggerCount": 0,
   "shared": [
     {
