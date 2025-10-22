@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-28T11:31:13.045Z",
-  "updatedAt": "2025-10-21T17:44:49.800Z",
+  "updatedAt": "2025-10-22T08:15:56.919Z",
   "id": "lBAh8kjoXRX0aGUF",
   "name": "ADS headers and texts creation services for updates",
   "active": false,
@@ -1071,11 +1071,11 @@
           "conditions": [
             {
               "id": "b13ec6fc-ce2d-48a1-a4c7-6ded529707ec",
-              "leftValue": "={{ $json }}",
+              "leftValue": "={{$input.first().json.success}}",
               "rightValue": "",
               "operator": {
-                "type": "object",
-                "operation": "empty",
+                "type": "boolean",
+                "operation": "true",
                 "singleValue": true
               }
             }
@@ -2045,15 +2045,15 @@
       {
         "json": {
           "id": "lBAh8kjoXRX0aGUF",
-          "root_execution_id": 48574,
+          "root_execution_id": 130041,
           "company_id": 1,
           "threshhold": "0.79",
-          "import_id": "5"
+          "import_id": "6"
         }
       }
     ]
   },
-  "versionId": "db9bd89c-d170-4d4e-a6ca-f40f1567cd10",
+  "versionId": "2564fbb7-c04a-4a2c-9269-0297aed7e9b6",
   "triggerCount": 0,
   "shared": [
     {
