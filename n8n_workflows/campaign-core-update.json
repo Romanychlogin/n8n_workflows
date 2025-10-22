@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-25T13:33:58.106Z",
-  "updatedAt": "2025-10-22T08:17:40.147Z",
+  "updatedAt": "2025-10-22T12:01:04.983Z",
   "id": "0J5cvuaSz3IhDS99",
   "name": "campaign core update",
   "active": false,
@@ -180,7 +180,7 @@
         "operation": "executeQuery",
         "query": "update business_processes_states set steps_total=$3 where business_process_id=(select MAX(business_process_id) from business_processes where n8n_process_name=$1) and n8n_workflow_execution_id=$2",
         "options": {
-          "queryReplacement": "=[{{$workflow.name}},{{$execution.id}},{{ 4 }}]"
+          "queryReplacement": "=[{{$workflow.name}},{{$execution.id}},{{ 11 }}]"
         }
       },
       "type": "n8n-nodes-base.postgres",
@@ -4380,7 +4380,7 @@
       }
     ]
   },
-  "versionId": "9bd35714-7ce4-4118-acf7-8c9d23961c6f",
+  "versionId": "8b123ef3-478c-49e4-8ba5-23a79e3d75e3",
   "triggerCount": 0,
   "shared": [
     {
