@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-19T15:26:59.886Z",
-  "updatedAt": "2025-10-18T15:56:00.258Z",
+  "updatedAt": "2025-10-22T11:41:29.043Z",
   "id": "SptAKErjQeOJuESk",
   "name": "status bot",
   "active": true,
@@ -56,8 +56,8 @@
     },
     {
       "parameters": {
-        "content": "Yandex_direct_incidents: -1003052639964\n\nYandex Direct Status:\n-1002955047432\n\nYandex direct github status\n-1003120484933",
-        "height": 192
+        "content": "Yandex_direct_incidents: -1003052639964\n\nYandex Direct Status:\n-1002955047432\n\nYandex direct github status\n-1003120484933\n\nDone:\n-1003196763261\n",
+        "height": 256
       },
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
@@ -709,7 +709,7 @@
         "additionalFields": {
           "appendAttribution": true,
           "parse_mode": "MarkdownV2",
-          "message_thread_id": 6
+          "message_thread_id": 1170
         }
       },
       "type": "n8n-nodes-base.telegram",
@@ -954,7 +954,7 @@
       }
     ]
   },
-  "versionId": "e05e8861-2e66-48ae-8bd4-634046a7c661",
+  "versionId": "93127d3a-9da9-4584-914c-0a6a30ff21d5",
   "triggerCount": 3,
   "shared": [
     {
