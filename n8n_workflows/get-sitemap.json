@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-10-22T13:51:50.209Z",
-  "updatedAt": "2025-10-22T14:01:06.060Z",
+  "updatedAt": "2025-10-22T14:06:40.024Z",
   "id": "7FoU9Spu4KwNDAMk",
   "name": "Get sitemap",
   "active": false,
@@ -44,6 +44,96 @@
       ],
       "id": "17900db5-6a56-4b53-b3ba-7f41c0bf6413",
       "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        -16,
+        -32
+      ],
+      "id": "95d2cd94-84c4-438d-a49a-5674cc113135",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        192,
+        -32
+      ],
+      "id": "76b9d265-30a3-422b-865d-959759608cdd",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.loc }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        448,
+        16
+      ],
+      "id": "1fb8b830-2e54-454b-ad2b-5d013dc34eb0",
+      "name": "HTTP Request1"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "612cda3e-855c-4002-a19f-15ed139cbe47",
+              "name": "xml",
+              "value": "={{ $json.body }}",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        656,
+        16
+      ],
+      "id": "15c688dc-4117-43f4-b95f-e6a280d14bb8",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "dataPropertyName": "xml",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.xml",
+      "typeVersion": 1,
+      "position": [
+        864,
+        16
+      ],
+      "id": "ddbab28f-f905-4d59-b370-e25d72b389b8",
+      "name": "XML",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "jsCode": "const meta = {\n  base: $json.base,\n  depth: Number($json.depth ?? 0),\n  MAX_DEPTH: Number($json.MAX_DEPTH ?? 3),\n  SAME_HOST_ONLY: Boolean($json.SAME_HOST_ONLY ?? true),\n};\n\nconst baseHost = (() => {\n  try { return new URL(meta.base).host; } catch { return null; }\n})();\n\nconst onlySameHost = meta.SAME_HOST_ONLY;\n\nfunction abs(u) {\n  if (!u) return null;\n  try { return new URL(String(u), meta.base).toString(); } catch { return null; }\n}\nfunction arr(x) { return Array.isArray(x) ? x : (x == null ? [] : [x]); }\n\nconst out = [];\n\n// urlset → url → loc\nif ($json.urlset?.url) {\n  for (const u of arr($json.urlset.url)) {\n    const loc = arr(u.loc)[0];\n    const full = abs(loc);\n    if (!full) continue;\n    if (onlySameHost && baseHost && new URL(full).host !== baseHost) continue;\n    out.push({ json: { ...meta, type: 'url', loc: full } });\n  }\n}\n\n// sitemapindex → sitemap → loc\nif ($json.sitemapindex?.sitemap) {\n  for (const s of arr($json.sitemapindex.sitemap)) {\n    const loc = arr(s.loc)[0];\n    const full = abs(loc);\n    if (!full) continue;\n    out.push({ json: { ...meta, type: 'sitemap', loc: full, depth: meta.depth + 1 } });\n  }\n}\n\nreturn out;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1072,
+        16
+      ],
+      "id": "9a0588cb-15f2-4158-bd04-1c6a2744041c",
+      "name": "Extract LOCs"
     }
   ],
   "connections": {
@@ -68,6 +158,73 @@
           }
         ]
       ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [],
+        [
+          {
+            "node": "HTTP Request1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request1": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "XML",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "XML": {
+      "main": [
+        [
+          {
+            "node": "Extract LOCs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
@@ -86,7 +243,7 @@
       }
     ]
   },
-  "versionId": "0a1e7afc-9990-4119-aa89-dab848e5e739",
+  "versionId": "02cc0222-cf59-4e6c-ba19-3de182f26041",
   "triggerCount": 0,
   "shared": [
     {
@@ -97,6 +254,5 @@
       "projectId": "spKmbJLU4mvACXIB"
     }
   ],
-  "tags": [],
-  "file_name": "get-sitemap.json"
+  "tags": []
 }
