@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-30T12:45:50.445Z",
-  "updatedAt": "2025-10-22T06:37:08.575Z",
+  "updatedAt": "2025-10-22T07:09:41.414Z",
   "id": "c0NgmBzgLxUE7Wno",
   "name": "ADV_campaign_get_service",
   "active": false,
@@ -222,7 +222,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        1952,
+        2224,
         -96
       ],
       "id": "4a97fd60-fe89-4e03-821f-2c8c2fe58e49",
@@ -241,40 +241,11 @@
       "type": "n8n-nodes-base.executeWorkflowTrigger",
       "typeVersion": 1.1,
       "position": [
-        -784,
-        -240
+        -528,
+        -144
       ],
       "id": "65da40d4-374e-46ea-a0c5-5e1903d2e471",
       "name": "When Executed by Another Workflow"
-    },
-    {
-      "parameters": {
-        "assignments": {
-          "assignments": [
-            {
-              "id": "f74ac992-90a4-4403-a75e-17656de76902",
-              "name": "company_id",
-              "value": "={{ $json.company_id }}",
-              "type": "number"
-            },
-            {
-              "id": "172a851e-fdc7-4f3c-b095-88687e8a392a",
-              "name": "threshhold",
-              "value": "={{ $json.threshhold }}",
-              "type": "number"
-            }
-          ]
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.set",
-      "typeVersion": 3.4,
-      "position": [
-        -544,
-        -240
-      ],
-      "id": "a26eafc5-4140-44cb-9124-8c952159e354",
-      "name": "set variables"
     },
     {
       "parameters": {
@@ -287,8 +258,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        -192,
-        -192
+        -176,
+        -112
       ],
       "id": "34e512f5-8154-489f-8567-372ec5d0fc72",
       "name": "Mark_workwlow_started",
@@ -347,7 +318,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        1856,
+        2064,
         -768
       ],
       "id": "7a94a8b0-fb50-4343-ae84-f3979bf32b9e",
@@ -371,7 +342,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        2432,
+        2640,
         -96
       ],
       "id": "7eb077f5-d21d-45a3-b35a-3cf7db4995b5",
@@ -391,7 +362,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        2176,
+        2384,
         -96
       ],
       "id": "2d152f6d-640a-4856-bdbc-12299fc8cb37",
@@ -424,7 +395,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        2944,
+        3152,
         -16
       ],
       "id": "4610dcc3-96cc-48e6-b3e4-7445d811bebf",
@@ -437,7 +408,7 @@
       "type": "n8n-nodes-base.stopAndError",
       "typeVersion": 1,
       "position": [
-        3200,
+        3408,
         -176
       ],
       "id": "a5b461a5-d941-4c88-a934-45e0cc6cf924",
@@ -471,7 +442,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        2640,
+        2848,
         -96
       ],
       "id": "137c55d6-840d-44a2-83ba-213edca771e6",
@@ -488,17 +459,18 @@
         "operation": "executeQuery",
         "query": "select kw.service_id from ads_list kw where kw.ad_header=$2 and kw.company_id=$1",
         "options": {
-          "queryReplacement": "=[{{ $('set variables').item.json.company_id }},{{ $('Loop Over Items').last().json.ads_header }}]"
+          "queryReplacement": "=[{{ $('When Executed by Another Workflow').item.json.company_id }},{{ $('Loop Over Items').last().json.ads_header }}]"
         }
       },
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        1760,
-        -96
+        1840,
+        -80
       ],
       "id": "0be1cb0e-9bcc-48fd-9e17-fb5c81a0da31",
       "name": "get service data by AD header",
+      "alwaysOutputData": true,
       "credentials": {
         "postgres": {
           "id": "Hx2VFmUi5WO2K4QX",
@@ -522,9 +494,9 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "select * from current_list where report_id=(select max(import_id) from report_import where company_id=$1) and (service_id is null or service_id=0)\n",
+        "query": "select * from current_list where report_id=$2 and  company_id=$1 and (service_id is null or service_id=0)\n",
         "options": {
-          "queryReplacement": "={{ $('set variables').item.json.company_id }}"
+          "queryReplacement": "={{ $('When Executed by Another Workflow').item.json.company_id }},{{ $('When Executed by Another Workflow').item.json.import_id }}"
         }
       },
       "type": "n8n-nodes-base.postgres",
@@ -575,7 +547,355 @@
         -80
       ],
       "id": "526b5adb-8f62-4950-bca5-9bd488bbb371",
-      "name": "If1"
+      "name": "If empty"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "d27bd43b-9c58-4c64-87ba-c82c2ccd45d1",
+              "leftValue": "={{ $input.first().json }}",
+              "rightValue": "",
+              "operator": {
+                "type": "object",
+                "operation": "empty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1984,
+        -80
+      ],
+      "id": "01f2956b-4d4f-428f-8ddd-32a6dd8990a0",
+      "name": "If empty1"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "current_list",
+          "mode": "list",
+          "cachedResultName": "current_list"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "list_id": "={{ $('Loop Over Items').last().json.list_id }}",
+            "service_recognition_error": "={{ true }}"
+          },
+          "matchingColumns": [
+            "list_id"
+          ],
+          "schema": [
+            {
+              "id": "list_id",
+              "displayName": "list_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "key_word",
+              "displayName": "key_word",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "campaign_id",
+              "displayName": "campaign_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "used_keyword",
+              "displayName": "used_keyword",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "group_id",
+              "displayName": "group_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "condition_type",
+              "displayName": "condition_type",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "category",
+              "displayName": "category",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "ads_header",
+              "displayName": "ads_header",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "resolution",
+              "displayName": "resolution",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "count_views",
+              "displayName": "count_views",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "count_clics",
+              "displayName": "count_clics",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "count_convetions",
+              "displayName": "count_convetions",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "ai_response_tokens",
+              "displayName": "ai_response_tokens",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "company_id",
+              "displayName": "company_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "report_id",
+              "displayName": "report_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "service_id",
+              "displayName": "service_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "is_adv_processed",
+              "displayName": "is_adv_processed",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "boolean",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "ai_calls",
+              "displayName": "ai_calls",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "embedding_calls",
+              "displayName": "embedding_calls",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "service_recognition_error",
+              "displayName": "service_recognition_error",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "boolean",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        2192,
+        -288
+      ],
+      "id": "aa6365bc-dc36-4ca2-909d-a290b78e4e3d",
+      "name": "update for error",
+      "credentials": {
+        "postgres": {
+          "id": "Hx2VFmUi5WO2K4QX",
+          "name": "Postgres account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "select count(*) AS errors_count from current_list where company_id=$1 and import_id=$2 and service_recognition_error=true",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        1664,
+        -336
+      ],
+      "id": "1ad4d010-5330-47bf-b031-49911bc879c0",
+      "name": "check for errors",
+      "alwaysOutputData": true,
+      "credentials": {
+        "postgres": {
+          "id": "Hx2VFmUi5WO2K4QX",
+          "name": "Postgres account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "errorMessage": "={{$json.errors_count}} ads not identified for the import id  {{ $('When Executed by Another Workflow').item.json.import_id }}"
+      },
+      "type": "n8n-nodes-base.stopAndError",
+      "typeVersion": 1,
+      "position": [
+        2032,
+        -448
+      ],
+      "id": "44374f16-a19d-41a6-93c7-6b826b79d654",
+      "name": "Stop and Error1"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "d27bd43b-9c58-4c64-87ba-c82c2ccd45d1",
+              "leftValue": "={{ $input.first().json }}",
+              "rightValue": "",
+              "operator": {
+                "type": "object",
+                "operation": "empty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1808,
+        -416
+      ],
+      "id": "36949f1d-413a-4b34-b586-4694e96de4d7",
+      "name": "If empty2"
     }
   ],
   "connections": {
@@ -583,7 +903,7 @@
       "main": [
         [
           {
-            "node": "Mark_workflow_completed",
+            "node": "check for errors",
             "type": "main",
             "index": 0
           }
@@ -609,17 +929,6 @@
       ]
     },
     "When Executed by Another Workflow": {
-      "main": [
-        [
-          {
-            "node": "set variables",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "set variables": {
       "main": [
         [
           {
@@ -712,7 +1021,7 @@
       "main": [
         [
           {
-            "node": "update",
+            "node": "If empty1",
             "type": "main",
             "index": 0
           }
@@ -723,7 +1032,7 @@
       "main": [
         [
           {
-            "node": "If1",
+            "node": "If empty",
             "type": "main",
             "index": 0
           }
@@ -752,7 +1061,7 @@
         ]
       ]
     },
-    "If1": {
+    "If empty": {
       "main": [
         [
           {
@@ -764,6 +1073,64 @@
         [
           {
             "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If empty1": {
+      "main": [
+        [
+          {
+            "node": "update for error",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "update",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "update for error": {
+      "main": [
+        [
+          {
+            "node": "Get current step and tokens saved",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "check for errors": {
+      "main": [
+        [
+          {
+            "node": "If empty2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If empty2": {
+      "main": [
+        [
+          {
+            "node": "Mark_workflow_completed",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Stop and Error1",
             "type": "main",
             "index": 0
           }
@@ -803,7 +1170,7 @@
       {
         "json": {
           "id": "c0NgmBzgLxUE7Wno",
-          "root_execution_id": 128437,
+          "root_execution_id": 129887,
           "company_id": 1,
           "threshhold": "0.79",
           "import_id": 6
@@ -811,7 +1178,7 @@
       }
     ]
   },
-  "versionId": "4c171350-bddc-4321-9b95-acbf0a04bd5d",
+  "versionId": "171006c4-f017-4654-95d3-cc622306a6e7",
   "triggerCount": 0,
   "shared": [
     {
