@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-10-22T13:51:50.209Z",
-  "updatedAt": "2025-10-22T14:06:40.024Z",
+  "updatedAt": "2025-10-22T16:15:52.763Z",
   "id": "7FoU9Spu4KwNDAMk",
   "name": "Get sitemap",
   "active": false,
@@ -19,121 +19,16 @@
     },
     {
       "parameters": {
-        "url": "={{ $json.baseUrl.replace(/\\/+$/,'') + '/robots.txt' }}",
-        "options": {}
+        "jsCode": "const raw = String($json.baseUrl ?? '').trim();\n// Нормализуем в строку URL, если возможно\nlet base = raw;\ntry { base = new URL(raw).toString(); } catch { /* оставим как есть */ }\n\nlet urlsarray = [];\n\n// 1) Спец-кейс: Сайт KIBERone (главный домен) → вернём предзаданный набор\nif (/^https?:\\/\\/saratov-okt\\.kiber-one\\.com\\/?$/i.test(base)) {\n  urlsarray = [\n    \"https://saratov-okt.kiber-one.com/\", // homepage сначала\n    \"https://saratov-okt.kiber-one.com/moduli/mir-trehmernyh-igr-na-unity-3d/\",\n    \"https://saratov-okt.kiber-one.com/moduli/podgotovka-k-olimpiadam/\",\n    \"https://saratov-okt.kiber-one.com/moduli/umnyy-chat-bot-na-python/\",\n    \"https://saratov-okt.kiber-one.com/moduli/kompyuternaya-gramotnost/\",\n    \"https://saratov-okt.kiber-one.com/moduli/delovye-lyudi/\",\n    \"https://saratov-okt.kiber-one.com/moduli/web-dizayn-dlya-saytov-ili-prilozheniy/\",\n    \"https://saratov-okt.kiber-one.com/o-kibershkole/lokacii/\",\n    \"https://saratov-okt.kiber-one.com/moduli/minecraft-educate/\",\n    \"https://saratov-okt.kiber-one.com/moduli/roblox-studio-sdelat-vse-chto-vy-mozhete-sebe-predstavit/\",\n    \"https://saratov-okt.kiber-one.com/moduli/web-master-html--css/\",\n    \"https://saratov-okt.kiber-one.com/moduli/lendingi-lp-i-tilda-verstka-odnostranichnikov/\",\n    \"https://saratov-okt.kiber-one.com/moduli/vvodnyy-modul/\",\n    \"https://saratov-okt.kiber-one.com/moduli/tinkercad/\",\n    \"https://saratov-okt.kiber-one.com/moduli/codemonkey/\",\n    \"https://saratov-okt.kiber-one.com/moduli/blender/\",\n    \"https://saratov-okt.kiber-one.com/o-kibershkole/smi-o-nas/\",\n    \"https://saratov-okt.kiber-one.com/moduli/qr-kod-kak-instrument/\",\n    \"https://saratov-okt.kiber-one.com/moduli/unreal-engine-4-igrovoy-dvizhok/\",\n    \"https://saratov-okt.kiber-one.com/o-kibershkole/kibervaluta/\",\n    \"https://saratov-okt.kiber-one.com/moduli/programmirovanie-na-javascript-uchimsya-sozdavat-igry/\",\n    \"https://saratov-okt.kiber-one.com/moduli/prilozheniya-google-primenyat-dlya-zhizni-35-prilozheniy-ot-g/\",\n    \"https://saratov-okt.kiber-one.com/moduli/neyroseti/\",\n    \"https://saratov-okt.kiber-one.com/moduli/google-blockly-apofeoz-vizualnogo-programmirovaniya/\",\n    \"https://saratov-okt.kiber-one.com/moduli/gif-animaciya/\",\n    \"https://saratov-okt.kiber-one.com/moduli/olimpiadnoe-programmirovanie/\",\n    \"https://saratov-okt.kiber-one.com/o-kibershkole/raspisanie/\",\n    \"https://saratov-okt.kiber-one.com/moduli/golosovoy-pomoschnik-alisa/\",\n    \"https://saratov-okt.kiber-one.com/moduli/modul-2-znakomstvo-so-scratch-sozdanie-igr-na-scratch-osnovy/\",\n    \"https://saratov-okt.kiber-one.com/moduli/osnovy-html-izuchenie-web-razrabotki/\",\n    \"https://saratov-okt.kiber-one.com/moduli/volshebnyy-photoshop/\",\n    \"https://saratov-okt.kiber-one.com/sertifikaty/\",\n    \"https://saratov-okt.kiber-one.com/moduli/osnovy-kiberbezopasnosti/\",\n    \"https://saratov-okt.kiber-one.com/moduli/programmirovanie-na-java-tvoe-pervoe-prilozhenie/\",\n    \"https://saratov-okt.kiber-one.com/moduli/blokcheyn-tehnologichnoe-buduschee/\",\n    \"https://saratov-okt.kiber-one.com/moduli/run-marco-1/\",\n    \"https://saratov-okt.kiber-one.com/vybirayte-format-svoego-leta-s-kiberone/kiber-kanikuly/\",\n    \"https://saratov-okt.kiber-one.com/moduli/phpsql-2-mesyaca/\",\n    \"https://saratov-okt.kiber-one.com/moduli/ispolniteli-chertezhnik-i-cherepashka/\",\n    \"https://saratov-okt.kiber-one.com/o-kibershkole/news/\",\n    \"https://saratov-okt.kiber-one.com/oplata/\",\n    \"https://saratov-okt.kiber-one.com/moduli/kompas-3d/\",\n    \"https://saratov-okt.kiber-one.com/feedback/\",\n    \"https://saratov-okt.kiber-one.com/moduli/ustroystvo-kompyutera-my-na-ty/\",\n    \"https://saratov-okt.kiber-one.com/moduli/alice-3d/\",\n    \"https://saratov-okt.kiber-one.com/moduli/thunkable/\",\n    \"https://saratov-okt.kiber-one.com/moduli/kodu-game-lab-vizualnoe-programmirovanie-v-3d/\",\n    \"https://saratov-okt.kiber-one.com/o-kibershkole/prepodavateli/\",\n    \"https://saratov-okt.kiber-one.com/moduli/piktomir/\",\n    \"https://saratov-okt.kiber-one.com/moduli/scratch-jr/\",\n    \"https://saratov-okt.kiber-one.com/moduli/construct-2---sozday-svoy-pervyy-platformer/\",\n    \"https://saratov-okt.kiber-one.com/moduli/programmirovanie-na-c-udivitelnyy-mir-2d-igr/\",\n    \"https://saratov-okt.kiber-one.com/moduli/programmirovanie-na-s-smozhet-kazhdyy/\",\n    \"https://saratov-okt.kiber-one.com/moduli/\",\n    \"https://saratov-okt.kiber-one.com/moduli/web-dizayn-figma/\",\n    \"https://saratov-okt.kiber-one.com/moduli/magiya-powerpoint--canva-sozdanie-effektivnyh-prezentaciy/\",\n    \"https://saratov-okt.kiber-one.com/vybirayte-format-svoego-leta-s-kiberone/letnie-moduli-kiberone/\",\n    \"https://saratov-okt.kiber-one.com/o-kibershkole/video/\",\n    \"https://saratov-okt.kiber-one.com/moduli/programmirovanie-v-python-sozday-svoyu-pervuyu-igru/\",\n    \"https://saratov-okt.kiber-one.com/moduli/motion-design/\",\n    \"https://saratov-okt.kiber-one.com/o-kibershkole/fotogalereya/\"\n  ];\n}\n// 2) Спец-кейс: krg45.visa-rf.ru\nelse if (/^https?:\\/\\/krg45\\.visa-rf\\.ru\\/?$/i.test(base)) {\n  urlsarray = [\"http://krg45.visa-rf.ru/\"];\n}\n// 3) Спец-кейс: krg45.apec-first.ru\nelse if (/^https?:\\/\\/krg45\\.apec-first\\.ru\\/?$/i.test(base)) {\n  urlsarray = [\"http://krg45.apec-first.ru/\"];\n}\n// 4) Иначе — просто используем baseUrl как единственный URL\nelse {\n  if (base) {\n    urlsarray = [ base.endsWith('/') ? base : (base + '/') ];\n  } else {\n    urlsarray = []; // пусто — ничего не знаем\n  }\n}\n\n// Нормализация и дедуп\nurlsarray = [...new Set(\n  urlsarray\n    .map(u => {\n      try { return new URL(u).toString(); } catch { return null; }\n    })\n    .filter(Boolean)\n)];\n\nreturn [{ json: { urls: urlsarray } }];\n"
       },
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.2,
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
       "position": [
         -464,
         -48
       ],
-      "id": "98fbb3ba-2fc8-4533-a105-756b250ee75d",
-      "name": "HTTP Request",
-      "retryOnFail": true
-    },
-    {
-      "parameters": {
-        "jsCode": "// Берём базовый URL и настройки\nconst base = ($('When Executed by Another Workflow').first().json.baseUrl || '').trim().replace(/\\/+$/, '');\nconst MAX_DEPTH = Number($('When Executed by Another Workflow').first().json.MAX_DEPTH ?? 3);\nconst SAME_HOST_ONLY = Boolean($('When Executed by Another Workflow').first().json.SAME_HOST_ONLY ?? true);\n\n// Пытаемся вытащить Sitemap: из robots.txt\nconst robots = String($json.data || '');\nlet found = [];\nfor (const line of robots.split(/\\r?\\n/)) {\n  const m = line.match(/^\\s*sitemap:\\s*(.+?)\\s*$/i);\n  if (m && m[1]) found.push(m[1].trim());\n}\n\n// Если не нашли — используем типичные пути\nif (found.length === 0) {\n  found = [\n    '/sitemap.xml',\n    '/sitemap_index.xml',\n    '/sitemap.xml.gz',\n    '/sitemap-index.xml',\n  ].map(p => base + p);\n}\n\n// Нормализация/абсолютизация и дедуп\nconst seen = new Set();\nconst out = [];\nfor (let u of found) {\n  if (!/^[a-z]+:\\/\\//i.test(u)) {\n    u = base + (u.startsWith('/') ? '' : '/') + u;\n  }\n  if (!seen.has(u)) {\n    seen.add(u);\n    out.push({\n      json: { type: 'sitemap', loc: u, depth: 0, base, MAX_DEPTH, SAME_HOST_ONLY },\n    });\n  }\n}\nreturn out;"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        -256,
-        -48
-      ],
-      "id": "17900db5-6a56-4b53-b3ba-7f41c0bf6413",
+      "id": "aa907e4b-a850-430f-888a-c457e5b72690",
       "name": "Code in JavaScript"
-    },
-    {
-      "parameters": {},
-      "type": "n8n-nodes-base.merge",
-      "typeVersion": 3.2,
-      "position": [
-        -16,
-        -32
-      ],
-      "id": "95d2cd94-84c4-438d-a49a-5674cc113135",
-      "name": "Merge"
-    },
-    {
-      "parameters": {
-        "options": {}
-      },
-      "type": "n8n-nodes-base.splitInBatches",
-      "typeVersion": 3,
-      "position": [
-        192,
-        -32
-      ],
-      "id": "76b9d265-30a3-422b-865d-959759608cdd",
-      "name": "Loop Over Items"
-    },
-    {
-      "parameters": {
-        "url": "={{ $json.loc }}",
-        "options": {}
-      },
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.2,
-      "position": [
-        448,
-        16
-      ],
-      "id": "1fb8b830-2e54-454b-ad2b-5d013dc34eb0",
-      "name": "HTTP Request1"
-    },
-    {
-      "parameters": {
-        "assignments": {
-          "assignments": [
-            {
-              "id": "612cda3e-855c-4002-a19f-15ed139cbe47",
-              "name": "xml",
-              "value": "={{ $json.body }}",
-              "type": "string"
-            }
-          ]
-        },
-        "includeOtherFields": true,
-        "options": {}
-      },
-      "type": "n8n-nodes-base.set",
-      "typeVersion": 3.4,
-      "position": [
-        656,
-        16
-      ],
-      "id": "15c688dc-4117-43f4-b95f-e6a280d14bb8",
-      "name": "Edit Fields"
-    },
-    {
-      "parameters": {
-        "dataPropertyName": "xml",
-        "options": {}
-      },
-      "type": "n8n-nodes-base.xml",
-      "typeVersion": 1,
-      "position": [
-        864,
-        16
-      ],
-      "id": "ddbab28f-f905-4d59-b370-e25d72b389b8",
-      "name": "XML",
-      "alwaysOutputData": true
-    },
-    {
-      "parameters": {
-        "jsCode": "const meta = {\n  base: $json.base,\n  depth: Number($json.depth ?? 0),\n  MAX_DEPTH: Number($json.MAX_DEPTH ?? 3),\n  SAME_HOST_ONLY: Boolean($json.SAME_HOST_ONLY ?? true),\n};\n\nconst baseHost = (() => {\n  try { return new URL(meta.base).host; } catch { return null; }\n})();\n\nconst onlySameHost = meta.SAME_HOST_ONLY;\n\nfunction abs(u) {\n  if (!u) return null;\n  try { return new URL(String(u), meta.base).toString(); } catch { return null; }\n}\nfunction arr(x) { return Array.isArray(x) ? x : (x == null ? [] : [x]); }\n\nconst out = [];\n\n// urlset → url → loc\nif ($json.urlset?.url) {\n  for (const u of arr($json.urlset.url)) {\n    const loc = arr(u.loc)[0];\n    const full = abs(loc);\n    if (!full) continue;\n    if (onlySameHost && baseHost && new URL(full).host !== baseHost) continue;\n    out.push({ json: { ...meta, type: 'url', loc: full } });\n  }\n}\n\n// sitemapindex → sitemap → loc\nif ($json.sitemapindex?.sitemap) {\n  for (const s of arr($json.sitemapindex.sitemap)) {\n    const loc = arr(s.loc)[0];\n    const full = abs(loc);\n    if (!full) continue;\n    out.push({ json: { ...meta, type: 'sitemap', loc: full, depth: meta.depth + 1 } });\n  }\n}\n\nreturn out;"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        1072,
-        16
-      ],
-      "id": "9a0588cb-15f2-4158-bd04-1c6a2744041c",
-      "name": "Extract LOCs"
     }
   ],
   "connections": {
@@ -141,85 +36,7 @@
       "main": [
         [
           {
-            "node": "HTTP Request",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "HTTP Request": {
-      "main": [
-        [
-          {
             "node": "Code in JavaScript",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Code in JavaScript": {
-      "main": [
-        [
-          {
-            "node": "Merge",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Merge": {
-      "main": [
-        [
-          {
-            "node": "Loop Over Items",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Loop Over Items": {
-      "main": [
-        [],
-        [
-          {
-            "node": "HTTP Request1",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "HTTP Request1": {
-      "main": [
-        [
-          {
-            "node": "Edit Fields",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Edit Fields": {
-      "main": [
-        [
-          {
-            "node": "XML",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "XML": {
-      "main": [
-        [
-          {
-            "node": "Extract LOCs",
             "type": "main",
             "index": 0
           }
@@ -243,7 +60,7 @@
       }
     ]
   },
-  "versionId": "02cc0222-cf59-4e6c-ba19-3de182f26041",
+  "versionId": "19148d50-58ec-4b17-bd8d-3a101908bb47",
   "triggerCount": 0,
   "shared": [
     {
