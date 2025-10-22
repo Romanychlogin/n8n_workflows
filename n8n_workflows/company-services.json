@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-10T14:56:27.610Z",
-  "updatedAt": "2025-09-22T17:10:30.064Z",
+  "updatedAt": "2025-10-22T12:20:09.461Z",
   "id": "5Se0CY4jTtS5g7n3",
   "name": "company services",
   "active": false,
@@ -97,7 +97,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        1616,
+        1824,
         96
       ],
       "id": "a2abd329-0d5f-4585-8e52-137fb63dc717",
@@ -117,56 +117,11 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1456,
+        1664,
         96
       ],
       "id": "8d9261b7-57f6-4d96-90ae-4ae6b72dba86",
       "name": "Set API JSON"
-    },
-    {
-      "parameters": {
-        "url": "={{$json[\"url\"]}}",
-        "responseFormat": "file",
-        "options": {}
-      },
-      "id": "da21e487-289b-4612-b354-fbab691d2e55",
-      "name": "Download File",
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 2,
-      "position": [
-        752,
-        16
-      ]
-    },
-    {
-      "parameters": {
-        "operation": "text",
-        "destinationKey": "data_services",
-        "options": {}
-      },
-      "type": "n8n-nodes-base.extractFromFile",
-      "typeVersion": 1,
-      "position": [
-        896,
-        32
-      ],
-      "id": "e69116eb-dabc-4b9c-a525-002274c480c2",
-      "name": "Extract from File"
-    },
-    {
-      "parameters": {
-        "mode": "combine",
-        "combineBy": "combineByPosition",
-        "options": {}
-      },
-      "type": "n8n-nodes-base.merge",
-      "typeVersion": 3.2,
-      "position": [
-        1072,
-        112
-      ],
-      "id": "ad2c1d3c-97a4-4c71-a4bd-4a182eae4d59",
-      "name": "Merge"
     },
     {
       "parameters": {
@@ -179,7 +134,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 2,
       "position": [
-        736,
+        960,
         256
       ]
     },
@@ -192,53 +147,11 @@
       "type": "n8n-nodes-base.extractFromFile",
       "typeVersion": 1,
       "position": [
-        880,
+        1296,
         272
       ],
       "id": "eb121860-49a5-4078-a18e-1aae96675334",
       "name": "Extract from File1"
-    },
-    {
-      "parameters": {
-        "values": {
-          "string": [
-            {
-              "name": "url",
-              "value": "https://www.dropbox.com/scl/fi/90f3et27d0wd4w9waiui8/.txt?rlkey=bgnaia5wvs9ymss29ou0mf2dg&dl=1"
-            }
-          ]
-        },
-        "options": {}
-      },
-      "id": "5453e478-d25c-4680-8d6c-765ea4d87587",
-      "name": "Enter URL services",
-      "type": "n8n-nodes-base.set",
-      "typeVersion": 2,
-      "position": [
-        592,
-        32
-      ]
-    },
-    {
-      "parameters": {
-        "values": {
-          "string": [
-            {
-              "name": "url",
-              "value": "https://www.dropbox.com/scl/fi/ksu6ppx0ame1r64az42vv/.txt?rlkey=jeat07z1ll0lfdye459nux5z8&dl=1"
-            }
-          ]
-        },
-        "options": {}
-      },
-      "id": "2682cd9c-e93f-4a62-8067-fffb780ce5ac",
-      "name": "Enter URL user content",
-      "type": "n8n-nodes-base.set",
-      "typeVersion": 2,
-      "position": [
-        576,
-        272
-      ]
     },
     {
       "parameters": {
@@ -247,7 +160,7 @@
       "type": "n8n-nodes-base.splitInBatches",
       "typeVersion": 3,
       "position": [
-        2240,
+        2448,
         96
       ],
       "id": "52edc5a1-4572-45dd-b48c-fe8668a2ebb7",
@@ -351,7 +264,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        2528,
+        2736,
         112
       ],
       "id": "62a64ba7-b2d8-4b5e-99e7-6cffd28f874c",
@@ -370,7 +283,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1840,
+        2048,
         96
       ],
       "id": "48224588-2811-489a-b615-3762e170d773",
@@ -423,7 +336,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        2448,
+        2656,
         -144
       ],
       "id": "6506b2bc-0455-4b8d-a494-7947c1fdd87c",
@@ -464,7 +377,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1280,
+        1488,
         112
       ],
       "id": "9b692ab7-941a-414a-8127-93630973a8d0",
@@ -485,48 +398,14 @@
     },
     {
       "parameters": {
-        "conditions": {
-          "options": {
-            "caseSensitive": true,
-            "leftValue": "",
-            "typeValidation": "strict",
-            "version": 2
-          },
-          "conditions": [
-            {
-              "id": "09752f3f-1379-46b7-8ab2-7df7b3934143",
-              "leftValue": "={{ $('When Executed by Another Workflow').item.json.user_content_dropbox_folder}}",
-              "rightValue": "",
-              "operator": {
-                "type": "string",
-                "operation": "empty",
-                "singleValue": true
-              }
-            }
-          ],
-          "combinator": "and"
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.if",
-      "typeVersion": 2.2,
-      "position": [
-        288,
-        160
-      ],
-      "id": "92ffbafe-8925-409b-9128-69e53f2a5f1d",
-      "name": "If"
-    },
-    {
-      "parameters": {
         "content": "допилить работу с папкой дропбокса\n",
         "width": 384
       },
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        592,
-        432
+        528,
+        512
       ],
       "id": "c30e2183-27d1-458c-a665-0a3f5bed3e80",
       "name": "Sticky Note2"
@@ -542,7 +421,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        3008,
+        3216,
         112
       ],
       "id": "141a0bca-e21d-4acf-bfcc-3b96d11e0938",
@@ -562,7 +441,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        2768,
+        2976,
         128
       ],
       "id": "18e87029-f008-4df2-a7ea-e6af7def0e6f",
@@ -575,7 +454,7 @@
       "type": "n8n-nodes-base.stopAndError",
       "typeVersion": 1,
       "position": [
-        3632,
+        3840,
         16
       ],
       "id": "7705ff83-9613-4400-b432-a3d8fbb96566",
@@ -609,7 +488,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        3216,
+        3424,
         112
       ],
       "id": "46b21f50-e94b-4649-ad8e-0f3fa02af708",
@@ -648,7 +527,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        3424,
+        3632,
         112
       ],
       "id": "3ef8876e-950c-439a-a9c1-b0f504058731",
@@ -665,7 +544,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        1984,
+        2192,
         -160
       ],
       "id": "0d31e54c-d3dd-40ac-bc7b-45d4ef984acf",
@@ -685,11 +564,82 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        2160,
+        2368,
         -160
       ],
       "id": "bd738d46-4a08-4265-8f9f-344e03385655",
       "name": "Init total counter"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "09752f3f-1379-46b7-8ab2-7df7b3934143",
+              "leftValue": "={{ $('When Executed by Another Workflow').item.json.user_content_dropbox_folder}}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "empty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        288,
+        160
+      ],
+      "id": "92ffbafe-8925-409b-9128-69e53f2a5f1d",
+      "name": "If no content"
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "resource": "folder",
+        "operation": "list",
+        "path": "={{ $('When Executed by Another Workflow').item.json.user_content_dropbox_folder }}",
+        "returnAll": true,
+        "filters": {}
+      },
+      "type": "n8n-nodes-base.dropbox",
+      "typeVersion": 1,
+      "position": [
+        496,
+        256
+      ],
+      "id": "293315a0-8021-44c6-9c21-f17cc792b014",
+      "name": "List a folder1",
+      "credentials": {
+        "dropboxOAuth2Api": {
+          "id": "AugpA5e12rWISfZ5",
+          "name": "Dropbox OAuth"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        704,
+        240
+      ],
+      "id": "f5fed606-03d5-41ce-8c09-3d4ee1ee24ea",
+      "name": "Loop Over Items1"
     }
   ],
   "connections": {
@@ -719,12 +669,7 @@
       "main": [
         [
           {
-            "node": "Enter URL services",
-            "type": "main",
-            "index": 0
-          },
-          {
-            "node": "If",
+            "node": "If no content",
             "type": "main",
             "index": 0
           }
@@ -736,39 +681,6 @@
         [
           {
             "node": "HTTP Request",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Download File": {
-      "main": [
-        [
-          {
-            "node": "Extract from File",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Extract from File": {
-      "main": [
-        [
-          {
-            "node": "Merge",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Merge": {
-      "main": [
-        [
-          {
-            "node": "Set prompt",
             "type": "main",
             "index": 0
           }
@@ -790,29 +702,7 @@
       "main": [
         [
           {
-            "node": "Merge",
-            "type": "main",
-            "index": 1
-          }
-        ]
-      ]
-    },
-    "Enter URL services": {
-      "main": [
-        [
-          {
-            "node": "Download File",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Enter URL user content": {
-      "main": [
-        [
-          {
-            "node": "Download File1",
+            "node": "Loop Over Items1",
             "type": "main",
             "index": 0
           }
@@ -908,24 +798,6 @@
         ]
       ]
     },
-    "If": {
-      "main": [
-        [
-          {
-            "node": "Merge",
-            "type": "main",
-            "index": 1
-          }
-        ],
-        [
-          {
-            "node": "Enter URL user content",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Mark_workflow_passed_steps": {
       "main": [
         [
@@ -987,6 +859,41 @@
           }
         ]
       ]
+    },
+    "If no content": {
+      "main": [
+        [],
+        [
+          {
+            "node": "List a folder1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "List a folder1": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items1": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Download File1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
@@ -1004,12 +911,14 @@
           "root_execution_id": 20076,
           "company_id": 2,
           "threshhold": "0.88",
-          "company_name": "Первый визовый центр Курган"
+          "company_name": "Первый визовый центр Курган",
+          "services_description": "Визы:    http://krg45.visa-rf.ru/ АТЭС:    http://krg45.apec-first.ru/",
+          "user_content_dropbox_folder": "/Test content folder for Kurgan"
         }
       }
     ]
   },
-  "versionId": "3474f7ca-c328-4c21-b5bc-b9060b9c2dec",
+  "versionId": "770b5535-ca9c-45e6-96eb-c9edbba701c3",
   "triggerCount": 0,
   "shared": [
     {
