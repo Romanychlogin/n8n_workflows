@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-10T14:56:27.610Z",
-  "updatedAt": "2025-10-22T12:28:01.052Z",
+  "updatedAt": "2025-10-22T12:40:32.454Z",
   "id": "5Se0CY4jTtS5g7n3",
   "name": "company services",
   "active": false,
@@ -97,8 +97,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        1824,
-        96
+        2304,
+        80
       ],
       "id": "a2abd329-0d5f-4585-8e52-137fb63dc717",
       "name": "HTTP Request",
@@ -117,26 +117,11 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1664,
-        96
+        2144,
+        80
       ],
       "id": "8d9261b7-57f6-4d96-90ae-4ae6b72dba86",
       "name": "Set API JSON"
-    },
-    {
-      "parameters": {
-        "operation": "text",
-        "destinationKey": "data_content",
-        "options": {}
-      },
-      "type": "n8n-nodes-base.extractFromFile",
-      "typeVersion": 1,
-      "position": [
-        1632,
-        496
-      ],
-      "id": "eb121860-49a5-4078-a18e-1aae96675334",
-      "name": "Extract from File1"
     },
     {
       "parameters": {
@@ -145,8 +130,8 @@
       "type": "n8n-nodes-base.splitInBatches",
       "typeVersion": 3,
       "position": [
-        2448,
-        96
+        2928,
+        80
       ],
       "id": "52edc5a1-4572-45dd-b48c-fe8668a2ebb7",
       "name": "Loop Over Items"
@@ -249,8 +234,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        2736,
-        112
+        3216,
+        96
       ],
       "id": "62a64ba7-b2d8-4b5e-99e7-6cffd28f874c",
       "name": "Insert rows in a table",
@@ -268,8 +253,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        2048,
-        96
+        2528,
+        80
       ],
       "id": "48224588-2811-489a-b615-3762e170d773",
       "name": "Parse JSON"
@@ -308,7 +293,8 @@
           "id": "4YkdFJcdTgzo9hkz",
           "name": "PGvector"
         }
-      }
+      },
+      "disabled": true
     },
     {
       "parameters": {
@@ -321,8 +307,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        2656,
-        -144
+        3136,
+        -160
       ],
       "id": "6506b2bc-0455-4b8d-a494-7947c1fdd87c",
       "name": "Mark_workflow_completed",
@@ -362,8 +348,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1488,
-        112
+        1968,
+        96
       ],
       "id": "9b692ab7-941a-414a-8127-93630973a8d0",
       "name": "Set prompt"
@@ -383,20 +369,6 @@
     },
     {
       "parameters": {
-        "content": "допилить работу с папкой дропбокса\n",
-        "width": 384
-      },
-      "type": "n8n-nodes-base.stickyNote",
-      "typeVersion": 1,
-      "position": [
-        528,
-        512
-      ],
-      "id": "c30e2183-27d1-458c-a665-0a3f5bed3e80",
-      "name": "Sticky Note2"
-    },
-    {
-      "parameters": {
         "operation": "executeQuery",
         "query": "update business_processes_states set steps_passed=$3, tokens_used=$4,tokens_used_type=$5 where business_process_id=(select MAX(business_process_id) from business_processes where n8n_process_name=$1) and n8n_workflow_execution_id=$2",
         "options": {
@@ -406,8 +378,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        3216,
-        112
+        3696,
+        96
       ],
       "id": "141a0bca-e21d-4acf-bfcc-3b96d11e0938",
       "name": "Mark_workflow_passed_steps",
@@ -426,8 +398,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        2976,
-        128
+        3456,
+        112
       ],
       "id": "18e87029-f008-4df2-a7ea-e6af7def0e6f",
       "name": "Get current step and tokens saved"
@@ -439,8 +411,8 @@
       "type": "n8n-nodes-base.stopAndError",
       "typeVersion": 1,
       "position": [
-        3840,
-        16
+        4320,
+        0
       ],
       "id": "7705ff83-9613-4400-b432-a3d8fbb96566",
       "name": "Stop and Error"
@@ -473,8 +445,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        3424,
-        112
+        3904,
+        96
       ],
       "id": "46b21f50-e94b-4649-ad8e-0f3fa02af708",
       "name": "check if termination is requested",
@@ -512,8 +484,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        3632,
-        112
+        4112,
+        96
       ],
       "id": "3ef8876e-950c-439a-a9c1-b0f504058731",
       "name": "If1"
@@ -529,8 +501,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        2192,
-        -160
+        2672,
+        -176
       ],
       "id": "0d31e54c-d3dd-40ac-bc7b-45d4ef984acf",
       "name": "Mark_workflow_total_steps",
@@ -549,8 +521,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        2368,
-        -160
+        2848,
+        -176
       ],
       "id": "bd738d46-4a08-4265-8f9f-344e03385655",
       "name": "Init total counter"
@@ -661,30 +633,175 @@
                 },
                 "conditions": [
                   {
-                    "leftValue": "",
-                    "rightValue": "",
+                    "leftValue": "={{ $json.name }}",
+                    "rightValue": ".txt",
                     "operator": {
                       "type": "string",
-                      "operation": "equals"
+                      "operation": "contains"
                     },
                     "id": "d05a18fa-91ef-463f-af7b-80c4b63cfb29"
                   }
                 ],
                 "combinator": "and"
-              }
+              },
+              "renameOutput": true,
+              "outputKey": "txt"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "6fefbbdf-1c9e-4225-ae36-0ef5af4d5ab4",
+                    "leftValue": "={{ $json.name }}",
+                    "rightValue": ".pdf",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "pdf"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "c7098d3e-a67d-4d04-ac4d-d7c7c6d987fa",
+                    "leftValue": "={{ $json.name }}",
+                    "rightValue": ".xlsx",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "xlsx"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "91a2595f-ab9d-4ded-b26f-2b7836c2dd07",
+                    "leftValue": "={{ $json.name }}",
+                    "rightValue": ".rtf",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "rtf"
             }
           ]
         },
-        "options": {}
+        "options": {
+          "fallbackOutput": "extra"
+        }
       },
       "type": "n8n-nodes-base.switch",
       "typeVersion": 3.3,
       "position": [
-        1232,
-        304
+        1168,
+        288
       ],
       "id": "f0782227-ca8c-4c11-b0c6-6e4830980654",
       "name": "Switch"
+    },
+    {
+      "parameters": {
+        "operation": "text",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        1632,
+        80
+      ],
+      "id": "0bd8919c-2010-42df-8b0f-af40724dbcc0",
+      "name": "Extract from File"
+    },
+    {
+      "parameters": {
+        "operation": "pdf",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        1632,
+        256
+      ],
+      "id": "fa83cccd-ca6e-4dfe-875c-0731c1e18e14",
+      "name": "Extract from File3"
+    },
+    {
+      "parameters": {
+        "operation": "xlsx",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        1648,
+        432
+      ],
+      "id": "1f000db8-7289-49a9-b160-d833a263c4d7",
+      "name": "Extract from File4"
+    },
+    {
+      "parameters": {
+        "content": "Добавить анализ других файлов через AI"
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1040,
+        624
+      ],
+      "id": "c1b39af2-9d2f-4cf5-b97a-1583453be513",
+      "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
+        "operation": "rtf",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        1584,
+        624
+      ],
+      "id": "451bb4b9-9f03-479c-a0e2-524bf543ffde",
+      "name": "Extract from File5"
     }
   ],
   "connections": {
@@ -726,17 +843,6 @@
         [
           {
             "node": "HTTP Request",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Extract from File1": {
-      "main": [
-        [
-          {
-            "node": "Loop Over Items1",
             "type": "main",
             "index": 0
           }
@@ -939,6 +1045,45 @@
           }
         ]
       ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Extract from File",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Extract from File3",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Extract from File4",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Extract from File5",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Loop Over Items1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
@@ -963,7 +1108,7 @@
       }
     ]
   },
-  "versionId": "4d33518b-34c9-40ae-b1b1-e39bcee8c417",
+  "versionId": "7464aa0e-7e9c-4cbd-bbcc-d8a3d398b430",
   "triggerCount": 0,
   "shared": [
     {
