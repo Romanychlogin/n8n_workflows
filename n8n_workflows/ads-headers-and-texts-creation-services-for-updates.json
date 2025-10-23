@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-28T11:31:13.045Z",
-  "updatedAt": "2025-10-22T08:15:56.919Z",
+  "updatedAt": "2025-10-23T17:57:50.698Z",
   "id": "lBAh8kjoXRX0aGUF",
   "name": "ADS headers and texts creation services for updates",
   "active": false,
@@ -1415,7 +1415,7 @@
         "operation": "executeQuery",
         "query": "WITH ranked AS (\n  SELECT\n    ad_id,\n    key_word,\n    ROW_NUMBER() OVER (\n      PARTITION BY key_word\n      ORDER BY ad_id\n    ) AS rn\n  FROM public.current_ads_list\n  where company_id=$1 AND report_id=$2\n)\nDELETE FROM public.current_ads_list t\nUSING ranked r\nWHERE t.ad_id = r.ad_id\n  AND r.rn > 1;",
         "options": {
-          "queryReplacement": "={{ $('When Executed by Another Workflow').item.json.company_id }},{{ $('When Executed by Another Workflow').item.json.import_id }}"
+          "queryReplacement": "={{ $('When Executed by Another Workflow').last().json.company_id }},{{ $('When Executed by Another Workflow').last().json.import_id }}"
         }
       },
       "type": "n8n-nodes-base.postgres",
@@ -2045,7 +2045,7 @@
       {
         "json": {
           "id": "lBAh8kjoXRX0aGUF",
-          "root_execution_id": 130041,
+          "root_execution_id": 140385,
           "company_id": 1,
           "threshhold": "0.79",
           "import_id": "6"
@@ -2053,7 +2053,7 @@
       }
     ]
   },
-  "versionId": "2564fbb7-c04a-4a2c-9269-0297aed7e9b6",
+  "versionId": "9c8b5345-d098-46c3-8efa-a309d0ba841b",
   "triggerCount": 0,
   "shared": [
     {
