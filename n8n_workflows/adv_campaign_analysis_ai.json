@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-10-20T11:13:50.516Z",
-  "updatedAt": "2025-10-23T09:52:18.466Z",
+  "updatedAt": "2025-10-23T12:07:13.226Z",
   "id": "xNiuEqQOSNCSLvW5",
   "name": "ADV_campaign_analysis_AI",
   "active": false,
@@ -1141,7 +1141,7 @@
     },
     {
       "parameters": {
-        "jsCode": "const workflowData = $getWorkflowStaticData('global');\nworkflowData.ai_calls = 0;\nworkflowData.embedding_calls = $('Loop Over Items').last().json.ItemsbyId[$('Loop Over Items2').last().json.phrase_id].embedding_calls;\nreturn $input.all();\n"
+        "jsCode": "const workflowData = $getWorkflowStaticData('global');\nworkflowData.ai_calls = 0;\nworkflowData.embedding_calls = toNumber($('Loop Over Items').last().json.ItemsbyId[$('Loop Over Items2').last().json.phrase_id].embedding_calls, 0);\nreturn $input.all();\n"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -1154,7 +1154,7 @@
     },
     {
       "parameters": {
-        "jsCode": "const workflowData = $getWorkflowStaticData('global');\nworkflowData.ai_calls = workflowData.ai_calls +1;\n\nlet step_tokens_used = $input.first().json.usage.total_tokens ?? 0;\n\n //set used tokens here!!!!\nworkflowData.tokens_used = workflowData.tokens_used+step_tokens_used;\nfor (const item of $input.all()) {\n  item.json.tokens_used = workflowData.tokens_used;\n}\n\n\n\nreturn $input.all();\n"
+        "jsCode": "const workflowData = $getWorkflowStaticData('global');\nworkflowData.ai_calls = toNumber(workflowData.ai_calls, 0) +1;\n\nlet step_tokens_used = $input.first().json.usage.total_tokens ?? 0;\n\n //set used tokens here!!!!\nworkflowData.tokens_used = workflowData.tokens_used+toNumber(workflowData.step_tokens_used, 0);\nfor (const item of $input.all()) {\n  item.json.tokens_used = workflowData.tokens_used;\n}\n\n\n\nreturn $input.all();\n"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -1167,7 +1167,7 @@
     },
     {
       "parameters": {
-        "jsCode": "const workflowData = $getWorkflowStaticData('global');\nworkflowData.embedding_calls = workflowData.embedding_calls + $input.first().json.meta.candidates_total;\n$input.last().json.embedding_calls=workflowData.embedding_calls;\nreturn $input.all();\n"
+        "jsCode": "const workflowData = $getWorkflowStaticData('global');\nworkflowData.embedding_calls = workflowData.embedding_calls + toNumber($input.first().json.meta.candidates_total,0);\n$input.last().json.embedding_calls=workflowData.embedding_calls;\nreturn $input.all();\n"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -1180,7 +1180,7 @@
     },
     {
       "parameters": {
-        "jsCode": "const workflowData = $getWorkflowStaticData('global');\nworkflowData.embedding_calls = workflowData.embedding_calls + 1;\n$input.last().json.embedding_calls=workflowData.embedding_calls;\nreturn $input.all();\n"
+        "jsCode": "const workflowData = $getWorkflowStaticData('global');\nworkflowData.embedding_calls = toNumber(workflowData.embedding_calls,0) + 1;\n$input.last().json.embedding_calls=workflowData.embedding_calls;\nreturn $input.all();\n"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -2050,7 +2050,7 @@
       {
         "json": {
           "id": "xNiuEqQOSNCSLvW5",
-          "root_execution_id": 138021,
+          "root_execution_id": 138687,
           "company_id": 1,
           "threshhold": "0.79",
           "import_id": 6
@@ -2058,7 +2058,7 @@
       }
     ]
   },
-  "versionId": "577e1752-2e7f-40ea-bc62-ecf81c9e9c3c",
+  "versionId": "51799d13-33b6-4330-be6f-c8323c921d7b",
   "triggerCount": 0,
   "shared": [
     {
