@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-25T13:33:58.106Z",
-  "updatedAt": "2025-10-23T18:47:46.407Z",
+  "updatedAt": "2025-10-23T19:16:00.204Z",
   "id": "0J5cvuaSz3IhDS99",
   "name": "campaign core update",
   "active": false,
@@ -265,7 +265,7 @@
             {
               "id": "8939fde5-d7b7-4679-a9dc-4c20aec9614d",
               "name": "yandex_report_dropbox_file_path",
-              "value": "https://www.dropbox.com/scl/fi/lsi4k8here3an7gw3i0k2/2025-09-25_2025-10-10_searchquery_kiberone-saratov.csv?rlkey=lju12ky359ltnduc5sh492hle&dl=1",
+              "value": "https://www.dropbox.com/scl/fi/5ub21crhwwkcd27g2y52d/2025-10-11_2025-10-11_searchquery_kiberone-saratov.csv?rlkey=244wpftimal787bpl5btlizzv&dl=1",
               "type": "string"
             },
             {
@@ -2175,7 +2175,7 @@
         "operation": "executeQuery",
         "query": "update business_processes_states set  tokens_used_type=$3, tokens_used=tokens_used+(select bps.tokens_used from business_processes bp1,business_processes_states bps,business_processes_states bps2 where bp1.n8n_process_name=$2 and bp1.business_process_id=bps.business_process_id and  bps.n8n_workflow_root_execution_id=bps2.n8n_workflow_execution_id  and bps.finished is not null and bps2.n8n_workflow_execution_id=$1 order by bps2.business_process_state_id desc LIMIT 1) where n8n_workflow_execution_id=$1;\n",
         "options": {
-          "queryReplacement": "=[{{$execution.id}},{{$('ADV_campaign_data_load').item.json.workflow_name}},{{ 'gpt-5' }}]"
+          "queryReplacement": "=[{{$execution.id}},{{$('ADV_campaign_data_load').last().json.workflow_name}},{{ 'gpt-5' }}]"
         }
       },
       "type": "n8n-nodes-base.postgres",
@@ -2782,7 +2782,7 @@
         "operation": "executeQuery",
         "query": "update business_processes_states set  tokens_used_type=$3, tokens_used=tokens_used+(select bps.tokens_used from business_processes bp1,business_processes_states bps,business_processes_states bps2 where bp1.n8n_process_name=$2 and bp1.business_process_id=bps.business_process_id and  bps.n8n_workflow_root_execution_id=bps2.n8n_workflow_execution_id  and bps.finished is not null and bps2.n8n_workflow_execution_id=$1 order by bps2.business_process_state_id desc LIMIT 1) where n8n_workflow_execution_id=$1;\n",
         "options": {
-          "queryReplacement": "=[{{$execution.id}},{{$('ADV_campaign_data_load').item.json.workflow_name}},{{ 'gpt-5' }}]"
+          "queryReplacement": "=[{{$execution.id}},{{$('ADV_campaign_data_load').last().json.workflow_name}},{{ 'gpt-5' }}]"
         }
       },
       "type": "n8n-nodes-base.postgres",
@@ -4025,7 +4025,7 @@
       }
     ]
   },
-  "versionId": "d86276c7-9467-48a0-acb2-2b1be857bb50",
+  "versionId": "052e07b1-ea75-4879-a23b-6ba14fa53f64",
   "triggerCount": 0,
   "shared": [
     {
