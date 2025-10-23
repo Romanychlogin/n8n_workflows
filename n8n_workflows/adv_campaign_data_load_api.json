@@ -1194,16 +1194,16 @@
   ],
   "tags": [
     {
-      "createdAt": "2025-10-06T13:06:54.644Z",
-      "updatedAt": "2025-10-06T13:06:54.644Z",
-      "id": "DBEf57wUDunVJUG6",
-      "name": "campaign update"
-    },
-    {
       "createdAt": "2025-10-22T11:44:26.850Z",
       "updatedAt": "2025-10-22T11:44:26.850Z",
       "id": "TAPLdpwV5vPQJtDW",
       "name": "API"
+    },
+    {
+      "createdAt": "2025-10-06T13:06:54.644Z",
+      "updatedAt": "2025-10-06T13:06:54.644Z",
+      "id": "DBEf57wUDunVJUG6",
+      "name": "campaign update"
     }
   ]
 }
