@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-10-20T11:13:50.516Z",
-  "updatedAt": "2025-10-23T08:56:34.063Z",
+  "updatedAt": "2025-10-23T09:49:04.529Z",
   "id": "xNiuEqQOSNCSLvW5",
   "name": "ADV_campaign_analysis_AI",
   "active": false,
@@ -1159,7 +1159,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        2688,
+        2656,
         -64
       ],
       "id": "767e14c4-b430-4574-8c1b-aaeeac84cf36",
@@ -1310,7 +1310,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        3152,
+        3136,
         -80
       ],
       "id": "a7b433db-3288-4f81-ae0d-c99cff6d6639",
@@ -1390,8 +1390,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        2896,
-        -64
+        2832,
+        32
       ],
       "id": "861d7f48-c483-4146-9c9b-832e1b27c54e",
       "name": "Save_tokens_usage",
@@ -1402,6 +1402,19 @@
           "name": "PGvector"
         }
       }
+    },
+    {
+      "parameters": {
+        "mode": "chooseBranch"
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        2976,
+        -96
+      ],
+      "id": "bef0137f-8f5a-471d-bded-e1c3c81be97c",
+      "name": "Merge1"
     }
   ],
   "connections": {
@@ -1843,6 +1856,11 @@
             "node": "Save_tokens_usage",
             "type": "main",
             "index": 0
+          },
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 0
           }
         ]
       ]
@@ -1979,6 +1997,17 @@
       "main": [
         [
           {
+            "node": "Merge1",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge1": {
+      "main": [
+        [
+          {
             "node": "Separate output items",
             "type": "main",
             "index": 0
@@ -2029,7 +2058,7 @@
       }
     ]
   },
-  "versionId": "bafb4909-074a-4122-ade4-03b528c13bc1",
+  "versionId": "1e5ccdbe-b581-4a9f-bda5-ae38c0fc4043",
   "triggerCount": 0,
   "shared": [
     {
