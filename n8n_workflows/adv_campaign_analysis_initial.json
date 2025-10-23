@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-10-20T11:13:37.232Z",
-  "updatedAt": "2025-10-22T08:23:51.878Z",
+  "updatedAt": "2025-10-23T12:08:33.451Z",
   "id": "b9eGU4g5DID0kq2E",
   "name": "ADV_campaign_analysis_initial",
   "active": false,
@@ -1931,7 +1931,7 @@
     },
     {
       "parameters": {
-        "jsCode": "const workflowData = $getWorkflowStaticData('global');\nworkflowData.embedding_calls =workflowData.embedding_calls + $input.first().json.meta.candidates_total;\nreturn $input.all();\n"
+        "jsCode": "const workflowData = $getWorkflowStaticData('global');\nworkflowData.embedding_calls =toNumber(workflowData.embedding_calls,0) + toNumber($input.first().json.meta.candidates_total,0);\nreturn $input.all();\n"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -2995,7 +2995,7 @@
       }
     ]
   },
-  "versionId": "c631ccc6-1505-4aea-b282-533068f189b6",
+  "versionId": "076eb45e-0855-449f-bab3-7f2c6518fc16",
   "triggerCount": 0,
   "shared": [
     {
