@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-30T12:45:50.445Z",
-  "updatedAt": "2025-10-22T07:35:26.231Z",
+  "updatedAt": "2025-10-23T19:22:42.429Z",
   "id": "c0NgmBzgLxUE7Wno",
   "name": "ADV_campaign_get_service",
   "active": false,
@@ -222,7 +222,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        2224,
+        2432,
         -96
       ],
       "id": "4a97fd60-fe89-4e03-821f-2c8c2fe58e49",
@@ -318,7 +318,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        2064,
+        2272,
         -768
       ],
       "id": "7a94a8b0-fb50-4343-ae84-f3979bf32b9e",
@@ -342,7 +342,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        2640,
+        2848,
         -96
       ],
       "id": "7eb077f5-d21d-45a3-b35a-3cf7db4995b5",
@@ -362,7 +362,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        2384,
+        2592,
         -96
       ],
       "id": "2d152f6d-640a-4856-bdbc-12299fc8cb37",
@@ -395,7 +395,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        3152,
+        3360,
         -16
       ],
       "id": "4610dcc3-96cc-48e6-b3e4-7445d811bebf",
@@ -408,7 +408,7 @@
       "type": "n8n-nodes-base.stopAndError",
       "typeVersion": 1,
       "position": [
-        3408,
+        3616,
         -176
       ],
       "id": "a5b461a5-d941-4c88-a934-45e0cc6cf924",
@@ -442,7 +442,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        2848,
+        3056,
         -96
       ],
       "id": "137c55d6-840d-44a2-83ba-213edca771e6",
@@ -465,7 +465,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        1840,
+        2048,
         -80
       ],
       "id": "0be1cb0e-9bcc-48fd-9e17-fb5c81a0da31",
@@ -577,7 +577,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        1984,
+        2192,
         -80
       ],
       "id": "01f2956b-4d4f-428f-8ddd-32a6dd8990a0",
@@ -816,7 +816,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        2192,
+        2400,
         -288
       ],
       "id": "aa6365bc-dc36-4ca2-909d-a290b78e4e3d",
@@ -839,7 +839,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        1664,
+        1872,
         -336
       ],
       "id": "1ad4d010-5330-47bf-b031-49911bc879c0",
@@ -859,7 +859,7 @@
       "type": "n8n-nodes-base.stopAndError",
       "typeVersion": 1,
       "position": [
-        2032,
+        2240,
         -448
       ],
       "id": "44374f16-a19d-41a6-93c7-6b826b79d654",
@@ -893,11 +893,49 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        1808,
+        2016,
         -416
       ],
       "id": "36949f1d-413a-4b34-b586-4694e96de4d7",
       "name": "If empty2"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "update current_list set service_id=6 where company_id=1 and report_id=$1",
+        "options": {
+          "queryReplacement": "={{ $('When Executed by Another Workflow').item.json.import_id }}"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        1648,
+        -240
+      ],
+      "id": "220214a7-9c97-43ea-bfb6-7b5cbe7594c0",
+      "name": "Execute a SQL query",
+      "credentials": {
+        "postgres": {
+          "id": "Hx2VFmUi5WO2K4QX",
+          "name": "Postgres account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "Костыль для первой компании Кибервана - УБРАТЬ!!!!",
+        "height": 256,
+        "width": 272
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1504,
+        -384
+      ],
+      "id": "387f4adc-99ba-4c8a-8f53-99b93c348ade",
+      "name": "Sticky Note"
     }
   ],
   "connections": {
@@ -905,7 +943,7 @@
       "main": [
         [
           {
-            "node": "check for errors",
+            "node": "Execute a SQL query",
             "type": "main",
             "index": 0
           }
@@ -1138,6 +1176,17 @@
           }
         ]
       ]
+    },
+    "Execute a SQL query": {
+      "main": [
+        [
+          {
+            "node": "check for errors",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
@@ -1153,7 +1202,7 @@
       "alaysis_prompt": {
         "data": "Для полученного запроса Instructions\nПроанализируй поисковый запрос пользователя на предмет релевантности услугам компании KIBERone Саратов Октябрьский(company_name). Действуй строго по следующим правилам и согласно заданной последовательности действий:\n1.Если запрос полностью релевантен услугам компании , верни: \"is_correct_phrase\": true.\n2.Если запрос нерелевантен услугам компании 1) верни \"is_correct_phrase\": false 2) определи список потенциально допустимых минус слов. для этого всегда вызывай tool get_non_matching_ngrams. Передавай threshold, только если пользователь задал его; иначе не указывай (используется дефолт 0,88). 3)Из полученного от tool списка выдели минимальный набор минус-слов, обеспечивающих блокировку широкого класса подобных нерелевантных запросов.\nТребования к минус-словам: Используй минимально возможную комбинацию слов. Минус-слова должны однозначно исключать нерелевантные запросы.\nContext (о компании KIBERone)\nKIBERone – международная КиберШкола программирования и цифровых технологий для детей от 6 до 14 лет. Позиционирование бренда: KIBERone — первая международная КиберШкола будущего для IT-поколения 6–14 лет, признана ЮНЕСКО лучшей детской образовательной IT-школой в мире. Бренд является партнером Microsoft, Roblox и Samsung. Бесплатные пробные уроки Основные услуги и программы: Полный перечень модулей: Вводный модуль (основы цифровой грамотности) Основы программирования Scratch Jr Создание игр на Scratch ПиктоМир (алгоритмическое мышление) CodeMonkey (логика и программирование) Устройство компьютера Эффектные презентации (PowerPoint, Desygner) QR-коды Деловые люди (предпринимательство) Google Blockly (визуальное программирование) Roblox Studio (создание игр) Kodu Game Lab (3D-программирование) Разработка мобильных приложений в Thunkable Blender (3D-моделирование) Компьютерная грамотность Minecraft Education Нейросети (основы ИИ) Alice 3D (3D-программирование) Run Marco (основы алгоритмов) Исполнители: Чертёжник и Черепашка GIF-анимация Tinkercad (3D-проектирование) Кибербезопасность Construct 2 (создание 2D-игр) Компас-3D (САПР) Основы HTML (веб-разработка) Голосовой помощник Алиса Создание лендинга (Tilda) Python (создание игр) Чат-бот на Python Web-дизайн (Figma) Web-мастер (HTML+CSS) Motion Design Unreal Engine 4 (игровой движок) JavaScript (игры) C# (создание 2D-игр) C++ Java (создание приложений) Unity 3D (игры) Олимпиадное программирование Облачные технологии, Блокчейн, Data Science PHP+SQL Photoshop Подготовка к олимпиадам Приложения Google Летние программы: Летние IT-интенсивы (краткосрочные программы по направлениям Roblox, Minecraft, Python и др.) Летние КИБЕРканикулы (городской лагерь с IT-обучением и развлекательной программой) Дополнительные механики: Кибервалюта («кибероны») для мотивации учеников, обмен на мерч на КиберМаркете Тьюторы и преподаватели: Опытные специалисты с практическим опытом и педагогической подготовкой Другие важные разделы: Новости (новости школы и сети) СМИ о нас (публикации о школе) Фотогалерея (фото с мероприятий и уроков) Видео (видеоматериалы о школе) Расписание занятий (время занятий для групп и пробных уроков) Локации (адрес школы в Октябрьском районе Саратова, ул. Тараса Шевченко, 8) Оплата (способы оплаты и договор-оферта) Сертификаты (активация промокодов партнеров)\n"
       },
-      "steps_passed": 147,
+      "steps_passed": 129,
       "tokens_used": 0,
       "step": 0,
       "my_prompt": {
@@ -1180,7 +1229,7 @@
       }
     ]
   },
-  "versionId": "ca600edf-2448-4fec-b0af-216acebdbe70",
+  "versionId": "892d3ab4-d540-4bf2-9ac4-24db508d8d29",
   "triggerCount": 0,
   "shared": [
     {
