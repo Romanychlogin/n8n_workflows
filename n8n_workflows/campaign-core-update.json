@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-25T13:33:58.106Z",
-  "updatedAt": "2025-10-22T19:52:04.968Z",
+  "updatedAt": "2025-10-23T12:10:30.856Z",
   "id": "0J5cvuaSz3IhDS99",
   "name": "campaign core update",
   "active": false,
@@ -3072,6 +3072,19 @@
       ],
       "id": "4fd3f795-ad57-4760-9a3e-ac4b3e998f8d",
       "name": "ADV_campaign_analysis_AI_1"
+    },
+    {
+      "parameters": {
+        "content": "Убрать этот промежуточный шаг - лишние глюки"
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        0,
+        1248
+      ],
+      "id": "facf3f2b-5b7e-42e9-bb05-7db9317f75e4",
+      "name": "Sticky Note13"
     }
   ],
   "connections": {
@@ -4380,7 +4393,7 @@
       }
     ]
   },
-  "versionId": "6027fbcf-aceb-4b9d-9c8b-40015731c905",
+  "versionId": "692d1f53-9bd5-4cad-8345-b449aefe8b57",
   "triggerCount": 0,
   "shared": [
     {
