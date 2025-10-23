@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-28T11:31:13.045Z",
-  "updatedAt": "2025-10-23T17:57:50.698Z",
+  "updatedAt": "2025-10-23T18:15:29.122Z",
   "id": "lBAh8kjoXRX0aGUF",
   "name": "ADS headers and texts creation services for updates",
   "active": false,
@@ -825,7 +825,7 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "WITH clean_keywords AS (\n  SELECT f.key_word\n  FROM current_list f\n  WHERE f.company_id = $1\n    AND f.report_id  = $2\n    AND f.resolution = 'to add'\n    AND NOT EXISTS (\n      SELECT 1\n      FROM current_list s\n      WHERE s.company_id = f.company_id\n        AND s.report_id  = f.report_id\n        AND s.key_word   = f.key_word\n        AND s.resolution = 'same key'\n    )\n  GROUP BY f.key_word\n)\nSELECT COUNT(*) AS total\nFROM clean_keywords;",
+        "query": "WITH clean_keywords AS (\n  SELECT f.key_word\n  FROM current_list f\n  WHERE f.company_id = $1\n    AND f.report_id  = $2\n    AND f.resolution = 'to add'\n    AND f.is_adv_processed=false \n    AND NOT EXISTS (\n      SELECT 1\n      FROM current_list s\n      WHERE s.company_id = f.company_id\n        AND s.report_id  = f.report_id\n        AND s.key_word   = f.key_word\n        AND s.resolution = 'same key'\n    )\n  GROUP BY f.key_word\n)\nSELECT COUNT(*) AS total\nFROM clean_keywords;",
         "options": {
           "queryReplacement": "=[{{ $('set variables').item.json.company_id }},{{ $('set variables').item.json.import_id }}]"
         }
@@ -847,202 +847,11 @@
     },
     {
       "parameters": {
-        "operation": "update",
-        "schema": {
-          "__rl": true,
-          "mode": "list",
-          "value": "public"
-        },
-        "table": {
-          "__rl": true,
-          "value": "current_list",
-          "mode": "list",
-          "cachedResultName": "current_list"
-        },
-        "columns": {
-          "mappingMode": "defineBelow",
-          "value": {
-            "is_adv_processed": "={{ true }}",
-            "list_id": "={{$('Loop Over Items2').last().json.list_id}}"
-          },
-          "matchingColumns": [
-            "list_id"
-          ],
-          "schema": [
-            {
-              "id": "list_id",
-              "displayName": "list_id",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "number",
-              "canBeUsedToMatch": true,
-              "removed": false
-            },
-            {
-              "id": "key_word",
-              "displayName": "key_word",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true,
-              "removed": true
-            },
-            {
-              "id": "campaign_id",
-              "displayName": "campaign_id",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "number",
-              "canBeUsedToMatch": true,
-              "removed": true
-            },
-            {
-              "id": "used_keyword",
-              "displayName": "used_keyword",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true,
-              "removed": true
-            },
-            {
-              "id": "group_id",
-              "displayName": "group_id",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "number",
-              "canBeUsedToMatch": true,
-              "removed": true
-            },
-            {
-              "id": "condition_type",
-              "displayName": "condition_type",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true,
-              "removed": true
-            },
-            {
-              "id": "category",
-              "displayName": "category",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true,
-              "removed": true
-            },
-            {
-              "id": "ads_header",
-              "displayName": "ads_header",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true,
-              "removed": true
-            },
-            {
-              "id": "resolution",
-              "displayName": "resolution",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true,
-              "removed": true
-            },
-            {
-              "id": "count_views",
-              "displayName": "count_views",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "number",
-              "canBeUsedToMatch": true,
-              "removed": true
-            },
-            {
-              "id": "count_clics",
-              "displayName": "count_clics",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "number",
-              "canBeUsedToMatch": true,
-              "removed": true
-            },
-            {
-              "id": "count_convetions",
-              "displayName": "count_convetions",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "number",
-              "canBeUsedToMatch": true,
-              "removed": true
-            },
-            {
-              "id": "ai_response_tokens",
-              "displayName": "ai_response_tokens",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "number",
-              "canBeUsedToMatch": true,
-              "removed": true
-            },
-            {
-              "id": "company_id",
-              "displayName": "company_id",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "number",
-              "canBeUsedToMatch": true,
-              "removed": true
-            },
-            {
-              "id": "report_id",
-              "displayName": "report_id",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "number",
-              "canBeUsedToMatch": true,
-              "removed": true
-            },
-            {
-              "id": "service_id",
-              "displayName": "service_id",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "number",
-              "canBeUsedToMatch": true,
-              "removed": true
-            },
-            {
-              "id": "is_adv_processed",
-              "displayName": "is_adv_processed",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "boolean",
-              "canBeUsedToMatch": true
-            }
-          ],
-          "attemptToConvertTypes": false,
-          "convertFieldsToString": false
-        },
-        "options": {}
+        "operation": "executeQuery",
+        "query": "update current_list set is_adv_processed=true where company_id=$1 and report_id=$2 AND (key_word=$3 or list_id=$4)",
+        "options": {
+          "queryReplacement": "={{ $json.company_id }},{{ $json.service_id }},{{ $json.key_word }},{{ $('reset first_item1').item.json.list_id }}"
+        }
       },
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
@@ -1287,7 +1096,7 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "WITH clean AS (\n  SELECT *\n  FROM current_list f\n  WHERE f.company_id = $1\n    AND f.report_id  = $2\n    AND f.service_id  = $3\n    AND f.resolution = 'to add'\n    AND NOT EXISTS (\n      SELECT 1\n      FROM current_list s\n      WHERE s.company_id = f.company_id\n        AND s.report_id  = f.report_id\n        AND s.key_word   = f.key_word\n        AND s.resolution = 'same key'\n    )\n),\nranked AS (\n  SELECT\n    c.*,\n    ROW_NUMBER() OVER (\n      PARTITION BY c.key_word\n      ORDER BY c.list_id   -- при необходимости поменяй на created_at\n    ) AS rn\n  FROM clean c\n)\nSELECT *\nFROM ranked\nWHERE rn = 1;",
+        "query": "WITH clean AS (\n  SELECT *\n  FROM current_list f\n  WHERE f.company_id = $1\n    AND f.report_id  = $2\n    AND f.service_id  = $3\n    AND f.resolution = 'to add'\n    AND f.is_adv_processed=false\n    AND NOT EXISTS (\n      SELECT 1\n      FROM current_list s\n      WHERE s.company_id = f.company_id\n        AND s.report_id  = f.report_id\n        AND s.key_word   = f.key_word\n        AND s.resolution = 'same key'\n    )\n),\nranked AS (\n  SELECT\n    c.*,\n    ROW_NUMBER() OVER (\n      PARTITION BY c.key_word\n      ORDER BY c.list_id   -- при необходимости поменяй на created_at\n    ) AS rn\n  FROM clean c\n)\nSELECT *\nFROM ranked\nWHERE rn = 1;",
         "options": {
           "queryReplacement": "=[{{ $('set variables').item.json.company_id }},{{ $('set variables').item.json.import_id }},{{ $json.service_id }}]"
         }
@@ -2031,8 +1840,8 @@
       "my_prompt_url": {
         "data": "Есть следующая фразы, заданные пользователями при поиске, подобранные к ней заголовки и тексты рекламных объявлений \"{{key_word_header_ad_text}}\". \nПодбери к каждому набору ссылку на страницу сайта, максимально соответствующую запросу пользователя и тексту. Ответ должен содержать только ссылку. Учитывай то что в исходных фразах удалены все дополнительные символы, такие как #,- и пр. \nВ ответе необходимо вернуть только запрошенную информацию, запрещено добавлять уточнения типа заголовок, ссылка, текст и любые рассуждения. \nВ ответе запрещается использовать ссылки отсутствующие в описании компании или изменять ссылки приведенные в описании.  \nДля каждого полученного ID верни соответствующую ссылку. \nОписание компании:{{company_description}}\n"
       },
-      "steps_passed": 371,
-      "tokens_used": 11272106,
+      "steps_passed": 1,
+      "tokens_used": 31998,
       "company_description": "KIBERone Саратов Октябрьский IT школа KIBERone KIBERone – международная КиберШкола программирования и цифровых технологий для детей от 6 до 14 лет.  Позиционирование бренда: KIBERone — первая международная КиберШкола будущего для IT-поколения 6–14 лет, признана ЮНЕСКО лучшей детской образовательной IT-школой в мире. Бренд является партнером Microsoft, Roblox и Samsung. Бесплатные пробные уроки  Основные услуги и программы:  Полный перечень модулей:  Вводный модуль (основы цифровой грамотности)  Основы программирования Scratch Jr  Создание игр на Scratch  ПиктоМир (алгоритмическое мышление)  CodeMonkey (логика и программирование)  Устройство компьютера  Эффектные презентации (PowerPoint, Desygner)  QR-коды  Деловые люди (предпринимательство)  Google Blockly (визуальное программирование)  Roblox Studio (создание игр)  Kodu Game Lab (3D-программирование)  Разработка мобильных приложений в Thunkable  Blender (3D-моделирование)  Компьютерная грамотность  Minecraft Education  Нейросети (основы ИИ)  Alice 3D (3D-программирование)  Run Marco (основы алгоритмов)  Исполнители: Чертёжник и Черепашка  GIF-анимация  Tinkercad (3D-проектирование)  Кибербезопасность  Construct 2 (создание 2D-игр)  Компас-3D (САПР)  Основы HTML (веб-разработка)  Голосовой помощник Алиса  Создание лендинга (Tilda)  Python (создание игр)  Чат-бот на Python  Web-дизайн (Figma)  Web-мастер (HTML+CSS)  Motion Design  Unreal Engine 4 (игровой движок)  JavaScript (игры)  C# (создание 2D-игр)  C++  Java (создание приложений)  Unity 3D (игры)  Олимпиадное программирование  Облачные технологии, Блокчейн, Data Science  PHP+SQL  Photoshop  Подготовка к олимпиадам  Приложения Google  Летние программы:  Летние IT-интенсивы (краткосрочные программы по направлениям Roblox, Minecraft, Python и др.)  Летние КИБЕРканикулы (городской лагерь с IT-обучением и развлекательной программой)  Дополнительные механики:  Кибервалюта («кибероны») для мотивации учеников, обмен на мерч на КиберМаркете  Тьюторы и преподаватели:  Опытные специалисты с практическим опытом и педагогической подготовкой  Другие важные разделы:  Новости (новости школы и сети)  СМИ о нас (публикации о школе)  Фотогалерея (фото с мероприятий и уроков)  Видео (видеоматериалы о школе)  Расписание занятий (время занятий для групп и пробных уроков)  Локации (адрес школы в Октябрьском районе Саратова, ул. Тараса Шевченко, 8)  Оплата (способы оплаты и договор-оферта)  Сертификаты (активация промокодов партнеров)  Контакты (телефон +7 963 112-49-11, email saratov@kiber-one.com",
       "company_description_with_url": "KIBERone Саратов Октябрьский IT школа KIBERone KIBERone – международная КиберШкола программирования и цифровых технологий для детей от 6 до 14 лет.  Позиционирование бренда: KIBERone — первая международная КиберШкола будущего для IT-поколения 6–14 лет, признана ЮНЕСКО лучшей детской образовательной IT-школой в мире. Бренд является партнером Microsoft, Roblox и Samsung. Бесплатные пробные уроки  Основные услуги и программы:  Полный перечень модулей:  Вводный модуль (основы цифровой грамотности)  Основы программирования Scratch Jr  Создание игр на Scratch  ПиктоМир (алгоритмическое мышление)  CodeMonkey (логика и программирование)  Устройство компьютера  Эффектные презентации (PowerPoint, Desygner)  QR-коды  Деловые люди (предпринимательство)  Google Blockly (визуальное программирование)  Roblox Studio (создание игр)  Kodu Game Lab (3D-программирование)  Разработка мобильных приложений в Thunkable  Blender (3D-моделирование)  Компьютерная грамотность  Minecraft Education  Нейросети (основы ИИ)  Alice 3D (3D-программирование)  Run Marco (основы алгоритмов)  Исполнители: Чертёжник и Черепашка  GIF-анимация  Tinkercad (3D-проектирование)  Кибербезопасность  Construct 2 (создание 2D-игр)  Компас-3D (САПР)  Основы HTML (веб-разработка)  Голосовой помощник Алиса  Создание лендинга (Tilda)  Python (создание игр)  Чат-бот на Python  Web-дизайн (Figma)  Web-мастер (HTML+CSS)  Motion Design  Unreal Engine 4 (игровой движок)  JavaScript (игры)  C# (создание 2D-игр)  C++  Java (создание приложений)  Unity 3D (игры)  Олимпиадное программирование  Облачные технологии, Блокчейн, Data Science  PHP+SQL  Photoshop  Подготовка к олимпиадам  Приложения Google  Летние программы:  Летние IT-интенсивы (краткосрочные программы по направлениям Roblox, Minecraft, Python и др.)  Летние КИБЕРканикулы (городской лагерь с IT-обучением и развлекательной программой)  Дополнительные механики:  Кибервалюта («кибероны») для мотивации учеников, обмен на мерч на КиберМаркете  Тьюторы и преподаватели:  Опытные специалисты с практическим опытом и педагогической подготовкой  Другие важные разделы:  Новости (новости школы и сети)  СМИ о нас (публикации о школе)  Фотогалерея (фото с мероприятий и уроков)  Видео (видеоматериалы о школе)  Расписание занятий (время занятий для групп и пробных уроков)  Локации (адрес школы в Октябрьском районе Саратова, ул. Тараса Шевченко, 8)  Оплата (способы оплаты и договор-оферта)  Сертификаты (активация промокодов партнеров)  Контакты (телефон +7 963 112-49-11, email saratov@kiber-one.com сервис доступен по адресу: https://saratov-okt.kiber-one.com/"
     }
@@ -2053,7 +1862,7 @@
       }
     ]
   },
-  "versionId": "9c8b5345-d098-46c3-8efa-a309d0ba841b",
+  "versionId": "3efacc86-da08-409e-8758-f87b4907bd9c",
   "triggerCount": 0,
   "shared": [
     {
