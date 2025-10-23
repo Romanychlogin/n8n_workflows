@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-25T13:33:58.106Z",
-  "updatedAt": "2025-10-23T13:50:58.147Z",
+  "updatedAt": "2025-10-23T18:47:46.407Z",
   "id": "0J5cvuaSz3IhDS99",
   "name": "campaign core update",
   "active": false,
@@ -1888,7 +1888,7 @@
             {
               "id": "242e22ab-d73d-4b1f-b148-3cd44943fe6f",
               "name": "import_id",
-              "value": "={{ $('company_record_id').item.json.import_id }}",
+              "value": "={{ $('company_record_id').item.json.report_id }}",
               "type": "string"
             }
           ]
@@ -4025,7 +4025,7 @@
       }
     ]
   },
-  "versionId": "61b4c21f-569b-4e7d-a924-88c0f104399f",
+  "versionId": "d86276c7-9467-48a0-acb2-2b1be857bb50",
   "triggerCount": 0,
   "shared": [
     {
