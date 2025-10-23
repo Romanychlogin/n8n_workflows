@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-10-20T11:13:50.516Z",
-  "updatedAt": "2025-10-23T12:07:13.226Z",
+  "updatedAt": "2025-10-23T12:39:15.666Z",
   "id": "xNiuEqQOSNCSLvW5",
   "name": "ADV_campaign_analysis_AI",
   "active": false,
@@ -654,7 +654,7 @@
     },
     {
       "parameters": {
-        "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nconst workflowData = $getWorkflowStaticData('global');\nworkflowData.steps_passed = workflowData.steps_passed+1; // update steps counter\nfor (const item of $input.all()) {\n  item.json.steps_passed = workflowData.steps_passed;\n}\n\n\nreturn $input.all();"
+        "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nconst workflowData = $getWorkflowStaticData('global');\nworkflowData.steps_passed++; // update steps counter\nfor (const item of $input.all()) {\n  item.json.steps_passed = workflowData.steps_passed;\n}\n\n\nreturn $input.all();"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -1141,7 +1141,7 @@
     },
     {
       "parameters": {
-        "jsCode": "const workflowData = $getWorkflowStaticData('global');\nworkflowData.ai_calls = 0;\nworkflowData.embedding_calls = toNumber($('Loop Over Items').last().json.ItemsbyId[$('Loop Over Items2').last().json.phrase_id].embedding_calls, 0);\nreturn $input.all();\n"
+        "jsCode": "const workflowData = $getWorkflowStaticData('global');\nworkflowData.ai_calls = 0;\nfunction toNumber(x, def = 0) {\n  const n = Number(x);\n  return Number.isFinite(n) ? n : def;\n}\nworkflowData.embedding_calls = toNumber($('Loop Over Items').last().json.ItemsbyId[$('Loop Over Items2').last().json.phrase_id].embedding_calls, 0);\nreturn $input.all();\n"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -1154,7 +1154,7 @@
     },
     {
       "parameters": {
-        "jsCode": "const workflowData = $getWorkflowStaticData('global');\nworkflowData.ai_calls = toNumber(workflowData.ai_calls, 0) +1;\n\nlet step_tokens_used = $input.first().json.usage.total_tokens ?? 0;\n\n //set used tokens here!!!!\nworkflowData.tokens_used = workflowData.tokens_used+toNumber(workflowData.step_tokens_used, 0);\nfor (const item of $input.all()) {\n  item.json.tokens_used = workflowData.tokens_used;\n}\n\n\n\nreturn $input.all();\n"
+        "jsCode": "const workflowData = $getWorkflowStaticData('global');\n\nfunction toNumber(x, def = 0) {\n  const n = Number(x);\n  return Number.isFinite(n) ? n : def;\n}\n\nworkflowData.ai_calls = toNumber(workflowData.ai_calls, 0) +1;\n\nlet step_tokens_used = toNumber($input.first().json.usage.total_tokens,0);\n\n //set used tokens here!!!!\nworkflowData.tokens_used += toNumber(workflowData.step_tokens_used, 0);\nfor (const item of $input.all()) {\n  item.json.tokens_used = workflowData.tokens_used;\n}\n\n\n\nreturn $input.all();\n"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -1167,7 +1167,7 @@
     },
     {
       "parameters": {
-        "jsCode": "const workflowData = $getWorkflowStaticData('global');\nworkflowData.embedding_calls = workflowData.embedding_calls + toNumber($input.first().json.meta.candidates_total,0);\n$input.last().json.embedding_calls=workflowData.embedding_calls;\nreturn $input.all();\n"
+        "jsCode": "const workflowData = $getWorkflowStaticData('global');\nfunction toNumber(x, def = 0) {\n  const n = Number(x);\n  return Number.isFinite(n) ? n : def;\n}\n\nworkflowData.embedding_calls = toNumber(workflowData.embedding_calls,0) + toNumber($input.first().json.meta.candidates_total,0);\n$input.last().json.embedding_calls=workflowData.embedding_calls;\nreturn $input.all();\n"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -1180,7 +1180,7 @@
     },
     {
       "parameters": {
-        "jsCode": "const workflowData = $getWorkflowStaticData('global');\nworkflowData.embedding_calls = toNumber(workflowData.embedding_calls,0) + 1;\n$input.last().json.embedding_calls=workflowData.embedding_calls;\nreturn $input.all();\n"
+        "jsCode": "const workflowData = $getWorkflowStaticData('global');\nworkflowData.embedding_calls++;\n$input.last().json.embedding_calls=workflowData.embedding_calls;\nreturn $input.all();\n"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -2050,7 +2050,7 @@
       {
         "json": {
           "id": "xNiuEqQOSNCSLvW5",
-          "root_execution_id": 138687,
+          "root_execution_id": 138989,
           "company_id": 1,
           "threshhold": "0.79",
           "import_id": 6
@@ -2058,7 +2058,7 @@
       }
     ]
   },
-  "versionId": "51799d13-33b6-4330-be6f-c8323c921d7b",
+  "versionId": "d4ee31a4-1a9b-4b8c-aa64-6580a7f26348",
   "triggerCount": 0,
   "shared": [
     {
