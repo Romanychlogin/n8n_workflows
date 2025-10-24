@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-30T17:56:19.098Z",
-  "updatedAt": "2025-10-24T07:24:47.320Z",
+  "updatedAt": "2025-10-24T07:39:25.165Z",
   "id": "UUlsZU9GOCmdvDHg",
   "name": "extract data for updates with header",
   "active": false,
@@ -286,7 +286,7 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "SELECT ad.*, cs1.service_bid, regexp_replace(\n    cs1.service_name,\n    '[^a-zA-Zа-яА-ЯёЁ ]',\n    '',\n    'g'\n) AS cleaned_service_name,cs1.count_clics, ac.campaign_yandex_id\nFROM current_ads_list AS ad\nLEFT JOIN LATERAL (\n    SELECT cs.service_bid,cs.service_name, COALESCE(kw.count_clics,0) as count_clics\n    FROM current_list kw\n    JOIN company_services cs\n      ON cs.service_id = kw.service_id\n     AND cs.company_id = ad.company_id       -- если есть привязка к компании — рекомендую\n    WHERE kw.key_word = ad.key_word  \n    ORDER BY cs.service_bid DESC NULLS LAST  -- критерий выбора ОДНОЙ записи\n    LIMIT 1\n) AS cs1 ON TRUE\nJOIN adv_campaigns ac on ad.campaign_id=ac.campaign_id\nWHERE ad.company_id = $1 AND ad.need_check=false order by service_name,count_clics desc;",
+        "query": "SELECT ad.*, cs1.service_bid, regexp_replace(\n    cs1.service_name,\n    '[^a-zA-Zа-яА-ЯёЁ ]',\n    '',\n    'g'\n) AS cleaned_service_name,cs1.count_clics, ac.campaign_yandex_id\nFROM current_ads_list AS ad\nLEFT JOIN LATERAL (\n    SELECT cs.service_bid,cs.service_name, COALESCE(kw.count_clics,0) as count_clics\n    FROM current_list kw\n    JOIN company_services cs\n      ON cs.service_id = kw.service_id\n     AND cs.company_id = ad.company_id       -- если есть привязка к компании — рекомендую\n    WHERE kw.list_id = ad.list_id  \n    ORDER BY cs.service_bid DESC NULLS LAST  -- критерий выбора ОДНОЙ записи\n    LIMIT 1\n) AS cs1 ON TRUE\nJOIN adv_campaigns ac on ad.campaign_id=ac.campaign_id\nWHERE ad.company_id = $1 AND ad.need_check=false order by service_name,count_clics desc;",
         "options": {
           "queryReplacement": "={{ $json.company_id }}"
         }
@@ -1189,7 +1189,7 @@
       }
     ]
   },
-  "versionId": "5d60e8b0-68d0-4b25-8ad2-e14192c37bac",
+  "versionId": "ab39ca11-b75b-40f9-8ea2-5f8a8954b3d6",
   "triggerCount": 0,
   "shared": [
     {
