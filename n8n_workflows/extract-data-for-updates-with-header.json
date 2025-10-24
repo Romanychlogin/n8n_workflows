@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-30T17:56:19.098Z",
-  "updatedAt": "2025-10-16T07:42:29.455Z",
+  "updatedAt": "2025-10-24T07:24:47.320Z",
   "id": "UUlsZU9GOCmdvDHg",
   "name": "extract data for updates with header",
   "active": false,
@@ -26,7 +26,7 @@
     {
       "parameters": {
         "authentication": "oAuth2",
-        "path": "=/output_id{{ $('select company data').last().json.company_id }}_camp_{{ $('select ads data').last().json.campaign_yandex_id }}_{{ $('select company data').last().json.start_date }}_{{ $('select company data').last().json.end_date }}.xlsx",
+        "path": "=/output_id{{ $('select company data').last().json.company_id }}_camp_{{ $('select ads data').last().json.campaign_id }}_{{ $('select company data').last().json.start_date }}_{{ $('select company data').last().json.end_date }}.xlsx",
         "binaryData": true
       },
       "type": "n8n-nodes-base.dropbox",
@@ -542,7 +542,7 @@
     },
     {
       "parameters": {
-        "command": "=node xlsx_apply_template.js \\\n  template.xlsx \\\n  target.xlsx \\\n  output.xlsx \\\n  12 1 1 \\\n  \"{{ $('select ads data').last().json.campaign_yandex_id }}\" \\\n  \"{{$('When Executed by Another Workflow').first().json.minus_words}}\" \\\n  true"
+        "command": "=node xlsx_apply_template.js \\\n  template.xlsx \\\n  target.xlsx \\\n  output.xlsx \\\n  12 1 1 \\\n  \"{{ $('select ads data').last().json.campaign_id }}\" \\\n  \"{{$('When Executed by Another Workflow').first().json.minus_words}}\" \\\n  true"
       },
       "type": "n8n-nodes-base.executeCommand",
       "typeVersion": 1,
@@ -1189,7 +1189,7 @@
       }
     ]
   },
-  "versionId": "f7d2f95a-48ef-412b-86e0-1fecb4d08cf4",
+  "versionId": "5d60e8b0-68d0-4b25-8ad2-e14192c37bac",
   "triggerCount": 0,
   "shared": [
     {
