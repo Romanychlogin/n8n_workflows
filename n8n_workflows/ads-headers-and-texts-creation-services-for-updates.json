@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-28T11:31:13.045Z",
-  "updatedAt": "2025-10-24T06:46:54.296Z",
+  "updatedAt": "2025-10-24T07:10:36.995Z",
   "id": "lBAh8kjoXRX0aGUF",
   "name": "ADS headers and texts creation services for updates",
   "active": false,
@@ -447,7 +447,8 @@
             "group_name": "={{ $('Loop Over Items2').last().json.ad_header }}",
             "service_id": "={{ $('Loop Over Items').last().json.ItemsbyId[$('Loop Over Items2').last().json.list_id].service_id }}",
             "report_id": "={{ $('Loop Over Items').last().json.ItemsbyId[$('Loop Over Items2').last().json.list_id].report_id }}",
-            "key_word": "={{ $('Loop Over Items2').last().json.key_word }}"
+            "key_word": "={{ $('Loop Over Items2').last().json.key_word }}",
+            "campaign_id": "={{ $('Loop Over Items').last().json.ItemsbyId[$('Loop Over Items2').last().json.list_id].campaign_id }}"
           },
           "matchingColumns": [],
           "schema": [
@@ -541,6 +542,46 @@
             {
               "id": "report_id",
               "displayName": "report_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "need_check",
+              "displayName": "need_check",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "boolean",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "resolution",
+              "displayName": "resolution",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "update_required",
+              "displayName": "update_required",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "boolean",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "campaign_id",
+              "displayName": "campaign_id",
               "required": false,
               "defaultMatch": false,
               "display": true,
@@ -1045,7 +1086,7 @@
     },
     {
       "parameters": {
-        "jsCode": "// Сколько входящих элементов агрегировать в одном выходящем (в пределах одного service_name)\nconst BATCH_SIZE = 100;\n\nfunction toIdString(v) {\n  if (typeof v === 'bigint') return v.toString();\n  if (typeof v === 'number') return Number.isFinite(v) ? Math.trunc(v).toString() : '';\n  if (typeof v === 'string') return v;\n  return v != null && v.toString ? v.toString() : '';\n}\n\nfunction toStr(v) {\n  return v == null ? '' : String(v);\n}\n\nconst inputItems = $input.all();\nconst out = [];\n\nlet i = 0;\nwhile (i < inputItems.length) {\n  // Старт новой группы по service_name\n  const first = inputItems[i]?.json ?? {};\n  const groupService = toStr(first.service_name);\n\n  // Собираем все подряд идущие элементы с тем же service_name\n  const group = [];\n  while (i < inputItems.length) {\n    const cur = inputItems[i]?.json ?? {};\n    const raw =\n    String(cur.key_word).normalize('NFKC');\n     // 2) Удаляем все, кроме рус/лат букв, цифр и пробелов\n  //    (используем Unicode-свойства для латиницы с диакритикой)\n  //    Если у вас старая версия Node и это не работает — см. запасной вариант ниже.\n  const cleaned = raw\n    .replace(/[^A-Za-zА-Яа-яЁё0-9\\s]+/g, ' ')\n     .replace(/\\s+/g, ' ')\n     .trim();\n    // 3) Берём первые 7 слов\n  const sevenGram = cleaned.split(' ').slice(0, 7).join(' ');\n    cur.key_word=sevenGram;\n    if (toStr(cur.service_name) !== groupService) break;\n    group.push(cur);\n    i++;\n  }\n\n  // Метаданные сервиса (одинаковые в группе)\n  const svcCompany       = toStr(first.company_name);\n  const svcName          = groupService;\n  const svcDescription   = toStr(first.service_description);\n\n  // Режем группу на пачки по BATCH_SIZE\n  for (let start = 0; start < group.length; start += BATCH_SIZE) {\n    const chunk = group.slice(start, start + BATCH_SIZE);\n\n  \n\n \n\n  \n  \n  \n\n    \n    const items = chunk.map(j => ({\n      id: toIdString(j.list_id),           // берем content_id => строка\n      phrase: toStr(j.key_word)\n    }));\n    const items_ext = chunk.map(j => ({\n      id: toIdString(j.list_id),           // берем content_id => строка\n      phrase: toStr(j.key_word),\n      report_id: toStr(j.report_id),\n      service_id:toIdString(j.service_id),\n      company_id:toIdString(j.company_id)\n    }));\n    const ItemsbyId = Object.fromEntries(\n    items_ext.map(o => [o.id, o]) \n    );\n    out.push({\n      json: {\n        \n        items,\n        ItemsbyId \n      }\n    });\n  }\n}\n\nreturn out;\n\n\n\n\n"
+        "jsCode": "// Сколько входящих элементов агрегировать в одном выходящем (в пределах одного service_name)\nconst BATCH_SIZE = 100;\n\nfunction toIdString(v) {\n  if (typeof v === 'bigint') return v.toString();\n  if (typeof v === 'number') return Number.isFinite(v) ? Math.trunc(v).toString() : '';\n  if (typeof v === 'string') return v;\n  return v != null && v.toString ? v.toString() : '';\n}\n\nfunction toStr(v) {\n  return v == null ? '' : String(v);\n}\n\nconst inputItems = $input.all();\nconst out = [];\n\nlet i = 0;\nwhile (i < inputItems.length) {\n  // Старт новой группы по service_name\n  const first = inputItems[i]?.json ?? {};\n  const groupService = toStr(first.service_name);\n\n  // Собираем все подряд идущие элементы с тем же service_name\n  const group = [];\n  while (i < inputItems.length) {\n    const cur = inputItems[i]?.json ?? {};\n    const raw =\n    String(cur.key_word).normalize('NFKC');\n     // 2) Удаляем все, кроме рус/лат букв, цифр и пробелов\n  //    (используем Unicode-свойства для латиницы с диакритикой)\n  //    Если у вас старая версия Node и это не работает — см. запасной вариант ниже.\n  const cleaned = raw\n    .replace(/[^A-Za-zА-Яа-яЁё0-9\\s]+/g, ' ')\n     .replace(/\\s+/g, ' ')\n     .trim();\n    // 3) Берём первые 7 слов\n  const sevenGram = cleaned.split(' ').slice(0, 7).join(' ');\n    cur.key_word=sevenGram;\n    if (toStr(cur.service_name) !== groupService) break;\n    group.push(cur);\n    i++;\n  }\n\n  // Метаданные сервиса (одинаковые в группе)\n  const svcCompany       = toStr(first.company_name);\n  const svcName          = groupService;\n  const svcDescription   = toStr(first.service_description);\n\n  // Режем группу на пачки по BATCH_SIZE\n  for (let start = 0; start < group.length; start += BATCH_SIZE) {\n    const chunk = group.slice(start, start + BATCH_SIZE);\n\n  \n\n \n\n  \n  \n  \n\n    \n    const items = chunk.map(j => ({\n      id: toIdString(j.list_id),           // берем content_id => строка\n      phrase: toStr(j.key_word)\n    }));\n    const items_ext = chunk.map(j => ({\n      id: toIdString(j.list_id),           // берем content_id => строка\n      phrase: toStr(j.key_word),\n      report_id: toStr(j.report_id),\n      service_id:toIdString(j.service_id),\n      company_id:toIdString(j.company_id),\n      campaign_id:toIdString(j.campaign_id)\n    }));\n    const ItemsbyId = Object.fromEntries(\n    items_ext.map(o => [o.id, o]) \n    );\n    out.push({\n      json: {\n        \n        items,\n        ItemsbyId \n      }\n    });\n  }\n}\n\nreturn out;\n\n\n\n\n"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -1257,7 +1298,7 @@
     },
     {
       "parameters": {
-        "jsCode": "const workflowData = $getWorkflowStaticData('global');\n\nfunction toNumber(x, def = 0) {\n  const n = Number(x);\n  return Number.isFinite(n) ? n : def;\n}\n\nworkflowData.ai_calls = toNumber(workflowData.ai_calls, 0) +1;\n\nlet step_tokens_used = toNumber($('HTTP Request').first().json.usage.total_tokens+$('HTTP Request1').first().json.usage.total_tokens+$('HTTP Request2').first().json.usage.total_tokens,0);\n\n //set used tokens here!!!!\nworkflowData.tokens_used += toNumber(workflowData.step_tokens_used, 0);\nfor (const item of $input.all()) {\n  item.json.tokens_used = workflowData.tokens_used;\n}\n\n\n\nreturn $input.all();\n"
+        "jsCode": "const workflowData = $getWorkflowStaticData('global');\n\nfunction toNumber(x, def = 0) {\n  const n = Number(x);\n  return Number.isFinite(n) ? n : def;\n}\n\nworkflowData.ai_calls = toNumber(workflowData.ai_calls, 0) +1;\n\nlet step_tokens_used = toNumber($('HTTP Request').first().json.usage.total_tokens+$('HTTP Request1').first().json.usage.total_tokens+$('HTTP Request2').first().json.usage.total_tokens,0);\n\n //set used tokens here!!!!\nworkflowData.tokens_used += step_tokens_used;\nfor (const item of $input.all()) {\n  item.json.tokens_used = workflowData.tokens_used;\n}\n\n\n\nreturn $input.all();\n"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -1974,7 +2015,7 @@
       }
     ]
   },
-  "versionId": "ce98d354-6c7f-40b4-910c-cd4143928af8",
+  "versionId": "208cfd97-3a1c-4bb0-9f74-c071a5e5c2c7",
   "triggerCount": 0,
   "shared": [
     {
