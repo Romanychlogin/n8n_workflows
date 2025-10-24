@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-10-16T07:25:00.123Z",
-  "updatedAt": "2025-10-21T17:58:14.909Z",
+  "updatedAt": "2025-10-24T07:40:37.315Z",
   "id": "sLocyhmCeTBxhA88",
   "name": "campaign core update finalization",
   "active": false,
@@ -105,7 +105,7 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "BEGIN;\n\nINSERT INTO public.ads_list (\n  group_name, key_word, ad_header, ad_text, group_id,\n  ad_url, company_id, service_id, report_id, update_required, campaign_id\n)\nSELECT\n  group_name, key_word, ad_header, ad_text, group_id,\n  ad_url, company_id, service_id, report_id, false, campaign_id\nFROM public.current_ads_list\nWHERE company_id = $1 AND report_id = $2;\n\nDELETE FROM public.current_ads_list\nWHERE company_id = $1 AND report_id = $2;\n\nCOMMIT;",
+        "query": "BEGIN;\n\nINSERT INTO public.ads_list (\n  group_name, key_word, ad_header, ad_text, group_id,\n  ad_url, company_id, service_id, report_id, update_required, campaign_id,list_id\n)\nSELECT\n  group_name, key_word, ad_header, ad_text, group_id,\n  ad_url, company_id, service_id, report_id, false, campaign_id,list_id\nFROM public.current_ads_list\nWHERE company_id = $1 AND report_id = $2;\n\nDELETE FROM public.current_ads_list\nWHERE company_id = $1 AND report_id = $2;\n\nCOMMIT;",
         "options": {
           "queryReplacement": "={{ $('When Executed by Another Workflow').item.json.company_id }},{{ $('When Executed by Another Workflow').item.json.import_id }}"
         }
@@ -217,7 +217,7 @@
       }
     ]
   },
-  "versionId": "9e840648-5209-4a76-90b0-1cb474eb7645",
+  "versionId": "4fba2a88-2826-4269-afe1-d33a84fa76e1",
   "triggerCount": 0,
   "shared": [
     {
