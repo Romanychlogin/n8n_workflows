@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-30T12:45:50.445Z",
-  "updatedAt": "2025-10-24T09:01:55.167Z",
+  "updatedAt": "2025-10-24T09:13:44.895Z",
   "id": "c0NgmBzgLxUE7Wno",
   "name": "ADV_campaign_get_service",
   "active": false,
@@ -871,7 +871,7 @@
           "options": {
             "caseSensitive": true,
             "leftValue": "",
-            "typeValidation": "strict",
+            "typeValidation": "loose",
             "version": 2
           },
           "conditions": [
@@ -887,6 +887,7 @@
           ],
           "combinator": "and"
         },
+        "looseTypeValidation": true,
         "options": {}
       },
       "type": "n8n-nodes-base.if",
@@ -1228,7 +1229,7 @@
       }
     ]
   },
-  "versionId": "5d1fbad1-f904-4e33-a864-a98492b792b2",
+  "versionId": "330f452e-d977-4f75-af87-2463d880d257",
   "triggerCount": 0,
   "shared": [
     {
