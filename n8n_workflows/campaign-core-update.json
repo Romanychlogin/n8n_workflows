@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-25T13:33:58.106Z",
-  "updatedAt": "2025-10-24T07:19:09.877Z",
+  "updatedAt": "2025-10-24T07:42:09.449Z",
   "id": "0J5cvuaSz3IhDS99",
   "name": "campaign core update",
   "active": false,
@@ -1098,7 +1098,7 @@
         "operation": "executeQuery",
         "query": "WITH cutoff AS (\n  SELECT MAX(st2.started) AS last_finished_started\n  FROM public.business_processes_states st2\n  JOIN public.business_processes bp2\n    ON bp2.business_process_id = st2.business_process_id\n  WHERE bp2.n8n_process_name = $1\n    AND st2.company_id = $3\n    AND st2.finished IS NOT NULL\n),\nmain AS (\n  SELECT st.*\n  FROM public.business_processes_states st\n  JOIN public.business_processes bp\n    ON bp.business_process_id = st.business_process_id\n  CROSS JOIN cutoff c\n  WHERE bp.n8n_process_name = $1\n    AND st.company_id = $3 \n    AND st.finished IS NULL\n    AND (c.last_finished_started IS NULL OR st.started > c.last_finished_started)\n)\nSELECT\n  s.business_process_state_id,\n  s.business_process_id,\n  s.started,\n  s.finished,\n  s.error_message,\n  s.n8n_workflow_execution_id,\n  s.n8n_workflow_root_execution_id\nFROM main m\nJOIN public.business_processes_states s\n  ON s.n8n_workflow_root_execution_id = m.n8n_workflow_execution_id\nJOIN public.business_processes p\n  ON p.business_process_id = s.business_process_id\nWHERE p.n8n_process_name = $2\n  AND s.company_id = $3\nORDER BY s.started desc;",
         "options": {
-          "queryReplacement": "=[{{$workflow.name}},{{$json.workflow_name}},{{ $('company_record_id').item.json.company_id }}]"
+          "queryReplacement": "=[{{$workflow.name}},{{$json.workflow_name}},{{ $('company_record_id').last().json.company_id }}]"
         }
       },
       "type": "n8n-nodes-base.postgres",
@@ -2136,7 +2136,7 @@
         "operation": "executeQuery",
         "query": "WITH cutoff AS (\n  SELECT MAX(st2.started) AS last_finished_started\n  FROM public.business_processes_states st2\n  JOIN public.business_processes bp2\n    ON bp2.business_process_id = st2.business_process_id\n  WHERE bp2.n8n_process_name = $1\n    AND st2.company_id = $3\n    AND st2.finished IS NOT NULL\n),\nmain AS (\n  SELECT st.*\n  FROM public.business_processes_states st\n  JOIN public.business_processes bp\n    ON bp.business_process_id = st.business_process_id\n  CROSS JOIN cutoff c\n  WHERE bp.n8n_process_name = $1\n    AND st.company_id = $3 \n    AND st.finished IS NULL\n    AND (c.last_finished_started IS NULL OR st.started > c.last_finished_started)\n)\nSELECT\n  s.business_process_state_id,\n  s.business_process_id,\n  s.started,\n  s.finished,\n  s.error_message,\n  s.n8n_workflow_execution_id,\n  s.n8n_workflow_root_execution_id\nFROM main m\nJOIN public.business_processes_states s\n  ON s.n8n_workflow_root_execution_id = m.n8n_workflow_execution_id\nJOIN public.business_processes p\n  ON p.business_process_id = s.business_process_id\nWHERE p.n8n_process_name = $2\n  AND s.company_id = $3\nORDER BY s.started desc;",
         "options": {
-          "queryReplacement": "=[{{$workflow.name}},{{$json.workflow_name}},{{ $('company_record_id').item.json.company_id }}]"
+          "queryReplacement": "=[{{$workflow.name}},{{$json.workflow_name}},{{ $('company_record_id').last().json.company_id }}]"
         }
       },
       "type": "n8n-nodes-base.postgres",
@@ -2743,7 +2743,7 @@
         "operation": "executeQuery",
         "query": "WITH cutoff AS (\n  SELECT MAX(st2.started) AS last_finished_started\n  FROM public.business_processes_states st2\n  JOIN public.business_processes bp2\n    ON bp2.business_process_id = st2.business_process_id\n  WHERE bp2.n8n_process_name = $1\n    AND st2.company_id = $3\n    AND st2.finished IS NOT NULL\n),\nmain AS (\n  SELECT st.*\n  FROM public.business_processes_states st\n  JOIN public.business_processes bp\n    ON bp.business_process_id = st.business_process_id\n  CROSS JOIN cutoff c\n  WHERE bp.n8n_process_name = $1\n    AND st.company_id = $3 \n    AND st.finished IS NULL\n    AND (c.last_finished_started IS NULL OR st.started > c.last_finished_started)\n)\nSELECT\n  s.business_process_state_id,\n  s.business_process_id,\n  s.started,\n  s.finished,\n  s.error_message,\n  s.n8n_workflow_execution_id,\n  s.n8n_workflow_root_execution_id\nFROM main m\nJOIN public.business_processes_states s\n  ON s.n8n_workflow_root_execution_id = m.n8n_workflow_execution_id\nJOIN public.business_processes p\n  ON p.business_process_id = s.business_process_id\nWHERE p.n8n_process_name = $2\n  AND s.company_id = $3\nORDER BY s.started desc;",
         "options": {
-          "queryReplacement": "=[{{$workflow.name}},{{$json.workflow_name}},{{ $('company_record_id').item.json.company_id }}]"
+          "queryReplacement": "=[{{$workflow.name}},{{$json.workflow_name}},{{ $('company_record_id').last().json.company_id }}]"
         }
       },
       "type": "n8n-nodes-base.postgres",
@@ -4025,7 +4025,7 @@
       }
     ]
   },
-  "versionId": "1ec9bebc-849b-4c77-a7bb-e50919f651f9",
+  "versionId": "939f638c-57b3-490e-9f25-63de0d6d72de",
   "triggerCount": 0,
   "shared": [
     {
