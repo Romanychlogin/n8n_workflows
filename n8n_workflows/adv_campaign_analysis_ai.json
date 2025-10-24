@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-10-20T11:13:50.516Z",
-  "updatedAt": "2025-10-23T12:39:15.666Z",
+  "updatedAt": "2025-10-24T06:51:00.190Z",
   "id": "xNiuEqQOSNCSLvW5",
   "name": "ADV_campaign_analysis_AI",
   "active": false,
@@ -654,19 +654,6 @@
     },
     {
       "parameters": {
-        "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nconst workflowData = $getWorkflowStaticData('global');\nworkflowData.steps_passed++; // update steps counter\nfor (const item of $input.all()) {\n  item.json.steps_passed = workflowData.steps_passed;\n}\n\n\nreturn $input.all();"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        7440,
-        48
-      ],
-      "id": "658dc02c-f118-4106-bef5-15ed79d1f948",
-      "name": "Get current step and tokens saved"
-    },
-    {
-      "parameters": {
         "conditions": {
           "options": {
             "caseSensitive": true,
@@ -1154,7 +1141,7 @@
     },
     {
       "parameters": {
-        "jsCode": "const workflowData = $getWorkflowStaticData('global');\n\nfunction toNumber(x, def = 0) {\n  const n = Number(x);\n  return Number.isFinite(n) ? n : def;\n}\n\nworkflowData.ai_calls = toNumber(workflowData.ai_calls, 0) +1;\n\nlet step_tokens_used = toNumber($input.first().json.usage.total_tokens,0);\n\n //set used tokens here!!!!\nworkflowData.tokens_used += toNumber(workflowData.step_tokens_used, 0);\nfor (const item of $input.all()) {\n  item.json.tokens_used = workflowData.tokens_used;\n}\n\n\n\nreturn $input.all();\n"
+        "jsCode": "const workflowData = $getWorkflowStaticData('global');\n\nfunction toNumber(x, def = 0) {\n  const n = Number(x);\n  return Number.isFinite(n) ? n : def;\n}\n\nworkflowData.ai_calls = toNumber(workflowData.ai_calls, 0) +1;\n\nlet step_tokens_used = toNumber($input.first().json.usage.total_tokens,0);\n\n //set used tokens here!!!!\nworkflowData.tokens_used += toNumber(workflowData.step_tokens_used, 0);\nfor (const item of $input.all()) {\n  item.json.tokens_used = workflowData.tokens_used;\n  item.json.step_tokens_used=step_tokens_used;\n  item.json.step_tokens_used_org=$input.first().json.usage.total_tokens;\n  \n}\n\n\n\nreturn $input.all();\n"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -1415,6 +1402,19 @@
       ],
       "id": "bef0137f-8f5a-471d-bded-e1c3c81be97c",
       "name": "Merge1"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nconst workflowData = $getWorkflowStaticData('global');\nworkflowData.steps_passed++; // update steps counter\nfor (const item of $input.all()) {\n  item.json.steps_passed = workflowData.steps_passed;\n}\n\n\nreturn $input.all();"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        7440,
+        48
+      ],
+      "id": "658dc02c-f118-4106-bef5-15ed79d1f948",
+      "name": "Get current step saved"
     }
   ],
   "connections": {
@@ -1440,7 +1440,7 @@
       "main": [
         [
           {
-            "node": "Get current step and tokens saved",
+            "node": "Get current step saved",
             "type": "main",
             "index": 0
           }
@@ -1602,17 +1602,6 @@
         [
           {
             "node": "check if termination is requested",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Get current step and tokens saved": {
-      "main": [
-        [
-          {
-            "node": "Mark_workflow_passed_steps",
             "type": "main",
             "index": 0
           }
@@ -2014,6 +2003,17 @@
           }
         ]
       ]
+    },
+    "Get current step saved": {
+      "main": [
+        [
+          {
+            "node": "Mark_workflow_passed_steps",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
@@ -2050,15 +2050,15 @@
       {
         "json": {
           "id": "xNiuEqQOSNCSLvW5",
-          "root_execution_id": 138989,
+          "root_execution_id": 142218,
           "company_id": 1,
           "threshhold": "0.79",
-          "import_id": 6
+          "import_id": 7
         }
       }
     ]
   },
-  "versionId": "d4ee31a4-1a9b-4b8c-aa64-6580a7f26348",
+  "versionId": "2eaf42a1-3a82-40c6-b8c5-836dcef17b8e",
   "triggerCount": 0,
   "shared": [
     {
