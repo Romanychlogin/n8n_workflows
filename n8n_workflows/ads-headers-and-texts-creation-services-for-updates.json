@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-28T11:31:13.045Z",
-  "updatedAt": "2025-10-24T07:10:36.995Z",
+  "updatedAt": "2025-10-24T07:12:15.618Z",
   "id": "lBAh8kjoXRX0aGUF",
   "name": "ADS headers and texts creation services for updates",
   "active": false,
@@ -132,8 +132,8 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        1920,
-        -752
+        2144,
+        -720
       ],
       "id": "14d43963-a615-4fa3-b342-ae9afdc40bbe",
       "name": "Sticky Note1"
@@ -142,13 +142,13 @@
       "parameters": {
         "content": "создаем текст",
         "height": 448,
-        "width": 960
+        "width": 816
       },
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        2848,
-        -720
+        3104,
+        -752
       ],
       "id": "13121ff4-d249-4a98-8e5c-c0e5b02b069c",
       "name": "Sticky Note2"
@@ -2015,7 +2015,7 @@
       }
     ]
   },
-  "versionId": "208cfd97-3a1c-4bb0-9f74-c071a5e5c2c7",
+  "versionId": "870871cf-6cab-4213-a7d6-969930e93af8",
   "triggerCount": 0,
   "shared": [
     {
