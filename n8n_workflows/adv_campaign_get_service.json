@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-30T12:45:50.445Z",
-  "updatedAt": "2025-10-24T09:28:02.616Z",
+  "updatedAt": "2025-10-24T11:29:19.735Z",
   "id": "c0NgmBzgLxUE7Wno",
   "name": "ADV_campaign_get_service",
   "active": false,
@@ -845,6 +845,7 @@
       "id": "1ad4d010-5330-47bf-b031-49911bc879c0",
       "name": "check for errors",
       "alwaysOutputData": true,
+      "executeOnce": true,
       "credentials": {
         "postgres": {
           "id": "Hx2VFmUi5WO2K4QX",
@@ -915,6 +916,7 @@
       ],
       "id": "220214a7-9c97-43ea-bfb6-7b5cbe7594c0",
       "name": "Execute a SQL query",
+      "executeOnce": true,
       "credentials": {
         "postgres": {
           "id": "Hx2VFmUi5WO2K4QX",
@@ -1229,7 +1231,7 @@
       }
     ]
   },
-  "versionId": "c2675149-ba35-45ac-b271-1a944fc83586",
+  "versionId": "e5d4cdf1-f676-4bd8-9865-d3a527f440ab",
   "triggerCount": 0,
   "shared": [
     {
