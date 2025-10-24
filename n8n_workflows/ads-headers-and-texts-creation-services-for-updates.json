@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-28T11:31:13.045Z",
-  "updatedAt": "2025-10-24T07:12:15.618Z",
+  "updatedAt": "2025-10-24T07:38:27.750Z",
   "id": "lBAh8kjoXRX0aGUF",
   "name": "ADS headers and texts creation services for updates",
   "active": false,
@@ -448,7 +448,8 @@
             "service_id": "={{ $('Loop Over Items').last().json.ItemsbyId[$('Loop Over Items2').last().json.list_id].service_id }}",
             "report_id": "={{ $('Loop Over Items').last().json.ItemsbyId[$('Loop Over Items2').last().json.list_id].report_id }}",
             "key_word": "={{ $('Loop Over Items2').last().json.key_word }}",
-            "campaign_id": "={{ $('Loop Over Items').last().json.ItemsbyId[$('Loop Over Items2').last().json.list_id].campaign_id }}"
+            "campaign_id": "={{ $('Loop Over Items').last().json.ItemsbyId[$('Loop Over Items2').last().json.list_id].campaign_id }}",
+            "list_id": "={{ $('Loop Over Items2').last().json.list_id}}"
           },
           "matchingColumns": [],
           "schema": [
@@ -582,6 +583,16 @@
             {
               "id": "campaign_id",
               "displayName": "campaign_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "list_id",
+              "displayName": "list_id",
               "required": false,
               "defaultMatch": false,
               "display": true,
@@ -2015,7 +2026,7 @@
       }
     ]
   },
-  "versionId": "870871cf-6cab-4213-a7d6-969930e93af8",
+  "versionId": "d19c5e66-3549-41a9-9f72-0f97dfcde4f9",
   "triggerCount": 0,
   "shared": [
     {
