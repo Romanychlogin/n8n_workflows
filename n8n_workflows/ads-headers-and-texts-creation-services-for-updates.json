@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-28T11:31:13.045Z",
-  "updatedAt": "2025-10-24T07:38:27.750Z",
+  "updatedAt": "2025-10-24T07:54:25.635Z",
   "id": "lBAh8kjoXRX0aGUF",
   "name": "ADS headers and texts creation services for updates",
   "active": false,
@@ -15,7 +15,7 @@
       "type": "n8n-nodes-base.splitInBatches",
       "typeVersion": 3,
       "position": [
-        1712,
+        1920,
         -128
       ],
       "id": "339fe02b-ad75-4e32-9d50-2089c9aff64b",
@@ -90,7 +90,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        2352,
+        2560,
         -448
       ],
       "id": "4f3fc0e3-fa1c-4cb9-a13d-60b482490cbb",
@@ -110,7 +110,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        2560,
+        2768,
         -464
       ],
       "id": "b1bb38a1-137c-4031-8004-b4af548b5139",
@@ -175,7 +175,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        2160,
+        2368,
         -432
       ],
       "id": "b81544ec-079e-4eb9-9a54-01e33f7b09a0",
@@ -188,7 +188,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        368,
+        576,
         -240
       ],
       "id": "f4e87d72-97f5-47cc-a4c1-ac98e7a68350",
@@ -201,7 +201,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        3424,
+        3632,
         -528
       ],
       "id": "36f031a3-58d5-4a86-837e-f018e1a85c0a",
@@ -221,7 +221,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        3600,
+        3808,
         -528
       ],
       "id": "18ee1d12-e481-4942-9d70-9b20809e475f",
@@ -241,7 +241,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        3184,
+        3392,
         -512
       ],
       "id": "aa83080e-9569-46a8-bb11-3729408a3ab1",
@@ -378,7 +378,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        4272,
+        4480,
         -544
       ],
       "id": "0f2a355a-83d5-4688-a72d-a3f5e2b06845",
@@ -398,7 +398,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        4560,
+        4768,
         -560
       ],
       "id": "401426fa-b558-4a8a-95d7-45404d9f427f",
@@ -418,7 +418,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        4032,
+        4240,
         -528
       ],
       "id": "5bf259e9-7170-460e-ba0b-ae8e1c3475e6",
@@ -609,7 +609,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        6240,
+        6448,
         -16
       ],
       "id": "8c922024-79bf-4e07-ace4-89f6ba09d54e",
@@ -632,7 +632,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        -352,
+        -144,
         -256
       ],
       "id": "893a7e4a-6c70-4f92-9ee7-72b54b4ff0f3",
@@ -651,7 +651,7 @@
       "type": "n8n-nodes-base.splitInBatches",
       "typeVersion": 3,
       "position": [
-        0,
+        208,
         -256
       ],
       "id": "db2dcbd2-9068-4465-9624-0d7411fcd572",
@@ -675,7 +675,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        1568,
+        1776,
         -256
       ],
       "id": "1d88ae07-0d96-4cca-9acd-8a3efbf6b843",
@@ -699,7 +699,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        1856,
+        2064,
         -320
       ],
       "id": "f47b4838-9304-4d7a-abec-bbb1bd19947f",
@@ -824,7 +824,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        1344,
+        1552,
         -768
       ],
       "id": "2a5c0454-3bad-4874-b98d-ecf20a32ec70",
@@ -871,7 +871,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        6464,
+        6672,
         -16
       ],
       "id": "368ef176-4f7c-4098-8273-76913340a13e",
@@ -911,7 +911,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        672,
+        880,
         -240
       ],
       "id": "a1f18792-306e-4081-99bf-d7b7ee592f91",
@@ -944,7 +944,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        7344,
+        7552,
         -48
       ],
       "id": "dceef081-c3ee-41f3-9960-07c7266ccfb9",
@@ -957,7 +957,7 @@
       "type": "n8n-nodes-base.stopAndError",
       "typeVersion": 1,
       "position": [
-        7536,
+        7744,
         -48
       ],
       "id": "ff3975f3-349c-4223-9738-e41ef93479a3",
@@ -991,7 +991,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        7120,
+        7328,
         -32
       ],
       "id": "f00c475e-39b6-4d11-8591-4f1e19ead268",
@@ -1032,12 +1032,13 @@
     },
     {
       "parameters": {
-        "mode": "chooseBranch"
+        "mode": "chooseBranch",
+        "numberInputs": 3
       },
       "type": "n8n-nodes-base.merge",
       "typeVersion": 3.2,
       "position": [
-        1216,
+        1424,
         -256
       ],
       "id": "e8df1c17-c260-4bee-b18f-26b9363b6c81",
@@ -1054,7 +1055,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        880,
+        1088,
         -144
       ],
       "id": "f5652581-bcc8-48a4-a441-11d3f4e8fc7c",
@@ -1074,7 +1075,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1040,
+        1248,
         -144
       ],
       "id": "fe3edef7-fcff-4365-8b43-93b4705ef623",
@@ -1102,7 +1103,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1392,
+        1600,
         -272
       ],
       "id": "f9b58881-201d-4ff1-90ea-39e641d8da09",
@@ -1119,7 +1120,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        528,
+        736,
         -240
       ],
       "id": "57b6a039-9828-4ffd-9fc3-49bb872b76ed",
@@ -1139,7 +1140,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        2768,
+        2976,
         -464
       ],
       "id": "2f538a2f-ca57-450d-8ad3-f367cee9656b",
@@ -1152,7 +1153,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        3808,
+        4016,
         -528
       ],
       "id": "e5083a4a-d528-45a2-bf33-5553736c0323",
@@ -1165,7 +1166,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        5200,
+        5408,
         -528
       ],
       "id": "8ea8675a-bac8-4fc7-a544-d04ffbd81ca8",
@@ -1180,7 +1181,7 @@
       "type": "n8n-nodes-base.splitInBatches",
       "typeVersion": 3,
       "position": [
-        5536,
+        5744,
         -144
       ],
       "id": "f3ebd331-ef11-4940-9865-9b44e264b983",
@@ -1204,7 +1205,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        5376,
+        5584,
         -528
       ],
       "id": "39e6d890-e8f4-4810-af03-fc0d1ef76c49",
@@ -1228,7 +1229,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        5824,
+        6032,
         -16
       ],
       "id": "37dfb4bf-c540-4629-91f1-53096eb5971f",
@@ -1245,7 +1246,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        608,
+        816,
         -592
       ],
       "id": "757d4ce5-edb1-459d-b6da-c1ed0e5109f7",
@@ -1264,7 +1265,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        6032,
+        6240,
         -16
       ],
       "id": "27676e95-078a-4286-b9f3-14d3756c15e5",
@@ -1277,7 +1278,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        6656,
+        6864,
         -16
       ],
       "id": "9da30555-7e27-45f2-8d60-894cba8b8435",
@@ -1294,7 +1295,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        6912,
+        7120,
         -32
       ],
       "id": "a6e2eaef-d695-4848-a8be-2ae0e303900a",
@@ -1314,7 +1315,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        4752,
+        4960,
         -528
       ],
       "id": "8f9a5124-e201-4ff8-b5a6-a38720703890",
@@ -1331,7 +1332,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        4896,
+        5104,
         -384
       ],
       "id": "90a54ed3-5257-47a8-8d3f-f29f12e25f93",
@@ -1351,7 +1352,7 @@
       "type": "n8n-nodes-base.merge",
       "typeVersion": 3.2,
       "position": [
-        5024,
+        5232,
         -528
       ],
       "id": "95309835-6eab-49e6-a56d-66e8917ae4ad",
@@ -2026,7 +2027,7 @@
       }
     ]
   },
-  "versionId": "d19c5e66-3549-41a9-9f72-0f97dfcde4f9",
+  "versionId": "305d5dca-20b4-40d4-860c-75b32e167a0a",
   "triggerCount": 0,
   "shared": [
     {
