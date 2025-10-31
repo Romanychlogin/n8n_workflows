@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-10T17:26:44.235Z",
-  "updatedAt": "2025-09-28T10:32:40.468Z",
+  "updatedAt": "2025-10-31T10:43:50.885Z",
   "id": "gOiXkFb3LETVri46",
   "name": "Fill competitors services",
   "active": false,
@@ -506,7 +506,7 @@
     "templateCredsSetupCompleted": true
   },
   "pinData": {},
-  "versionId": "85b733cf-9837-4b2b-8290-3adae7d692dd",
+  "versionId": "a11513af-c6ea-46d2-811e-3375f6eb2b7f",
   "triggerCount": 0,
   "shared": [
     {
@@ -517,5 +517,12 @@
       "projectId": "spKmbJLU4mvACXIB"
     }
   ],
-  "tags": []
+  "tags": [
+    {
+      "createdAt": "2025-10-17T09:03:18.269Z",
+      "updatedAt": "2025-10-17T09:03:18.269Z",
+      "id": "S7zerj1h6Ro25pTA",
+      "name": "client creation"
+    }
+  ]
 }
