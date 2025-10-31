@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-10-20T11:13:37.232Z",
-  "updatedAt": "2025-10-31T06:37:36.713Z",
+  "updatedAt": "2025-10-31T06:50:04.242Z",
   "id": "b9eGU4g5DID0kq2E",
   "name": "ADV_campaign_analysis_initial",
   "active": false,
@@ -956,9 +956,9 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "update business_processes_states set steps_passed=$3, tokens_used=$4,tokens_used_type=$5 where business_process_id=(select MAX(business_process_id) from business_processes where n8n_process_name=$1) and n8n_workflow_execution_id=$2",
+        "query": "update business_processes_states set steps_passed=$2, tokens_used=$3,tokens_used_type=$4 where  n8n_workflow_execution_id=$1",
         "options": {
-          "queryReplacement": "=[{{$workflow.name}},{{$execution.id}},{{$json.steps_passed}},{{$json.tokens_used}},{{ 'gpt-5' }}]"
+          "queryReplacement": "=[{{$execution.id}},{{$json.steps_passed}},{{$json.tokens_used}},{{ 'gpt-5' }}]"
         }
       },
       "type": "n8n-nodes-base.postgres",
@@ -2995,7 +2995,7 @@
       }
     ]
   },
-  "versionId": "bd5896f3-abf2-415f-a5ef-f571d73b21c5",
+  "versionId": "e6e36412-17a9-4afa-9f3e-f64df353295d",
   "triggerCount": 0,
   "shared": [
     {
