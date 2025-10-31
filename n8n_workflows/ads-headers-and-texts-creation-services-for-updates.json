@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-28T11:31:13.045Z",
-  "updatedAt": "2025-10-24T07:54:25.635Z",
+  "updatedAt": "2025-10-31T06:58:36.747Z",
   "id": "lBAh8kjoXRX0aGUF",
   "name": "ADS headers and texts creation services for updates",
   "active": false,
@@ -1287,9 +1287,9 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "update business_processes_states set steps_passed=$3 where business_process_id=(select MAX(business_process_id) from business_processes where n8n_process_name=$1) and n8n_workflow_execution_id=$2",
+        "query": "update business_processes_states set steps_passed=$2 where n8n_workflow_execution_id=$1",
         "options": {
-          "queryReplacement": "=[{{$workflow.name}},{{$execution.id}},{{$json.steps_passed}}]"
+          "queryReplacement": "=[{{$execution.id}},{{$json.steps_passed}}]"
         }
       },
       "type": "n8n-nodes-base.postgres",
@@ -1324,9 +1324,9 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "update business_processes_states set tokens_used=$3,tokens_used_type=$4 where business_process_id=(select MAX(business_process_id) from business_processes where n8n_process_name=$1) and n8n_workflow_execution_id=$2",
+        "query": "update business_processes_states set tokens_used=$2,tokens_used_type=$3 where  n8n_workflow_execution_id=$1",
         "options": {
-          "queryReplacement": "=[{{$workflow.name}},{{$execution.id}},{{$json.tokens_used}},{{ 'gpt-5' }}]"
+          "queryReplacement": "=[{{$execution.id}},{{$json.tokens_used}},{{ 'gpt-5' }}]"
         }
       },
       "type": "n8n-nodes-base.postgres",
@@ -2028,7 +2028,7 @@
       }
     ]
   },
-  "versionId": "305d5dca-20b4-40d4-860c-75b32e167a0a",
+  "versionId": "5df1d57b-88a3-4ecc-ba08-1c21ec91a26f",
   "triggerCount": 0,
   "shared": [
     {
