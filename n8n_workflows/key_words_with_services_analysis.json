@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-15T10:20:29.723Z",
-  "updatedAt": "2025-09-18T13:15:11.101Z",
+  "updatedAt": "2025-11-01T10:47:27.260Z",
   "id": "AEZDBlqe199xBn5u",
   "name": "key_words_with_services_analysis",
   "active": false,
@@ -670,7 +670,7 @@
       "typeVersion": 2.6,
       "position": [
         2864,
-        192
+        144
       ],
       "id": "6a9b1d3e-fefc-4c1b-9a5b-b14606db9057",
       "name": "Mark non relevant",
@@ -1282,7 +1282,9 @@
     "saveDataErrorExecution": "all",
     "saveDataSuccessExecution": "none",
     "saveExecutionProgress": false,
-    "callerPolicy": "workflowsFromSameOwner"
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false,
+    "errorWorkflow": "v2Z32ISEUzsFYnZw"
   },
   "staticData": null,
   "meta": {
@@ -1295,7 +1297,7 @@
       }
     ]
   },
-  "versionId": "227a2b82-2f50-4513-882b-f2663365edd2",
+  "versionId": "1d5e6de2-25dd-420c-afd3-28be05e16027",
   "triggerCount": 0,
   "shared": [
     {
@@ -1306,5 +1308,12 @@
       "projectId": "spKmbJLU4mvACXIB"
     }
   ],
-  "tags": []
+  "tags": [
+    {
+      "createdAt": "2025-10-17T09:03:18.269Z",
+      "updatedAt": "2025-10-17T09:03:18.269Z",
+      "id": "S7zerj1h6Ro25pTA",
+      "name": "client creation"
+    }
+  ]
 }
