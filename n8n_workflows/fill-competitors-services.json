@@ -1,22 +1,11 @@
 {
   "createdAt": "2025-09-10T17:26:44.235Z",
-  "updatedAt": "2025-10-31T10:43:50.885Z",
+  "updatedAt": "2025-11-01T10:21:00.556Z",
   "id": "gOiXkFb3LETVri46",
   "name": "Fill competitors services",
   "active": false,
   "isArchived": false,
   "nodes": [
-    {
-      "parameters": {},
-      "type": "n8n-nodes-base.manualTrigger",
-      "typeVersion": 1,
-      "position": [
-        -544,
-        0
-      ],
-      "id": "d6d7a237-20c9-41ff-933e-581f2f1e2ad4",
-      "name": "When clicking ‘Execute workflow’"
-    },
     {
       "parameters": {
         "resource": "file",
@@ -82,7 +71,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        1648,
+        1456,
         0
       ],
       "id": "286f7fa3-94e7-4798-87ee-644747c63ca4",
@@ -174,7 +163,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        2784,
+        2352,
         0
       ],
       "id": "589157fe-d720-4b12-8ebb-d1216203d23c",
@@ -193,7 +182,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1376,
+        1184,
         0
       ],
       "id": "80c90d86-92ac-4373-8cce-7310e08b651b",
@@ -201,12 +190,12 @@
     },
     {
       "parameters": {
-        "jsCode": "\n\n// Достаём массив competitors\nconst competitors = JSON.parse($input.first().json.output[1].content[0].text).competitors;\n\n// Разворачиваем каждый объект в отдельный item\nreturn competitors.map((c, index) => ({\n  json: {\n    index,\n    competitor_name: c.competitor_name,\n    competitor_type: c.competitor_type,\n    competitor_url: c.competitor_url,\n    company_id:$('set company name').first().json.company_id\n  }\n}));"
+        "jsCode": "\n\n// Достаём массив competitors\nconst competitors = JSON.parse($input.first().json.output[1].content[0].text).competitors;\n\n// Разворачиваем каждый объект в отдельный item\nreturn competitors.map((c, index) => ({\n  json: {\n    index,\n    competitor_name: c.competitor_name,\n    competitor_type: c.competitor_type,\n    competitor_url: c.competitor_url,\n    company_id:$('When Executed by Another Workflow').first().json.company_id\n  }\n}));"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        2336,
+        2128,
         0
       ],
       "id": "f52d83e3-8126-4077-a3ba-743670344911",
@@ -230,7 +219,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        1856,
+        1744,
         0
       ],
       "id": "42044421-7777-42c4-8b86-1bf62c2f246d",
@@ -254,7 +243,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        2064,
+        1952,
         0
       ],
       "id": "46261d88-82d3-4884-9b5f-46262190fbc3",
@@ -263,37 +252,8 @@
     },
     {
       "parameters": {
-        "assignments": {
-          "assignments": [
-            {
-              "id": "5b3485a2-cb50-486a-932c-fc27de0a25da",
-              "name": "company_name",
-              "value": "KIBERone Саратов Октябрьский",
-              "type": "string"
-            },
-            {
-              "id": "f74ac992-90a4-4403-a75e-17656de76902",
-              "name": "company_id",
-              "value": 1,
-              "type": "number"
-            }
-          ]
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.set",
-      "typeVersion": 3.4,
-      "position": [
-        320,
-        0
-      ],
-      "id": "a1a6fc6c-5b46-47bf-a10d-7c5b174c9b3a",
-      "name": "set company name"
-    },
-    {
-      "parameters": {
         "operation": "executeQuery",
-        "query": "select cs.service_name,cs.service_description from companies c, company_services cs where c.company_id=cs.company_id and c.company_name=$1",
+        "query": "select cs.service_name,cs.service_description,c.company_name from companies c, company_services cs where c.company_id=cs.company_id and c.company_id=$1",
         "options": {
           "queryReplacement": "{{$json.company_name}}"
         }
@@ -301,7 +261,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        528,
+        400,
         0
       ],
       "id": "c9d3775b-887c-4e85-a662-fc3a49e7e266",
@@ -328,7 +288,7 @@
     },
     {
       "parameters": {
-        "jsCode": "const workflowData = $getWorkflowStaticData('global');\nlet my_prompt = workflowData.my_prompt.data;\n\nfor (const item of $input.all()) {\n  item.json.my_prompt = my_prompt.replaceAll(\"{company_name}\", $('set company name').first().json.company_name).replaceAll(\"{services_list}\", item.json.services_list);\n}\n\nreturn $input.all();"
+        "jsCode": "const workflowData = $getWorkflowStaticData('global');\nlet my_prompt = workflowData.my_prompt.data;\n\nfor (const item of $input.all()) {\n  item.json.my_prompt = my_prompt.replaceAll(\"{company_name}\", item.json.company_name).replaceAll(\"{services_list}\", item.json.services_list);\n}\n\nreturn $input.all();"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -341,16 +301,77 @@
     },
     {
       "parameters": {
-        "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nlet services_list='';\nfor (const item of $input.all()) {\n  services_list = services_list + item.json.service_name + ' ' + item.json.service_description + '. ';\n}\n\nreturn [\n  { json: { services_list } }\n];"
+        "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nlet services_list='';\nfor (const item of $input.all()) {\n  services_list = services_list + item.json.service_name + ' ' + item.json.service_description + '. ';\n}\n\nreturn [\n  { json: { services_list,company_name:$input.first().json.company_name  } }\n];"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        736,
+        624,
         0
       ],
       "id": "b1e83bcc-c531-4797-b798-1201223afcd0",
       "name": "Merge services"
+    },
+    {
+      "parameters": {
+        "inputSource": "passthrough"
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -704,
+        0
+      ],
+      "id": "7a5b7c6d-f193-47ee-9393-4ce466743f2b",
+      "name": "When Executed by Another Workflow"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO business_processes_states (business_process_id, company_id,n8n_workflow_execution_id,n8n_workflow_root_execution_id, started)\nSELECT MAX(business_process_id), $2,$3,$4, NOW()\nFROM public.business_processes\nWHERE n8n_process_name = $1;",
+        "options": {
+          "queryReplacement": "=[{{$workflow.name}},{{$json.company_id}},{{$execution.id}},{{ $('When Executed by Another Workflow').item.json.root_execution_id }}]"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -496,
+        0
+      ],
+      "id": "7c5797ed-0428-4bf5-981f-8d061ef16d65",
+      "name": "Mark_workwlow_started",
+      "credentials": {
+        "postgres": {
+          "id": "4YkdFJcdTgzo9hkz",
+          "name": "PGvector"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "update business_processes_states set finished=NOW(),steps_passed=1,steps_total=1 where business_process_id=(select MAX(business_process_id) from business_processes where n8n_process_name=$1) and n8n_workflow_execution_id=$2",
+        "options": {
+          "queryReplacement": "=[{{$workflow.name}},{{$execution.id}}]"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        2592,
+        0
+      ],
+      "id": "214f2a1f-ee30-4e71-b064-09e40483afe1",
+      "name": "Mark_workflow_completed",
+      "executeOnce": true,
+      "credentials": {
+        "postgres": {
+          "id": "4YkdFJcdTgzo9hkz",
+          "name": "PGvector"
+        }
+      }
     }
   ],
   "connections": {
@@ -370,17 +391,6 @@
         [
           {
             "node": "Save prompt",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "When clicking ‘Execute workflow’": {
-      "main": [
-        [
-          {
-            "node": "Get a file1",
             "type": "main",
             "index": 0
           }
@@ -442,17 +452,6 @@
         ]
       ]
     },
-    "set company name": {
-      "main": [
-        [
-          {
-            "node": "Execute a SQL query",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Execute a SQL query": {
       "main": [
         [
@@ -468,7 +467,7 @@
       "main": [
         [
           {
-            "node": "set company name",
+            "node": "Execute a SQL query",
             "type": "main",
             "index": 0
           }
@@ -496,17 +495,67 @@
           }
         ]
       ]
+    },
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "Mark_workwlow_started",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mark_workwlow_started": {
+      "main": [
+        [
+          {
+            "node": "Get a file1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Insert rows in a table": {
+      "main": [
+        [
+          {
+            "node": "Mark_workflow_completed",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
-    "executionOrder": "v1"
+    "executionOrder": "v1",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false,
+    "errorWorkflow": "v2Z32ISEUzsFYnZw"
   },
   "staticData": null,
   "meta": {
     "templateCredsSetupCompleted": true
   },
-  "pinData": {},
-  "versionId": "a11513af-c6ea-46d2-811e-3375f6eb2b7f",
+  "pinData": {
+    "When Executed by Another Workflow": [
+      {
+        "json": {
+          "id": "ezK8ihYnfxZNTIAc",
+          "root_execution_id": 20076,
+          "company_id": 2,
+          "threshhold": "0.88",
+          "company_name": "Первый визовый центр Курган",
+          "services_description": "Визы:    http://krg45.visa-rf.ru/ АТЭС:    http://krg45.apec-first.ru/",
+          "user_content_dropbox_folder": "/Test_content_folder_for_Kurgan"
+        }
+      }
+    ]
+  },
+  "versionId": "63b1f295-40f6-4320-9aa0-3408ee144aba",
   "triggerCount": 0,
   "shared": [
     {
