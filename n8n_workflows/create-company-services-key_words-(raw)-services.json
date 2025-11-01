@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-12T09:29:48.196Z",
-  "updatedAt": "2025-11-01T10:40:48.046Z",
+  "updatedAt": "2025-11-01T10:42:20.987Z",
   "id": "JpsCGfUrbdGhD8ix",
   "name": "Create company services key_words (raw) services",
   "active": false,
@@ -408,6 +408,153 @@
       ],
       "id": "a5eefb9d-1e12-42c3-93cc-d25cd8afb7c9",
       "name": "Merge1"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "update business_processes_states set steps_passed=$2, tokens_used=$3,tokens_used_type=$4 where n8n_workflow_execution_id=$1",
+        "options": {
+          "queryReplacement": "=[{{$execution.id}},{{$json.steps_passed}},{{$json.tokens_used}},{{ 'gpt-5' }}]"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        3200,
+        -16
+      ],
+      "id": "ed5e521e-f49f-46d1-bce4-41c784f17f4d",
+      "name": "Mark_workflow_passed_steps",
+      "executeOnce": true,
+      "credentials": {
+        "postgres": {
+          "id": "4YkdFJcdTgzo9hkz",
+          "name": "PGvector"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "errorMessage": "Process terminated by user"
+      },
+      "type": "n8n-nodes-base.stopAndError",
+      "typeVersion": 1,
+      "position": [
+        4032,
+        -144
+      ],
+      "id": "8307ee89-8c11-4021-9fcd-d391bc62c4df",
+      "name": "Stop and Error"
+    },
+    {
+      "parameters": {
+        "operation": "select",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "business_processes_states",
+          "mode": "list",
+          "cachedResultName": "business_processes_states"
+        },
+        "returnAll": true,
+        "where": {
+          "values": [
+            {
+              "column": "n8n_workflow_execution_id",
+              "value": "={{ $execution.id }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        3456,
+        16
+      ],
+      "id": "a1494864-6c66-4cb6-ad37-1d6a26ab1e63",
+      "name": "check if termination is requested",
+      "credentials": {
+        "postgres": {
+          "id": "4YkdFJcdTgzo9hkz",
+          "name": "PGvector"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "fa13510a-3a56-4cd5-8b80-3e4fe626ce0b",
+              "leftValue": "={{ $json.to_terminate }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        3712,
+        16
+      ],
+      "id": "3f42e2d2-1445-49c3-b8e5-e58653e8af74",
+      "name": "If1"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nconst workflowData = $getWorkflowStaticData('global');\nworkflowData.steps_passed = workflowData.steps_passed+1; // update steps counter\n//set used tokens here!!!!\nlet step_tokens_used = toNumber($('HTTP Request').last().json.usage.total_tokens,0);\n //set used tokens here!!!!\nworkflowData.tokens_used += step_tokens_used;\n\nfor (const item of $input.all()) {\n  item.json.steps_passed = workflowData.steps_passed;\n  item.json.tokens_used = workflowData.tokens_used\n}\n\nreturn $input.all();"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2832,
+        0
+      ],
+      "id": "52d57d29-e169-4d9e-89f4-5aae476a4f01",
+      "name": "Get current step and tokens saved"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "update business_processes_states set finished=NOW() where business_process_id=(select MAX(business_process_id) from business_processes where n8n_process_name=$1) and n8n_workflow_execution_id=$2",
+        "options": {
+          "queryReplacement": "=[{{$workflow.name}},{{$execution.id}}]"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        1024,
+        -256
+      ],
+      "id": "ed98d6da-b44a-47e6-b474-80086bc15bab",
+      "name": "Mark_workflow_completed",
+      "executeOnce": true,
+      "credentials": {
+        "postgres": {
+          "id": "4YkdFJcdTgzo9hkz",
+          "name": "PGvector"
+        }
+      }
     }
   ],
   "connections": {
@@ -501,7 +648,13 @@
     },
     "Loop Over Items": {
       "main": [
-        [],
+        [
+          {
+            "node": "Mark_workflow_completed",
+            "type": "main",
+            "index": 0
+          }
+        ],
         [
           {
             "node": "create prompt",
@@ -515,7 +668,7 @@
       "main": [
         [
           {
-            "node": "Loop Over Items",
+            "node": "Get current step and tokens saved",
             "type": "main",
             "index": 0
           }
@@ -603,6 +756,57 @@
           }
         ]
       ]
+    },
+    "Mark_workflow_passed_steps": {
+      "main": [
+        [
+          {
+            "node": "check if termination is requested",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "check if termination is requested": {
+      "main": [
+        [
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "Stop and Error",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get current step and tokens saved": {
+      "main": [
+        [
+          {
+            "node": "Mark_workflow_passed_steps",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
@@ -630,7 +834,7 @@
       }
     ]
   },
-  "versionId": "5d816687-4ff4-442d-9699-0e70c599c5b0",
+  "versionId": "8a9a8054-55af-468a-bf4e-1aae39a7bad1",
   "triggerCount": 0,
   "shared": [
     {
@@ -641,5 +845,12 @@
       "projectId": "spKmbJLU4mvACXIB"
     }
   ],
-  "tags": []
+  "tags": [
+    {
+      "createdAt": "2025-10-17T09:03:18.269Z",
+      "updatedAt": "2025-10-17T09:03:18.269Z",
+      "id": "S7zerj1h6Ro25pTA",
+      "name": "client creation"
+    }
+  ]
 }
