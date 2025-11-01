@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-10T14:56:27.610Z",
-  "updatedAt": "2025-11-01T10:20:51.952Z",
+  "updatedAt": "2025-11-01T10:30:45.935Z",
   "id": "5Se0CY4jTtS5g7n3",
   "name": "company services",
   "active": false,
@@ -393,7 +393,7 @@
     },
     {
       "parameters": {
-        "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nconst workflowData = $getWorkflowStaticData('global');\nworkflowData.steps_passed = workflowData.steps_passed+1; // update steps counter\n//set used tokens here!!!!\nworkflowData.tokens_used =;\nfor (const item of $input.all()) {\n  item.json.steps_passed = workflowData.steps_passed;\n  item.json.tokens_used = workflowData.tokens_used\n}\n\nreturn $input.all();"
+        "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nconst workflowData = $getWorkflowStaticData('global');\nworkflowData.steps_passed = workflowData.steps_passed+1; // update steps counter\n//set used tokens here!!!!\nlet step_tokens_used = toNumber($('HTTP Request1').first().json.usage.total_tokens,0);\n //set used tokens here!!!!\nworkflowData.tokens_used += step_tokens_used;\n\nfor (const item of $input.all()) {\n  item.json.steps_passed = workflowData.steps_passed;\n  item.json.tokens_used = workflowData.tokens_used\n}\n\nreturn $input.all();"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -1361,7 +1361,7 @@
       }
     ]
   },
-  "versionId": "da6a8991-f4e8-4586-9416-d05a1eb613b4",
+  "versionId": "d9da6f91-0875-4308-b229-89271b9f7749",
   "triggerCount": 0,
   "shared": [
     {
