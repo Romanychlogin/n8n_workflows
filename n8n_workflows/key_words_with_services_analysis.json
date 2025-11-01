@@ -1,22 +1,11 @@
 {
   "createdAt": "2025-09-15T10:20:29.723Z",
-  "updatedAt": "2025-11-01T10:47:27.260Z",
+  "updatedAt": "2025-11-01T18:09:24.441Z",
   "id": "AEZDBlqe199xBn5u",
   "name": "key_words_with_services_analysis",
   "active": false,
   "isArchived": false,
   "nodes": [
-    {
-      "parameters": {},
-      "id": "29a1d3e2-d33a-4fad-b0a4-4611b5eca644",
-      "name": "Start",
-      "type": "n8n-nodes-base.manualTrigger",
-      "typeVersion": 1,
-      "position": [
-        -704,
-        -64
-      ]
-    },
     {
       "parameters": {
         "options": {
@@ -941,25 +930,80 @@
       ],
       "id": "ab7a9be0-a042-4dce-892c-4111df748b45",
       "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "inputSource": "passthrough"
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -1008,
+        -64
+      ],
+      "id": "8ee8db45-28f8-49e2-bf5c-c62d2857581e",
+      "name": "When Executed by Another Workflow"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO business_processes_states (business_process_id, company_id,n8n_workflow_execution_id,n8n_workflow_root_execution_id, started)\nSELECT MAX(business_process_id), $2,$3,$4, NOW()\nFROM public.business_processes\nWHERE n8n_process_name = $1;",
+        "options": {
+          "queryReplacement": "=[{{$workflow.name}},{{$json.company_id}},{{$execution.id}},{{ $('When Executed by Another Workflow').item.json.root_execution_id }}]"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -736,
+        -48
+      ],
+      "id": "d79c64c4-b28b-4ebb-9fd8-003bc6c8c14c",
+      "name": "Mark_workwlow_started",
+      "credentials": {
+        "postgres": {
+          "id": "4YkdFJcdTgzo9hkz",
+          "name": "PGvector"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "defb96b1-f082-425a-8a5e-bf574855bbf8",
+              "leftValue": "",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -528,
+        -48
+      ],
+      "id": "c66fc86b-a640-46b5-a25e-8a0f229ad5d1",
+      "name": "If"
     }
   ],
   "connections": {
-    "Start": {
-      "main": [
-        [
-          {
-            "node": "set variables",
-            "type": "main",
-            "index": 0
-          },
-          {
-            "node": "Non first run option",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Loop Over Items": {
       "main": [
         [
@@ -1275,6 +1319,28 @@
           }
         ]
       ]
+    },
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "Mark_workwlow_started",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mark_workwlow_started": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
@@ -1291,13 +1357,21 @@
     "templateCredsSetupCompleted": true
   },
   "pinData": {
-    "Start": [
+    "When Executed by Another Workflow": [
       {
-        "json": {}
+        "json": {
+          "id": "ezK8ihYnfxZNTIAc",
+          "root_execution_id": 20076,
+          "company_id": 2,
+          "threshhold": "0.88",
+          "company_name": "Первый визовый центр Курган",
+          "services_description": "Визы:    http://krg45.visa-rf.ru/ АТЭС:    http://krg45.apec-first.ru/",
+          "user_content_dropbox_folder": "/Test_content_folder_for_Kurgan"
+        }
       }
     ]
   },
-  "versionId": "1d5e6de2-25dd-420c-afd3-28be05e16027",
+  "versionId": "f9cad1a2-1b45-4ffc-8879-01fb2cdabc2e",
   "triggerCount": 0,
   "shared": [
     {
