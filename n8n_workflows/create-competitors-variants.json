@@ -1,22 +1,11 @@
 {
   "createdAt": "2025-09-12T08:55:43.434Z",
-  "updatedAt": "2025-09-28T09:55:17.913Z",
+  "updatedAt": "2025-11-01T10:21:06.742Z",
   "id": "rm2JX4uSi4LmMkZN",
   "name": "Create competitors variants",
   "active": false,
   "isArchived": false,
   "nodes": [
-    {
-      "parameters": {},
-      "type": "n8n-nodes-base.manualTrigger",
-      "typeVersion": 1,
-      "position": [
-        -544,
-        0
-      ],
-      "id": "51a3ab5d-753c-46c5-a292-ef1d97a099ab",
-      "name": "When clicking ‘Execute workflow’"
-    },
     {
       "parameters": {
         "resource": "file",
@@ -174,8 +163,7 @@
           "id": "4YkdFJcdTgzo9hkz",
           "name": "PGvector"
         }
-      },
-      "onError": "continueErrorOutput"
+      }
     },
     {
       "parameters": {
@@ -235,7 +223,7 @@
           "values": [
             {
               "column": "company_id",
-              "value": "={{$json.company_id}}"
+              "value": "={{$('When Executed by Another Workflow').first().json.company_id}}"
             }
           ]
         },
@@ -244,7 +232,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        512,
+        384,
         0
       ],
       "id": "3afda08b-aa00-4c61-b121-dbfe65aa9bc9",
@@ -325,92 +313,16 @@
     },
     {
       "parameters": {
-        "schema": {
-          "__rl": true,
-          "mode": "list",
-          "value": "public"
-        },
-        "table": {
-          "__rl": true,
-          "value": "errors",
-          "mode": "list",
-          "cachedResultName": "errors"
-        },
-        "columns": {
-          "mappingMode": "defineBelow",
-          "value": {
-            "error_text": "={{ $json.error.description }}"
-          },
-          "matchingColumns": [],
-          "schema": [
-            {
-              "id": "error_id",
-              "displayName": "error_id",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "number",
-              "canBeUsedToMatch": true,
-              "removed": true
-            },
-            {
-              "id": "error_text",
-              "displayName": "error_text",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true
-            }
-          ],
-          "attemptToConvertTypes": false,
-          "convertFieldsToString": false
-        },
-        "options": {}
+        "inputSource": "passthrough"
       },
-      "type": "n8n-nodes-base.postgres",
-      "typeVersion": 2.6,
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
       "position": [
-        2928,
-        16
-      ],
-      "id": "b4646efd-e815-46ed-967a-11362e9ce354",
-      "name": "Error",
-      "credentials": {
-        "postgres": {
-          "id": "4YkdFJcdTgzo9hkz",
-          "name": "PGvector"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "assignments": {
-          "assignments": [
-            {
-              "id": "1d3a9799-854d-4d8f-b324-a86b1e329575",
-              "name": "company_id",
-              "value": 1,
-              "type": "number"
-            },
-            {
-              "id": "746f2015-4b03-4f60-9467-564bfa2fb713",
-              "name": "company_mane",
-              "value": "KIBERone Саратов Октябрьский",
-              "type": "string"
-            }
-          ]
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.set",
-      "typeVersion": 3.4,
-      "position": [
-        304,
+        -528,
         0
       ],
-      "id": "7107b09e-fbe4-4658-a407-71d7cef66319",
-      "name": "Set company_id and company_name"
+      "id": "09ae6662-caa2-4372-bd49-e5769b6728af",
+      "name": "When Executed by Another Workflow"
     }
   ],
   "connections": {
@@ -430,17 +342,6 @@
         [
           {
             "node": "Save prompt",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "When clicking ‘Execute workflow’": {
-      "main": [
-        [
-          {
-            "node": "Get a file1",
             "type": "main",
             "index": 0
           }
@@ -484,7 +385,7 @@
       "main": [
         [
           {
-            "node": "Set company_id and company_name",
+            "node": "Select rows from a table",
             "type": "main",
             "index": 0
           }
@@ -528,13 +429,7 @@
             "index": 0
           }
         ],
-        [
-          {
-            "node": "Error",
-            "type": "main",
-            "index": 0
-          }
-        ]
+        []
       ]
     },
     "Merge": {
@@ -577,22 +472,11 @@
         ]
       ]
     },
-    "Error": {
+    "When Executed by Another Workflow": {
       "main": [
         [
           {
-            "node": "Loop Over Items1",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Set company_id and company_name": {
-      "main": [
-        [
-          {
-            "node": "Select rows from a table",
+            "node": "Get a file1",
             "type": "main",
             "index": 0
           }
@@ -607,8 +491,22 @@
   "meta": {
     "templateCredsSetupCompleted": true
   },
-  "pinData": {},
-  "versionId": "92bac18f-d479-4a94-93c8-3a18c209e4fd",
+  "pinData": {
+    "When Executed by Another Workflow": [
+      {
+        "json": {
+          "id": "ezK8ihYnfxZNTIAc",
+          "root_execution_id": 20076,
+          "company_id": 2,
+          "threshhold": "0.88",
+          "company_name": "Первый визовый центр Курган",
+          "services_description": "Визы:    http://krg45.visa-rf.ru/ АТЭС:    http://krg45.apec-first.ru/",
+          "user_content_dropbox_folder": "/Test_content_folder_for_Kurgan"
+        }
+      }
+    ]
+  },
+  "versionId": "12595a1e-998a-4889-b3d6-31114a85f9d1",
   "triggerCount": 0,
   "shared": [
     {
@@ -619,5 +517,12 @@
       "projectId": "spKmbJLU4mvACXIB"
     }
   ],
-  "tags": []
+  "tags": [
+    {
+      "createdAt": "2025-10-17T09:03:18.269Z",
+      "updatedAt": "2025-10-17T09:03:18.269Z",
+      "id": "S7zerj1h6Ro25pTA",
+      "name": "client creation"
+    }
+  ]
 }
