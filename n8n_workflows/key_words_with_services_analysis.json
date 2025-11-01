@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-15T10:20:29.723Z",
-  "updatedAt": "2025-11-01T18:09:24.441Z",
+  "updatedAt": "2025-11-01T18:11:24.772Z",
   "id": "AEZDBlqe199xBn5u",
   "name": "key_words_with_services_analysis",
   "active": false,
@@ -352,8 +352,8 @@
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1.2,
       "position": [
-        2000,
-        -112
+        2016,
+        -144
       ],
       "id": "164f64e6-2677-4461-bcfb-934df3bc2f3b",
       "name": "Find competitors mentions"
@@ -1371,7 +1371,7 @@
       }
     ]
   },
-  "versionId": "f9cad1a2-1b45-4ffc-8879-01fb2cdabc2e",
+  "versionId": "dfe0d7c4-56d0-47b2-9a02-a94f3b100eb4",
   "triggerCount": 0,
   "shared": [
     {
