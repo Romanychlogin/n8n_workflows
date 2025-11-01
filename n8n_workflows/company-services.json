@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-09-10T14:56:27.610Z",
-  "updatedAt": "2025-10-31T10:40:44.095Z",
+  "updatedAt": "2025-11-01T10:20:51.952Z",
   "id": "5Se0CY4jTtS5g7n3",
   "name": "company services",
   "active": false,
@@ -1337,7 +1337,10 @@
     }
   },
   "settings": {
-    "executionOrder": "v1"
+    "executionOrder": "v1",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false,
+    "errorWorkflow": "v2Z32ISEUzsFYnZw"
   },
   "staticData": null,
   "meta": {
@@ -1358,7 +1361,7 @@
       }
     ]
   },
-  "versionId": "3d54adee-592d-4bdf-b372-56431b226bc7",
+  "versionId": "da6a8991-f4e8-4586-9416-d05a1eb613b4",
   "triggerCount": 0,
   "shared": [
     {
