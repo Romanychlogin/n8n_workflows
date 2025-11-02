@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-10-20T11:13:37.232Z",
-  "updatedAt": "2025-10-31T06:50:04.242Z",
+  "updatedAt": "2025-11-02T07:02:14.860Z",
   "id": "b9eGU4g5DID0kq2E",
   "name": "ADV_campaign_analysis_initial",
   "active": false,
@@ -2129,8 +2129,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        7712,
-        -688
+        1456,
+        -416
       ],
       "id": "6ec72545-51d2-4720-a842-afbbe104a2e1",
       "name": "refresh minus words status",
@@ -2177,7 +2177,7 @@
       "main": [
         [
           {
-            "node": "Mark_workflow_completed",
+            "node": "refresh minus words status",
             "type": "main",
             "index": 0
           }
@@ -2242,7 +2242,7 @@
       "main": [
         [
           {
-            "node": "refresh minus words status",
+            "node": "Get current step and tokens saved",
             "type": "main",
             "index": 0
           }
@@ -2264,7 +2264,7 @@
       "main": [
         [
           {
-            "node": "refresh minus words status",
+            "node": "Get current step and tokens saved",
             "type": "main",
             "index": 0
           }
@@ -2934,7 +2934,7 @@
       "main": [
         [
           {
-            "node": "Get current step and tokens saved",
+            "node": "Mark_workflow_completed",
             "type": "main",
             "index": 0
           }
@@ -2995,7 +2995,7 @@
       }
     ]
   },
-  "versionId": "e6e36412-17a9-4afa-9f3e-f64df353295d",
+  "versionId": "d71092b0-b4a1-4fdc-8357-cd0139605738",
   "triggerCount": 0,
   "shared": [
     {
