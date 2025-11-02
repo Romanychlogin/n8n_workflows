@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-10-07T21:30:12.820Z",
-  "updatedAt": "2025-10-20T18:24:16.089Z",
+  "updatedAt": "2025-11-02T15:00:04.629Z",
   "id": "d4D0Fp4pO6Ch7S7C",
   "name": "CRM lead process",
   "active": true,
@@ -265,21 +265,8 @@
     },
     {
       "parameters": {
-        "jsCode": "function toUnixSeconds(dt) {\n  const s = String(dt ?? '').trim();\n  if (!s) return Math.floor(Date.now() / 1000);\n  if (/^\\d+$/.test(s)) return Number(s);\n  const t = Date.parse(s);\n  return Number.isFinite(t)\n    ? Math.floor(t / 1000)\n    : Math.floor(Date.now() / 1000);\n}\n\nfunction toDigitsString(v) {\n  const s = String(v ?? '').trim();\n  if (!s) return '';\n  // используем только цифры, исключаем всё остальное\n  return s.replace(/\\D/g, '');\n}\n\nconst input = $json || {};\nconst counterId = input.counterId;\nconst target = String(input.target ?? '').trim();\nconst yclidRaw = input.yclid ?? input.yclid_id;\nconst etext = String(input.etext ?? '').trim();\n\nif (!counterId) throw new Error('counterId is required');\nif (!target) throw new Error('target is required');\n\nconst yclid = toDigitsString(yclidRaw);\nif (!yclid) throw new Error('yclid is required and must be digits only');\n\n// здесь обновлено: гарантируем целые секунды\nconst dateUnix = Math.floor(Number(input.datetime || Date.now() / 1000));\n\n// CSV\nconst headers = ['Yclid', 'Target', 'DateTime'];\nconst row = [yclid, target, String(dateUnix)];\nconst csv =\n  headers.join(',') +\n  '\\n' +\n  row.map((v) => `\"${String(v).replace(/\"/g, '\"\"')}\"`).join(',');\n\nconst data = Buffer.from(csv, 'utf8').toString('base64');\n\nreturn [\n  {\n    json: {\n      counterId,\n      comment: etext ? `etl:${etext}` : undefined,\n    },\n    binary: {\n      file: {\n        data,\n        fileName: 'offline-conv.csv',\n        mimeType: 'text/csv',\n      },\n    },\n  },\n];"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        1536,
-        432
-      ],
-      "id": "2426a3d8-fec0-44c7-9a54-d174fd4e5e40",
-      "name": "Code in JavaScript1"
-    },
-    {
-      "parameters": {
         "mode": "raw",
-        "jsonOutput": "{\n  \"alfacrm\": {\n    \"host\": \"kiberonesaratov.s20.online\",\n    \"email\": \"antonkarzhavin1@yandex.ru\",\n    \"api_key\": \"656b9709-9547-11f0-b9b8-3cecefbdd1ae\",\n  }\n}",
+        "jsonOutput": "{\n  \"alfacrm\": {\n    \"host\": \"kiberonesaratov.s20.online\",\n    \"email\": \"kiberone.saratov@gmail.com\",\n    \"api_key\": \"0bc94111-6567-11f0-b9b8-3cecefbdd1ae\",\n  }\n}",
         "includeOtherFields": true,
         "options": {}
       },
@@ -327,63 +314,6 @@
       ],
       "id": "c986603b-a0b6-4101-b682-3b315accbb79",
       "name": "Set Metrica data"
-    },
-    {
-      "parameters": {
-        "method": "POST",
-        "url": "=https://api-metrika.yandex.net/management/v1/counter/85745759/offline_conversions/upload",
-        "sendQuery": true,
-        "queryParameters": {
-          "parameters": [
-            {
-              "name": "client_id_type",
-              "value": "CLIENT_ID"
-            }
-          ]
-        },
-        "sendHeaders": true,
-        "headerParameters": {
-          "parameters": [
-            {
-              "name": "Authorization",
-              "value": "OAuth y0__xCI47u1CBiq4zog0YyG0hR1z7e64gJ-hZLEalVNHnDN1VhYUQ"
-            }
-          ]
-        },
-        "sendBody": true,
-        "contentType": "multipart-form-data",
-        "bodyParameters": {
-          "parameters": [
-            {
-              "parameterType": "formBinaryData",
-              "name": "file",
-              "inputDataFieldName": "file"
-            }
-          ]
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.2,
-      "position": [
-        1728,
-        432
-      ],
-      "id": "8e322616-82e5-4920-8bf7-2b6697192fc2",
-      "name": "HTTP Request"
-    },
-    {
-      "parameters": {
-        "jsCode": "const counterId = 85745759;\nconst goalName = 'crm_lead';\nconst randomNum = Math.random();\n\nconst params = `browser-info=ar:1:pv:1:rn:${randomNum}&page-url=https://saratov-okt.kiber-one.com/goal/${goalName}&ut=noindex`;\n\nconst url = `https://mc.yandex.ru/watch/${counterId}?${params}`;\n\nconst response = await this.helpers.httpRequest({\n  method: 'GET',\n  url: url,\n});\n\nreturn [{\n  json: {\n    success: true,\n    url: url\n  }\n}];"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        1552,
-        592
-      ],
-      "id": "13d31b80-c2a5-4226-8a39-b8a5a78d4f09",
-      "name": "Code in JavaScript2"
     },
     {
       "parameters": {
@@ -563,22 +493,6 @@
         ]
       ]
     },
-    "Code in JavaScript1": {
-      "main": [
-        [
-          {
-            "node": "HTTP Request",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Code in JavaScript2": {
-      "main": [
-        []
-      ]
-    },
     "HTTP Request1": {
       "main": [
         []
@@ -622,23 +536,8 @@
   },
   "staticData": null,
   "meta": null,
-  "pinData": {
-    "Code in JavaScript1": [
-      {
-        "json": {
-          "counterId": "85745759"
-        },
-        "binary": {
-          "file": {
-            "data": "WWNsaWQsVGFyZ2V0LERhdGVUaW1lCiIxMzc0MTgyNTI0MzkxNjAwOTQ3MSIsIjQ3MzY3MjEyMCIsIjE3NjA2MTMzNjUi",
-            "fileName": "offline-conv.csv",
-            "mimeType": "text/csv"
-          }
-        }
-      }
-    ]
-  },
-  "versionId": "00fe3e53-4aaa-4d34-b6fc-21c3cf6791f8",
+  "pinData": {},
+  "versionId": "f3806316-2349-4cbd-888a-8afcee67ed72",
   "triggerCount": 1,
   "shared": [
     {
