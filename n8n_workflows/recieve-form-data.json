@@ -1,6 +1,6 @@
 {
   "createdAt": "2025-10-21T12:43:03.776Z",
-  "updatedAt": "2025-10-22T17:45:35.419Z",
+  "updatedAt": "2025-11-02T15:08:43.283Z",
   "id": "Z5sOyh4IJtSVsD2a",
   "name": "Recieve form data",
   "active": true,
@@ -27,7 +27,7 @@
     {
       "parameters": {
         "mode": "raw",
-        "jsonOutput": "{\n  \"alfacrm\": {\n    \"host\": \"kiberonesaratov.s20.online\",\n    \"email\": \"antonkarzhavin1@yandex.ru\",\n    \"api_key\": \"656b9709-9547-11f0-b9b8-3cecefbdd1ae\",\n    \"lead_source_id\": 1,\n    \"branch_id\": 1,\n  }\n}",
+        "jsonOutput": "{\n  \"alfacrm\": {\n    \"host\": \"kiberonesaratov.s20.online\",\n    \"email\": \"kiberone.saratov@gmail.com\",\n    \"api_key\": \"0bc94111-6567-11f0-b9b8-3cecefbdd1ae\",\n    \"lead_source_id\": 1,\n    \"branch_id\": 1,\n  }\n}",
         "includeOtherFields": true,
         "options": {}
       },
@@ -81,32 +81,18 @@
     },
     {
       "parameters": {
-        "jsCode": "/**\n * AlfaCRM create customer — force phone[] + immediate update fallback\n * branch_ids = [1]\n */\n\nasync function http(req) { return await this.helpers.httpRequest(req); }\n\nasync function login(self, { host, email, api_key }) {\n  const res = await http.call(self, {\n    method: 'POST',\n    url: `https://${host}/v2api/auth/login`,\n    headers: { 'Content-Type': 'application/json' },\n    body: { email, api_key },\n    json: true,\n  });\n  if (!res?.token) throw new Error('Auth failed');\n  return res.token;\n}\n\nasync function createCustomer(self, { host, token, payload }) {\n  return await http.call(self, {\n    method: 'POST',\n    url: `https://${host}/v2api/1/customer/create`,\n    headers: { 'Content-Type': 'application/json', 'X-ALFACRM-TOKEN': token },\n    body: payload, json: true, gzip: true, timeout: 20000,\n  });\n}\n\nasync function updateCustomer(self, { host, token, id, payload }) {\n  return await http.call(self, {\n    method: 'POST',\n    url: `https://${host}/v2api/1/customer/update?id=${id}`,\n    headers: { 'Content-Type': 'application/json', 'X-ALFACRM-TOKEN': token },\n    body: payload, json: true, gzip: true, timeout: 20000,\n  });\n}\n\n// ---------- helpers ----------\nconst notEmpty = v => v !== undefined && v !== null && String(v).trim() !== '';\nfunction asObj(maybe) {\n  if (!maybe) return {};\n  if (typeof maybe === 'object') return maybe;\n  if (typeof maybe === 'string') { try { return JSON.parse(maybe); } catch { return {}; } }\n  return {};\n}\nfunction cleanPhone(p) {\n  if (!notEmpty(p)) return '';\n  return String(p).replace(/[^\\d+]/g, '').replace(/(?!^)\\+/g, '').replace(/^00/, '+').trim();\n}\n\nconst items = await $input.all();\nconst out = [];\n\nfor (const item of items) {\n  const input = item.json ?? item;\n  const conf = input.alfacrm || {};\n  const host = conf.host || input.host;\n  const email = conf.email || input.email;\n  const api_key = conf.api_key || input.api_key;\n  if (!host || !email || !api_key) throw new Error('Provide alfacrm.host, alfacrm.email, alfacrm.api_key');\n\n  const token = await login(this, { host, email, api_key });\n\n  const f = asObj(input.fields);\n  const rawPhone =\n    f['1_3'] || f['1_7'] || input.phone ||\n    (Array.isArray(input.contact_contacts) ? input.contact_contacts[0] : '') ||\n    (Array.isArray(f.contact_contacts) ? f.contact_contacts[0] : '');\n  const phone = cleanPhone(rawPhone);\n\n  const name = f.name || f['1_2'] || input.name || 'Без имени';\n  const lead_source_id = Number(f.lead_source_id || input.lead_source_id || 3) || 3;\n\n  if (!notEmpty(phone)) {\n    out.push({ json: { success:false, reason:'no_phone_candidate', fields:f } });\n    continue;\n  }\n\n  const createPayload = {\n    name,\n    branch_ids: [1],\n    legal_type: 1,\n    is_study: 0,\n    lead_source_id,\n    // КЛЮЧЕВОЕ: пишем телефон в ОБА поля\n    phone: [phone],\n    contact_contacts: [phone]\n  };\n\n  let createRes, updateRes = null, finalPhone = [];\n  try {\n    createRes = await createCustomer(this, { host, token, payload: createPayload });\n  } catch (e) {\n    out.push({ json: { success:false, stage:'create', error:e?.response?.body || e.message, sent:createPayload } });\n    continue;\n  }\n\n  const id = createRes?.model?.id;\n  finalPhone = Array.isArray(createRes?.model?.phone) ? createRes.model.phone : [];\n\n  // если create сохранил пусто — добиваем update'ом\n  if (id && finalPhone.length === 0) {\n    const updatePayload = { phone: [phone] };\n    try {\n      updateRes = await updateCustomer(this, { host, token, id, payload: updatePayload });\n      finalPhone = Array.isArray(updateRes?.model?.phone) ? updateRes.model.phone : [];\n      out.push({ json: {\n        success: true,\n        id,\n        phone_candidate: phone,\n        createSaved: Array.isArray(createRes?.model?.phone) ? createRes.model.phone : [],\n        finalSaved: finalPhone,\n        sent: { createPayload, updatePayload },\n        response: { createRes, updateRes }\n      }});\n    } catch (e2) {\n      out.push({ json: {\n        success:false,\n        stage:'update',\n        id,\n        phone_candidate: phone,\n        createSaved: Array.isArray(createRes?.model?.phone) ? createRes.model.phone : [],\n        error: e2?.response?.body || e2.message,\n        sent: { createPayload, updatePayload }\n      }});\n    }\n    continue;\n  }\n\n  // create сразу сохранил телефон\n  out.push({ json: {\n    success:true,\n    id,\n    phone_candidate: phone,\n    finalSaved: finalPhone,\n    sent: { createPayload },\n    response: { createRes }\n  }});\n}\n\nreturn out;"
+        "content": "## Получает данные из форм на сайте\nНа сайте есть несколько форм (id 24150 и id 26073), мы получаем данные из них, нормализуем поля и передаем в CRM. Нода Update source ID вычисляет правильный признак яндекс.директа (8) или обычного трафика (3)",
+        "height": 112,
+        "width": 1312
       },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
+      "type": "n8n-nodes-base.stickyNote",
       "position": [
-        1072,
-        192
+        -48,
+        -192
       ],
-      "id": "f04389da-da52-4fed-93f6-99354e7af20a",
-      "name": "Code in JavaScript1"
-    },
-    {
-      "parameters": {
-        "mode": "raw",
-        "jsonOutput": "{\n  \"alfacrm\": {\n    \"host\": \"kiberonesaratov.s20.online\",\n    \"email\": \"antonkarzhavin1@yandex.ru\",\n    \"api_key\": \"656b9709-9547-11f0-b9b8-3cecefbdd1ae\"\n  },\n\"fields\": {\n    \"name\": \"test-from-n8n\",\n    \"1_3\": \"+7(911)793-22-16\",\n    \"lead_source_id\": \"40\"\n  }\n}\n",
-        "includeOtherFields": true,
-        "options": {}
-      },
-      "type": "n8n-nodes-base.set",
-      "typeVersion": 3.4,
-      "position": [
-        640,
-        144
-      ],
-      "id": "49a47b42-83c2-49da-b93c-377cf4b4216c",
-      "name": "Set CRM data1"
+      "typeVersion": 1,
+      "id": "9cd224a6-19b8-4808-a17d-98c725c538bf",
+      "name": "Sticky Note"
     }
   ],
   "connections": {
@@ -157,17 +143,6 @@
     "Send Lead data to CRM": {
       "main": [
         []
-      ]
-    },
-    "Set CRM data1": {
-      "main": [
-        [
-          {
-            "node": "Code in JavaScript1",
-            "type": "main",
-            "index": 0
-          }
-        ]
       ]
     }
   },
@@ -221,7 +196,7 @@
       }
     ]
   },
-  "versionId": "dd8070c9-c231-4a33-87b7-18927bb9914a",
+  "versionId": "9bcbc207-0358-405d-bac2-350ccc6a91e7",
   "triggerCount": 1,
   "shared": [
     {
