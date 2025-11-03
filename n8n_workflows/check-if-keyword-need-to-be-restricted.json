@@ -1,6 +1,6 @@
 {
+  "updatedAt": "2025-11-03T18:10:02.412Z",
   "createdAt": "2025-10-08T11:54:45.682Z",
-  "updatedAt": "2025-10-14T19:37:44.252Z",
   "id": "0JY4BXCUoUM4RzPE",
   "name": "Check if keyword need to be restricted",
   "active": false,
@@ -110,7 +110,7 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "WITH grouped AS (\n  SELECT\n    rtrim(NULLIF(trim(split_part(used_keyword, ' -', 1)), '')) as used_keyword, ads_header,\n\tSUM(count_convetions) as count_convetions,\n    SUM(count_views) AS views_total,\n    SUM(\n      CASE\n        WHEN resolution NOT IN ('same key', 'to add') OR resolution IS NULL\n          THEN count_views\n        ELSE 0\n      END\n    ) AS views_other\n  FROM current_list\n  WHERE company_id = $1\n  GROUP BY used_keyword,ads_header\n)\nSELECT\n  used_keyword,ads_header,\n  views_total,\n  views_other,\n  ROUND(views_other::numeric / NULLIF(views_total,0), 4) AS share_other\nFROM grouped\nWHERE views_total > 20\n  AND views_other::numeric / NULLIF(views_total, 0) >= 0.5\n  AND used_keyword NOT LIKE '\"%'\n  AND count_convetions =0 \nORDER BY share_other DESC, views_total DESC;",
+        "query": "WITH grouped AS (\n  SELECT\n    lower(rtrim(NULLIF(trim(split_part(used_keyword, ' -', 1)), ''))) as used_keyword, ads_header,\n\tSUM(count_convetions) as count_convetions,\n    SUM(count_views) AS views_total,\n    SUM(\n      CASE\n        WHEN resolution NOT IN ('same key', 'to add') OR resolution IS NULL\n          THEN count_views\n        ELSE 0\n      END\n    ) AS views_other\n  FROM current_list\n  WHERE company_id = $1\n  GROUP BY used_keyword,ads_header\n)\nSELECT\n  used_keyword,ads_header,\n  views_total,\n  views_other,\n  ROUND(views_other::numeric / NULLIF(views_total,0), 4) AS share_other\nFROM grouped\nWHERE views_total > 20\n  AND views_other::numeric / NULLIF(views_total, 0) >= 0.5\n  AND used_keyword NOT LIKE '\"%'\n  AND count_convetions =0 \nORDER BY share_other DESC, views_total DESC;",
         "options": {
           "queryReplacement": "={{ $('When Executed by Another Workflow').item.json.company_id }}"
         }
@@ -118,7 +118,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        -2096,
+        -2208,
         -400
       ],
       "id": "839315e4-88ed-47cb-8567-43cedd3b6a59",
@@ -133,9 +133,9 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "UPDATE ads_list\n\tSET key_word='\"' || $2 || '\"',update_required=true WHERE key_word=$2 and company_id=$1;\n",
+        "query": "UPDATE ads_list\n\tSET key_word='\"' || key_word || '\"',update_required=true \n  WHERE company_id=$1 AND \n  lower(key_word) in IN (\n    SELECT value::bigint\n    FROM jsonb_array_elements_text($2::jsonb) AS t(value)\n  );\n",
         "options": {
-          "queryReplacement": "={{ $('When Executed by Another Workflow').item.json.company_id }},{{$json.used_keyword }}"
+          "queryReplacement": "={{ $('When Executed by Another Workflow').item.json.company_id }},{{JSON.stringify($json.ids)}}"
         }
       },
       "type": "n8n-nodes-base.postgres",
@@ -188,6 +188,19 @@
           "name": "Postgres account 2"
         }
       }
+    },
+    {
+      "parameters": {
+        "jsCode": "\n\nconst ids = $input.all()\n  .map(({ json }) => json ?? {})\n  .map(({ key_word }) => [ String(used_keyword ?? '') ]);\n\nreturn [{ json: { ids, count: ids.length } }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -2032,
+        -400
+      ],
+      "id": "15b2a6c3-55b5-4ac6-b859-2c998db6f620",
+      "name": "aggregate output"
     }
   ],
   "connections": {
@@ -233,12 +246,7 @@
       "main": [
         [
           {
-            "node": "update ads_list",
-            "type": "main",
-            "index": 0
-          },
-          {
-            "node": "update current_ads_list",
+            "node": "aggregate output",
             "type": "main",
             "index": 0
           }
@@ -277,6 +285,22 @@
           }
         ]
       ]
+    },
+    "aggregate output": {
+      "main": [
+        [
+          {
+            "node": "update ads_list",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "update current_ads_list",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
@@ -299,18 +323,21 @@
     "When Executed by Another Workflow": [
       {
         "json": {
+          "id": "0JY4BXCUoUM4RzPE",
+          "root_execution_id": 190047,
           "company_id": 1,
-          "root_execution_id": 74293
+          "threshhold": "0.79",
+          "import_id": "11"
         }
       }
     ]
   },
-  "versionId": "db625b9e-702d-4c0d-9bd0-ae48b0b8854b",
+  "versionId": "1530e162-c9c0-48da-b7e5-e2fb8c83876d",
   "triggerCount": 0,
   "shared": [
     {
-      "createdAt": "2025-10-08T11:54:45.682Z",
       "updatedAt": "2025-10-08T11:54:45.682Z",
+      "createdAt": "2025-10-08T11:54:45.682Z",
       "role": "workflow:owner",
       "workflowId": "0JY4BXCUoUM4RzPE",
       "projectId": "spKmbJLU4mvACXIB"
@@ -318,8 +345,8 @@
   ],
   "tags": [
     {
-      "createdAt": "2025-10-08T11:53:55.048Z",
       "updatedAt": "2025-10-08T11:53:55.048Z",
+      "createdAt": "2025-10-08T11:53:55.048Z",
       "id": "bfaXXdoIW5NToPfb",
       "name": "post procesing"
     }
