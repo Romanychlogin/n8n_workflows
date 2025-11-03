@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-03T10:14:25.998Z",
+  "updatedAt": "2025-11-03T12:46:48.938Z",
   "createdAt": "2025-11-03T10:14:25.998Z",
   "id": "0eNPm5Ccv1vMf2CV",
   "name": "competitors vs content review",
@@ -78,30 +78,6 @@
       ],
       "id": "0bb46ce3-232e-45cb-a37e-b2aaaa8b0386",
       "name": "Init total counter"
-    },
-    {
-      "parameters": {
-        "operation": "executeQuery",
-        "query": "SELECT\n  v.minus_word,\n  v.id,\n  ct.phrase,\n  ct.content_id,\n  ct.report_id,\n  1 - (v.minus_word_embedding <=> ct.phrase_embedding) AS similarity\nFROM company_content ct\nCROSS JOIN LATERAL (\n  SELECT v.minus_word, v.id, v.minus_word_embedding\n  FROM minus_words v\n  WHERE v.company_id = $1\n  ORDER BY v.minus_word_embedding <=> ct.phrase_embedding\n  LIMIT 50                           -- подберите k экспериментально\n) v\nWHERE ct.company_id = $1\n  AND 1 - (v.minus_word_embedding <=> ct.phrase_embedding) > $2\n  AND ct.report_id<>0 -- не включаем в анализ изначальный контент \n  AND ct.phrase_embedding IS NOT NULL;",
-        "options": {
-          "queryReplacement": "={{ $('When Executed by Another Workflow').item.json.company_id }},{{$json.threshold  }}"
-        }
-      },
-      "type": "n8n-nodes-base.postgres",
-      "typeVersion": 2.6,
-      "position": [
-        -2160,
-        -400
-      ],
-      "id": "3292977c-8e97-4c64-b2cb-1a11cd8f0a86",
-      "name": "Get matched minus words and content",
-      "alwaysOutputData": true,
-      "credentials": {
-        "postgres": {
-          "id": "4YkdFJcdTgzo9hkz",
-          "name": "PGvector"
-        }
-      }
     },
     {
       "parameters": {
@@ -211,8 +187,7 @@
           "cachedResultUrl": "https://github.com/Romanychlogin/n8n_prompts"
         },
         "filePath": "phrase_analysis.txt",
-        "additionalParameters": {},
-        "path": "37a753c2-5e09-40b1-9f12-77dbf14d35da"
+        "additionalParameters": {}
       },
       "type": "n8n-nodes-base.github",
       "typeVersion": 1.1,
@@ -762,6 +737,30 @@
           "name": "PGvector"
         }
       }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT\n  v.canonical_name,\n  v.name_text,\n  v.competitor_id,\n  ct.phrase,\n  ct.content_id,\n  ct.report_id,\n  1 - (v.embedding <=> ct.phrase_embedding) AS similarity\nFROM company_content ct\nCROSS JOIN LATERAL (\n  SELECT v.name_text, v.competitor_id, v.embedding,e.canonical_name\n  FROM competitor_name_variants v JOIN competitor_entities e USING (competitor_id)\n  WHERE e.company_id = $1\n  ORDER BY v.embedding <=> ct.phrase_embedding\n  LIMIT 50                           -- подберите k экспериментально\n) v\nWHERE ct.company_id = $1\n  AND 1 - (v.embedding <=> ct.phrase_embedding) > $2\n  AND ct.report_id<>0 -- не включаем в анализ изначальный контент \n  AND ct.phrase_embedding IS NOT NULL;",
+        "options": {
+          "queryReplacement": "={{ $('When Executed by Another Workflow').item.json.company_id }},{{$json.threshold  }}"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -2160,
+        -400
+      ],
+      "id": "3292977c-8e97-4c64-b2cb-1a11cd8f0a86",
+      "name": "Get matched competitors and content",
+      "alwaysOutputData": true,
+      "credentials": {
+        "postgres": {
+          "id": "4YkdFJcdTgzo9hkz",
+          "name": "PGvector"
+        }
+      }
     }
   ],
   "connections": {
@@ -803,22 +802,11 @@
         ]
       ]
     },
-    "Get matched minus words and content": {
-      "main": [
-        [
-          {
-            "node": "If1",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "set variables": {
       "main": [
         [
           {
-            "node": "Get matched minus words and content",
+            "node": "Get matched competitors and content",
             "type": "main",
             "index": 0
           }
@@ -1164,6 +1152,17 @@
           }
         ]
       ]
+    },
+    "Get matched competitors and content": {
+      "main": [
+        [
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
@@ -1358,7 +1357,7 @@
       }
     ]
   },
-  "versionId": "97088e15-3cdf-41e3-bb7e-dd2accedfa0f",
+  "versionId": "336e9aea-bf74-4bda-a32f-ef540c08576b",
   "triggerCount": 0,
   "shared": [
     {
