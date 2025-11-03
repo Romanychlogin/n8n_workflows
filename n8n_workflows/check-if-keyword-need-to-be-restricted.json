@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-03T19:09:46.759Z",
+  "updatedAt": "2025-11-03T19:14:08.941Z",
   "createdAt": "2025-10-08T11:54:45.682Z",
   "id": "0JY4BXCUoUM4RzPE",
   "name": "Check if keyword need to be restricted",
@@ -133,9 +133,9 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "UPDATE ads_list\n\tSET key_word='\"' || key_word || '\"',update_required=true \n  WHERE company_id=$1 AND \n  lower(key_word) in IN (\n    SELECT value::bigint\n    FROM jsonb_array_elements_text($2::jsonb) AS t(value)\n  );\n",
+        "query": "UPDATE ads_list\n\tSET key_word='\"' || key_word || '\"',update_required=true \n  WHERE company_id=$1 AND \n  lower(key_word) IN (\n    SELECT value::text\n    FROM jsonb_array_elements_text($2::jsonb) AS t(value)\n  );\n",
         "options": {
-          "queryReplacement": "={{ $('When Executed by Another Workflow').item.json.company_id }},{{JSON.stringify($json.ids)}}"
+          "queryReplacement": "={{ $('When Executed by Another Workflow').last().json.company_id }},{{JSON.stringify($json.ids)}}"
         }
       },
       "type": "n8n-nodes-base.postgres",
@@ -169,9 +169,9 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "UPDATE current_ads_list\n\tSET key_word='\"' || key_word || '\"',update_required=true \n  WHERE company_id=$1 AND \n  lower(key_word) in IN (\n    SELECT value::bigint\n    FROM jsonb_array_elements_text($2::jsonb) AS t(value)\n  );\n\n",
+        "query": "UPDATE current_ads_list\n\tSET key_word='\"' || key_word || '\"',update_required=true \n  WHERE company_id=$1 AND \n  lower(key_word) IN (\n    SELECT value::text\n    FROM jsonb_array_elements_text($2::jsonb) AS t(value)\n  );\n\n",
         "options": {
-          "queryReplacement": "={{ $('When Executed by Another Workflow').item.json.company_id }},{{JSON.stringify($json.ids)}}"
+          "queryReplacement": "={{ $('When Executed by Another Workflow').last().json.company_id }},{{JSON.stringify($json.ids)}}"
         }
       },
       "type": "n8n-nodes-base.postgres",
@@ -332,7 +332,7 @@
       }
     ]
   },
-  "versionId": "262323c3-f0cd-47ab-9b88-f3d6a012ffb9",
+  "versionId": "2d02fd49-4f26-42d5-920f-e265267be903",
   "triggerCount": 0,
   "shared": [
     {
