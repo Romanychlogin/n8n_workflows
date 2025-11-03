@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-10-31T06:58:36.747Z",
+  "updatedAt": "2025-11-03T10:06:29.070Z",
   "createdAt": "2025-09-28T11:31:13.045Z",
   "id": "lBAh8kjoXRX0aGUF",
   "name": "ADS headers and texts creation services for updates",
@@ -85,7 +85,7 @@
     },
     {
       "parameters": {
-        "jsCode": "\n\nreturn [{\n  json: \n {\n  \"model\": \"gpt-5\",\n  \"input\": [\n    {\n      \"role\": \"developer\",\n      \"content\": [\n        {\n          \"type\": \"input_text\",\n          \"text\": \"ты специалист по контекстной рекламе. Твоя задача точно выполнять инструкции\"\n        }\n      ]\n    },\n    {\n      \"role\": \"user\",\n      \"content\": [\n        {\n          \"type\": \"input_text\",\n          \"text\": $json.my_prompt\n        }\n      ]\n    }\n  ],\n  \"text\": {\n    \"format\": {\n      \"type\": \"json_schema\",\n      \"name\": \"headers\",\n      \"strict\": true,\n      \"schema\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"headers\": {\n            \"type\": \"array\",\n            \"description\": \"List of header objects.\",\n            \"items\": {\n              \"type\": \"object\",\n              \"properties\": {\n                \"header\": {\n                  \"type\": \"string\",\n                  \"description\": \"A string up to 56 characters.\",\n                  \"minLength\": 0,\n                  \"maxLength\": 56\n                },\n                \"id\": {\n                  \"type\": \"string\",\n                  \"description\": \"Unique identifier for the header object.\",\n                  \"minLength\": 1\n                }\n              },\n              \"required\": [\n                \"header\",\n                \"id\"\n              ],\n              \"additionalProperties\": false\n            },\n            \"minItems\": 0\n          }\n        },\n        \"required\": [\n          \"headers\"\n        ],\n        \"additionalProperties\": false\n      }\n    },\n    \"verbosity\": \"low\"\n  },\n  \"reasoning\": {\n    \"effort\": \"low\",\n    \"summary\": \"detailed\"\n  },\n  \"tools\": [],\n  \"store\": false,\n  \"include\": [\n    \"reasoning.encrypted_content\",\n    \"web_search_call.action.sources\"\n  ]\n}\n\n}];"
+        "jsCode": "\n\nreturn [{\n  json: \n {\n  \"model\": \"gpt-5\",\n  \"input\": [\n    {\n      \"role\": \"developer\",\n      \"content\": [\n        {\n          \"type\": \"input_text\",\n          \"text\": \"Ты — генератор заголовков рекламных объявлений. Твоя задача по каждой пользовательской фразе создать один короткий заголовок, строго соблюдая правила.\"\n        }\n      ]\n    },\n    {\n      \"role\": \"user\",\n      \"content\": [\n        {\n          \"type\": \"input_text\",\n          \"text\": $json.my_prompt\n        }\n      ]\n    }\n  ],\n  \"text\": {\n    \"format\": {\n      \"type\": \"json_schema\",\n      \"name\": \"headers\",\n      \"strict\": true,\n      \"schema\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"headers\": {\n            \"type\": \"array\",\n            \"description\": \"List of header objects.\",\n            \"items\": {\n              \"type\": \"object\",\n              \"properties\": {\n                \"header\": {\n                  \"type\": \"string\",\n                  \"description\": \"A string up to 56 characters.\",\n                  \"minLength\": 0,\n                  \"maxLength\": 56\n                },\n                \"id\": {\n                  \"type\": \"string\",\n                  \"description\": \"Unique identifier for the header object.\",\n                  \"minLength\": 1\n                }\n              },\n              \"required\": [\n                \"header\",\n                \"id\"\n              ],\n              \"additionalProperties\": false\n            },\n            \"minItems\": 0\n          }\n        },\n        \"required\": [\n          \"headers\"\n        ],\n        \"additionalProperties\": false\n      }\n    },\n    \"verbosity\": \"low\"\n  },\n  \"reasoning\": {\n    \"effort\": \"low\",\n    \"summary\": \"detailed\"\n  },\n  \"tools\": [],\n  \"store\": false,\n  \"include\": [\n    \"reasoning.encrypted_content\",\n    \"web_search_call.action.sources\"\n  ]\n}\n\n}];"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -132,8 +132,8 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        2144,
-        -720
+        2208,
+        -672
       ],
       "id": "14d43963-a615-4fa3-b342-ae9afdc40bbe",
       "name": "Sticky Note1"
@@ -147,8 +147,8 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        3104,
-        -752
+        3152,
+        -736
       ],
       "id": "13121ff4-d249-4a98-8e5c-c0e5b02b069c",
       "name": "Sticky Note2"
@@ -162,8 +162,8 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        3952,
-        -736
+        4160,
+        -752
       ],
       "id": "a0ce2830-2bd4-4c30-ac2f-77257eb329fe",
       "name": "Sticky Note3"
@@ -196,7 +196,7 @@
     },
     {
       "parameters": {
-        "jsCode": "\n\nreturn [{\n  json: \n {\n  \"model\": \"gpt-5\",\n  \"input\": [\n    {\n      \"role\": \"developer\",\n      \"content\": [\n        {\n          \"type\": \"input_text\",\n          \"text\": \"ты специалист по контекстной рекламе. Твоя задача точно выполнять инструкции\"\n        }\n      ]\n    },\n    {\n      \"role\": \"user\",\n      \"content\": [\n        {\n          \"type\": \"input_text\",\n          \"text\": $json.my_prompt\n        }\n      ]\n    }\n  ],\n  \"text\": {\n    \"format\": {\n      \"type\": \"json_schema\",\n      \"name\": \"ad_texts\",\n      \"strict\": true,\n      \"schema\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"ad_texts\": {\n            \"type\": \"array\",\n            \"description\": \"List of ad text objects.\",\n            \"items\": {\n              \"type\": \"object\",\n              \"properties\": {\n                \"ad_text\": {\n                  \"type\": \"string\",\n                  \"description\": \"Ad text, up to 81 characters.\",\n                  \"minLength\": 0,\n                  \"maxLength\": 81\n                },\n                \"id\": {\n                  \"type\": \"string\",\n                  \"description\": \"Unique identifier for the ad text object.\",\n                  \"minLength\": 1\n                }\n              },\n              \"required\": [\n                \"ad_text\",\n                \"id\"\n              ],\n              \"additionalProperties\": false\n            },\n            \"minItems\": 0\n          }\n        },\n        \"required\": [\n          \"ad_texts\"\n        ],\n        \"additionalProperties\": false\n      }\n    },\n    \"verbosity\": \"medium\"\n  },\n  \"reasoning\": {\n    \"effort\": \"low\",\n    \"summary\": \"detailed\"\n  },\n  \"tools\": [],\n  \"store\": false,\n  \"include\": [\n    \"reasoning.encrypted_content\",\n    \"web_search_call.action.sources\"\n  ]\n}\n\n}];"
+        "jsCode": "\n\nreturn [{\n  json: \n {\n  \"model\": \"gpt-5\",\n  \"input\": [\n    {\n      \"role\": \"developer\",\n      \"content\": [\n        {\n          \"type\": \"input_text\",\n          \"text\": \"Ты — генератор коротких рекламных текстов. Твоя задача — для каждого запроса пользователя и заголовка объявления к нему создать одну строку рекламного текста, соблюдая ограничения.\"\n        }\n      ]\n    },\n    {\n      \"role\": \"user\",\n      \"content\": [\n        {\n          \"type\": \"input_text\",\n          \"text\": $json.my_prompt\n        }\n      ]\n    }\n  ],\n  \"text\": {\n    \"format\": {\n      \"type\": \"json_schema\",\n      \"name\": \"ad_texts\",\n      \"strict\": true,\n      \"schema\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"ad_texts\": {\n            \"type\": \"array\",\n            \"description\": \"List of ad text objects.\",\n            \"items\": {\n              \"type\": \"object\",\n              \"properties\": {\n                \"ad_text\": {\n                  \"type\": \"string\",\n                  \"description\": \"Ad text, up to 81 characters.\",\n                  \"minLength\": 0,\n                  \"maxLength\": 81\n                },\n                \"id\": {\n                  \"type\": \"string\",\n                  \"description\": \"Unique identifier for the ad text object.\",\n                  \"minLength\": 1\n                }\n              },\n              \"required\": [\n                \"ad_text\",\n                \"id\"\n              ],\n              \"additionalProperties\": false\n            },\n            \"minItems\": 0\n          }\n        },\n        \"required\": [\n          \"ad_texts\"\n        ],\n        \"additionalProperties\": false\n      }\n    },\n    \"verbosity\": \"medium\"\n  },\n  \"reasoning\": {\n    \"effort\": \"low\",\n    \"summary\": \"detailed\"\n  },\n  \"tools\": [],\n  \"store\": false,\n  \"include\": [\n    \"reasoning.encrypted_content\",\n    \"web_search_call.action.sources\"\n  ]\n}\n\n}];"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -2020,15 +2020,15 @@
       {
         "json": {
           "id": "lBAh8kjoXRX0aGUF",
-          "root_execution_id": 142218,
+          "root_execution_id": 179684,
           "company_id": 1,
           "threshhold": "0.79",
-          "import_id": "7"
+          "import_id": "10"
         }
       }
     ]
   },
-  "versionId": "5df1d57b-88a3-4ecc-ba08-1c21ec91a26f",
+  "versionId": "d5c923ab-a909-44e5-8004-1b1d55ed0401",
   "triggerCount": 0,
   "shared": [
     {
