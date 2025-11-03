@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-03T12:46:48.938Z",
+  "updatedAt": "2025-11-03T17:11:00.932Z",
   "createdAt": "2025-11-03T10:14:25.998Z",
   "id": "0eNPm5Ccv1vMf2CV",
   "name": "competitors vs content review",
@@ -86,7 +86,7 @@
             {
               "id": "831e9ce7-d073-4020-a654-7792be7b4fd0",
               "name": "threshold",
-              "value": 0.8,
+              "value": 0.87,
               "type": "number"
             }
           ]
@@ -339,30 +339,6 @@
     },
     {
       "parameters": {
-        "operation": "executeQuery",
-        "query": "SELECT\n  v.minus_word,\n  v.id,\n  ct.phrase,\n  ct.content_id,\n  1 - (v.minus_word_embedding <=> ct.phrase_embedding) AS similarity\nFROM company_content ct\nCROSS JOIN LATERAL (\n  SELECT v.minus_word, v.id, v.minus_word_embedding\n  FROM minus_words v\n  WHERE v.company_id = $1\n  AND not exists (select 1 from minus_words_origin org WHERE org.minus_word_id=v.id AND org.key_word_id=0)\n  ORDER BY v.minus_word_embedding <=> ct.phrase_embedding\n  LIMIT 50                           -- подберите k экспериментально\n) v\nWHERE ct.company_id = $1\n  AND 1 - (v.minus_word_embedding <=> ct.phrase_embedding) > $2\n  AND ct.phrase_embedding IS NOT NULL;",
-        "options": {
-          "queryReplacement": "={{ $('When Executed by Another Workflow').last().json.company_id }},{{ $('set variables').last().json.threshold }}"
-        }
-      },
-      "type": "n8n-nodes-base.postgres",
-      "typeVersion": 2.6,
-      "position": [
-        -848,
-        -672
-      ],
-      "id": "896c7774-340c-4d71-96c8-61b2c68b7c0b",
-      "name": "Get matched minus words and content1",
-      "alwaysOutputData": true,
-      "credentials": {
-        "postgres": {
-          "id": "4YkdFJcdTgzo9hkz",
-          "name": "PGvector"
-        }
-      }
-    },
-    {
-      "parameters": {
         "options": {}
       },
       "type": "n8n-nodes-base.splitInBatches",
@@ -531,7 +507,7 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "INSERT INTO public.minus_words_log(\n\t minus_word_id, minus_word, report_id, change_timestamp, change_type, company_id)\n\tSELECT\n    cc.id,\n    cc.minus_word,\n    $2 AS report_id,\n    now() AS change_timestamp,\n    'deleted' AS change_type,\n    $1 AS company_id\nFROM public.minus_words AS cc\nWHERE cc.company_id = $1\n  AND cc.id IN (\n    SELECT value::bigint\n    FROM jsonb_array_elements_text($3::jsonb) AS t(value)\n  );",
+        "query": "INSERT INTO public.competitor_name_variants_log\n    (competitor_id, name_text, report_id, change_timestamp, change_type, company_id)\nSELECT\n    cnv.competitor_id,\n    cnv.name_text,\n    $2 AS report_id,\n    now() AS change_timestamp,\n    'deleted' AS change_type,\n    $1 AS company_id\nFROM public.competitor_name_variants AS cnv\nJOIN jsonb_to_recordset($3::jsonb) AS sel(competitor_id bigint, name_text text)\n  ON sel.competitor_id = cnv.competitor_id\n AND sel.name_text     = cnv.name_text\nWHERE cnv.company_id = $1;",
         "options": {
           "queryReplacement": "={{ $('When Executed by Another Workflow').last().json.company_id }},{{ $('When Executed by Another Workflow').last().json.import_id }},{{  JSON.stringify($json.ids)}}"
         }
@@ -689,7 +665,7 @@
     },
     {
       "parameters": {
-        "jsCode": "function toIdString(v) {\n  if (typeof v === 'bigint') return v.toString();\n  if (typeof v === 'number') return Number.isFinite(v) ? Math.trunc(v).toString() : '';\n  if (v == null) return '';\n  return String(v);\n}\n\nconst ids = $input.all()\n  .map(({ json }) => json?.id)\n  .filter(v => v !== undefined && v !== null)\n  .map(toIdString);\n\nreturn [{ json: { ids, count: ids.length } }];"
+        "jsCode": "function toIdString(v) {\n  if (typeof v === 'bigint') return v.toString();\n  if (typeof v === 'number') return Number.isFinite(v) ? Math.trunc(v).toString() : '';\n  if (v == null) return '';\n  return String(v);\n}\n\nconst ids = $input.all()\n  .map(({ json }) => json ?? {})\n  .filter(({ competitor_id }) => competitor_id !== undefined && competitor_id !== null)\n  .map(({ competitor_id, name_text }) => [ toIdString(competitor_id), String(name_text ?? '') ]);\n\nreturn [{ json: { ids, count: ids.length } }];"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -718,9 +694,9 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "delete from minus_words where id IN (\n    SELECT value::bigint\n    FROM jsonb_array_elements_text($1::jsonb) AS t(value)\n  );",
+        "query": "DELETE FROM public.competitor_name_variants AS cnv\nUSING jsonb_to_recordset($1::jsonb) AS sel(competitor_id bigint, name_text text)\nWHERE cnv.competitor_id = sel.competitor_id\n  AND cnv.name_text     = sel.name_text;\nAND cnv.company_id = $2;",
         "options": {
-          "queryReplacement": "={{  JSON.stringify($('aggregate output').last().json.ids)}}"
+          "queryReplacement": "={{  JSON.stringify($('aggregate output').last().json.ids)}},{{ $('When Executed by Another Workflow').last().json.company_id }}"
         }
       },
       "type": "n8n-nodes-base.postgres",
@@ -754,6 +730,30 @@
       ],
       "id": "3292977c-8e97-4c64-b2cb-1a11cd8f0a86",
       "name": "Get matched competitors and content",
+      "alwaysOutputData": true,
+      "credentials": {
+        "postgres": {
+          "id": "4YkdFJcdTgzo9hkz",
+          "name": "PGvector"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT\n  v.canonical_name,\n  v.name_text,\n  v.competitor_id,\n  ct.phrase,\n  ct.content_id,\n  ct.report_id,\n  1 - (v.embedding <=> ct.phrase_embedding) AS similarity\nFROM company_content ct\nCROSS JOIN LATERAL (\n  SELECT v.name_text, v.competitor_id, v.embedding,e.canonical_name\n  FROM competitor_name_variants v JOIN competitor_entities e USING (competitor_id)\n  WHERE e.company_id = $1\n  ORDER BY v.embedding <=> ct.phrase_embedding\n  LIMIT 50                           -- подберите k экспериментально\n) v\nWHERE ct.company_id = $1\n  AND 1 - (v.embedding <=> ct.phrase_embedding) > $2\n  AND ct.report_id<>0 -- не включаем в анализ изначальный контент \n  AND ct.phrase_embedding IS NOT NULL;",
+        "options": {
+          "queryReplacement": "={{ $('When Executed by Another Workflow').last().json.company_id }},{{ $('set variables').last().json.threshold }}"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -848,
+        -672
+      ],
+      "id": "896c7774-340c-4d71-96c8-61b2c68b7c0b",
+      "name": "Get matched competitors and content1",
       "alwaysOutputData": true,
       "credentials": {
         "postgres": {
@@ -934,7 +934,7 @@
       "main": [
         [
           {
-            "node": "Get matched minus words and content1",
+            "node": "Get matched competitors and content1",
             "type": "main",
             "index": 0
           }
@@ -997,17 +997,6 @@
         [
           {
             "node": "Set API JSON1",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Get matched minus words and content1": {
-      "main": [
-        [
-          {
-            "node": "If",
             "type": "main",
             "index": 0
           }
@@ -1158,6 +1147,17 @@
         [
           {
             "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get matched competitors and content1": {
+      "main": [
+        [
+          {
+            "node": "If",
             "type": "main",
             "index": 0
           }
@@ -1357,7 +1357,7 @@
       }
     ]
   },
-  "versionId": "336e9aea-bf74-4bda-a32f-ef540c08576b",
+  "versionId": "05475b6a-5dd9-4e7e-ba55-498121a073c8",
   "triggerCount": 0,
   "shared": [
     {
