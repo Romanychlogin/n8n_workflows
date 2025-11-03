@@ -1,6 +1,6 @@
 {
+  "updatedAt": "2025-11-02T19:11:43.085Z",
   "createdAt": "2025-09-25T13:33:58.106Z",
-  "updatedAt": "2025-11-02T00:30:05.039Z",
   "id": "0J5cvuaSz3IhDS99",
   "name": "campaign core update",
   "active": false,
@@ -3051,13 +3051,7 @@
     },
     "update workflow tokens usage1": {
       "main": [
-        [
-          {
-            "node": "ADV_campaign_analysis_AI",
-            "type": "main",
-            "index": 0
-          }
-        ]
+        []
       ]
     },
     "Mark_workflow_passed_steps_and_company_id": {
@@ -3382,7 +3376,7 @@
       "main": [
         [
           {
-            "node": "ADV_campaign_analysis_initial",
+            "node": "ADV_campaign_analysis_AI",
             "type": "main",
             "index": 0
           }
@@ -4025,12 +4019,12 @@
       }
     ]
   },
-  "versionId": "6d5761af-31ea-4514-a3f8-8f99451daca3",
+  "versionId": "ad3f6505-76c8-440d-8527-3fd3bba275a6",
   "triggerCount": 0,
   "shared": [
     {
-      "createdAt": "2025-09-25T13:33:58.106Z",
       "updatedAt": "2025-09-25T13:33:58.106Z",
+      "createdAt": "2025-09-25T13:33:58.106Z",
       "role": "workflow:owner",
       "workflowId": "0J5cvuaSz3IhDS99",
       "projectId": "spKmbJLU4mvACXIB"
@@ -4038,8 +4032,8 @@
   ],
   "tags": [
     {
-      "createdAt": "2025-10-06T13:06:54.644Z",
       "updatedAt": "2025-10-06T13:06:54.644Z",
+      "createdAt": "2025-10-06T13:06:54.644Z",
       "id": "DBEf57wUDunVJUG6",
       "name": "campaign update"
     }
