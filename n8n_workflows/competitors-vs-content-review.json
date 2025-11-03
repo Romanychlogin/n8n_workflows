@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-03T18:03:04.900Z",
+  "updatedAt": "2025-11-03T18:12:20.057Z",
   "createdAt": "2025-11-03T10:14:25.998Z",
   "id": "0eNPm5Ccv1vMf2CV",
   "name": "competitors vs content review",
@@ -694,7 +694,7 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "DELETE FROM public.competitor_name_variants AS cnv\nUSING (\n  SELECT (e.elem->>0)::bigint AS competitor_id,\n         (e.elem->>1)        AS name_text\n  FROM jsonb_array_elements($1::jsonb) AS e(elem)\n) sel\nJOIN public.competitor_entities AS en\n  ON en.competitor_id = cnv.competitor_id\nWHERE cnv.competitor_id = sel.competitor_id\n  AND cnv.name_text     = sel.name_text\n  AND en.company_id     = $2;",
+        "query": "DELETE FROM public.competitor_name_variants AS cnv\nUSING\n  public.competitor_entities AS en,\n  (\n    SELECT (e.elem->>0)::bigint AS competitor_id,\n           (e.elem->>1)        AS name_text\n    FROM jsonb_array_elements($1::jsonb) AS e(elem)\n  ) AS sel\nWHERE en.competitor_id = cnv.competitor_id\n  AND cnv.competitor_id = sel.competitor_id\n  AND cnv.name_text     = sel.name_text\n  AND en.company_id     = $2;",
         "options": {
           "queryReplacement": "={{  JSON.stringify($('aggregate output').last().json.ids)}},{{ $('When Executed by Another Workflow').last().json.company_id }}"
         }
@@ -1357,7 +1357,7 @@
       }
     ]
   },
-  "versionId": "7c5295bc-8c35-49de-b8f4-5a1d1588cfc4",
+  "versionId": "34312579-f1de-42db-91fd-c7ebe3f16267",
   "triggerCount": 0,
   "shared": [
     {
