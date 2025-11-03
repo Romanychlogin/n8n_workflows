@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-03T18:11:39.865Z",
+  "updatedAt": "2025-11-03T19:09:46.759Z",
   "createdAt": "2025-10-08T11:54:45.682Z",
   "id": "0JY4BXCUoUM4RzPE",
   "name": "Check if keyword need to be restricted",
@@ -191,7 +191,7 @@
     },
     {
       "parameters": {
-        "jsCode": "\n\nconst ids = $input.all()\n  .map(({ json }) => json ?? {})\n  .map(({ key_word }) => [ String(used_keyword ?? '') ]);\n\nreturn [{ json: { ids, count: ids.length } }];"
+        "jsCode": "\n\nconst ids = [];\nfor (const { json } of $input.all()) {\n  ids.push( String(json?.used_keyword ?? ''));\n  \n}\n\nreturn [{ json: { ids, count: ids.length } }];"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -332,7 +332,7 @@
       }
     ]
   },
-  "versionId": "af704e4a-b944-4537-ab00-5e721028f5cf",
+  "versionId": "262323c3-f0cd-47ab-9b88-f3d6a012ffb9",
   "triggerCount": 0,
   "shared": [
     {
