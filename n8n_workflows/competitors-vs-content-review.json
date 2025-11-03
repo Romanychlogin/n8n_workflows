@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-03T17:34:16.754Z",
+  "updatedAt": "2025-11-03T17:45:59.573Z",
   "createdAt": "2025-11-03T10:14:25.998Z",
   "id": "0eNPm5Ccv1vMf2CV",
   "name": "competitors vs content review",
@@ -507,7 +507,7 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "INSERT INTO public.competitor_name_variants_log\n    (competitor_id, name_text, report_id, change_timestamp, change_type, company_id)\nSELECT\n    cnv.competitor_id,\n    cnv.name_text,\n    $2 AS report_id,\n    now() AS change_timestamp,\n    'deleted' AS change_type,\n    $1 AS company_id\nFROM public.competitor_name_variants AS cnv\nJOIN competitor_entities en ON en.competitor_id=cnv.competitor_id  \nJOIN jsonb_to_recordset($3::jsonb) AS sel(competitor_id bigint, name_text text)\n  ON sel.competitor_id = cnv.competitor_id\n AND sel.name_text     = cnv.name_text\nWHERE en.company_id = $1;",
+        "query": "INSERT INTO public.competitor_name_variants_log\n    (competitor_id, name_text, report_id, change_timestamp, change_type, company_id)\nSELECT\n    cnv.competitor_id,\n    cnv.name_text,\n    $2 AS report_id,\n    now() AS change_timestamp,\n    'deleted' AS change_type,\n    $1 AS company_id\nFROM public.competitor_name_variants AS cnv\nJOIN public.competitor_entities AS en\n  ON en.competitor_id = cnv.competitor_id\nJOIN (\n  SELECT (e.val->>0)::bigint AS competitor_id,\n         (e.val->>1)        AS name_text\n  FROM jsonb_array_elements($3::jsonb) AS e(val)\n) sel\n  ON sel.competitor_id = cnv.competitor_id\n AND sel.name_text     = cnv.name_text\nWHERE en.company_id = $1;",
         "options": {
           "queryReplacement": "={{ $('When Executed by Another Workflow').last().json.company_id }},{{ $('When Executed by Another Workflow').last().json.import_id }},{{  JSON.stringify($json.ids)}}"
         }
@@ -694,7 +694,7 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "DELETE FROM public.competitor_name_variants AS cnv\nUSING jsonb_to_recordset($1::jsonb) AS sel(competitor_id bigint, name_text text)\nWHERE cnv.competitor_id = sel.competitor_id\n  AND cnv.name_text     = sel.name_text;\nAND cnv.company_id = $2;",
+        "query": "DELETE FROM public.competitor_name_variants AS cnv\nUSING (\n  SELECT (e.elem->>0)::bigint AS competitor_id,\n         (e.elem->>1)        AS name_text\n  FROM jsonb_array_elements($1::jsonb) AS e(elem)\n) sel\nWHERE cnv.competitor_id = sel.competitor_id\n  AND cnv.name_text     = sel.name_text\n  AND cnv.company_id    = $2;",
         "options": {
           "queryReplacement": "={{  JSON.stringify($('aggregate output').last().json.ids)}},{{ $('When Executed by Another Workflow').last().json.company_id }}"
         }
@@ -1357,7 +1357,7 @@
       }
     ]
   },
-  "versionId": "dd52000f-2834-467e-8ebc-792be083b049",
+  "versionId": "cb4ba8c4-a9ab-43dc-be2a-1860aff0eed8",
   "triggerCount": 0,
   "shared": [
     {
