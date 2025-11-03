@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-03T17:11:00.932Z",
+  "updatedAt": "2025-11-03T17:34:16.754Z",
   "createdAt": "2025-11-03T10:14:25.998Z",
   "id": "0eNPm5Ccv1vMf2CV",
   "name": "competitors vs content review",
@@ -507,7 +507,7 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "INSERT INTO public.competitor_name_variants_log\n    (competitor_id, name_text, report_id, change_timestamp, change_type, company_id)\nSELECT\n    cnv.competitor_id,\n    cnv.name_text,\n    $2 AS report_id,\n    now() AS change_timestamp,\n    'deleted' AS change_type,\n    $1 AS company_id\nFROM public.competitor_name_variants AS cnv\nJOIN jsonb_to_recordset($3::jsonb) AS sel(competitor_id bigint, name_text text)\n  ON sel.competitor_id = cnv.competitor_id\n AND sel.name_text     = cnv.name_text\nWHERE cnv.company_id = $1;",
+        "query": "INSERT INTO public.competitor_name_variants_log\n    (competitor_id, name_text, report_id, change_timestamp, change_type, company_id)\nSELECT\n    cnv.competitor_id,\n    cnv.name_text,\n    $2 AS report_id,\n    now() AS change_timestamp,\n    'deleted' AS change_type,\n    $1 AS company_id\nFROM public.competitor_name_variants AS cnv\nJOIN competitor_entities en ON en.competitor_id=cnv.competitor_id  \nJOIN jsonb_to_recordset($3::jsonb) AS sel(competitor_id bigint, name_text text)\n  ON sel.competitor_id = cnv.competitor_id\n AND sel.name_text     = cnv.name_text\nWHERE en.company_id = $1;",
         "options": {
           "queryReplacement": "={{ $('When Executed by Another Workflow').last().json.company_id }},{{ $('When Executed by Another Workflow').last().json.import_id }},{{  JSON.stringify($json.ids)}}"
         }
@@ -522,8 +522,8 @@
       "name": "log del changes",
       "credentials": {
         "postgres": {
-          "id": "Hx2VFmUi5WO2K4QX",
-          "name": "Postgres account 2"
+          "id": "4YkdFJcdTgzo9hkz",
+          "name": "PGvector"
         }
       }
     },
@@ -1352,12 +1352,12 @@
         "json": {
           "company_id": 1,
           "root_execution_id": 74293,
-          "import_id": 5
+          "import_id": 11
         }
       }
     ]
   },
-  "versionId": "05475b6a-5dd9-4e7e-ba55-498121a073c8",
+  "versionId": "dd52000f-2834-467e-8ebc-792be083b049",
   "triggerCount": 0,
   "shared": [
     {
