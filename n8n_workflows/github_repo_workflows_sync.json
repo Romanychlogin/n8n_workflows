@@ -1,6 +1,6 @@
 {
+  "updatedAt": "2025-11-03T09:03:04.024Z",
   "createdAt": "2025-09-23T20:32:53.458Z",
-  "updatedAt": "2025-10-18T15:56:57.925Z",
   "id": "buEFTEMfZEENQOel",
   "name": "github_repo_workflows_sync",
   "active": true,
@@ -1560,7 +1560,7 @@
   },
   "settings": {
     "executionOrder": "v1",
-    "saveDataSuccessExecution": "none",
+    "saveDataSuccessExecution": "all",
     "callerPolicy": "workflowsFromSameOwner",
     "availableInMCP": false
   },
@@ -1573,12 +1573,12 @@
     "templateCredsSetupCompleted": true
   },
   "pinData": {},
-  "versionId": "56fedf8c-668d-4b24-abef-843a4b3fb1ff",
+  "versionId": "defd014d-56f3-4812-91b1-a527ce47e739",
   "triggerCount": 1,
   "shared": [
     {
-      "createdAt": "2025-09-23T20:32:53.458Z",
       "updatedAt": "2025-09-23T20:32:53.458Z",
+      "createdAt": "2025-09-23T20:32:53.458Z",
       "role": "workflow:owner",
       "workflowId": "buEFTEMfZEENQOel",
       "projectId": "spKmbJLU4mvACXIB"
