@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-04T13:57:44.739Z",
+  "updatedAt": "2025-11-04T14:17:11.556Z",
   "createdAt": "2025-11-04T13:56:06.291Z",
   "id": "vwRAn8uUM5XZ8OrS",
   "name": "My workflow 4",
@@ -19,13 +19,13 @@
     },
     {
       "parameters": {
-        "jsCode": "// Получаем текущее значение переменной из постоянного хранилища\nlet length = $getWorkflowStaticData('global').length || 0;\n\n// Увеличиваем на 1\nlength++;\n\n// Сохраняем обновлённое значение обратно\n$getWorkflowStaticData('global').length = length;\n\n// Возвращаем результат\nreturn [{ length }];"
+        "jsCode": "// persistent storage этой ноды\nconst data = $getWorkflowStaticData('node');\n\n// 1) пытаемся взять length из первого входного item'а\nlet inputLen;\nif (items && items.length > 0 && items[0].json) {\n  const candidate = Number(items[0].json.length);\n  if (Number.isFinite(candidate)) inputLen = candidate;\n}\n\n// 2) базовое значение: либо из входа, либо из staticData\nconst base = (inputLen !== undefined) ? inputLen : (Number(data.length) || 0);\n\n// 3) инкремент\nconst next = base + 1;\n\n// 4) сохраняем «вечный» счётчик между запусками\ndata.length = next;\n\n// 5) возвращаем как единственный item (можно слить с входом при желании)\nreturn [{ length: next }];"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        208,
-        0
+        832,
+        240
       ],
       "id": "66c3935e-c3f9-4ff2-88a3-24435a859020",
       "name": "Code in JavaScript"
@@ -87,6 +87,7 @@
             }
           ]
         },
+        "includeOtherFields": true,
         "options": {}
       },
       "type": "n8n-nodes-base.set",
@@ -104,13 +105,13 @@
           "options": {
             "caseSensitive": true,
             "leftValue": "",
-            "typeValidation": "strict",
+            "typeValidation": "loose",
             "version": 2
           },
           "conditions": [
             {
               "id": "3b684365-d6b8-4428-ab67-cbbcbdc077c9",
-              "leftValue": null,
+              "leftValue": "={{ $('Code in JavaScript').item.json.length }}",
               "rightValue": 56,
               "operator": {
                 "type": "number",
@@ -120,6 +121,7 @@
           ],
           "combinator": "and"
         },
+        "looseTypeValidation": true,
         "options": {}
       },
       "type": "n8n-nodes-base.if",
@@ -183,7 +185,7 @@
       "main": [
         [
           {
-            "node": "Code in JavaScript",
+            "node": "AI Agent",
             "type": "main",
             "index": 0
           }
@@ -228,7 +230,7 @@
     "templateCredsSetupCompleted": true
   },
   "pinData": {},
-  "versionId": "983f694f-55bc-4946-ba50-f282303b35fd",
+  "versionId": "b0962168-e962-4c58-bff2-647781c57945",
   "triggerCount": 0,
   "shared": [
     {
