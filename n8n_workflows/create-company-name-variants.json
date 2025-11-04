@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-04T15:00:06.132Z",
+  "updatedAt": "2025-11-04T16:36:55.623Z",
   "createdAt": "2025-11-04T11:23:42.194Z",
   "id": "gPFc89UDaNTuIXaJ",
   "name": "Create company name variants",
@@ -751,7 +751,10 @@
     }
   },
   "settings": {
-    "executionOrder": "v1"
+    "executionOrder": "v1",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false,
+    "errorWorkflow": "v2Z32ISEUzsFYnZw"
   },
   "staticData": null,
   "meta": {
@@ -1117,7 +1120,7 @@
       }
     ]
   },
-  "versionId": "00a149ab-59f5-45f9-a702-18eb5f13ed5b",
+  "versionId": "3e36566d-98be-4893-8cca-9143dfd15043",
   "triggerCount": 0,
   "shared": [
     {
