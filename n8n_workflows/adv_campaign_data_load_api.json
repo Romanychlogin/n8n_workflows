@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-04T18:47:21.549Z",
+  "updatedAt": "2025-11-04T19:54:00.148Z",
   "createdAt": "2025-10-22T11:44:28.248Z",
   "id": "4Fw159fAoZfSn72v",
   "name": "ADV_campaign_data_load_API",
@@ -436,8 +436,8 @@
       "type": "n8n-nodes-base.executeWorkflowTrigger",
       "typeVersion": 1.1,
       "position": [
-        -784,
-        -240
+        -560,
+        -112
       ],
       "id": "07708187-77e3-45e9-a4e1-e0ada813c231",
       "name": "When Executed by Another Workflow"
@@ -856,7 +856,7 @@
     },
     {
       "parameters": {
-        "url": "https://eak5kk6vhl.execute-api.us-east-1.amazonaws.com/development/reports/daily?type=SEARCH_QUERY_PERFORMANCE_REPORT&date=2025-11-02&campaign_id=702142188%27",
+        "url": "https://eak5kk6vhl.execute-api.us-east-1.amazonaws.com/development/reports/daily?type=SEARCH_QUERY_PERFORMANCE_REPORT&date=2025-11-02&campaign_id=702142188&download=false",
         "authentication": "genericCredentialType",
         "genericAuthType": "httpBearerAuth",
         "options": {}
@@ -864,8 +864,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.3,
       "position": [
-        -576,
-        -240
+        -352,
+        -112
       ],
       "id": "0c18113d-bab4-4b7d-9d57-4630e6406537",
       "name": "HTTP Request",
@@ -1170,7 +1170,7 @@
       }
     ]
   },
-  "versionId": "a8189864-1ee0-40cd-ae99-640d355100dd",
+  "versionId": "3e47dfbe-9fdc-4db6-ac7e-b2239ce335e2",
   "triggerCount": 0,
   "shared": [
     {
