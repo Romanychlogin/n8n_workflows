@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-04T12:45:19.734Z",
+  "updatedAt": "2025-11-04T13:58:36.786Z",
   "createdAt": "2025-11-04T11:23:42.194Z",
   "id": "gPFc89UDaNTuIXaJ",
   "name": "Create company name variants",
@@ -57,7 +57,7 @@
     },
     {
       "parameters": {
-        "jsCode": "// Берём первый item из входных данных\nconst input = JSON.parse($json.output[1].content[0].text);\nconst comp_id=$json.competitor_id\n// Достаём массив competitors\nconst variants = input.variants;\n\n// Разворачиваем каждый объект в отдельный item\nreturn variants.map((c, index) => ({\n  json: {\n    index,\n    name_variant: c.toLowerCase(),\n    competitor_id:comp_id,\n    is_first:index==0 // костыль для сброса цикла\n    \n  }\n}));"
+        "jsCode": "// Берём массив из текущего элемента\nconst out = Array.isArray($input.first().json.output);\n\n// Ищем первый элемент с type='message' и content[0].type='output_text'\nconst hit = out.find(e =>\n  e?.type === 'message' &&\n  Array.isArray(e?.content) &&\n  e.content[0]?.type === 'output_text' &&\n  typeof e.content[0]?.text === 'string'\n);\n\n// Парсим JSON-текст\nconst input = JSON.parse(hit.content[0].text);\n// Достаём массив competitors\nconst variants = input.variants;\n// Разворачиваем каждый объект в отдельный item\nreturn variants.map((c, index) => ({\n  json: {\n    index,\n    name_variant: c.toLowerCase()\n  }\n}));"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -180,7 +180,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        192,
+        304,
         -96
       ],
       "id": "469413f2-c230-4bbb-933c-d93d52c92e88",
@@ -286,7 +286,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -208,
+        80,
         -96
       ],
       "id": "76a30843-a6de-4d96-b439-83f74f2bb4f5",
@@ -360,14 +360,14 @@
         "operation": "executeQuery",
         "query": "INSERT INTO public.company_name_variants(\n\tcompany_id, is_common_word, name_text, embedding, report_id)\n\tVALUES\n  ($1, false,$2, $3::vector, $4)\nON CONFLICT (company_id, name_text) DO UPDATE\nSET company_id = company_id\nRETURNING company_id,name_text;",
         "options": {
-          "queryReplacement": "=[\n  { \"value\": \"={{'[' + $json.data[0].embedding.map(e => Number(e)).join(',') + ']'}}\" },\n  { \"value\": \"={{ $('Loop Over Items1').item.json.minus_word }}\" },\n  { \"value\": \"={{ $('Loop Over Items').item.json.company_id }}\" },\n  { \"value\": \"={{ 'added from the core update from the report:'+$('Loop Over Items').item.json.report_id }}\" },\n  { \"value\": \"={{ $('Loop Over Items').item.json.count_views }}\" }\n]"
+          "queryReplacement": "=[\n   { \"value\": \"={{ $('When Executed by Another Workflow').last().json.company_id }}\" },\n   { \"value\": \"={{ $('Loop Over Items').last().json.name_variant }}\" },\n   { \"value\": \"={{'[' + $json.data[0].embedding.map(e => Number(e)).join(',') + ']'}}\" },\n   { \"value\": \"={{ $('When Executed by Another Workflow').last().json.report_id }}\" }\n  \n]"
         }
       },
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        -544,
-        -112
+        -192,
+        -96
       ],
       "id": "9cda6320-1d54-4700-8826-11dfef05844a",
       "name": "Insert variants",
@@ -455,6 +455,46 @@
           "name": "Postgres account 2"
         }
       }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.openai.com/v1/embeddings",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "openAiApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{$json}}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -432,
+        -128
+      ],
+      "id": "3e9270e7-f2f7-4ba6-ade5-f078fb45a685",
+      "name": "HTTP Request1",
+      "retryOnFail": true,
+      "credentials": {
+        "openAiApi": {
+          "id": "V8R8KiZKXscJQ1sL",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "return [{\n  json: {\n  \"model\": \"text-embedding-3-small\",\n  \"input\": $json.name_variant\n}\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -592,
+        -160
+      ],
+      "id": "44a0755b-f1d7-4d36-bb0d-29b627b5693d",
+      "name": "Set API JSON1"
     }
   ],
   "connections": {
@@ -624,7 +664,7 @@
         ],
         [
           {
-            "node": "Insert variants",
+            "node": "Set API JSON1",
             "type": "main",
             "index": 0
           }
@@ -686,6 +726,28 @@
           }
         ]
       ]
+    },
+    "Set API JSON1": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request1": {
+      "main": [
+        [
+          {
+            "node": "Insert variants",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
@@ -701,7 +763,7 @@
         "json": {
           "id": "ezK8ihYnfxZNTIAc",
           "root_execution_id": 20076,
-          "company_id": 2,
+          "company_id": 1,
           "report_id": 5,
           "threshhold": "0.88",
           "company_name": "Первый визовый центр Курган",
@@ -711,7 +773,7 @@
       }
     ]
   },
-  "versionId": "15ee32b7-ebb6-4052-abb6-8f2cd4b28089",
+  "versionId": "d26ba9e4-07b5-4cbf-88b4-4efb68e017c4",
   "triggerCount": 0,
   "shared": [
     {
