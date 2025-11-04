@@ -1,0 +1,331 @@
+{
+  "updatedAt": "2025-11-04T12:50:04.807Z",
+  "createdAt": "2025-11-04T12:50:04.807Z",
+  "id": "mriYAzdG9VkFhdCG",
+  "name": "insert company name variants embeddings",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.openai.com/v1/embeddings",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "openAiApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{$json}}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1200,
+        16
+      ],
+      "id": "9aa02cf0-6c5c-4a86-9924-998def0c46a6",
+      "name": "HTTP Request",
+      "retryOnFail": true,
+      "credentials": {
+        "openAiApi": {
+          "id": "V8R8KiZKXscJQ1sL",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "return [{\n  json: {\n  \"model\": \"text-embedding-3-small\",\n  \"input\": $json.name_text\n}\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        960,
+        16
+      ],
+      "id": "bf75bfb4-3612-45e1-bf75-9c1765754ace",
+      "name": "Set API JSON"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        432,
+        0
+      ],
+      "id": "3a5750fd-8e0a-44c5-ae2d-815f121f6b37",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        1344,
+        -96
+      ],
+      "id": "93ecd15a-d4a8-4fd7-9585-cff7b3759a14",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "select nv.name_text,nv.competitor_id from competitor_name_variants nv, competitor_entities ce \nwhere ce.competitor_id=nv.competitor_id and ce.company_id=$1",
+        "options": {
+          "queryReplacement": "={{$('When Executed by Another Workflow').first().json.company_id}}"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -32,
+        0
+      ],
+      "id": "062a062d-c2bb-4d52-8114-ff70866fd344",
+      "name": "Execute a SQL query",
+      "credentials": {
+        "postgres": {
+          "id": "4YkdFJcdTgzo9hkz",
+          "name": "PGvector"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "UPDATE competitor_name_variants\nSET embedding = $1::vector\nWHERE competitor_id = $2\n  AND name_text = $3;",
+        "options": {
+          "queryReplacement": "=[\n  { \"value\": \"={{'[' + $json.data[0].embedding.map(e => Number(e)).join(',') + ']'}}\" },\n  { \"value\": \"={{$json.competitor_id}}\" },\n  { \"value\": \"={{$json.name_text}}\" }\n]"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        1648,
+        0
+      ],
+      "id": "7e83de80-2d0c-41fd-a428-658c8b394e73",
+      "name": "insert embedding",
+      "credentials": {
+        "postgres": {
+          "id": "4YkdFJcdTgzo9hkz",
+          "name": "PGvector"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "inputSource": "passthrough"
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -560,
+        0
+      ],
+      "id": "be857faa-e878-44d3-93ee-57c64d107e3b",
+      "name": "When Executed by Another Workflow"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "update business_processes_states set finished=NOW(),steps_passed=1,steps_total=1 where business_process_id=(select MAX(business_process_id) from business_processes where n8n_process_name=$1) and n8n_workflow_execution_id=$2",
+        "options": {
+          "queryReplacement": "=[{{$workflow.name}},{{$execution.id}}]"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        736,
+        -240
+      ],
+      "id": "24915bcb-63da-40a6-92cd-6298bdaf4cf6",
+      "name": "Mark_workflow_completed",
+      "executeOnce": true,
+      "credentials": {
+        "postgres": {
+          "id": "4YkdFJcdTgzo9hkz",
+          "name": "PGvector"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO business_processes_states (business_process_id, company_id,n8n_workflow_execution_id,n8n_workflow_root_execution_id, started)\nSELECT MAX(business_process_id), $2,$3,$4, NOW()\nFROM public.business_processes\nWHERE n8n_process_name = $1;",
+        "options": {
+          "queryReplacement": "=[{{$workflow.name}},{{$json.company_id}},{{$execution.id}},{{ $('When Executed by Another Workflow').item.json.root_execution_id }}]"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -320,
+        0
+      ],
+      "id": "f7bb99b7-641c-4640-8271-fb3abd9c3711",
+      "name": "Mark_workwlow_started",
+      "credentials": {
+        "postgres": {
+          "id": "4YkdFJcdTgzo9hkz",
+          "name": "PGvector"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Set API JSON": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [
+          {
+            "node": "Mark_workflow_completed",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Set API JSON",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "insert embedding",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute a SQL query": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "insert embedding": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "Mark_workwlow_started",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mark_workwlow_started": {
+      "main": [
+        [
+          {
+            "node": "Execute a SQL query",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false,
+    "errorWorkflow": "v2Z32ISEUzsFYnZw"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {
+    "When Executed by Another Workflow": [
+      {
+        "json": {
+          "id": "ezK8ihYnfxZNTIAc",
+          "root_execution_id": 20076,
+          "company_id": 2,
+          "threshhold": "0.88",
+          "company_name": "Первый визовый центр Курган",
+          "services_description": "Визы:    http://krg45.visa-rf.ru/ АТЭС:    http://krg45.apec-first.ru/",
+          "user_content_dropbox_folder": "/Test_content_folder_for_Kurgan"
+        }
+      }
+    ]
+  },
+  "versionId": "f006935b-0e5e-4e5f-a08f-00ad34bfac98",
+  "triggerCount": 0,
+  "shared": [
+    {
+      "updatedAt": "2025-11-04T12:50:04.807Z",
+      "createdAt": "2025-11-04T12:50:04.807Z",
+      "role": "workflow:owner",
+      "workflowId": "mriYAzdG9VkFhdCG",
+      "projectId": "spKmbJLU4mvACXIB"
+    }
+  ],
+  "tags": [
+    {
+      "updatedAt": "2025-10-17T09:03:18.269Z",
+      "createdAt": "2025-10-17T09:03:18.269Z",
+      "id": "S7zerj1h6Ro25pTA",
+      "name": "client creation"
+    }
+  ],
+  "file_name": "insert-company-name-variants-embeddings.json"
+}
