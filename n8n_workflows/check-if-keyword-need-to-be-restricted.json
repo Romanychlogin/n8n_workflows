@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-04T08:03:58.377Z",
+  "updatedAt": "2025-11-04T09:30:49.679Z",
   "createdAt": "2025-10-08T11:54:45.682Z",
   "id": "0JY4BXCUoUM4RzPE",
   "name": "Check if keyword need to be restricted",
@@ -133,7 +133,7 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "UPDATE ads_list\n\tSET key_word='\"' || key_word || '\"',update_required=true \n  WHERE company_id=$1 AND \n  lower(key_word) IN (\n    SELECT value::text\n    FROM jsonb_array_elements_text($2::jsonb) AS t(value)\n  );\n",
+        "query": "UPDATE public.ads_list AS a\nSET key_word = CASE\n                 WHEN left(btrim(a.key_word), 1) = '\"' AND right(btrim(a.key_word), 1) = '\"'\n                   THEN a.key_word                       -- уже в кавычках, не меняем\n                 ELSE '\"' || a.key_word || '\"'           -- добавляем кавычки\n               END,\n    update_required = CASE\n                        WHEN left(btrim(a.key_word), 1) = '\"' AND right(btrim(a.key_word), 1) = '\"'\n                          THEN a.update_required          -- уже в кавычках, оставляем как было\n                        ELSE true                         -- кавычки добавили → помечаем к обновлению\n                      END\nWHERE a.company_id = $1\n  AND lower(btrim(a.key_word, ' \"')) IN (\n        SELECT lower(btrim(value, ' \"'))\n        FROM jsonb_array_elements_text($2::jsonb)  AS t(value)\n      );\n",
         "options": {
           "queryReplacement": "={{ $('When Executed by Another Workflow').last().json.company_id }},{{JSON.stringify($json.ids)}}"
         }
@@ -169,7 +169,7 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "UPDATE current_ads_list\n\tSET key_word='\"' || key_word || '\"',update_required=true \n  WHERE company_id=$1 AND \n  lower(key_word) IN (\n    SELECT value::text\n    FROM jsonb_array_elements_text($2::jsonb) AS t(value)\n  );\n\n",
+        "query": "UPDATE public.current_ads_list AS a\nSET key_word = CASE\n                 WHEN left(btrim(a.key_word), 1) = '\"' AND right(btrim(a.key_word), 1) = '\"'\n                   THEN a.key_word                       -- уже в кавычках, не меняем\n                 ELSE '\"' || a.key_word || '\"'           -- добавляем кавычки\n               END,\n    update_required = CASE\n                        WHEN left(btrim(a.key_word), 1) = '\"' AND right(btrim(a.key_word), 1) = '\"'\n                          THEN a.update_required          -- уже в кавычках, оставляем как было\n                        ELSE true                         -- кавычки добавили → помечаем к обновлению\n                      END\nWHERE a.company_id = $1\n  AND lower(btrim(a.key_word, ' \"')) IN (\n        SELECT lower(btrim(value, ' \"'))\n        FROM jsonb_array_elements_text($2::jsonb)  AS t(value)\n      );\n",
         "options": {
           "queryReplacement": "={{ $('When Executed by Another Workflow').last().json.company_id }},{{JSON.stringify($json.ids)}}"
         }
@@ -332,7 +332,7 @@
       }
     ]
   },
-  "versionId": "0057d38c-ef77-45af-b9b6-3fe758e73ab8",
+  "versionId": "de21ea90-040f-4502-a7bd-f33c9e676df3",
   "triggerCount": 0,
   "shared": [
     {
