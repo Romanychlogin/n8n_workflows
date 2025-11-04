@@ -1,0 +1,244 @@
+{
+  "updatedAt": "2025-11-04T13:57:44.739Z",
+  "createdAt": "2025-11-04T13:56:06.291Z",
+  "id": "vwRAn8uUM5XZ8OrS",
+  "name": "My workflow 4",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -208,
+        0
+      ],
+      "id": "eeba2de7-c753-41fd-bda8-e693d49e4f5c",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Получаем текущее значение переменной из постоянного хранилища\nlet length = $getWorkflowStaticData('global').length || 0;\n\n// Увеличиваем на 1\nlength++;\n\n// Сохраняем обновлённое значение обратно\n$getWorkflowStaticData('global').length = length;\n\n// Возвращаем результат\nreturn [{ length }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        208,
+        0
+      ],
+      "id": "66c3935e-c3f9-4ff2-88a3-24435a859020",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3,
+      "position": [
+        416,
+        0
+      ],
+      "id": "40862b4e-6140-48d2-823f-54ad1c81eae0",
+      "name": "AI Agent",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-5",
+          "mode": "list",
+          "cachedResultName": "gpt-5"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        416,
+        176
+      ],
+      "id": "d3566fc5-a1f6-4a4e-bd4b-917398c09c76",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "m4NScyhZzV3hBcTr",
+          "name": "OpenAi Yads"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "ad8f0673-a3a6-4ea8-ba63-9ffe5ec31d57",
+              "name": "company description",
+              "value": "KIBERone Саратов Октябрьский IT школа KIBERone KIBERone – международная КиберШкола программирования и цифровых технологий для детей от 6 до 14 лет.  Позиционирование бренда: KIBERone — первая международная КиберШкола будущего для IT-поколения 6–14 лет, признана ЮНЕСКО лучшей детской образовательной IT-школой в мире. Бренд является партнером Microsoft, Roblox и Samsung. Бесплатные пробные уроки  Основные услуги и программы:  Полный перечень модулей:  Вводный модуль (основы цифровой грамотности)  Основы программирования Scratch Jr  Создание игр на Scratch  ПиктоМир (алгоритмическое мышление)  CodeMonkey (логика и программирование)  Устройство компьютера  Эффектные презентации (PowerPoint, Desygner)  QR-коды  Деловые люди (предпринимательство)  Google Blockly (визуальное программирование)  Roblox Studio (создание игр)  Kodu Game Lab (3D-программирование)  Разработка мобильных приложений в Thunkable  Blender (3D-моделирование)  Компьютерная грамотность  Minecraft Education  Нейросети (основы ИИ)  Alice 3D (3D-программирование)  Run Marco (основы алгоритмов)  Исполнители: Чертёжник и Черепашка  GIF-анимация  Tinkercad (3D-проектирование)  Кибербезопасность  Construct 2 (создание 2D-игр)  Компас-3D (САПР)  Основы HTML (веб-разработка)  Голосовой помощник Алиса  Создание лендинга (Tilda)  Python (создание игр)  Чат-бот на Python  Web-дизайн (Figma)  Web-мастер (HTML+CSS)  Motion Design  Unreal Engine 4 (игровой движок)  JavaScript (игры)  C# (создание 2D-игр)  C++  Java (создание приложений)  Unity 3D (игры)  Олимпиадное программирование  Облачные технологии, Блокчейн, Data Science  PHP+SQL  Photoshop  Подготовка к олимпиадам  Приложения Google  Летние программы:  Летние IT-интенсивы (краткосрочные программы по направлениям Roblox, Minecraft, Python и др.)  Летние КИБЕРканикулы (городской лагерь с IT-обучением и развлекательной программой)  Дополнительные механики:  Кибервалюта («кибероны») для мотивации учеников, обмен на мерч на КиберМаркете  Тьюторы и преподаватели:  Опытные специалисты с практическим опытом и педагогической подготовкой  Другие важные разделы:  Новости (новости школы и сети)  СМИ о нас (публикации о школе)  Фотогалерея (фото с мероприятий и уроков)  Видео (видеоматериалы о школе)  Расписание занятий (время занятий для групп и пробных уроков)  Локации (адрес школы в Октябрьском районе Саратова, ул. Тараса Шевченко, 8)  Оплата (способы оплаты и договор-оферта)  Сертификаты (активация промокодов партнеров)  Контакты (телефон +7 963 112-49-11, email saratov@kiber-one.com.\\n- Не раскрывай рассуждения.\\n\\nOUTPUT FORMAT (строго)\\n- Выводи по одному заголовку на запись\\n- Не добавляй пустых строк до или после.\\n- Не добавляй пояснений, слов вроде “Заголовок” и т.п.\\n\\nRULES FOR GENERATION\\n1.\\tСохранение слов:\\nВсе слова из соответствующей исходной фразы должны присутствовать в заголовке (с возможной перестановкой для правильного порядка слов).\\n2.\\tКорректность и ясность:\\n- Исправь орфографию, грамматику, порядок слов.\\n- Удали жаргон, оставив корректный вариант.\\n- Начни с заглавной буквы.\\n3.\\tРелевантность и уточнение:\\nЗаголовок должен оставаться максимально близким к исходной фразе, но при этом уточнять её в сторону услуг компании (добавляя контекст — например, “онлайн”, “для детей”, “курсы”, “обучение”, если это соответствует KIBERone Саратов Октябрьский IT школа KIBERone KIBERone – международная КиберШкола программирования и цифровых технологий для детей от 6 до 14 лет.  Позиционирование бренда: KIBERone — первая международная КиберШкола будущего для IT-поколения 6–14 лет, признана ЮНЕСКО лучшей детской образовательной IT-школой в мире. Бренд является партнером Microsoft, Roblox и Samsung. Бесплатные пробные уроки  Основные услуги и программы:  Полный перечень модулей:  Вводный модуль (основы цифровой грамотности)  Основы программирования Scratch Jr  Создание игр на Scratch  ПиктоМир (алгоритмическое мышление)  CodeMonkey (логика и программирование)  Устройство компьютера  Эффектные презентации (PowerPoint, Desygner)  QR-коды  Деловые люди (предпринимательство)  Google Blockly (визуальное программирование)  Roblox Studio (создание игр)  Kodu Game Lab (3D-программирование)  Разработка мобильных приложений в Thunkable  Blender (3D-моделирование)  Компьютерная грамотность  Minecraft Education  Нейросети (основы ИИ)  Alice 3D (3D-программирование)  Run Marco (основы алгоритмов)  Исполнители: Чертёжник и Черепашка  GIF-анимация  Tinkercad (3D-проектирование)  Кибербезопасность  Construct 2 (создание 2D-игр)  Компас-3D (САПР)  Основы HTML (веб-разработка)  Голосовой помощник Алиса  Создание лендинга (Tilda)  Python (создание игр)  Чат-бот на Python  Web-дизайн (Figma)  Web-мастер (HTML+CSS)  Motion Design  Unreal Engine 4 (игровой движок)  JavaScript (игры)  C# (создание 2D-игр)  C++  Java (создание приложений)  Unity 3D (игры)  Олимпиадное программирование  Облачные технологии, Блокчейн, Data Science  PHP+SQL  Photoshop  Подготовка к олимпиадам  Приложения Google  Летние программы:  Летние IT-интенсивы (краткосрочные программы по направлениям Roblox, Minecraft, Python и др.)  Летние КИБЕРканикулы (городской лагерь с IT-обучением и развлекательной программой)  Дополнительные механики:  Кибервалюта («кибероны») для мотивации учеников, обмен на мерч на КиберМаркете  Тьюторы и преподаватели:  Опытные специалисты с практическим опытом и педагогической подготовкой  Другие важные разделы:  Новости (новости школы и сети)  СМИ о нас (публикации о школе)  Фотогалерея (фото с мероприятий и уроков)  Видео (видеоматериалы о школе)  Расписание занятий (время занятий для групп и пробных уроков)  Локации (адрес школы в Октябрьском районе Саратова, ул. Тараса Шевченко, 8)  Оплата (способы оплаты и договор-оферта)  Сертификаты (активация промокодов партнеров)  Контакты (телефон +7 963 112-49-11, email saratov@kiber-one.com)",
+              "type": "string"
+            },
+            {
+              "id": "db9b8246-b0e8-4f39-af43-3b6759bdf636",
+              "name": "length",
+              "value": "5",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -16,
+        0
+      ],
+      "id": "d8e35db3-7149-4aca-ba81-80a278423464",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "3b684365-d6b8-4428-ab67-cbbcbdc077c9",
+              "leftValue": null,
+              "rightValue": 56,
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        816,
+        -32
+      ],
+      "id": "35ed5ab5-4c4e-4fe6-8162-123194ae2977",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.convertToFile",
+      "typeVersion": 1.1,
+      "position": [
+        1024,
+        -128
+      ],
+      "id": "57eaeef5-d325-483b-80c4-19e2b6818f37",
+      "name": "Convert to File"
+    }
+  ],
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Convert to File",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "983f694f-55bc-4946-ba50-f282303b35fd",
+  "triggerCount": 0,
+  "shared": [
+    {
+      "updatedAt": "2025-11-04T13:56:06.291Z",
+      "createdAt": "2025-11-04T13:56:06.291Z",
+      "role": "workflow:owner",
+      "workflowId": "vwRAn8uUM5XZ8OrS",
+      "projectId": "spKmbJLU4mvACXIB"
+    }
+  ],
+  "tags": [],
+  "file_name": "my-workflow-4.json"
+}
