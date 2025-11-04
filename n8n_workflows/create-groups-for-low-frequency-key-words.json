@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-04T16:49:15.819Z",
+  "updatedAt": "2025-11-04T16:56:32.150Z",
   "createdAt": "2025-11-04T16:36:35.686Z",
   "id": "16IidE6jjF6hXcGl",
   "name": "Create groups for low frequency key words",
@@ -396,8 +396,32 @@
       "name": "Insert group",
       "credentials": {
         "postgres": {
-          "id": "hNuVeLeeeSX0vLBj",
-          "name": "n8n service"
+          "id": "Hx2VFmUi5WO2K4QX",
+          "name": "Postgres account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO public.ads_groups(\n\t company_id, group_name,  is_own_brand)\n\tVALUES ($1, 'Брендовые низкочастотные запросы', true);",
+        "options": {
+          "queryReplacement": "={{ $('When Executed by Another Workflow').last().json.company_id }}\n\n"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -1600,
+        -224
+      ],
+      "id": "2b39514c-5452-4eaa-b6f0-53210f33b5a6",
+      "name": "Insert group1",
+      "executeOnce": true,
+      "credentials": {
+        "postgres": {
+          "id": "Hx2VFmUi5WO2K4QX",
+          "name": "Postgres account 2"
         }
       }
     }
@@ -546,7 +570,7 @@
       "main": [
         [
           {
-            "node": "Mark_workflow_completed",
+            "node": "Insert group1",
             "type": "main",
             "index": 0
           }
@@ -598,6 +622,17 @@
         ],
         []
       ]
+    },
+    "Insert group1": {
+      "main": [
+        [
+          {
+            "node": "Mark_workflow_completed",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
@@ -626,7 +661,7 @@
       }
     ]
   },
-  "versionId": "3f756ffe-4202-40bb-b9f2-e2bd2b0fe287",
+  "versionId": "918543bd-4bcf-4a00-ba20-8b31760d866c",
   "triggerCount": 0,
   "shared": [
     {
