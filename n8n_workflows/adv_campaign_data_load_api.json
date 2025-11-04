@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-04T18:34:02.968Z",
+  "updatedAt": "2025-11-04T18:47:21.549Z",
   "createdAt": "2025-10-22T11:44:28.248Z",
   "id": "4Fw159fAoZfSn72v",
   "name": "ADV_campaign_data_load_API",
@@ -856,19 +856,9 @@
     },
     {
       "parameters": {
-        "url": "https://h9mv0vfn6j.execute-api.us-east-1.amazonaws.com/development/auth/login",
-        "sendHeaders": true,
-        "headerParameters": {
-          "parameters": [
-            {
-              "name": "Content-Type",
-              "value": "application/json"
-            }
-          ]
-        },
-        "sendBody": true,
-        "specifyBody": "json",
-        "jsonBody": "{\n    \"email\": \"Alexandr.Muravyev+n8n_01@gmail.com\",\n    \"password\": \"Union_#0018876\"\n}",
+        "url": "https://eak5kk6vhl.execute-api.us-east-1.amazonaws.com/development/reports/daily?type=SEARCH_QUERY_PERFORMANCE_REPORT&date=2025-11-02&campaign_id=702142188%27",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBearerAuth",
         "options": {}
       },
       "type": "n8n-nodes-base.httpRequest",
@@ -878,7 +868,13 @@
         -240
       ],
       "id": "0c18113d-bab4-4b7d-9d57-4630e6406537",
-      "name": "HTTP Request"
+      "name": "HTTP Request",
+      "credentials": {
+        "httpBearerAuth": {
+          "id": "ubucXalWOKT3hILu",
+          "name": "Amazon API"
+        }
+      }
     }
   ],
   "connections": {
@@ -1168,13 +1164,13 @@
           "id": "4f5WJ06ItW520O75",
           "root_execution_id": 32924,
           "yandex_report_dropbox_file_path": "https://www.dropbox.com/scl/fi/9kr6iebx4q6cstzp2xuwb/2025-09-04_2025-09-24_searchquery_kiberone-saratov.csv?rlkey=cew8cc5k2rfbq5wrco9inb4eu&dl=1",
-          "report_date": "03.11.2025",
+          "report_date": "2025-11-03",
           "threshhold": "0.88"
         }
       }
     ]
   },
-  "versionId": "e67d396a-696e-432e-b307-094ab9a14985",
+  "versionId": "a8189864-1ee0-40cd-ae99-640d355100dd",
   "triggerCount": 0,
   "shared": [
     {
