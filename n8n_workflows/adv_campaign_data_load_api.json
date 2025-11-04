@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-04T18:27:19.916Z",
+  "updatedAt": "2025-11-04T18:34:02.968Z",
   "createdAt": "2025-10-22T11:44:28.248Z",
   "id": "4Fw159fAoZfSn72v",
   "name": "ADV_campaign_data_load_API",
@@ -444,29 +444,6 @@
     },
     {
       "parameters": {
-        "assignments": {
-          "assignments": [
-            {
-              "id": "5b3485a2-cb50-486a-932c-fc27de0a25da",
-              "name": "yandex_report_dropbox_file_path",
-              "value": "={{ $json.yandex_report_dropbox_file_path}}",
-              "type": "string"
-            }
-          ]
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.set",
-      "typeVersion": 3.4,
-      "position": [
-        -544,
-        -240
-      ],
-      "id": "7e421b0c-4a80-4661-853a-745dc4c11bd2",
-      "name": "set variables"
-    },
-    {
-      "parameters": {
         "content": "Очистка буферных таблиц",
         "height": 368,
         "width": 1120
@@ -876,6 +853,32 @@
       ],
       "id": "eab48bbe-f6ab-4e3c-8136-76002255784c",
       "name": "company_id_report_id"
+    },
+    {
+      "parameters": {
+        "url": "https://h9mv0vfn6j.execute-api.us-east-1.amazonaws.com/development/auth/login",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\n    \"email\": \"Alexandr.Muravyev+n8n_01@gmail.com\",\n    \"password\": \"Union_#0018876\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        -576,
+        -240
+      ],
+      "id": "0c18113d-bab4-4b7d-9d57-4630e6406537",
+      "name": "HTTP Request"
     }
   ],
   "connections": {
@@ -972,18 +975,7 @@
       "main": [
         [
           {
-            "node": "set variables",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "set variables": {
-      "main": [
-        [
-          {
-            "node": "Download File",
+            "node": "HTTP Request",
             "type": "main",
             "index": 0
           }
@@ -1182,7 +1174,7 @@
       }
     ]
   },
-  "versionId": "75858788-4499-4449-86bb-a5a225f547d4",
+  "versionId": "e67d396a-696e-432e-b307-094ab9a14985",
   "triggerCount": 0,
   "shared": [
     {
