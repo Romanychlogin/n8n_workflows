@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-04T14:17:11.556Z",
+  "updatedAt": "2025-11-04T20:56:01.922Z",
   "createdAt": "2025-11-04T13:56:06.291Z",
   "id": "vwRAn8uUM5XZ8OrS",
   "name": "My workflow 4",
@@ -11,7 +11,7 @@
       "type": "n8n-nodes-base.manualTrigger",
       "typeVersion": 1,
       "position": [
-        -208,
+        -272,
         0
       ],
       "id": "eeba2de7-c753-41fd-bda8-e693d49e4f5c",
@@ -37,8 +37,8 @@
       "type": "@n8n/n8n-nodes-langchain.agent",
       "typeVersion": 3,
       "position": [
-        416,
-        0
+        368,
+        -16
       ],
       "id": "40862b4e-6140-48d2-823f-54ad1c81eae0",
       "name": "AI Agent",
@@ -82,8 +82,8 @@
             {
               "id": "db9b8246-b0e8-4f39-af43-3b6759bdf636",
               "name": "length",
-              "value": "5",
-              "type": "string"
+              "value": 5,
+              "type": "number"
             }
           ]
         },
@@ -111,7 +111,7 @@
           "conditions": [
             {
               "id": "3b684365-d6b8-4428-ab67-cbbcbdc077c9",
-              "leftValue": "={{ $('Code in JavaScript').item.json.length }}",
+              "leftValue": "={{ $json.length }}",
               "rightValue": 56,
               "operator": {
                 "type": "number",
@@ -229,8 +229,14 @@
   "meta": {
     "templateCredsSetupCompleted": true
   },
-  "pinData": {},
-  "versionId": "b0962168-e962-4c58-bff2-647781c57945",
+  "pinData": {
+    "When clicking ‘Execute workflow’": [
+      {
+        "json": {}
+      }
+    ]
+  },
+  "versionId": "f12e13d1-558d-4827-acbe-e2ac435dbf70",
   "triggerCount": 0,
   "shared": [
     {
