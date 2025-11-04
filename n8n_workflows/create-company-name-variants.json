@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-04T12:04:35.390Z",
+  "updatedAt": "2025-11-04T12:35:27.150Z",
   "createdAt": "2025-11-04T11:23:42.194Z",
   "id": "gPFc89UDaNTuIXaJ",
   "name": "Create company name variants",
@@ -22,13 +22,13 @@
           "cachedResultName": "n8n_prompts",
           "cachedResultUrl": "https://github.com/Romanychlogin/n8n_prompts"
         },
-        "filePath": "competitor_variants.txt",
+        "filePath": "company_name_variants.txt",
         "additionalParameters": {}
       },
       "type": "n8n-nodes-base.github",
       "typeVersion": 1.1,
       "position": [
-        -3488,
+        -3568,
         32
       ],
       "id": "afad2649-25ec-49ff-8d5e-3eab7720e007",
@@ -49,51 +49,11 @@
       "type": "n8n-nodes-base.extractFromFile",
       "typeVersion": 1,
       "position": [
-        -3312,
+        -3408,
         32
       ],
       "id": "ea72b9a0-0e76-4486-b96c-9c982dcc61a2",
       "name": "Extract from File2"
-    },
-    {
-      "parameters": {
-        "method": "POST",
-        "url": "https://api.openai.com/v1/responses",
-        "authentication": "predefinedCredentialType",
-        "nodeCredentialType": "openAiApi",
-        "sendBody": true,
-        "specifyBody": "json",
-        "jsonBody": "={{$json}}",
-        "options": {}
-      },
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.2,
-      "position": [
-        -2608,
-        48
-      ],
-      "id": "52fbc0e4-5166-44f5-b7f5-2f20bc360af0",
-      "name": "HTTP Request",
-      "retryOnFail": true,
-      "credentials": {
-        "openAiApi": {
-          "id": "V8R8KiZKXscJQ1sL",
-          "name": "OpenAi account"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "jsCode": "const workflowData = $getWorkflowStaticData('global');\nconst firstItem = workflowData.competitors_prompt;\nreturn [{\n  json: {\n  \"model\": \"gpt-5\",\n  \"input\": [\n    {\n      \"role\": \"developer\",\n      \"content\": [\n        {\n          \"type\": \"input_text\",\n          \"text\": \"Отвечай только валидным JSON-массивом объектов в формате: [{\\\"competitor_name_variant\\\": string}]. Не добавляй комментариев или форматирования вне JSON.\"\n        }\n      ]\n    },\n    {\n      \"role\": \"user\",\n      \"content\": [\n        {\n          \"type\": \"input_text\",\n          \"text\": \"Для компании \" + $input.first().json.canonical_name + \" с сайтом \" + $input.first().json.competitor_url + \" \" + firstItem.data\n        }\n      ]\n    }\n  ],\n  \"text\": {\n    \"format\": {\n      \"type\": \"json_schema\",\n      \"name\": \"company_name_variants\",\n      \"strict\": true,\n      \"schema\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"variants\": {\n            \"type\": \"array\",\n            \"description\": \"An array containing all company name variants, each as a non-empty string.\",\n            \"items\": {\n              \"type\": \"string\",\n              \"minLength\": 1\n            }\n          }\n        },\n        \"required\": [\n          \"variants\"\n        ],\n        \"additionalProperties\": false\n      }\n    },\n    \"verbosity\": \"low\"\n  },\n  \"reasoning\": {\n    \"effort\": \"minimal\",\n    \"summary\": null\n  },\n  \"tools\": [],\n  \"store\": false,\n  \"include\": [\n    \"reasoning.encrypted_content\",\n    \"web_search_call.action.sources\"\n  ]\n}\n}];"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        -2816,
-        48
-      ],
-      "id": "ff9ef319-a98e-4d24-9b17-d25f8a39f533",
-      "name": "Set API JSON"
     },
     {
       "parameters": {
@@ -110,12 +70,12 @@
     },
     {
       "parameters": {
-        "jsCode": "// Function-Node (Run Once)\nconst workflowData = $getWorkflowStaticData('global');\nworkflowData.competitors_prompt = items[0].json;\nreturn items;"
+        "jsCode": "// Function-Node (Run Once)\nconst workflowData = $getWorkflowStaticData('global');\nworkflowData.my_prompt = items[0].json;\nreturn items;"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -3120,
+        -3280,
         32
       ],
       "id": "3ee61287-ef18-441c-93d1-a73a4f813560",
@@ -173,7 +133,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        -3664,
+        -3728,
         32
       ],
       "id": "a7078d48-7c6a-4cf9-9de5-f0fe309f6b0b",
@@ -417,6 +377,61 @@
           "name": "PGvector"
         }
       }
+    },
+    {
+      "parameters": {
+        "jsCode": "const workflowData = $getWorkflowStaticData('global');\nlet my_prompt = workflowData.my_prompt.data;\n\nfor (const item of $input.all()) {\n  item.json.my_prompt = my_prompt.replaceAll(\"{{company_description}}\",$('Loop Over Items').last().json.service_name +' ' + $('Loop Over Items').last().json.service_description).replaceAll(\"{{company_url}}\", JSON.stringify($('Loop Over Items').last().json.items)).replaceAll(\"{{company_name}}\", $('Loop Over Items').last().json.company_name);\n}\n\nreturn $input.all();"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -3072,
+        48
+      ],
+      "id": "06954ee0-afd6-4a16-97fb-811dc8738757",
+      "name": "Set prompt"
+    },
+    {
+      "parameters": {
+        "jsCode": "return [{\n  json: \n {\n  \"model\": \"gpt-5\",\n  \"input\": [\n    {\n      \"role\": \"developer\",\n      \"content\": [\n        {\n          \"type\": \"input_text\",\n          \"text\": \"You should strictly follow instructions and use web search to extend possible variations options\"\n        }\n      ]\n    },\n    {\n      \"role\": \"user\",\n      \"content\": [\n        {\n          \"type\": \"input_text\",\n          \"text\": $json.my_prompt\n        }\n      ]\n    }\n  ],\n  \"text\": {\n    \"format\": {\n      \"type\": \"json_schema\",\n      \"name\": \"variants\",\n      \"strict\": true,\n      \"schema\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"variants\": {\n            \"type\": \"array\",\n            \"description\": \"List of different spellings or formats of a company name.\",\n            \"items\": {\n              \"type\": \"object\",\n              \"properties\": {\n                \"variant\": {\n                  \"type\": \"string\",\n                  \"description\": \"A non-empty spelling variation of the company name.\",\n                  \"minLength\": 1\n                }\n              },\n              \"required\": [\n                \"variant\"\n              ],\n              \"additionalProperties\": false\n            }\n          }\n        },\n        \"required\": [\n          \"variants\"\n        ],\n        \"additionalProperties\": false\n      }\n    },\n    \"verbosity\": \"high\"\n  },\n  \"reasoning\": {\n    \"effort\": \"high\",\n    \"summary\": \"auto\"\n  },\n  \"tools\": [\n    {\n      \"type\": \"web_search\",\n      \"filters\": null,\n      \"search_context_size\": \"medium\",\n      \"user_location\": {\n        \"type\": \"approximate\",\n        \"city\": null,\n        \"country\": \"RU\",\n        \"region\": null,\n        \"timezone\": null\n      }\n    }\n  ],\n  \"store\": false,\n  \"include\": [\n    \"reasoning.encrypted_content\",\n    \"web_search_call.action.sources\"\n  ]\n}\n\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -2896,
+        48
+      ],
+      "id": "5e45c9f4-9784-4254-8648-a81d6db0cfe8",
+      "name": "Set API JSON"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.openai.com/v1/responses",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "openAiApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{$json}}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -2704,
+        48
+      ],
+      "id": "7ac3df89-6d9d-468d-9cc2-7332c0bea4a1",
+      "name": "HTTP Request",
+      "retryOnFail": true,
+      "waitBetweenTries": 5000,
+      "maxTries": 5,
+      "credentials": {
+        "openAiApi": {
+          "id": "m4NScyhZzV3hBcTr",
+          "name": "OpenAi Yads"
+        }
+      }
     }
   ],
   "connections": {
@@ -436,28 +451,6 @@
         [
           {
             "node": "Save prompt",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "HTTP Request": {
-      "main": [
-        [
-          {
-            "node": "Parse JSON",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Set API JSON": {
-      "main": [
-        [
-          {
-            "node": "HTTP Request",
             "type": "main",
             "index": 0
           }
@@ -484,7 +477,7 @@
       "main": [
         [
           {
-            "node": "Set API JSON",
+            "node": "Set prompt",
             "type": "main",
             "index": 0
           }
@@ -626,6 +619,39 @@
         ],
         []
       ]
+    },
+    "Set prompt": {
+      "main": [
+        [
+          {
+            "node": "Set API JSON",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set API JSON": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Parse JSON",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
@@ -649,7 +675,7 @@
       }
     ]
   },
-  "versionId": "cfc4aec9-ef92-4b94-91e7-a66d87859727",
+  "versionId": "73d10ff4-6ae7-4481-9295-9f3d30197782",
   "triggerCount": 0,
   "shared": [
     {
