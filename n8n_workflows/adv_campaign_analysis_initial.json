@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-05T14:48:00.963Z",
+  "updatedAt": "2025-11-05T14:51:41.031Z",
   "createdAt": "2025-10-20T11:13:37.232Z",
   "id": "b9eGU4g5DID0kq2E",
   "name": "ADV_campaign_analysis_initial",
@@ -2097,7 +2097,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        5904,
+        5744,
         -832
       ],
       "id": "f95e760e-5c51-4bfc-b6d2-4974c19e9448",
@@ -2125,7 +2125,7 @@
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1.2,
       "position": [
-        6096,
+        5936,
         -832
       ],
       "id": "5e52a2f8-b977-4f77-9269-e1e4f10b301d",
@@ -2346,6 +2346,42 @@
       ],
       "id": "e85b1409-04ad-4518-b891-1b2ba53941bd",
       "name": "Edit Fields1"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "47944833-0d31-4a55-9872-7c281576da2a",
+              "name": "key_word",
+              "value": "={{ $('Loop Over Items').last().json.key_word }}",
+              "type": "string"
+            },
+            {
+              "id": "224cde67-d787-4cce-8db0-4ca43a3c4fbe",
+              "name": "company_id",
+              "value": "={{ $('Loop Over Items').last().json.company_id }}",
+              "type": "string"
+            },
+            {
+              "id": "18575e26-d5ea-458a-8414-b924427f3aa3",
+              "name": "report_id",
+              "value": "={{ $('Loop Over Items').last().json.report_id }}",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        6144,
+        -832
+      ],
+      "id": "3a54eeaf-4704-4c23-9486-5caf29102b01",
+      "name": "set input2"
     }
   ],
   "connections": {
@@ -3077,7 +3113,7 @@
       "main": [
         [
           {
-            "node": "Check VS own company name",
+            "node": "set input2",
             "type": "main",
             "index": 0
           }
@@ -3189,6 +3225,17 @@
           }
         ]
       ]
+    },
+    "set input2": {
+      "main": [
+        [
+          {
+            "node": "Check VS own company name",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
@@ -3233,7 +3280,7 @@
       }
     ]
   },
-  "versionId": "5784604e-4db2-49fb-b6bf-f84156efcb59",
+  "versionId": "55b91e19-93e3-4101-b09e-fe52e0e819f5",
   "triggerCount": 0,
   "shared": [
     {
