@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-05T08:23:18.515Z",
+  "updatedAt": "2025-11-05T14:48:00.963Z",
   "createdAt": "2025-10-20T11:13:37.232Z",
   "id": "b9eGU4g5DID0kq2E",
   "name": "ADV_campaign_analysis_initial",
@@ -307,7 +307,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        7456,
+        7664,
         -1648
       ],
       "id": "f97102c4-6dd5-4d6c-bad8-453e7f990135",
@@ -340,7 +340,8 @@
             "list_id": "={{ $('Loop Over Items').last().json.list_id }}",
             "ai_response_tokens": "={{ $json.total_tokens }}",
             "ai_calls": "={{ $json.ai_calls }}",
-            "embedding_calls": "={{ $json.embedding_calls }}"
+            "embedding_calls": "={{ $json.embedding_calls }}",
+            "is_own_brand": "={{ $json.is_own_brand }}"
           },
           "matchingColumns": [
             "list_id"
@@ -535,6 +536,36 @@
               "type": "number",
               "canBeUsedToMatch": true,
               "removed": false
+            },
+            {
+              "id": "service_recognition_error",
+              "displayName": "service_recognition_error",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "boolean",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "is_own_brand",
+              "displayName": "is_own_brand",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "boolean",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "branded_queries",
+              "displayName": "branded_queries",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
             }
           ],
           "attemptToConvertTypes": false,
@@ -545,7 +576,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        7456,
+        7664,
         -624
       ],
       "id": "430a7a95-765e-4ba1-98f1-0a7d434760bc",
@@ -729,7 +760,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        7600,
+        7808,
         -1040
       ],
       "id": "0e8ffc1d-a08e-44b0-8809-2c0ae50fd4ff",
@@ -974,7 +1005,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        8864,
+        9072,
         320
       ],
       "id": "f519e37d-8239-413b-b929-6f3357625eb3",
@@ -994,7 +1025,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        8624,
+        8832,
         336
       ],
       "id": "9f9db35e-7c8d-4e95-8668-ddcb51a362e3",
@@ -1027,7 +1058,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        9248,
+        9456,
         352
       ],
       "id": "bb8594f0-0177-426e-8f86-112a6c552b57",
@@ -1040,7 +1071,7 @@
       "type": "n8n-nodes-base.stopAndError",
       "typeVersion": 1,
       "position": [
-        9488,
+        9696,
         224
       ],
       "id": "6f0a0a09-b56a-4f0b-b280-f61f063732be",
@@ -1074,7 +1105,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        9072,
+        9280,
         320
       ],
       "id": "e805448e-e73c-46e1-b856-c6b1870be3ad",
@@ -1168,6 +1199,12 @@
               "name": "total_tokens",
               "value": "=0",
               "type": "number"
+            },
+            {
+              "id": "ef26aba6-06de-4cf3-ad53-e3d361a5458c",
+              "name": "is_own_brand",
+              "value": false,
+              "type": "boolean"
             }
           ]
         },
@@ -1208,8 +1245,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        6928,
-        -816
+        7152,
+        -800
       ],
       "id": "0b64609f-741a-4e59-bc1e-e9e218abba39",
       "name": "mark to add"
@@ -1451,7 +1488,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        7088,
+        7296,
         96
       ],
       "id": "28ec1340-bfa6-4a0b-883f-94bcf45c2074",
@@ -1475,7 +1512,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        7456,
+        7664,
         96
       ],
       "id": "129c22d0-6263-4e30-9b09-af14cfec59ee",
@@ -1494,7 +1531,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        6896,
+        7104,
         96
       ],
       "id": "15291823-1e2d-42c4-96fe-98a6710aedc4",
@@ -1868,7 +1905,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        6736,
+        6944,
         -1216
       ],
       "id": "16f27083-1abc-43cc-af4e-a63a1c6ae2b9",
@@ -1891,7 +1928,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        7680,
+        7888,
         96
       ],
       "id": "c068c4c0-e4fb-4528-8a0a-eea1c1dc9527",
@@ -1914,7 +1951,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        6912,
+        7120,
         -1216
       ],
       "id": "69981893-03ec-4c27-961b-fc5bfd5c1020",
@@ -1998,7 +2035,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        7280,
+        7488,
         96
       ],
       "id": "582c6fd8-a58f-43ed-b106-ff221530d7fa",
@@ -2011,7 +2048,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        7264,
+        7472,
         -624
       ],
       "id": "0f9e0677-043b-472a-afbe-5eb6d4e90f2c",
@@ -2024,7 +2061,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        7424,
+        7632,
         -1056
       ],
       "id": "e9a2be3d-1798-47b9-87ab-fd11f0ab9870",
@@ -2060,8 +2097,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        6496,
-        -864
+        5904,
+        -832
       ],
       "id": "f95e760e-5c51-4bfc-b6d2-4974c19e9448",
       "name": "set input1"
@@ -2088,8 +2125,8 @@
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1.2,
       "position": [
-        6688,
-        -864
+        6096,
+        -832
       ],
       "id": "5e52a2f8-b977-4f77-9269-e1e4f10b301d",
       "name": "Add to company content"
@@ -2166,6 +2203,12 @@
               "name": "total_tokens",
               "value": "=0",
               "type": "number"
+            },
+            {
+              "id": "5eea01d1-a7d0-4910-940e-49bec497c244",
+              "name": "is_own_brand",
+              "value": false,
+              "type": "boolean"
             }
           ]
         },
@@ -2180,6 +2223,129 @@
       ],
       "id": "6530ae7f-8af1-44c2-96ad-5b5dfbaaefd0",
       "name": "mark need AI"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "yCfJa4PLjbR3JfLp",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/yCfJa4PLjbR3JfLp",
+          "cachedResultName": "Check VS own company name"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.3,
+      "position": [
+        6352,
+        -816
+      ],
+      "id": "a0ce8fee-228e-4775-a250-0004b48953f2",
+      "name": "Check VS own company name"
+    },
+    {
+      "parameters": {
+        "jsCode": "const workflowData = $getWorkflowStaticData('global');\nfunction toNumber(x, def = 0) {\n  const n = Number(x);\n  return Number.isFinite(n) ? n : def;\n}\n\nworkflowData.embedding_calls = toNumber(workflowData.embedding_calls,0) + toNumber($input.first().json.meta.candidates_total,0);\n\nreturn $input.all();\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        6576,
+        -816
+      ],
+      "id": "d343e201-c51a-49e7-8d8f-b5fbcc894d24",
+      "name": "update calls counters6"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "0b8b9cb2-368a-4ef4-b4b4-560b030f71f4",
+              "leftValue": "={{ $json.non_matches }}",
+              "rightValue": "",
+              "operator": {
+                "type": "array",
+                "operation": "empty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        6784,
+        -832
+      ],
+      "id": "c57c9fb4-8565-42bb-b2d3-474921877d82",
+      "name": "If find own array is empty"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "2ecfdad0-84b8-42cc-9fcd-bef554d40bc7",
+              "name": "is_own_brand",
+              "value": true,
+              "type": "boolean"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        6960,
+        -928
+      ],
+      "id": "6bb80a75-c1de-4d38-bf04-989cae060f1c",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "2ecfdad0-84b8-42cc-9fcd-bef554d40bc7",
+              "name": "is_own_brand",
+              "value": false,
+              "type": "boolean"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        6960,
+        -736
+      ],
+      "id": "e85b1409-04ad-4518-b891-1b2ba53941bd",
+      "name": "Edit Fields1"
     }
   ],
   "connections": {
@@ -2911,7 +3077,7 @@
       "main": [
         [
           {
-            "node": "mark to add",
+            "node": "Check VS own company name",
             "type": "main",
             "index": 0
           }
@@ -2961,6 +3127,68 @@
           }
         ]
       ]
+    },
+    "Check VS own company name": {
+      "main": [
+        [
+          {
+            "node": "update calls counters6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "update calls counters6": {
+      "main": [
+        [
+          {
+            "node": "If find own array is empty",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If find own array is empty": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "mark to add",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "mark to add",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
@@ -3005,7 +3233,7 @@
       }
     ]
   },
-  "versionId": "e8176302-38da-43bf-bb31-fa4d05e1f62c",
+  "versionId": "5784604e-4db2-49fb-b6bf-f84156efcb59",
   "triggerCount": 0,
   "shared": [
     {
