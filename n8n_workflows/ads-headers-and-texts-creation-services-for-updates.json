@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-05T14:26:35.454Z",
+  "updatedAt": "2025-11-05T18:57:18.426Z",
   "createdAt": "2025-09-28T11:31:13.045Z",
   "id": "lBAh8kjoXRX0aGUF",
   "name": "ADS headers and texts creation services for updates",
@@ -840,9 +840,9 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "WITH clean_keywords AS (\n  SELECT f.key_word\n  FROM current_list f\n  WHERE f.company_id = $1\n    AND f.report_id  = $2\n    AND f.resolution = 'to add'\n    AND f.is_adv_processed=false \n    AND NOT EXISTS (\n      SELECT 1\n      FROM current_list s\n      WHERE s.company_id = f.company_id\n        AND s.report_id  = f.report_id\n        AND s.key_word   = f.key_word\n        AND s.resolution = 'same key'\n    )\n  GROUP BY f.key_word\n)\nSELECT COUNT(*) AS total\nFROM clean_keywords;",
+        "query": "\nSELECT COUNT(*) from ads_list where company_id=$1 and add_to_hi_demand=true;",
         "options": {
-          "queryReplacement": "=[{{ $('set variables').item.json.company_id }},{{ $('set variables').item.json.import_id }}]"
+          "queryReplacement": "=[{{ $('set variables').item.json.company_id }}"
         }
       },
       "type": "n8n-nodes-base.postgres",
@@ -1112,9 +1112,9 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "WITH clean AS (\n  SELECT *\n  FROM current_list f\n  WHERE f.company_id = $1\n    AND f.report_id  = $2\n    AND f.service_id  = $3\n    AND f.resolution = 'to add'\n    AND f.is_adv_processed=false\n    AND NOT EXISTS (\n      SELECT 1\n      FROM current_list s\n      WHERE s.company_id = f.company_id\n        AND s.report_id  = f.report_id\n        AND s.key_word   = f.key_word\n        AND s.resolution = 'same key'\n    )\n),\nranked AS (\n  SELECT\n    c.*,\n    ROW_NUMBER() OVER (\n      PARTITION BY c.key_word\n      ORDER BY c.list_id   -- при необходимости поменяй на created_at\n    ) AS rn\n  FROM clean c\n)\nSELECT *\nFROM ranked\nWHERE rn = 1;",
+        "query": "select * from ads_list where company_id=$1 and service_id=$2 add_to_hi_demand=true",
         "options": {
-          "queryReplacement": "=[{{ $('set variables').item.json.company_id }},{{ $('set variables').item.json.import_id }},{{ $json.service_id }}]"
+          "queryReplacement": "=[{{ $('set variables').item.json.company_id }},{{ $json.service_id }}]"
         }
       },
       "type": "n8n-nodes-base.postgres",
@@ -2028,7 +2028,7 @@
       }
     ]
   },
-  "versionId": "8675b2fa-be51-43da-a0ed-19fd63508a4f",
+  "versionId": "1ac93267-dd12-46b2-b68c-94f00254e202",
   "triggerCount": 0,
   "shared": [
     {
