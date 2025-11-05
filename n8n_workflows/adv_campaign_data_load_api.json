@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-05T08:08:28.836Z",
+  "updatedAt": "2025-11-05T08:19:09.792Z",
   "createdAt": "2025-10-22T11:44:28.248Z",
   "id": "4Fw159fAoZfSn72v",
   "name": "ADV_campaign_data_load_API",
@@ -61,18 +61,18 @@
         "columns": {
           "mappingMode": "defineBelow",
           "value": {
-            "key_word": "={{ $json['Поисковый запрос'] }}",
-            "campaign_id": "={{ $json['№ Кампании'] }}",
-            "used_keyword": "={{ $json['Условие показа'] }}",
-            "group_id": "={{ $json['№ Группы'] }}",
-            "condition_type": "={{ $json['Тип соответствия'] }}",
-            "category": "={{ $json['Категория таргетинга'] }}",
-            "ads_header": "={{ $json['Заголовок'] }}",
-            "count_views": "={{ $json['Показы'] }}",
-            "count_clics": "={{ $json['Клики'] }}",
-            "count_convetions": "={{ $json['Конверсии'] }}",
+            "key_word": "={{ $json.Query }}",
+            "campaign_id": "={{ $json.CampaignId }}",
+            "used_keyword": "={{ $json.Criterion }}",
+            "group_id": "={{ $json.AdGroupId }}",
+            "condition_type": "={{ $json.MatchType }}",
+            "category": "={{ $json.TargetingCategory }}",
+            "ads_header": "=",
+            "count_views": "={{ $json.Impressions }}",
+            "count_clics": "={{ $json.Clicks }}",
+            "count_convetions": "={{ $json.Conversions }}",
             "company_id": "={{ $json.company_id }}",
-            "report_id": "={{ $('report import record').item.json.import_id }}",
+            "report_id": "={{ $json.import_id }}",
             "service_id": 0
           },
           "matchingColumns": [
@@ -858,7 +858,7 @@
       }
     ]
   },
-  "versionId": "66510da7-ce6d-4191-aa92-d1e52875f8af",
+  "versionId": "da980278-cfad-4cd7-9847-4c31f554fb87",
   "triggerCount": 0,
   "shared": [
     {
