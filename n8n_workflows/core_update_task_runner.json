@@ -1,0 +1,36 @@
+{
+  "updatedAt": "2025-11-05T08:36:01.907Z",
+  "createdAt": "2025-11-05T08:35:44.773Z",
+  "id": "ijLeMF0Cr8fE2iv1",
+  "name": "core_update_task_runner",
+  "active": false,
+  "isArchived": false,
+  "nodes": [],
+  "connections": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": {},
+  "versionId": "bc7a8bac-8885-4aa5-8eac-2c032c28226b",
+  "triggerCount": 0,
+  "shared": [
+    {
+      "updatedAt": "2025-11-05T08:35:44.773Z",
+      "createdAt": "2025-11-05T08:35:44.773Z",
+      "role": "workflow:owner",
+      "workflowId": "ijLeMF0Cr8fE2iv1",
+      "projectId": "spKmbJLU4mvACXIB"
+    }
+  ],
+  "tags": [
+    {
+      "updatedAt": "2025-10-06T13:06:54.644Z",
+      "createdAt": "2025-10-06T13:06:54.644Z",
+      "id": "DBEf57wUDunVJUG6",
+      "name": "campaign update"
+    }
+  ],
+  "file_name": "core_update_task_runner.json"
+}
