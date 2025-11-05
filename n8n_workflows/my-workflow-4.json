@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-05T00:20:33.672Z",
+  "updatedAt": "2025-11-05T00:27:50.969Z",
   "createdAt": "2025-11-04T13:56:06.291Z",
   "id": "vwRAn8uUM5XZ8OrS",
   "name": "My workflow 4",
@@ -115,7 +115,7 @@
           "conditions": [
             {
               "id": "3b684365-d6b8-4428-ab67-cbbcbdc077c9",
-              "leftValue": "={{ $json.length }}",
+              "leftValue": "={{ $item.json.length }}",
               "rightValue": 56,
               "operator": {
                 "type": "number",
@@ -140,7 +140,7 @@
     {
       "parameters": {
         "schemaType": "manual",
-        "inputSchema": "{\n  \"$schema\": \"http://json-schema.org/draft-07/schema#\",\n  \"title\": \"Ad Data Schema\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"Ad_header\": {\n      \"type\": \"string\",\n      \"maxLength\": 56,\n      \"description\": \"Заголовок объявления (обязательное поле, не более 56 символов)\"\n    },\n    \"length\": {\n      \"type\": \"number\",\n      \"description\": \"Числовое значение длины (обязательное поле)\"\n    }\n  },\n  \"required\": [\"Ad_header\", \"length\"],\n  \"additionalProperties\": false\n}",
+        "inputSchema": "{\n  \"$schema\": \"http://json-schema.org/draft-07/schema#\",\n  \"title\": \"Ad Data Schema\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"Ad_header\": {\n      \"type\": \"string\",\n      \"maxLength\": 56,\n      \"description\": \"Заголовок объявления (обязательное поле, не более 56 символов)\"\n    },\n    \"ad_length\": {\n      \"type\": \"number\",\n      \"description\": \"Числовое значение длины (обязательное поле)\"\n    }\n  },\n  \"required\": [\"Ad_header\", \"ad_length\"],\n  \"additionalProperties\": false\n}",
         "autoFix": true
       },
       "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
@@ -154,7 +154,7 @@
     },
     {
       "parameters": {
-        "jsCode": "const rows = $vars.get('rows') ?? [];\nconst inItems = $input.all(); // массив входных items\n\nfor (const item of inItems) {\n  // подстрой поля под свой объект; у тебя они лежат в item.json.output\n  rows.push({\n    Ad_header: item.json.output?.Ad_header,\n    length: item.json.output?.length,\n  });\n}\n\n$vars.set('rows', rows); // сохраняем аккумулятор\nreturn inItems;          // пропускаем дальше по циклу"
+        "jsCode": "// Персистентное хранилище для этой Code-ноды\nconst store = $getWorkflowStaticData('node');\n\n// Сбрасываем rows один раз на запуск воркфлоу\nconst execId = $execution.id;        // id текущего запуска\nif (store._execId !== execId) {\n  store._execId = execId;\n  store.rows = [];\n}\n\nconst inItems = $input.all();\n\nfor (const item of inItems) {\n  const out = item.json.output ?? {};\n  store.rows.push({\n    Ad_header: out.Ad_header,\n    length: out.length,\n  });\n}\n\nreturn inItems; // пропускаем дальше по циклу"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -167,13 +167,13 @@
     },
     {
       "parameters": {
-        "jsCode": "const rows = $vars.get('rows') ?? [];\nif (!rows.length) {\n  return [{ json: { info: 'Нет данных' } }];\n}\nreturn rows.map(r => ({ json: r }));"
+        "jsCode": "const store = $getWorkflowStaticData('node');\nconst rows = store.rows ?? [];\n\nif (!rows.length) {\n  return [{ json: { info: 'Нет данных для CSV' } }];\n}\n\n// отдаём строки как items → дальше Spreadsheet File: To File (CSV)\nreturn rows.map(r => ({ json: r }));"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1024,
-        -128
+        1040,
+        -32
       ],
       "id": "8aa3a80f-7bc2-4c5f-acda-e9d8cca2f4fd",
       "name": "Code in JavaScript2"
@@ -288,14 +288,8 @@
   "meta": {
     "templateCredsSetupCompleted": true
   },
-  "pinData": {
-    "When clicking ‘Execute workflow’": [
-      {
-        "json": {}
-      }
-    ]
-  },
-  "versionId": "d3a56176-44a9-48b3-a4b5-bb566454a610",
+  "pinData": {},
+  "versionId": "42927035-37cf-4ca7-8866-7b99e867395f",
   "triggerCount": 0,
   "shared": [
     {
