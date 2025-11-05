@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-05T00:27:50.969Z",
+  "updatedAt": "2025-11-05T00:36:18.555Z",
   "createdAt": "2025-11-04T13:56:06.291Z",
   "id": "vwRAn8uUM5XZ8OrS",
   "name": "My workflow 4",
@@ -91,7 +91,6 @@
             }
           ]
         },
-        "includeOtherFields": true,
         "options": {}
       },
       "type": "n8n-nodes-base.set",
@@ -289,7 +288,7 @@
     "templateCredsSetupCompleted": true
   },
   "pinData": {},
-  "versionId": "42927035-37cf-4ca7-8866-7b99e867395f",
+  "versionId": "9075cca2-57d8-4c37-956b-66f7d8b471b7",
   "triggerCount": 0,
   "shared": [
     {
