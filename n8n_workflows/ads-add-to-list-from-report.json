@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-05T16:47:16.564Z",
+  "updatedAt": "2025-11-05T19:05:06.207Z",
   "createdAt": "2025-11-05T13:50:52.126Z",
   "id": "MhWRad4Kq8hLA1E7",
   "name": "ADS add to list from report",
@@ -106,9 +106,9 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "update current_list set is_adv_processed=true where company_id=$1 and report_id=$2 AND list_id=$3",
+        "query": "update current_list set is_adv_processed=true where  list_id=$3",
         "options": {
-          "queryReplacement": "={{ $('When Executed by Another Workflow').item.json.company_id }},{{ $('Loop Over Items').last().json.service_id }},{{ $('Loop Over Items').last().json.list_id }}"
+          "queryReplacement": "={{ $('Loop Over Items').last().json.list_id }}"
         }
       },
       "type": "n8n-nodes-base.postgres",
@@ -572,9 +572,9 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "update current_list set is_adv_processed=true where company_id=$1 and report_id=$2 AND list_id=$3",
+        "query": "update current_list set is_adv_processed=true where list_id=$3",
         "options": {
-          "queryReplacement": "={{ $('When Executed by Another Workflow').item.json.company_id }},{{ $('Loop Over Items2').last().json.service_id }},{{ $('Loop Over Items2').last().json.list_id }}"
+          "queryReplacement": "={{ $('Loop Over Items2').last().json.list_id }}"
         }
       },
       "type": "n8n-nodes-base.postgres",
@@ -937,7 +937,7 @@
       }
     ]
   },
-  "versionId": "1fa98085-9e75-4294-9bf7-e3846b88edb4",
+  "versionId": "29cf4a1a-9fe7-4c9b-a8cb-171c415d8fc4",
   "triggerCount": 0,
   "shared": [
     {
