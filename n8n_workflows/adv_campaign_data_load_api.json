@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-05T08:19:09.792Z",
+  "updatedAt": "2025-11-05T08:24:05.721Z",
   "createdAt": "2025-10-22T11:44:28.248Z",
   "id": "4Fw159fAoZfSn72v",
   "name": "ADV_campaign_data_load_API",
@@ -67,7 +67,7 @@
             "group_id": "={{ $json.AdGroupId }}",
             "condition_type": "={{ $json.MatchType }}",
             "category": "={{ $json.TargetingCategory }}",
-            "ads_header": "=",
+            "ads_header": "=ппропло",
             "count_views": "={{ $json.Impressions }}",
             "count_clics": "={{ $json.Clicks }}",
             "count_convetions": "={{ $json.Conversions }}",
@@ -232,6 +232,36 @@
             {
               "id": "is_adv_processed",
               "displayName": "is_adv_processed",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "boolean",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "ai_calls",
+              "displayName": "ai_calls",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "embedding_calls",
+              "displayName": "embedding_calls",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "service_recognition_error",
+              "displayName": "service_recognition_error",
               "required": false,
               "defaultMatch": false,
               "display": true,
@@ -858,7 +888,7 @@
       }
     ]
   },
-  "versionId": "da980278-cfad-4cd7-9847-4c31f554fb87",
+  "versionId": "4579f07c-06a4-4fe1-87aa-424a88569005",
   "triggerCount": 0,
   "shared": [
     {
@@ -871,16 +901,16 @@
   ],
   "tags": [
     {
-      "updatedAt": "2025-10-22T11:44:26.850Z",
-      "createdAt": "2025-10-22T11:44:26.850Z",
-      "id": "TAPLdpwV5vPQJtDW",
-      "name": "API"
-    },
-    {
       "updatedAt": "2025-10-06T13:06:54.644Z",
       "createdAt": "2025-10-06T13:06:54.644Z",
       "id": "DBEf57wUDunVJUG6",
       "name": "campaign update"
+    },
+    {
+      "updatedAt": "2025-10-22T11:44:26.850Z",
+      "createdAt": "2025-10-22T11:44:26.850Z",
+      "id": "TAPLdpwV5vPQJtDW",
+      "name": "API"
     }
   ]
 }
