@@ -1,41 +1,11 @@
 {
-  "updatedAt": "2025-11-04T19:54:00.148Z",
+  "updatedAt": "2025-11-05T08:08:28.836Z",
   "createdAt": "2025-10-22T11:44:28.248Z",
   "id": "4Fw159fAoZfSn72v",
   "name": "ADV_campaign_data_load_API",
   "active": false,
   "isArchived": false,
   "nodes": [
-    {
-      "parameters": {
-        "url": "={{ $json.yandex_report_dropbox_file_path }}",
-        "responseFormat": "file",
-        "options": {}
-      },
-      "id": "8cddb4ba-596e-43e9-9d39-5785935fad3f",
-      "name": "Download File",
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 2,
-      "position": [
-        -80,
-        -128
-      ]
-    },
-    {
-      "parameters": {
-        "options": {
-          "delimiter": ";"
-        }
-      },
-      "type": "n8n-nodes-base.extractFromFile",
-      "typeVersion": 1,
-      "position": [
-        528,
-        -128
-      ],
-      "id": "65eab507-be5e-44a4-a429-35edbf8fa8ac",
-      "name": "Extract from File"
-    },
     {
       "parameters": {
         "options": {}
@@ -278,7 +248,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        3200,
+        2672,
         -96
       ],
       "id": "2329abc0-babf-427a-a82b-71da9c5a8301",
@@ -289,132 +259,6 @@
           "name": "Postgres account 2"
         }
       }
-    },
-    {
-      "parameters": {
-        "operation": "deleteTable",
-        "schema": {
-          "__rl": true,
-          "mode": "list",
-          "value": "public"
-        },
-        "table": {
-          "__rl": true,
-          "value": "current_list",
-          "mode": "list",
-          "cachedResultName": "current_list"
-        },
-        "deleteCommand": "delete",
-        "where": {
-          "values": [
-            {
-              "column": "company_id",
-              "value": "={{ $json.company_id }}"
-            }
-          ]
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.postgres",
-      "typeVersion": 2.6,
-      "position": [
-        1184,
-        256
-      ],
-      "id": "f3d78c50-ae1b-41c9-ad27-491a2c6048ee",
-      "name": "Clear current_list",
-      "executeOnce": true,
-      "credentials": {
-        "postgres": {
-          "id": "Hx2VFmUi5WO2K4QX",
-          "name": "Postgres account 2"
-        }
-      },
-      "disabled": true
-    },
-    {
-      "parameters": {
-        "operation": "deleteTable",
-        "schema": {
-          "__rl": true,
-          "mode": "list",
-          "value": "public"
-        },
-        "table": {
-          "__rl": true,
-          "value": "current_minus_words",
-          "mode": "list",
-          "cachedResultName": "current_minus_words"
-        },
-        "deleteCommand": "delete",
-        "where": {
-          "values": [
-            {
-              "column": "company_id",
-              "value": "={{ $json.company_id }}"
-            }
-          ]
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.postgres",
-      "typeVersion": 2.6,
-      "position": [
-        1344,
-        256
-      ],
-      "id": "26957d97-8496-4f48-b601-c9fb66f222d2",
-      "name": "Clear current_minus_words",
-      "executeOnce": true,
-      "credentials": {
-        "postgres": {
-          "id": "Hx2VFmUi5WO2K4QX",
-          "name": "Postgres account 2"
-        }
-      },
-      "disabled": true
-    },
-    {
-      "parameters": {
-        "operation": "deleteTable",
-        "schema": {
-          "__rl": true,
-          "mode": "list",
-          "value": "public"
-        },
-        "table": {
-          "__rl": true,
-          "value": "current_ads_list",
-          "mode": "list",
-          "cachedResultName": "current_ads_list"
-        },
-        "deleteCommand": "delete",
-        "where": {
-          "values": [
-            {
-              "column": "company_id",
-              "value": "={{ $json.company_id }}"
-            }
-          ]
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.postgres",
-      "typeVersion": 2.6,
-      "position": [
-        1504,
-        256
-      ],
-      "id": "f66e5439-29df-4801-8f68-f5db8b30289e",
-      "name": "Clear current_ads",
-      "executeOnce": true,
-      "credentials": {
-        "postgres": {
-          "id": "Hx2VFmUi5WO2K4QX",
-          "name": "Postgres account 2"
-        }
-      },
-      "disabled": true
     },
     {
       "parameters": {
@@ -437,66 +281,28 @@
       "typeVersion": 1.1,
       "position": [
         -560,
-        -112
+        -144
       ],
       "id": "07708187-77e3-45e9-a4e1-e0ada813c231",
       "name": "When Executed by Another Workflow"
     },
     {
       "parameters": {
-        "content": "Очистка буферных таблиц",
-        "height": 368,
-        "width": 1120
-      },
-      "type": "n8n-nodes-base.stickyNote",
-      "typeVersion": 1,
-      "position": [
-        336,
-        144
-      ],
-      "id": "cc5ebc42-a0b9-4f1d-b733-44e459e8b7cc",
-      "name": "Sticky Note3"
-    },
-    {
-      "parameters": {
-        "operation": "executeQuery",
-        "query": "select company_id from companies where yandex_account=$1",
-        "options": {
-          "queryReplacement": "={{ $json['Логин клиента'] }}"
-        }
-      },
-      "type": "n8n-nodes-base.postgres",
-      "typeVersion": 2.6,
-      "position": [
-        688,
-        256
-      ],
-      "id": "3b4fe19c-09e2-4654-ab73-42216db72788",
-      "name": "get client id",
-      "executeOnce": true,
-      "credentials": {
-        "postgres": {
-          "id": "Hx2VFmUi5WO2K4QX",
-          "name": "Postgres account 2"
-        }
-      }
-    },
-    {
-      "parameters": {
         "operation": "executeQuery",
         "query": "INSERT INTO business_processes_states (business_process_id, company_id,n8n_workflow_execution_id,n8n_workflow_root_execution_id, started)\nSELECT MAX(business_process_id), $2,$3,$4, NOW()\nFROM public.business_processes\nWHERE n8n_process_name = $1;",
         "options": {
-          "queryReplacement": "=[{{$workflow.name}},{{$json.company_id}},{{$execution.id}},{{ $('When Executed by Another Workflow').item.json.root_execution_id }}]"
+          "queryReplacement": "=[{{$workflow.name}},{{ $('When Executed by Another Workflow').last().json.company_id }},{{$execution.id}},{{ $('When Executed by Another Workflow').last().json.root_execution_id }}]"
         }
       },
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        1200,
+        512,
         0
       ],
       "id": "9faca6b8-e537-47e5-ae43-d4c5a43253f0",
       "name": "Mark_workwlow_started",
+      "executeOnce": true,
       "credentials": {
         "postgres": {
           "id": "4YkdFJcdTgzo9hkz",
@@ -530,32 +336,6 @@
     },
     {
       "parameters": {
-        "jsCode": "// Вход: Binary -> data (CSV)\n// Настройка: \"Binary property\": data\nconst bin = items[0].binary.data;\nconst buf = Buffer.from(bin.data, 'base64');\nconst text = buf.toString('utf-8'); // или cp1251 при необходимости\n\nconst lines = text.split(/\\r?\\n/);\n// Здесь укажи число служебных строк, например 4\nconst start = 4; \nconst trimmed = lines.slice(start).join('\\n');\n\nreturn [\n  {\n    binary: {\n      data: {\n        data: Buffer.from(trimmed, 'utf-8').toString('base64'),\n        fileName: 'cleaned.csv',\n        mimeType: 'text/csv',\n      }\n    }\n  }\n];"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        352,
-        -128
-      ],
-      "id": "83d02d35-50c8-4673-b1ab-aa3d4eba8997",
-      "name": "header cut"
-    },
-    {
-      "parameters": {
-        "jsCode": "//Fixing common error in the first field name for CSV import\n\nfunction sanitizeKey(k) {\n  return String(k)\n    .replace(/[\\uFEFF\\u200B-\\u200D\\u2060\\u00A0]/g, \"\")\n    .replace(/[\\x00-\\x1F\\x7F]/g, \"\")\n    .replace(/[“”\"']/g, \"\")\n    .replace(/\\s+/g, \" \")\n    .trim();\n}\n\nconst obj = { ...$json };\nconst oldKey = Object.keys(obj)[0];\nif (oldKey) {\n  const newKey = sanitizeKey(oldKey) || oldKey;\n  if (newKey !== oldKey) {\n    obj[newKey] = obj[oldKey];\n    delete obj[oldKey];\n  }\n}\nreturn [{ json: obj }];"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        2496,
-        -96
-      ],
-      "id": "2c1807dc-c329-4981-8fcf-8a1e1033cab0",
-      "name": "sanitizeKey"
-    },
-    {
-      "parameters": {
         "mode": "combine",
         "combineBy": "combineAll",
         "options": {}
@@ -576,18 +356,19 @@
             {
               "id": "17df7f34-56a6-4d29-a7d3-9edfd4afaadb",
               "name": "company_id",
-              "value": "={{ $('get client id').item.json.company_id }}",
+              "value": "={{ $('When Executed by Another Workflow').last().json.company_id }}",
               "type": "string"
             }
           ]
         },
+        "includeOtherFields": true,
         "options": {}
       },
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        1664,
-        256
+        1328,
+        80
       ],
       "id": "a200f920-bb73-4b3f-95a9-e845ec4c4672",
       "name": "company_id"
@@ -612,7 +393,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        3424,
+        3136,
         -112
       ],
       "id": "3aae6a07-5064-498c-a1cd-f5cf62351ddc",
@@ -691,9 +472,9 @@
         "columns": {
           "mappingMode": "defineBelow",
           "value": {
-            "company_id": "={{ $json.company_id }}",
-            "start_date": "={{ $('get dates from file name').item.json.date_from }}",
-            "end_date": "={{ $('get dates from file name').item.json.date_to }}"
+            "company_id": "={{ $('When Executed by Another Workflow').last().json.company_id }}",
+            "start_date": "={{ $('When Executed by Another Workflow').last().json.report_date }}",
+            "end_date": "={{ $('When Executed by Another Workflow').last().json.report_date }}"
           },
           "matchingColumns": [],
           "schema": [
@@ -763,8 +544,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        976,
-        256
+        896,
+        80
       ],
       "id": "17847b5f-689d-4e71-bb40-07fc2f386ad1",
       "name": "report import record",
@@ -774,19 +555,6 @@
           "name": "Postgres account 2"
         }
       }
-    },
-    {
-      "parameters": {
-        "jsCode": "const re = /(\\d{4}-\\d{2}-\\d{2})_(\\d{4}-\\d{2}-\\d{2})/;\n\nreturn $input.all().map(item => {\n  const binKey = Object.keys(item.binary ?? {})[0];          // обычно \"data\"\n  const meta = binKey ? item.binary[binKey] : undefined;\n\n  // имя файла: сначала fileName, на всякий — \"File Name\"\n  const fileName = meta?.fileName ?? meta?.[\"File Name\"] ?? \"\";\n\n  const m = String(fileName).match(re);\n\n  return {\n    json: {\n      ...item.json,\n      date_from: m?.[1] ?? null,\n      date_to:   m?.[2] ?? null,\n      file_name: fileName,            // чтобы было видно, что взяли\n      bin_key: binKey,\n    },\n    binary: item.binary,              // не теряем бинарь\n  };\n});"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        176,
-        -128
-      ],
-      "id": "2a32dbe1-0fd0-4c6f-b2c5-7f0ecedbab1b",
-      "name": "get dates from file name"
     },
     {
       "parameters": {
@@ -832,7 +600,7 @@
             {
               "id": "17df7f34-56a6-4d29-a7d3-9edfd4afaadb",
               "name": "company_id",
-              "value": "={{ $('get client id').item.json.company_id }}",
+              "value": "={{ $('When Executed by Another Workflow').last().json.company_id }}",
               "type": "string"
             },
             {
@@ -856,7 +624,7 @@
     },
     {
       "parameters": {
-        "url": "https://eak5kk6vhl.execute-api.us-east-1.amazonaws.com/development/reports/daily?type=SEARCH_QUERY_PERFORMANCE_REPORT&date=2025-11-02&campaign_id=702142188&download=false",
+        "url": "=https://eak5kk6vhl.execute-api.us-east-1.amazonaws.com/development/reports/daily?type=SEARCH_QUERY_PERFORMANCE_REPORT&date={{$json.report_date}}&campaign_id={{$json.campaign_yandex_id}}&download=false",
         "authentication": "genericCredentialType",
         "genericAuthType": "httpBearerAuth",
         "options": {}
@@ -864,8 +632,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.3,
       "position": [
-        -352,
-        -112
+        272,
+        -128
       ],
       "id": "0c18113d-bab4-4b7d-9d57-4630e6406537",
       "name": "HTTP Request",
@@ -878,33 +646,6 @@
     }
   ],
   "connections": {
-    "Download File": {
-      "main": [
-        [
-          {
-            "node": "get dates from file name",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Extract from File": {
-      "main": [
-        [
-          {
-            "node": "get client id",
-            "type": "main",
-            "index": 0
-          },
-          {
-            "node": "Init total counter",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Loop Over Items": {
       "main": [
         [
@@ -916,7 +657,7 @@
         ],
         [
           {
-            "node": "sanitizeKey",
+            "node": "Insert rows in a table",
             "type": "main",
             "index": 0
           }
@@ -934,82 +675,11 @@
         ]
       ]
     },
-    "Clear current_list": {
-      "main": [
-        [
-          {
-            "node": "Clear current_minus_words",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Clear current_minus_words": {
-      "main": [
-        [
-          {
-            "node": "Clear current_ads",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Clear current_ads": {
-      "main": [
-        [
-          {
-            "node": "company_id",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "When Executed by Another Workflow": {
       "main": [
         [
           {
             "node": "HTTP Request",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "get client id": {
-      "main": [
-        [
-          {
-            "node": "Mark_workwlow_started",
-            "type": "main",
-            "index": 0
-          },
-          {
-            "node": "report import record",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "header cut": {
-      "main": [
-        [
-          {
-            "node": "Extract from File",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "sanitizeKey": {
-      "main": [
-        [
-          {
-            "node": "Insert rows in a table",
             "type": "main",
             "index": 0
           }
@@ -1109,18 +779,7 @@
       "main": [
         [
           {
-            "node": "Clear current_list",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "get dates from file name": {
-      "main": [
-        [
-          {
-            "node": "header cut",
+            "node": "company_id",
             "type": "main",
             "index": 0
           }
@@ -1132,6 +791,33 @@
         [
           {
             "node": "Mark_workflow_passed_steps",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Init total counter",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Mark_workwlow_started",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mark_workwlow_started": {
+      "main": [
+        [
+          {
+            "node": "report import record",
             "type": "main",
             "index": 0
           }
@@ -1165,12 +851,14 @@
           "root_execution_id": 32924,
           "yandex_report_dropbox_file_path": "https://www.dropbox.com/scl/fi/9kr6iebx4q6cstzp2xuwb/2025-09-04_2025-09-24_searchquery_kiberone-saratov.csv?rlkey=cew8cc5k2rfbq5wrco9inb4eu&dl=1",
           "report_date": "2025-11-03",
+          "company_id": 1,
+          "campaign_yandex_id": "702142188",
           "threshhold": "0.88"
         }
       }
     ]
   },
-  "versionId": "3e47dfbe-9fdc-4db6-ac7e-b2239ce335e2",
+  "versionId": "66510da7-ce6d-4191-aa92-d1e52875f8af",
   "triggerCount": 0,
   "shared": [
     {
