@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-05T17:37:38.388Z",
+  "updatedAt": "2025-11-05T18:04:45.573Z",
   "createdAt": "2025-11-05T16:49:07.256Z",
   "id": "GE66xiztgKP0D3Za",
   "name": "ADS generate for yandex",
@@ -778,7 +778,7 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "select * from ads_list where company_id=$1 and is_high_demand=false and group_yandex_id is null",
+        "query": "select *, length (key_word) as key_word_length from ads_list where company_id=$1 and is_hi_demand=false and group_yandex_id is null",
         "options": {}
       },
       "type": "n8n-nodes-base.postgres",
@@ -808,6 +808,110 @@
       ],
       "id": "e874c39f-162b-4c6d-86e0-0e1f349365e7",
       "name": "Loop Over Items3"
+    },
+    {
+      "parameters": {
+        "content": "находим группу для нужной длины у которой ключей меньше 199. Если такой нет - создаем новую и привязываем к ней те же объявления"
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        544,
+        -1008
+      ],
+      "id": "15e9ba44-c78f-4a3e-97d0-f0b3ea402620",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "select * from ads_groups where company_id=$1 and key_word_length=$2 and key_words_count<200",
+        "options": {
+          "queryReplacement": ""
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        176,
+        -848
+      ],
+      "id": "432f5b2c-f2a5-43d2-ab82-14c55d65faad",
+      "name": "get group",
+      "alwaysOutputData": true,
+      "credentials": {
+        "postgres": {
+          "id": "Hx2VFmUi5WO2K4QX",
+          "name": "Postgres account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "обновить - группа + to_upload_ad"
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        992,
+        -960
+      ],
+      "id": "789e6bee-03d8-4afb-a488-9dedfea6af8e",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "2695d6f1-5c0e-414c-aa90-049fa9a2b691",
+              "leftValue": "={{ $input.first().json }}",
+              "rightValue": "",
+              "operator": {
+                "type": "object",
+                "operation": "empty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        384,
+        -848
+      ],
+      "id": "bb0ca27e-e215-4375-9599-415152a55581",
+      "name": "If no such group"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        1008,
+        -768
+      ],
+      "id": "df9f23e0-4ffd-48a3-b696-bfa637d129f1",
+      "name": "update ads data",
+      "credentials": {
+        "postgres": {
+          "id": "Hx2VFmUi5WO2K4QX",
+          "name": "Postgres account 2"
+        }
+      }
     }
   ],
   "connections": {
@@ -1216,7 +1320,47 @@
     "Loop Over Items3": {
       "main": [
         [],
-        []
+        [
+          {
+            "node": "get group",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "get group": {
+      "main": [
+        [
+          {
+            "node": "If no such group",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If no such group": {
+      "main": [
+        [],
+        [
+          {
+            "node": "update ads data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "update ads data": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items3",
+            "type": "main",
+            "index": 0
+          }
+        ]
       ]
     }
   },
@@ -1260,7 +1404,7 @@
       }
     ]
   },
-  "versionId": "00e38cf4-74ce-4c70-8803-9c2cae431aff",
+  "versionId": "1c26fd2f-1ea6-4a9c-b736-edf46d6c0ab6",
   "triggerCount": 0,
   "shared": [
     {
