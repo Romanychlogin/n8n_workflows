@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-05T18:57:18.426Z",
+  "updatedAt": "2025-11-05T19:03:21.241Z",
   "createdAt": "2025-09-28T11:31:13.045Z",
   "id": "lBAh8kjoXRX0aGUF",
   "name": "ADS headers and texts creation services for updates",
@@ -609,7 +609,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        6448,
+        6656,
         -16
       ],
       "id": "8c922024-79bf-4e07-ace4-89f6ba09d54e",
@@ -824,7 +824,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        1552,
+        720,
         -768
       ],
       "id": "2a5c0454-3bad-4874-b98d-ecf20a32ec70",
@@ -853,29 +853,6 @@
       ],
       "id": "219ea3ec-1645-49e9-931c-be1cce66f7c1",
       "name": "get total steps",
-      "credentials": {
-        "postgres": {
-          "id": "Hx2VFmUi5WO2K4QX",
-          "name": "Postgres account 2"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "operation": "executeQuery",
-        "query": "update current_list set is_adv_processed=true where company_id=$1 and report_id=$2 AND (key_word=$3 or list_id=$4)",
-        "options": {
-          "queryReplacement": "={{ $json.company_id }},{{ $json.service_id }},{{ $json.key_word }},{{ $('reset first_item1').item.json.list_id }}"
-        }
-      },
-      "type": "n8n-nodes-base.postgres",
-      "typeVersion": 2.6,
-      "position": [
-        6672,
-        -16
-      ],
-      "id": "368ef176-4f7c-4098-8273-76913340a13e",
-      "name": "mark key_word processed",
       "credentials": {
         "postgres": {
           "id": "Hx2VFmUi5WO2K4QX",
@@ -944,7 +921,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        7552,
+        7536,
         -48
       ],
       "id": "dceef081-c3ee-41f3-9960-07c7266ccfb9",
@@ -957,7 +934,7 @@
       "type": "n8n-nodes-base.stopAndError",
       "typeVersion": 1,
       "position": [
-        7744,
+        7728,
         -48
       ],
       "id": "ff3975f3-349c-4223-9738-e41ef93479a3",
@@ -991,7 +968,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        7328,
+        7312,
         -32
       ],
       "id": "f00c475e-39b6-4d11-8591-4f1e19ead268",
@@ -1098,7 +1075,7 @@
     },
     {
       "parameters": {
-        "jsCode": "// Сколько входящих элементов агрегировать в одном выходящем (в пределах одного service_name)\nconst BATCH_SIZE = 100;\n\nfunction toIdString(v) {\n  if (typeof v === 'bigint') return v.toString();\n  if (typeof v === 'number') return Number.isFinite(v) ? Math.trunc(v).toString() : '';\n  if (typeof v === 'string') return v;\n  return v != null && v.toString ? v.toString() : '';\n}\n\nfunction toStr(v) {\n  return v == null ? '' : String(v);\n}\n\nconst inputItems = $input.all();\nconst out = [];\n\nlet i = 0;\nwhile (i < inputItems.length) {\n  // Старт новой группы по service_name\n  const first = inputItems[i]?.json ?? {};\n  const groupService = toStr(first.service_name);\n\n  // Собираем все подряд идущие элементы с тем же service_name\n  const group = [];\n  while (i < inputItems.length) {\n    const cur = inputItems[i]?.json ?? {};\n    const raw =\n   // 0) Нормализация\nconst raw = String(cur.key_word ?? '').normalize('NFKC');\n\n// 1) Очистка (оставляем буквы/цифры/пробелы)\nconst cleaned = raw\n  .replace(/[^\\p{L}\\p{N}\\s]+/gu, ' ') // для новых Node\n  // .replace(/[^A-Za-zА-Яа-яЁё0-9\\s]+/g, ' ') // для старых Node\n  .replace(/\\s+/g, ' ')\n  .trim();\n\n// 2) Оставляем не более 7 слов\nconst first7 = cleaned.split(' ').slice(0, 7).join(' ');\n\n// 3) Обрезаем по ближайшему целому слову до 56 символов\nfunction trimToWordBoundary(s, max = 56) {\n  if (s.length <= max) return s;\n  const slice = s.slice(0, max);\n  const cut = slice.lastIndexOf(' ');\n  return cut === -1 ? slice : slice.slice(0, cut);\n}\n\n   \n    cur.key_word=trimToWordBoundary(first7, 56);\n    if (toStr(cur.service_name) !== groupService) break;\n    group.push(cur);\n    i++;\n  }\n\n  // Метаданные сервиса (одинаковые в группе)\n  const svcCompany       = toStr(first.company_name);\n  const svcName          = groupService;\n  const svcDescription   = toStr(first.service_description);\n\n  // Режем группу на пачки по BATCH_SIZE\n  for (let start = 0; start < group.length; start += BATCH_SIZE) {\n    const chunk = group.slice(start, start + BATCH_SIZE);\n\n  \n  \n\n    \n    const items = chunk.map(j => ({\n      id: toIdString(j.list_id),           // берем content_id => строка\n      phrase: toStr(j.key_word)\n    }));\n    const items_ext = chunk.map(j => ({\n      id: toIdString(j.list_id),           // берем content_id => строка\n      phrase: toStr(j.key_word),\n      report_id: toStr(j.report_id),\n      service_id:toIdString(j.service_id),\n      company_id:toIdString(j.company_id),\n      campaign_id:toIdString(j.campaign_id)\n    }));\n    const ItemsbyId = Object.fromEntries(\n    items_ext.map(o => [o.id, o]) \n    );\n    out.push({\n      json: {\n        \n        items,\n        ItemsbyId \n      }\n    });\n  }\n}\n\nreturn out;\n\n\n\n\n"
+        "jsCode": "// Сколько входящих элементов агрегировать в одном выходящем (в пределах одного service_name)\nconst BATCH_SIZE = 100;\n\nfunction toIdString(v) {\n  if (typeof v === 'bigint') return v.toString();\n  if (typeof v === 'number') return Number.isFinite(v) ? Math.trunc(v).toString() : '';\n  if (typeof v === 'string') return v;\n  return v != null && v.toString ? v.toString() : '';\n}\n\nfunction toStr(v) {\n  return v == null ? '' : String(v);\n}\n\nconst inputItems = $input.all();\nconst out = [];\n\nlet i = 0;\nwhile (i < inputItems.length) {\n  // Старт новой группы по service_name\n  const first = inputItems[i]?.json ?? {};\n  const groupService = toStr(first.service_name);\n\n  // Собираем все подряд идущие элементы с тем же service_name\n  const group = [];\n  while (i < inputItems.length) {\n    const cur = inputItems[i]?.json ?? {};\n    const raw =\n   // 0) Нормализация\nconst raw = String(cur.key_word ?? '').normalize('NFKC');\n\n// 1) Очистка (оставляем буквы/цифры/пробелы)\nconst cleaned = raw\n  .replace(/[^\\p{L}\\p{N}\\s]+/gu, ' ') // для новых Node\n  // .replace(/[^A-Za-zА-Яа-яЁё0-9\\s]+/g, ' ') // для старых Node\n  .replace(/\\s+/g, ' ')\n  .trim();\n\n// 2) Оставляем не более 7 слов\nconst first7 = cleaned.split(' ').slice(0, 7).join(' ');\n\n// 3) Обрезаем по ближайшему целому слову до 56 символов\nfunction trimToWordBoundary(s, max = 56) {\n  if (s.length <= max) return s;\n  const slice = s.slice(0, max);\n  const cut = slice.lastIndexOf(' ');\n  return cut === -1 ? slice : slice.slice(0, cut);\n}\n\n   \n    cur.key_word=trimToWordBoundary(first7, 56);\n    if (toStr(cur.service_name) !== groupService) break;\n    group.push(cur);\n    i++;\n  }\n\n  // Метаданные сервиса (одинаковые в группе)\n  const svcCompany       = toStr(first.company_name);\n  const svcName          = groupService;\n  const svcDescription   = toStr(first.service_description);\n\n  // Режем группу на пачки по BATCH_SIZE\n  for (let start = 0; start < group.length; start += BATCH_SIZE) {\n    const chunk = group.slice(start, start + BATCH_SIZE);\n\n  \n  \n\n    \n    const items = chunk.map(j => ({\n      id: toIdString(j.ad_id),           // берем content_id => строка\n      phrase: toStr(j.key_word)\n    }));\n    const items_ext = chunk.map(j => ({\n      id: toIdString(j.ad_id),           // берем content_id => строка\n      phrase: toStr(j.key_word),\n      service_id:toIdString(j.service_id),\n      company_id:toIdString(j.company_id),\n      campaign_id:toIdString(j.campaign_id)\n    }));\n    const ItemsbyId = Object.fromEntries(\n    items_ext.map(o => [o.id, o]) \n    );\n    out.push({\n      json: {\n        \n        items,\n        ItemsbyId \n      }\n    });\n  }\n}\n\nreturn out;\n\n\n\n\n"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -1161,7 +1138,7 @@
     },
     {
       "parameters": {
-        "jsCode": "// 1) Берём строку JSON из указанного поля\nlet raw = $input.first().json?.output?.[1]?.content?.[0]?.text;\n\n// Удаляем ```...``` и парсим JSON\nfunction stripCodeFences(s) {\n  if (typeof s !== 'string') return s;\n  let t = s.trim();\n  if (t.startsWith('```')) t = t.replace(/^```[a-zA-Z]*\\n?/, '').replace(/```$/, '').trim();\n  return t;\n}\nfunction safeParseJSON(x) {\n  if (x == null) return null;\n  if (typeof x === 'object') return x;\n  const s = stripCodeFences(String(x));\n  try { return JSON.parse(s); } catch {\n    const m = s.match(/{[\\s\\S]*}/);\n    if (m) { try { return JSON.parse(m[0]); } catch {} }\n    return null;\n  }\n}\n\nconst obj = safeParseJSON(raw);\n\n// === ГЛАВНОЕ ИЗМЕНЕНИЕ: используем url_strings вместо phrases ===\nif (!obj || !Array.isArray(obj.url_strings)) {\n  return [{ json: { note: 'url_strings not found', Items: [], count: 0 } }];\n}\n\n// 2) Источник мапы по id из другой ноды (если есть)\nconst itemsById = $('keywords headers and texts').last().json?.ItemsbyId ?? {};\n\n// 3) Формируем выходные элементы\nconst out = [];\nfor (const it of obj.url_strings) {\n  if (!it || typeof it !== 'object') continue;\n\n  const ad_url  = typeof it.url_string === 'string' && it.url_string.trim() ? it.url_string.trim() : null;\n  const list_id = typeof it.id === 'string' && it.id.trim() ? it.id.trim() : null;\n  if (!ad_url || !list_id) continue;\n\n  const src = itemsById[list_id] ?? {};\n  const ad_header = src?.header ?? '';\n  const ad_text   = src?.ad_text ?? '';\n  const key_word  = src?.phrase ?? '';\n\n  out.push({\n    json: { list_id, ad_url, ad_header, ad_text, key_word }\n  });\n}\n\nreturn out;"
+        "jsCode": "// 1) Берём строку JSON из указанного поля\nlet raw = $input.first().json?.output?.[1]?.content?.[0]?.text;\n\n// Удаляем ```...``` и парсим JSON\nfunction stripCodeFences(s) {\n  if (typeof s !== 'string') return s;\n  let t = s.trim();\n  if (t.startsWith('```')) t = t.replace(/^```[a-zA-Z]*\\n?/, '').replace(/```$/, '').trim();\n  return t;\n}\nfunction safeParseJSON(x) {\n  if (x == null) return null;\n  if (typeof x === 'object') return x;\n  const s = stripCodeFences(String(x));\n  try { return JSON.parse(s); } catch {\n    const m = s.match(/{[\\s\\S]*}/);\n    if (m) { try { return JSON.parse(m[0]); } catch {} }\n    return null;\n  }\n}\n\nconst obj = safeParseJSON(raw);\n\n// === ГЛАВНОЕ ИЗМЕНЕНИЕ: используем url_strings вместо phrases ===\nif (!obj || !Array.isArray(obj.url_strings)) {\n  return [{ json: { note: 'url_strings not found', Items: [], count: 0 } }];\n}\n\n// 2) Источник мапы по id из другой ноды (если есть)\nconst itemsById = $('keywords headers and texts').last().json?.ItemsbyId ?? {};\n\n// 3) Формируем выходные элементы\nconst out = [];\nfor (const it of obj.url_strings) {\n  if (!it || typeof it !== 'object') continue;\n\n  const ad_url  = typeof it.url_string === 'string' && it.url_string.trim() ? it.url_string.trim() : null;\n  const ad_id = typeof it.id === 'string' && it.id.trim() ? it.id.trim() : null;\n  if (!ad_url || !list_id) continue;\n\n  const src = itemsById[list_id] ?? {};\n  const ad_header = src?.header ?? '';\n  const ad_text   = src?.ad_text ?? '';\n  const key_word  = src?.phrase ?? '';\n\n  out.push({\n    json: { ad_id, ad_url, ad_header, ad_text, key_word }\n  });\n}\n\nreturn out;"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -1237,29 +1214,6 @@
     },
     {
       "parameters": {
-        "operation": "executeQuery",
-        "query": "WITH ranked AS (\n  SELECT\n    ad_id,\n    key_word,\n    ROW_NUMBER() OVER (\n      PARTITION BY key_word\n      ORDER BY ad_id\n    ) AS rn\n  FROM public.current_ads_list\n  where company_id=$1 AND report_id=$2\n)\nDELETE FROM public.current_ads_list t\nUSING ranked r\nWHERE t.ad_id = r.ad_id\n  AND r.rn > 1;",
-        "options": {
-          "queryReplacement": "={{ $('When Executed by Another Workflow').last().json.company_id }},{{ $('When Executed by Another Workflow').last().json.import_id }}"
-        }
-      },
-      "type": "n8n-nodes-base.postgres",
-      "typeVersion": 2.6,
-      "position": [
-        816,
-        -592
-      ],
-      "id": "757d4ce5-edb1-459d-b6da-c1ed0e5109f7",
-      "name": "remove duplicates",
-      "credentials": {
-        "postgres": {
-          "id": "Hx2VFmUi5WO2K4QX",
-          "name": "Postgres account 2"
-        }
-      }
-    },
-    {
-      "parameters": {
         "jsCode": "function normalizeText(text) {\n  if (text == null) return text;\n  let s = String(text);\n\n  // --- Dashes → ASCII hyphen-minus (-)\n  s = s\n    .replace(/\\u2014/g, \"-\") // em dash\n    .replace(/\\u2013/g, \"-\") // en dash\n    .replace(/\\u2012/g, \"-\") // figure dash\n    .replace(/\\u2015/g, \"-\") // horizontal bar\n    .replace(/\\u2212/g, \"-\"); // minus sign\n\n  // --- Special spaces → regular space\n  s = s\n    .replace(/\\u00A0/g, \" \") // no-break space\n    .replace(/\\u2009/g, \" \") // thin space\n    .replace(/\\u200A/g, \" \") // hair space\n    .replace(/\\u2007/g, \" \") // figure space\n    .replace(/\\u2008/g, \" \"); // punctuation space\n\n  // --- Collapse any whitespace runs to a single space\n  s = s.replace(/\\s+/g, \" \");\n\n  return s;\n}\n// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nfor (const item of $input.all()) {\n  item.json.ad_header=normalizeText(item.json.ad_header);\n  item.json.ad_text=normalizeText(item.json.ad_text);  \n}\n\nreturn $input.all();"
       },
       "type": "n8n-nodes-base.code",
@@ -1278,7 +1232,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        6864,
+        6848,
         -16
       ],
       "id": "9da30555-7e27-45f2-8d60-894cba8b8435",
@@ -1295,7 +1249,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        7120,
+        7104,
         -32
       ],
       "id": "a6e2eaef-d695-4848-a8be-2ae0e303900a",
@@ -1357,6 +1311,29 @@
       ],
       "id": "95309835-6eab-49e6-a56d-66e8917ae4ad",
       "name": "Merge1"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "update ads_list set ad_header=$2, ad_text=$3, ad_url=$4 where ad_id=$1",
+        "options": {
+          "queryReplacement": "={{ $('Loop Over Items2').last().json.ad_id}},{{ $('Loop Over Items2').last().json.ad_header }},{{ $('Loop Over Items2').last().json.ad_text }},{{ $('Loop Over Items2').last().json.ad_url }}"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        6448,
+        -16
+      ],
+      "id": "edffbd8e-9c84-4ae5-99d4-8924088fe9c6",
+      "name": "update ads",
+      "credentials": {
+        "postgres": {
+          "id": "Hx2VFmUi5WO2K4QX",
+          "name": "Postgres account 2"
+        }
+      }
     }
   ],
   "connections": {
@@ -1591,7 +1568,7 @@
       "main": [
         [
           {
-            "node": "mark key_word processed",
+            "node": "Get current step saved",
             "type": "main",
             "index": 0
           }
@@ -1613,7 +1590,7 @@
       "main": [
         [
           {
-            "node": "remove duplicates",
+            "node": "Mark_workflow_completed",
             "type": "main",
             "index": 0
           }
@@ -1709,17 +1686,6 @@
         [
           {
             "node": "Services list",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "mark key_word processed": {
-      "main": [
-        [
-          {
-            "node": "Get current step saved",
             "type": "main",
             "index": 0
           }
@@ -1906,22 +1872,11 @@
         ]
       ]
     },
-    "remove duplicates": {
-      "main": [
-        [
-          {
-            "node": "Mark_workflow_completed",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Normalize texts": {
       "main": [
         [
           {
-            "node": "Insert rows in a table",
+            "node": "update ads",
             "type": "main",
             "index": 0
           }
@@ -1987,6 +1942,17 @@
           }
         ]
       ]
+    },
+    "update ads": {
+      "main": [
+        [
+          {
+            "node": "Insert rows in a table",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
@@ -2028,7 +1994,7 @@
       }
     ]
   },
-  "versionId": "1ac93267-dd12-46b2-b68c-94f00254e202",
+  "versionId": "84463c7b-138c-4222-8957-d9382f729d4a",
   "triggerCount": 0,
   "shared": [
     {
