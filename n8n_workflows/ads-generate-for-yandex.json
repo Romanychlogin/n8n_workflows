@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-05T17:26:53.562Z",
+  "updatedAt": "2025-11-05T17:37:38.388Z",
   "createdAt": "2025-11-05T16:49:07.256Z",
   "id": "GE66xiztgKP0D3Za",
   "name": "ADS generate for yandex",
@@ -114,8 +114,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        768,
-        -672
+        1584,
+        -80
       ],
       "id": "a592e257-a329-448a-9d6f-6d55369d7406",
       "name": "mark key_word processed",
@@ -153,8 +153,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        1648,
-        -688
+        2464,
+        -96
       ],
       "id": "8e8ac15e-fbe6-446c-9453-ebdd1dd6f5ba",
       "name": "If"
@@ -166,8 +166,8 @@
       "type": "n8n-nodes-base.stopAndError",
       "typeVersion": 1,
       "position": [
-        1840,
-        -688
+        2656,
+        -96
       ],
       "id": "54658a0e-1255-4498-8aae-ae3e46ce1d80",
       "name": "Stop and Error"
@@ -200,8 +200,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        1424,
-        -672
+        2240,
+        -80
       ],
       "id": "b496764a-70a0-465e-aa34-bb02b9d2f81c",
       "name": "check if termination is requested",
@@ -211,20 +211,6 @@
           "name": "PGvector"
         }
       }
-    },
-    {
-      "parameters": {
-        "content": "key word обрезать до 7 слов и 56 символов!!!!!!",
-        "height": 176
-      },
-      "type": "n8n-nodes-base.stickyNote",
-      "typeVersion": 1,
-      "position": [
-        48,
-        -624
-      ],
-      "id": "30578c97-49ac-4e30-8cb2-84d5f76cd070",
-      "name": "Sticky Note4"
     },
     {
       "parameters": {
@@ -257,8 +243,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        960,
-        -672
+        1776,
+        -80
       ],
       "id": "6a4d4054-9a69-43cd-a82e-4ff591826875",
       "name": "Get current step saved"
@@ -274,8 +260,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        1216,
-        -672
+        2032,
+        -80
       ],
       "id": "c119d8d0-d45a-4678-93bb-ad45a93c3e41",
       "name": "Mark_workflow_passed_steps1",
@@ -302,19 +288,6 @@
     },
     {
       "parameters": {
-        "jsCode": "\n// 3) Обрезаем по ближайшему целому слову до 56 символов\nfunction trimToWordBoundary(s, max = 56) {\n  if (s.length <= max) return s;\n  const slice = s.slice(0, max);\n  const cut = slice.lastIndexOf(' ');\n  return cut === -1 ? slice : slice.slice(0, cut);\n}\n\n\n\nfor (const item of $input.all()) {\nconst raw = String(item.json.key_word ?? '').normalize('NFKC');\n\n// 1) Очистка (оставляем буквы/цифры/пробелы)\nconst cleaned = raw\n  .replace(/[^\\p{L}\\p{N}\\s]+/gu, ' ') // для новых Node\n  // .replace(/[^A-Za-zА-Яа-яЁё0-9\\s]+/g, ' ') // для старых Node\n  .replace(/\\s+/g, ' ')\n  .trim();\n\n// 2) Оставляем не более 7 слов\nconst first7 = cleaned.split(' ').slice(0, 7).join(' ');\n\n\n  item.json.key_word = trimToWordBoundary(first7, 56);\n}\n \n\nreturn $input.all()\n\n\n\n\n"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        176,
-        -784
-      ],
-      "id": "598d1703-7239-4ce6-8a61-3ee303449e20",
-      "name": "cut key_words"
-    },
-    {
-      "parameters": {
         "operation": "executeQuery",
         "query": "select * from current_list where company_id=$1 and report_id=$2 and resolution='same key' and is_adv_processed=false",
         "options": {
@@ -324,8 +297,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        592,
-        -880
+        1408,
+        -288
       ],
       "id": "b49b2fb7-881b-46c5-b95c-0728f0a814a8",
       "name": "Execute a SQL query",
@@ -344,8 +317,8 @@
       "type": "n8n-nodes-base.splitInBatches",
       "typeVersion": 3,
       "position": [
-        1616,
-        -1152
+        2432,
+        -560
       ],
       "id": "ac4c69db-dc0b-4063-9233-cbc09b48ed6d",
       "name": "Loop Over Items2"
@@ -357,8 +330,8 @@
       "type": "n8n-nodes-base.splitInBatches",
       "typeVersion": 3,
       "position": [
-        384,
-        -784
+        1200,
+        -192
       ],
       "id": "7caac1f3-4342-44d6-b419-09000322c79b",
       "name": "Loop Over Items"
@@ -370,8 +343,8 @@
       "type": "n8n-nodes-base.merge",
       "typeVersion": 3.2,
       "position": [
-        1040,
-        -1040
+        1856,
+        -448
       ],
       "id": "379c183f-ebeb-472d-a8f2-6d7500a78fd7",
       "name": "Merge"
@@ -387,8 +360,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        880,
-        -880
+        1696,
+        -288
       ],
       "id": "71559ea2-85be-49c8-a8f7-b7de9386af52",
       "name": "Mark_workflow_total_steps1",
@@ -493,8 +466,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        2336,
-        -1024
+        3152,
+        -432
       ],
       "id": "4734b750-69dc-4e3d-a7e5-f62c36b6a9bd",
       "name": "Get current step saved1"
@@ -534,8 +507,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        576,
-        -672
+        1392,
+        -80
       ],
       "id": "1acbe595-c774-483a-b374-572567a4bb47",
       "name": "insert ads",
@@ -557,8 +530,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        1824,
-        -1056
+        2640,
+        -464
       ],
       "id": "c052686a-aa3a-4018-b90c-7009ba69878b",
       "name": "update stats",
@@ -580,8 +553,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        2096,
-        -1040
+        2912,
+        -448
       ],
       "id": "e84ac1ba-9f6e-494d-9993-fcb2b13e7d6e",
       "name": "mark key_word processed1",
@@ -711,7 +684,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        -1008,
+        -1056,
         -656
       ],
       "id": "3adfeff7-cae1-4aaf-8bd3-8a5f301811bb",
@@ -722,6 +695,119 @@
           "name": "Postgres account 2"
         }
       }
+    },
+    {
+      "parameters": {
+        "content": "Перепроверить что не вылетаем за лимит"
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -1104,
+        -864
+      ],
+      "id": "87c4c74f-b623-4cbd-991f-ad3df03e78bc",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "select * from ads_list where company_id=$1 and remove_hi_demand=true",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -832,
+        -640
+      ],
+      "id": "ecdaeece-cfb3-4b3a-b278-6eaf22de700a",
+      "name": "get to remove",
+      "credentials": {
+        "postgres": {
+          "id": "Hx2VFmUi5WO2K4QX",
+          "name": "Postgres account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        -608,
+        -672
+      ],
+      "id": "dcf5796a-da2f-4dc1-b65d-e5efb3692590",
+      "name": "Loop Over Items1"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        -400,
+        -560
+      ],
+      "id": "cdf8fab5-e275-491d-93a3-67c5e84eaacc",
+      "name": "Delete yandex group and adv"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "update ads_list set group_yandex_id=null, ads_yandex_id=null, key_word_yandex_id=null,is_hi_demand=false,remove_hi_demand=false",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -192,
+        -560
+      ],
+      "id": "241ba0c6-f889-4b10-be64-7fc09ecc5e62",
+      "name": "clear high demand",
+      "credentials": {
+        "postgres": {
+          "id": "Hx2VFmUi5WO2K4QX",
+          "name": "Postgres account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "select * from ads_list where company_id=$1 and is_high_demand=false and group_yandex_id is null",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -304,
+        -928
+      ],
+      "id": "04251d8c-e828-4df1-ae54-5a8b91f628c7",
+      "name": "get low demand to add",
+      "credentials": {
+        "postgres": {
+          "id": "Hx2VFmUi5WO2K4QX",
+          "name": "Postgres account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        -96,
+        -928
+      ],
+      "id": "e874c39f-162b-4c6d-86e0-0e1f349365e7",
+      "name": "Loop Over Items3"
     }
   ],
   "connections": {
@@ -850,17 +936,6 @@
     "Merge2": {
       "main": [
         []
-      ]
-    },
-    "cut key_words": {
-      "main": [
-        [
-          {
-            "node": "Loop Over Items",
-            "type": "main",
-            "index": 0
-          }
-        ]
       ]
     },
     "Execute a SQL query": {
@@ -1064,6 +1139,85 @@
           }
         ]
       ]
+    },
+    "Mark to remove from high demand": {
+      "main": [
+        [
+          {
+            "node": "get to remove",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "get to remove": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items1": {
+      "main": [
+        [
+          {
+            "node": "get low demand to add",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Delete yandex group and adv",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Delete yandex group and adv": {
+      "main": [
+        [
+          {
+            "node": "clear high demand",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "clear high demand": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "get low demand to add": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items3": {
+      "main": [
+        [],
+        []
+      ]
     }
   },
   "settings": {
@@ -1106,7 +1260,7 @@
       }
     ]
   },
-  "versionId": "51ca8637-5f56-46d7-8ef8-0d3c84075c8b",
+  "versionId": "00e38cf4-74ce-4c70-8803-9c2cae431aff",
   "triggerCount": 0,
   "shared": [
     {
