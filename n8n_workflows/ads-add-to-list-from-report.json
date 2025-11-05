@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-05T15:09:30.408Z",
+  "updatedAt": "2025-11-05T16:47:16.564Z",
   "createdAt": "2025-11-05T13:50:52.126Z",
   "id": "MhWRad4Kq8hLA1E7",
   "name": "ADS add to list from report",
@@ -106,9 +106,9 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "update current_list set is_adv_processed=true where company_id=$1 and report_id=$2 AND (key_word=$3 or list_id=$4)",
+        "query": "update current_list set is_adv_processed=true where company_id=$1 and report_id=$2 AND list_id=$3",
         "options": {
-          "queryReplacement": "={{ $json.company_id }},{{ $json.service_id }},{{ $json.key_word }},{{ $('reset first_item1').item.json.list_id }}"
+          "queryReplacement": "={{ $('When Executed by Another Workflow').item.json.company_id }},{{ $('Loop Over Items').last().json.service_id }},{{ $('Loop Over Items').last().json.list_id }}"
         }
       },
       "type": "n8n-nodes-base.postgres",
@@ -402,29 +402,6 @@
     },
     {
       "parameters": {
-        "operation": "executeQuery",
-        "query": "update current_list set is_adv_processed=true where company_id=$1 and report_id=$2 AND (key_word=$3 or list_id=$4)",
-        "options": {
-          "queryReplacement": "={{ $json.company_id }},{{ $json.service_id }},{{ $json.key_word }},{{ $('reset first_item1').item.json.list_id }}"
-        }
-      },
-      "type": "n8n-nodes-base.postgres",
-      "typeVersion": 2.6,
-      "position": [
-        2128,
-        -1024
-      ],
-      "id": "5eb3cce0-a0a3-4419-a2a9-c183b7b9c3bd",
-      "name": "mark key_word processed1",
-      "credentials": {
-        "postgres": {
-          "id": "Hx2VFmUi5WO2K4QX",
-          "name": "Postgres account 2"
-        }
-      }
-    },
-    {
-      "parameters": {
         "conditions": {
           "options": {
             "caseSensitive": true,
@@ -549,7 +526,7 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "INSERT INTO public.ads_list (\n  key_word, company_id, service_id, report_id, campaign_id, list_id,\n  is_own_brand, count_views, count_clics, count_convetions\n)\nVALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)\nON CONFLICT (key_word) DO UPDATE\nSET\n  count_views       = ads_list.count_views       + EXCLUDED.count_views,\n  count_clics       = ads_list.count_clics       + EXCLUDED.count_clics,\n  count_convetions  = ads_list.count_convetions  + EXCLUDED.count_convetions\nRETURNING key_word;",
+        "query": "INSERT INTO public.ads_list (\n  key_word, company_id, service_id, report_id, campaign_id, list_id,\n  is_own_brand, count_views, count_clics, count_convetions\n)\nVALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)\nON CONFLICT (company_id, key_word) DO UPDATE\nSET\n  count_views      = ads_list.count_views      + EXCLUDED.count_views,\n  count_clics      = ads_list.count_clics      + EXCLUDED.count_clics,\n  count_convetions = ads_list.count_convetions + EXCLUDED.count_convetions\nRETURNING key_word;",
         "options": {
           "queryReplacement": "={{ $json.key_word }},{{ $json.company_id }},{{ $json.service_id }},{{ $json.report_id }},{{ $json.campaign_id }},{{ $json.list_id }},{{ $json.is_own_brand }},{{ $json.count_views }},{{ $json.count_clics }},{{ $json.count_convetions }}"
         }
@@ -585,6 +562,29 @@
       ],
       "id": "367abc26-fb97-494a-8581-06ed1ce6a536",
       "name": "update stats",
+      "credentials": {
+        "postgres": {
+          "id": "Hx2VFmUi5WO2K4QX",
+          "name": "Postgres account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "update current_list set is_adv_processed=true where company_id=$1 and report_id=$2 AND list_id=$3",
+        "options": {
+          "queryReplacement": "={{ $('When Executed by Another Workflow').item.json.company_id }},{{ $('Loop Over Items2').last().json.service_id }},{{ $('Loop Over Items2').last().json.list_id }}"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        2096,
+        -1040
+      ],
+      "id": "976c0e67-d1c1-4902-ab51-dc42c8e5d2c2",
+      "name": "mark key_word processed1",
       "credentials": {
         "postgres": {
           "id": "Hx2VFmUi5WO2K4QX",
@@ -812,17 +812,6 @@
         ]
       ]
     },
-    "mark key_word processed1": {
-      "main": [
-        [
-          {
-            "node": "Get current step saved1",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "If1": {
       "main": [
         [
@@ -895,6 +884,17 @@
           }
         ]
       ]
+    },
+    "mark key_word processed1": {
+      "main": [
+        [
+          {
+            "node": "Get current step saved1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
@@ -937,7 +937,7 @@
       }
     ]
   },
-  "versionId": "45a38fbf-2ef7-4ae6-9b43-60c25a289a09",
+  "versionId": "1fa98085-9e75-4294-9bf7-e3846b88edb4",
   "triggerCount": 0,
   "shared": [
     {
