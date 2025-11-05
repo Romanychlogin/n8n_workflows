@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-10-31T06:57:10.381Z",
+  "updatedAt": "2025-11-05T14:50:45.014Z",
   "createdAt": "2025-10-20T11:13:50.516Z",
   "id": "xNiuEqQOSNCSLvW5",
   "name": "ADV_campaign_analysis_AI",
@@ -66,7 +66,8 @@
             "list_id": "={{ $('Loop Over Items2').last().json.phrase_id }}",
             "ai_response_tokens": "=0",
             "ai_calls": "={{ $json.ai_calls }}",
-            "embedding_calls": "={{ $json.embedding_calls }}"
+            "embedding_calls": "={{ $json.embedding_calls }}",
+            "is_own_brand": "={{ $json.is_own_brand }}"
           },
           "matchingColumns": [
             "list_id"
@@ -261,6 +262,36 @@
               "type": "number",
               "canBeUsedToMatch": true,
               "removed": false
+            },
+            {
+              "id": "service_recognition_error",
+              "displayName": "service_recognition_error",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "boolean",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "is_own_brand",
+              "displayName": "is_own_brand",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "boolean",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "branded_queries",
+              "displayName": "branded_queries",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
             }
           ],
           "attemptToConvertTypes": false,
@@ -753,6 +784,12 @@
               "name": "total_tokens",
               "value": "={{$('HTTP Request').length\n  ? ($('HTTP Request').last().json.usage.total_tokens ?? 0)\n  : 0 }}",
               "type": "number"
+            },
+            {
+              "id": "f56959e2-94b5-401c-be55-b89cb8f8209d",
+              "name": "is_own_brand",
+              "value": false,
+              "type": "boolean"
             }
           ]
         },
@@ -793,8 +830,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        5440,
-        -1072
+        6000,
+        -1056
       ],
       "id": "8052d647-bd8e-4826-be9f-1bb7b2cfcae0",
       "name": "mark to add"
@@ -1415,6 +1452,165 @@
       ],
       "id": "658dc02c-f118-4106-bef5-15ed79d1f948",
       "name": "Get current step saved"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "yCfJa4PLjbR3JfLp",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/yCfJa4PLjbR3JfLp",
+          "cachedResultName": "Check VS own company name"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.3,
+      "position": [
+        5024,
+        -1072
+      ],
+      "id": "98f2dbc6-935c-429b-9df7-277a55ed322e",
+      "name": "Check VS own company name"
+    },
+    {
+      "parameters": {
+        "jsCode": "const workflowData = $getWorkflowStaticData('global');\nfunction toNumber(x, def = 0) {\n  const n = Number(x);\n  return Number.isFinite(n) ? n : def;\n}\n\nworkflowData.embedding_calls = toNumber(workflowData.embedding_calls,0) + toNumber($input.first().json.meta.candidates_total,0);\n\nreturn $input.all();\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        5184,
+        -1072
+      ],
+      "id": "9d41653f-54ae-44b1-b46d-ab6b7317ced6",
+      "name": "update calls counters6"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "0b8b9cb2-368a-4ef4-b4b4-560b030f71f4",
+              "leftValue": "={{ $json.non_matches }}",
+              "rightValue": "",
+              "operator": {
+                "type": "array",
+                "operation": "empty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        5392,
+        -1088
+      ],
+      "id": "8066472e-0f1e-42d4-96d4-35ea05aa22dc",
+      "name": "If find own array is empty"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "2ecfdad0-84b8-42cc-9fcd-bef554d40bc7",
+              "name": "is_own_brand",
+              "value": true,
+              "type": "boolean"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        5568,
+        -1184
+      ],
+      "id": "f597668f-5a75-4d3a-86fe-ea9207d77ff6",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "2ecfdad0-84b8-42cc-9fcd-bef554d40bc7",
+              "name": "is_own_brand",
+              "value": false,
+              "type": "boolean"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        5568,
+        -992
+      ],
+      "id": "251b0c40-9676-4218-8c7d-04459a799f7c",
+      "name": "Edit Fields1"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "47944833-0d31-4a55-9872-7c281576da2a",
+              "name": "key_word",
+              "value": "={{ $('Loop Over Items2').last().json.key_word }}",
+              "type": "string"
+            },
+            {
+              "id": "224cde67-d787-4cce-8db0-4ca43a3c4fbe",
+              "name": "company_id",
+              "value": "={{ $('When Executed by Another Workflow').last().json.company_id }}",
+              "type": "string"
+            },
+            {
+              "id": "18575e26-d5ea-458a-8414-b924427f3aa3",
+              "name": "report_id",
+              "value": "={{ $('When Executed by Another Workflow').last().json.import_id }}",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        4848,
+        -1072
+      ],
+      "id": "051a4c27-b912-4aa2-b426-0c4558f9f846",
+      "name": "set input"
     }
   ],
   "connections": {
@@ -1902,7 +2098,7 @@
       "main": [
         [
           {
-            "node": "mark to add",
+            "node": "set input",
             "type": "main",
             "index": 0
           }
@@ -2014,6 +2210,79 @@
           }
         ]
       ]
+    },
+    "Check VS own company name": {
+      "main": [
+        [
+          {
+            "node": "update calls counters6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "update calls counters6": {
+      "main": [
+        [
+          {
+            "node": "If find own array is empty",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If find own array is empty": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "set input": {
+      "main": [
+        [
+          {
+            "node": "Check VS own company name",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "mark to add",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "mark to add",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
@@ -2058,7 +2327,7 @@
       }
     ]
   },
-  "versionId": "d556304f-bdea-45e4-a945-fb41cd1cbe32",
+  "versionId": "9dc3ae77-9df0-4e66-880e-d3e7944a2f6f",
   "triggerCount": 0,
   "shared": [
     {
