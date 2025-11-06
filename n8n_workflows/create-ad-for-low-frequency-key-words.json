@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-06T11:50:44.764Z",
+  "updatedAt": "2025-11-06T12:09:30.062Z",
   "createdAt": "2025-11-06T11:50:44.764Z",
   "id": "hRxuEgrN8DQgZm0y",
   "name": "Create ad for low frequency key words",
@@ -22,14 +22,13 @@
           "cachedResultName": "n8n_prompts",
           "cachedResultUrl": "https://github.com/Romanychlogin/n8n_prompts"
         },
-        "filePath": "company_name_variants.txt",
-        "additionalParameters": {},
-        "path": "25a6de55-b113-4b16-9301-7dd29ee13e08"
+        "filePath": "ad_length_templates_txt",
+        "additionalParameters": {}
       },
       "type": "n8n-nodes-base.github",
       "typeVersion": 1.1,
       "position": [
-        -3568,
+        -3664,
         32
       ],
       "id": "7de9f01c-e2c6-440e-ab44-e0b9eb52aa9d",
@@ -63,7 +62,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -3280,
+        -3216,
         32
       ],
       "id": "0c04502a-0ffd-46a6-9a8f-ac39d7724e9c",
@@ -85,20 +84,6 @@
     },
     {
       "parameters": {
-        "content": "To do - need more variations. now missing кибер оне кибер ван кибер уан",
-        "height": 144
-      },
-      "type": "n8n-nodes-base.stickyNote",
-      "typeVersion": 1,
-      "position": [
-        -3040,
-        -160
-      ],
-      "id": "bcdb1e63-4ebb-482c-b041-50d13b36d5bb",
-      "name": "Sticky Note4"
-    },
-    {
-      "parameters": {
         "inputSource": "passthrough"
       },
       "type": "n8n-nodes-base.executeWorkflowTrigger",
@@ -112,263 +97,7 @@
     },
     {
       "parameters": {
-        "operation": "executeQuery",
-        "query": "INSERT INTO business_processes_states (business_process_id, company_id,n8n_workflow_execution_id,n8n_workflow_root_execution_id, started)\nSELECT MAX(business_process_id), $2,$3,$4, NOW()\nFROM public.business_processes\nWHERE n8n_process_name = $1;",
-        "options": {
-          "queryReplacement": "=[{{$workflow.name}},{{$json.company_id}},{{$execution.id}},{{ $('When Executed by Another Workflow').item.json.root_execution_id }}]"
-        }
-      },
-      "type": "n8n-nodes-base.postgres",
-      "typeVersion": 2.6,
-      "position": [
-        -3728,
-        32
-      ],
-      "id": "6367c503-d681-4673-9e4b-6a53b436b555",
-      "name": "Mark_workwlow_started",
-      "credentials": {
-        "postgres": {
-          "id": "4YkdFJcdTgzo9hkz",
-          "name": "PGvector"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "operation": "executeQuery",
-        "query": "update business_processes_states set finished=NOW() where business_process_id=(select MAX(business_process_id) from business_processes where n8n_process_name=$1) and n8n_workflow_execution_id=$2",
-        "options": {
-          "queryReplacement": "=[{{$workflow.name}},{{$execution.id}}]"
-        }
-      },
-      "type": "n8n-nodes-base.postgres",
-      "typeVersion": 2.6,
-      "position": [
-        -384,
-        -448
-      ],
-      "id": "cad787bd-2640-4331-8de5-7a290bff821d",
-      "name": "Mark_workflow_completed",
-      "executeOnce": true,
-      "credentials": {
-        "postgres": {
-          "id": "4YkdFJcdTgzo9hkz",
-          "name": "PGvector"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "operation": "executeQuery",
-        "query": "update business_processes_states set steps_passed=$2, tokens_used=$3,tokens_used_type=$4 where n8n_workflow_execution_id=$1",
-        "options": {
-          "queryReplacement": "=[{{$execution.id}},{{$json.steps_passed}},{{$json.tokens_used}},{{ 'gpt-5' }}]"
-        }
-      },
-      "type": "n8n-nodes-base.postgres",
-      "typeVersion": 2.6,
-      "position": [
-        -656,
-        -32
-      ],
-      "id": "0fe0737e-7c9e-40e6-938a-650fd34f86d3",
-      "name": "Mark_workflow_passed_steps",
-      "executeOnce": true,
-      "credentials": {
-        "postgres": {
-          "id": "4YkdFJcdTgzo9hkz",
-          "name": "PGvector"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "errorMessage": "Process terminated by user"
-      },
-      "type": "n8n-nodes-base.stopAndError",
-      "typeVersion": 1,
-      "position": [
-        192,
-        -176
-      ],
-      "id": "55e56a26-0852-4e12-bb62-feeabd3c65e8",
-      "name": "Stop and Error"
-    },
-    {
-      "parameters": {
-        "operation": "select",
-        "schema": {
-          "__rl": true,
-          "mode": "list",
-          "value": "public"
-        },
-        "table": {
-          "__rl": true,
-          "value": "business_processes_states",
-          "mode": "list",
-          "cachedResultName": "business_processes_states"
-        },
-        "returnAll": true,
-        "where": {
-          "values": [
-            {
-              "column": "n8n_workflow_execution_id",
-              "value": "={{ $execution.id }}"
-            }
-          ]
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.postgres",
-      "typeVersion": 2.6,
-      "position": [
-        -384,
-        -16
-      ],
-      "id": "0c1846e5-7a17-451e-804f-543fbda4a99c",
-      "name": "check if termination is requested",
-      "credentials": {
-        "postgres": {
-          "id": "4YkdFJcdTgzo9hkz",
-          "name": "PGvector"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "conditions": {
-          "options": {
-            "caseSensitive": true,
-            "leftValue": "",
-            "typeValidation": "strict",
-            "version": 2
-          },
-          "conditions": [
-            {
-              "id": "fa13510a-3a56-4cd5-8b80-3e4fe626ce0b",
-              "leftValue": "={{ $json.to_terminate }}",
-              "rightValue": true,
-              "operator": {
-                "type": "boolean",
-                "operation": "equals"
-              }
-            }
-          ],
-          "combinator": "and"
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.if",
-      "typeVersion": 2.2,
-      "position": [
-        -128,
-        -16
-      ],
-      "id": "644f8305-c514-41bc-a5f5-d0ec2d947085",
-      "name": "If1"
-    },
-    {
-      "parameters": {
-        "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nconst workflowData = $getWorkflowStaticData('global');\nworkflowData.steps_passed = workflowData.steps_passed+1; // update steps counter\n//set used tokens here!!!!\n//let step_tokens_used = toNumber($('HTTP Request').last().json.usage.total_tokens,0);\n //set used tokens here!!!!\n//workflowData.tokens_used += step_tokens_used;\n\nfor (const item of $input.all()) {\n  item.json.steps_passed = workflowData.steps_passed;\n  item.json.tokens_used = 0//workflowData.tokens_used\n}\n\nreturn $input.all();"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        -880,
-        -32
-      ],
-      "id": "eca98398-235d-441d-9687-a1fd3691a307",
-      "name": "Get current step and tokens saved"
-    },
-    {
-      "parameters": {
-        "mode": "chooseBranch"
-      },
-      "type": "n8n-nodes-base.merge",
-      "typeVersion": 3.2,
-      "position": [
-        -2144,
-        16
-      ],
-      "id": "a6e3bf31-ae67-4964-ae3c-2c9a81b38c1a",
-      "name": "Merge"
-    },
-    {
-      "parameters": {
-        "operation": "executeQuery",
-        "query": "update business_processes_states set steps_total=$3 where business_process_id=(select MAX(business_process_id) from business_processes where n8n_process_name=$1) and n8n_workflow_execution_id=$2",
-        "options": {
-          "queryReplacement": "=[{{$workflow.name}},{{$execution.id}},{{$input.all().length}}]"
-        }
-      },
-      "type": "n8n-nodes-base.postgres",
-      "typeVersion": 2.6,
-      "position": [
-        -2592,
-        208
-      ],
-      "id": "eabaa8c3-0e6d-4573-a880-086ab7a19f4a",
-      "name": "Mark_workflow_total_steps",
-      "executeOnce": true,
-      "credentials": {
-        "postgres": {
-          "id": "4YkdFJcdTgzo9hkz",
-          "name": "PGvector"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "jsCode": "// Function-Node (Run Once)\nconst workflowData = $getWorkflowStaticData('global');\nworkflowData.steps_passed = 0;\nworkflowData.tokens_used = 0;\nreturn $input.all();\n"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        -2336,
-        272
-      ],
-      "id": "330b37c6-0248-4cad-971e-13d5304c444e",
-      "name": "Init total counter"
-    },
-    {
-      "parameters": {
-        "options": {}
-      },
-      "type": "n8n-nodes-base.splitInBatches",
-      "typeVersion": 3,
-      "position": [
-        -1856,
-        -48
-      ],
-      "id": "46f9820c-c56f-4c97-869e-cfaf871b18e1",
-      "name": "Loop Over Items"
-    },
-    {
-      "parameters": {
-        "operation": "executeQuery",
-        "query": "SELECT\n    cs.company_name,\n    cs.company_url,\n    string_agg(\n        concat_ws(' ', serv.service_name, serv.service_description),\n        ' '\n    ) AS services_description\nFROM companies cs\nJOIN company_services serv\n    ON cs.company_id = serv.company_id\nWHERE cs.company_id = $1\nGROUP BY\n    cs.company_name,\n    cs.company_url;",
-        "options": {
-          "queryReplacement": "={{ $('When Executed by Another Workflow').item.json.company_id }}"
-        }
-      },
-      "type": "n8n-nodes-base.postgres",
-      "typeVersion": 2.6,
-      "position": [
-        -3072,
-        32
-      ],
-      "id": "6ea4af29-7228-4535-ba50-64dc7e222ece",
-      "name": "Execute a SQL query",
-      "credentials": {
-        "postgres": {
-          "id": "Hx2VFmUi5WO2K4QX",
-          "name": "Postgres account 2"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "jsCode": "// Настраиваемые параметры с дефолтами\nlet minLen = 5;\nlet maxLen = 56;\nlet step   = 1;\n\n// Валидация и нормализация\nif (!Number.isFinite(minLen) || !Number.isFinite(maxLen) || !Number.isFinite(step)) {\n  throw new Error('min_length, max_length и step должны быть числами.');\n}\nif (step <= 0) {\n  throw new Error('step должен быть положительным числом.');\n}\nif (minLen > maxLen) {\n  // Меняем местами, если диапазон указан в обратном порядке\n  [minLen, maxLen] = [maxLen, minLen];\n}\n\n// Генерация выходных элементов\nconst items = [];\nfor (let key_length = minLen; key_length <= maxLen; key_length += step) {\n  items.push({\n    json: {\n      key_length,\n      group_name: `Группа запросов с ключем длиной ${key_length}`,\n    },\n  });\n}\n\nreturn items;"
+        "jsCode": "\n\nreturn [{\n  json: \n {\n  \"model\": \"gpt-5-2025-08-07\",\n  \"input\": [\n    {\n      \"role\": \"developer\",\n      \"content\": [\n        {\n          \"type\": \"input_text\",\n          \"text\": \"Ты — генератор заголовков рекламных объявлений. Твоя задача по каждой пользовательской фразе создать один короткий заголовок, строго соблюдая правила.\"\n        }\n      ]\n    },\n    {\n      \"role\": \"user\",\n      \"content\": [\n        {\n          \"type\": \"input_text\",\n          \"text\": $json.my_prompt\n        }\n      ]\n    }\n  ],\n  \"text\": {\n    \"format\": {\n      \"type\": \"json_schema\",\n      \"name\": \"headers\",\n      \"strict\": true,\n      \"schema\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"headers\": {\n            \"type\": \"array\",\n            \"description\": \"List of header objects.\",\n            \"items\": {\n              \"type\": \"object\",\n              \"properties\": {\n                \"header\": {\n                  \"type\": \"string\",\n                  \"description\": \"A string up to 56 characters.\",\n                  \"minLength\": 0,\n                  \"maxLength\": 56\n                },\n                \"id\": {\n                  \"type\": \"string\",\n                  \"description\": \"Unique identifier for the header object.\",\n                  \"minLength\": 1\n                }\n              },\n              \"required\": [\n                \"header\",\n                \"id\"\n              ],\n              \"additionalProperties\": false\n            },\n            \"minItems\": 0\n          }\n        },\n        \"required\": [\n          \"headers\"\n        ],\n        \"additionalProperties\": false\n      }\n    },\n    \"verbosity\": \"low\"\n  },\n  \"reasoning\": {\n    \"effort\": \"low\",\n    \"summary\": \"detailed\"\n  },\n  \"tools\": [],\n  \"store\": false,\n  \"include\": [\n    \"reasoning.encrypted_content\",\n    \"web_search_call.action.sources\"\n  ]\n}\n\n}];"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -376,55 +105,62 @@
         -2800,
         32
       ],
-      "id": "c297288b-2980-49f0-b9e1-a72c07d9689c",
-      "name": "generate array"
+      "id": "4ddf8f12-5ba4-48bd-a1ca-0a743915f80d",
+      "name": "Set API JSON"
     },
     {
       "parameters": {
-        "operation": "executeQuery",
-        "query": "INSERT INTO public.ads_groups(\n\t company_id, group_name, key_words_length, is_own_brand)\n\tVALUES ($1, $2, $3, false);",
-        "options": {
-          "queryReplacement": "=[\n   { \"value\": \"={{ $('When Executed by Another Workflow').last().json.company_id }}\" },\n   { \"value\": \"={{ $('Loop Over Items').last().json.group_name }}\" },\n   { \"value\": \"={{ $('Loop Over Items').last().json.key_length }}\" }  \n]"
-        }
+        "method": "POST",
+        "url": "https://api.openai.com/v1/responses",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "openAiApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{$json}}",
+        "options": {}
       },
-      "type": "n8n-nodes-base.postgres",
-      "typeVersion": 2.6,
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
       "position": [
-        -1232,
-        -48
+        -2576,
+        16
       ],
-      "id": "b265f178-cb0b-4723-9329-19c1ae55a968",
-      "name": "Insert group",
+      "id": "99db2c14-4332-4152-af8a-3d974cb46429",
+      "name": "HTTP Request",
+      "retryOnFail": true,
       "credentials": {
-        "postgres": {
-          "id": "Hx2VFmUi5WO2K4QX",
-          "name": "Postgres account 2"
+        "openAiApi": {
+          "id": "m4NScyhZzV3hBcTr",
+          "name": "OpenAi Yads"
         }
       }
     },
     {
       "parameters": {
-        "operation": "executeQuery",
-        "query": "INSERT INTO public.ads_groups(\n\t company_id, group_name,  is_own_brand)\n\tVALUES ($1, 'Брендовые низкочастотные запросы', true);",
-        "options": {
-          "queryReplacement": "={{ $('When Executed by Another Workflow').last().json.company_id }}\n\n"
-        }
+        "jsCode": "const workflowData = $getWorkflowStaticData('global');\nlet my_prompt = workflowData.my_prompt.data;\n\nfor (const item of $input.all()) {\n  item.json.my_prompt = my_prompt.replaceAll(\"{{company_description}}\", workflowData.company_description).replaceAll(\"{{length}}\", $('When Executed by Another Workflow').first().json.length);\n}\n\nreturn $input.all();"
       },
-      "type": "n8n-nodes-base.postgres",
-      "typeVersion": 2.6,
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
       "position": [
-        -1600,
-        -224
+        -2992,
+        32
       ],
-      "id": "946713e5-20cf-44a1-b76f-b2ac4850d5eb",
-      "name": "Insert group1",
-      "executeOnce": true,
-      "credentials": {
-        "postgres": {
-          "id": "Hx2VFmUi5WO2K4QX",
-          "name": "Postgres account 2"
-        }
-      }
+      "id": "0a09b832-c34c-4d51-9176-e321cff7b782",
+      "name": "Set prompt"
+    },
+    {
+      "parameters": {
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -2384,
+        0
+      ],
+      "id": "3a1f41d1-e5f5-4708-84c6-8bf70d903e0e",
+      "name": "Edit Fields"
     }
   ],
   "connections": {
@@ -454,7 +190,7 @@
       "main": [
         [
           {
-            "node": "Execute a SQL query",
+            "node": "Set prompt",
             "type": "main",
             "index": 0
           }
@@ -465,17 +201,6 @@
       "main": [
         [
           {
-            "node": "Mark_workwlow_started",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Mark_workwlow_started": {
-      "main": [
-        [
-          {
             "node": "Get a file1",
             "type": "main",
             "index": 0
@@ -483,152 +208,33 @@
         ]
       ]
     },
-    "Mark_workflow_passed_steps": {
+    "Set API JSON": {
       "main": [
         [
           {
-            "node": "check if termination is requested",
+            "node": "HTTP Request",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "check if termination is requested": {
+    "HTTP Request": {
       "main": [
         [
           {
-            "node": "If1",
+            "node": "Edit Fields",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "If1": {
+    "Set prompt": {
       "main": [
         [
           {
-            "node": "Stop and Error",
-            "type": "main",
-            "index": 0
-          }
-        ],
-        [
-          {
-            "node": "Loop Over Items",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Get current step and tokens saved": {
-      "main": [
-        [
-          {
-            "node": "Mark_workflow_passed_steps",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Merge": {
-      "main": [
-        [
-          {
-            "node": "Loop Over Items",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Mark_workflow_total_steps": {
-      "main": [
-        [
-          {
-            "node": "Init total counter",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Init total counter": {
-      "main": [
-        [
-          {
-            "node": "Merge",
-            "type": "main",
-            "index": 1
-          }
-        ]
-      ]
-    },
-    "Loop Over Items": {
-      "main": [
-        [
-          {
-            "node": "Insert group1",
-            "type": "main",
-            "index": 0
-          }
-        ],
-        [
-          {
-            "node": "Insert group",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Execute a SQL query": {
-      "main": [
-        [
-          {
-            "node": "generate array",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "generate array": {
-      "main": [
-        [
-          {
-            "node": "Merge",
-            "type": "main",
-            "index": 0
-          },
-          {
-            "node": "Mark_workflow_total_steps",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Insert group": {
-      "main": [
-        [
-          {
-            "node": "Get current step and tokens saved",
-            "type": "main",
-            "index": 0
-          }
-        ],
-        []
-      ]
-    },
-    "Insert group1": {
-      "main": [
-        [
-          {
-            "node": "Mark_workflow_completed",
+            "node": "Set API JSON",
             "type": "main",
             "index": 0
           }
@@ -655,14 +261,15 @@
           "company_id": 1,
           "report_id": 5,
           "threshhold": "0.88",
-          "company_name": "Первый визовый центр Курган",
+          "length": 15,
+          "company_description": "KIBERone – международная КиберШкола программирования и цифровых технологий для детей от 6 до 14 лет.  Позиционирование бренда: KIBERone — первая международная КиберШкола будущего для IT-поколения 6–14 лет, признана ЮНЕСКО лучшей детской образовательной IT-школой в мире. Бренд является партнером Microsoft, Roblox и Samsung. Бесплатные пробные уроки  Основные услуги и программы:  Полный перечень модулей:  Вводный модуль (основы цифровой грамотности)  Основы программирования Scratch Jr  Создание игр на Scratch  ПиктоМир (алгоритмическое мышление)  CodeMonkey (логика и программирование)  Устройство компьютера  Эффектные презентации (PowerPoint, Desygner)  QR-коды  Деловые люди (предпринимательство)  Google Blockly (визуальное программирование)  Roblox Studio (создание игр)  Kodu Game Lab (3D-программирование)  Разработка мобильных приложений в Thunkable  Blender (3D-моделирование)  Компьютерная грамотность  Minecraft Education  Нейросети (основы ИИ)  Alice 3D (3D-программирование)  Run Marco (основы алгоритмов)  Исполнители: Чертёжник и Черепашка  GIF-анимация  Tinkercad (3D-проектирование)  Кибербезопасность  Construct 2 (создание 2D-игр)  Компас-3D (САПР)  Основы HTML (веб-разработка)  Голосовой помощник Алиса  Создание лендинга (Tilda)  Python (создание игр)  Чат-бот на Python  Web-дизайн (Figma)  Web-мастер (HTML+CSS)  Motion Design  Unreal Engine 4 (игровой движок)  JavaScript (игры)  C# (создание 2D-игр)  C++  Java (создание приложений)  Unity 3D (игры)  Олимпиадное программирование  Облачные технологии, Блокчейн, Data Science  PHP+SQL  Photoshop  Подготовка к олимпиадам  Приложения Google  Летние программы:  Летние IT-интенсивы (краткосрочные программы по направлениям Roblox, Minecraft, Python и др.)  Летние КИБЕРканикулы (городской лагерь с IT-обучением и развлекательной программой)  Дополнительные механики:  Кибервалюта («кибероны») для мотивации учеников, обмен на мерч на КиберМаркете  Тьюторы и преподаватели:  Опытные специалисты с практическим опытом и педагогической подготовкой  Другие важные разделы:  Новости (новости школы и сети)  СМИ о нас (публикации о школе)  Фотогалерея (фото с мероприятий и уроков)  Видео (видеоматериалы о школе)  Расписание занятий (время занятий для групп и пробных уроков)  Локации (адрес школы в Октябрьском районе Саратова, ул. Тараса Шевченко, 8)  Оплата (способы оплаты и договор-оферта)  Сертификаты (активация промокодов партнеров)  Контакты (телефон +7 963 112-49-11, email saratov@kiber-one.com",
           "services_description": "Визы:    http://krg45.visa-rf.ru/ АТЭС:    http://krg45.apec-first.ru/",
           "user_content_dropbox_folder": "/Test_content_folder_for_Kurgan"
         }
       }
     ]
   },
-  "versionId": "0338d513-f847-401c-b135-7b5f7a607885",
+  "versionId": "28dba1ca-7cae-4d37-9801-f8191fa88106",
   "triggerCount": 0,
   "shared": [
     {
@@ -680,6 +287,5 @@
       "id": "S7zerj1h6Ro25pTA",
       "name": "client creation"
     }
-  ],
-  "file_name": "create-ad-for-low-frequency-key-words.json"
+  ]
 }
