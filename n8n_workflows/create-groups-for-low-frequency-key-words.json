@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-06T13:53:56.935Z",
+  "updatedAt": "2025-11-06T15:45:38.062Z",
   "createdAt": "2025-11-04T16:36:35.686Z",
   "id": "16IidE6jjF6hXcGl",
   "name": "Create groups for low frequency key words",
@@ -344,35 +344,12 @@
     },
     {
       "parameters": {
-        "operation": "executeQuery",
-        "query": "SELECT\n    cs.company_name,\n    cs.company_url,\n    string_agg(\n        concat_ws(' ', company_name,serv.service_name, serv.service_description),\n        ' '\n    ) AS company_description\nFROM companies cs\nJOIN company_services serv\n    ON cs.company_id = serv.company_id\nWHERE cs.company_id = $1\nGROUP BY\n    cs.company_name,\n    cs.company_url;",
-        "options": {
-          "queryReplacement": "={{ $('When Executed by Another Workflow').item.json.company_id }}"
-        }
-      },
-      "type": "n8n-nodes-base.postgres",
-      "typeVersion": 2.6,
-      "position": [
-        -3120,
-        32
-      ],
-      "id": "edd14432-041c-47f0-9df4-37c225e33225",
-      "name": "Execute a SQL query",
-      "credentials": {
-        "postgres": {
-          "id": "Hx2VFmUi5WO2K4QX",
-          "name": "Postgres account 2"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "jsCode": "// Настраиваемые параметры с дефолтами\nlet minLen = 1;\nlet maxLen = 56;\nlet step   = 1;\n\n// Валидация и нормализация\nif (!Number.isFinite(minLen) || !Number.isFinite(maxLen) || !Number.isFinite(step)) {\n  throw new Error('min_length, max_length и step должны быть числами.');\n}\nif (step <= 0) {\n  throw new Error('step должен быть положительным числом.');\n}\nif (minLen > maxLen) {\n  // Меняем местами, если диапазон указан в обратном порядке\n  [minLen, maxLen] = [maxLen, minLen];\n}\n\n// Генерация выходных элементов\nconst items = [];\nfor (let key_length = minLen; key_length <= maxLen; key_length += step) {\n  items.push({\n    json: {\n      key_length,\n      group_name: `Группа запросов с ключем длиной ${key_length}`,\n    },\n  });\n}\n\nreturn items;"
+        "jsCode": "// Настраиваемые параметры с дефолтами\nlet minLen = 1;\nlet maxLen = 56;\nlet step   = 1;\n\n// Валидация и нормализация\nif (!Number.isFinite(minLen) || !Number.isFinite(maxLen) || !Number.isFinite(step)) {\n  throw new Error('min_length, max_length и step должны быть числами.');\n}\nif (step <= 0) {\n  throw new Error('step должен быть положительным числом.');\n}\nif (minLen > maxLen) {\n  // Меняем местами, если диапазон указан в обратном порядке\n  [minLen, maxLen] = [maxLen, minLen];\n}\n\n// Генерация выходных элементов\nconst items = [];\nfor (const item of $input.all()) {\n  \nfor (let key_length = minLen; key_length <= maxLen; key_length += step) {\n  items.push({\n    json: {\n      key_length,\n      group_name: `Группа ¨ ${item.service_name}¨ с ключем длиной ${key_length}`,\n    },\n  });\n}\n\n}\nreturn items;"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -2784,
+        -2912,
         32
       ],
       "id": "5299c9cb-5e15-492e-87d1-c05a6bd97805",
@@ -427,16 +404,39 @@
     },
     {
       "parameters": {
-        "jsCode": "// Function-Node (Run Once)\nconst workflowData = $getWorkflowStaticData('global');\nworkflowData.company_description = items[0].json.company_description;\nreturn items;"
+        "operation": "executeQuery",
+        "query": "SELECT\n    cs.company_name,\n    cs.company_url,\n    serv.service_name\nFROM companies cs\nJOIN company_services serv\n    ON cs.company_id = serv.company_id\nWHERE cs.company_id = $1;",
+        "options": {
+          "queryReplacement": "={{ $('When Executed by Another Workflow').item.json.company_id }}"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -3120,
+        32
+      ],
+      "id": "edd14432-041c-47f0-9df4-37c225e33225",
+      "name": "Get services",
+      "credentials": {
+        "postgres": {
+          "id": "Hx2VFmUi5WO2K4QX",
+          "name": "Postgres account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nfor (const item of $input.all()) {\n  item.json.myNewField = 1;\n}\n\nreturn $input.all();"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -2944,
-        32
+        -2608,
+        -384
       ],
-      "id": "64a1d25f-7129-462d-860b-16bae19ac97d",
-      "name": "Save company Description"
+      "id": "920f279c-425a-4777-8f0b-60a7a4b13d9b",
+      "name": "Code in JavaScript"
     }
   ],
   "connections": {
@@ -466,7 +466,7 @@
       "main": [
         [
           {
-            "node": "Execute a SQL query",
+            "node": "Get services",
             "type": "main",
             "index": 0
           }
@@ -597,17 +597,6 @@
         ]
       ]
     },
-    "Execute a SQL query": {
-      "main": [
-        [
-          {
-            "node": "Save company Description",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "generate array": {
       "main": [
         [
@@ -647,7 +636,7 @@
         ]
       ]
     },
-    "Save company Description": {
+    "Get services": {
       "main": [
         [
           {
@@ -685,7 +674,7 @@
       }
     ]
   },
-  "versionId": "148c7538-dd4d-4ceb-8cae-3c89ccf217ac",
+  "versionId": "cbba4933-aad4-46ab-88c1-c68d7fb8e600",
   "triggerCount": 0,
   "shared": [
     {
