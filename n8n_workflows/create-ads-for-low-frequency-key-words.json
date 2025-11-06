@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-06T19:10:24.129Z",
+  "updatedAt": "2025-11-06T20:36:45.073Z",
   "createdAt": "2025-11-06T13:56:02.796Z",
   "id": "Gi9vc9YfTegfpMjd",
   "name": "Create ads for low frequency key words",
@@ -70,7 +70,7 @@
     },
     {
       "parameters": {
-        "jsCode": "const workflowData = $getWorkflowStaticData('global');\nlet my_prompt = workflowData.my_prompt.data;\n\nfor (const item of $input.all()) {\n  item.json.my_prompt = my_prompt.replaceAll(\"{{company_description}}\", workflowData.company_description).replaceAll(\"{{key_words}}\", JSON.stringify($json.items));\n}\n\nreturn $input.all();"
+        "jsCode": "const workflowData = $getWorkflowStaticData('global');\nlet my_prompt = workflowData.my_prompt.data;\n\nfor (const item of $input.all()) {\n  item.json.my_prompt = my_prompt.replaceAll(\"{{company_description}}\", workflowData.company_description).replaceAll(\"{{templates_required}}\", JSON.stringify($json.items));\n}\n\nreturn $input.all();"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -472,7 +472,9 @@
         "sendBody": true,
         "specifyBody": "json",
         "jsonBody": "={{$json}}",
-        "options": {}
+        "options": {
+          "timeout": 30000
+        }
       },
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
@@ -1552,7 +1554,7 @@
       }
     ]
   },
-  "versionId": "6251f2a4-167d-4c16-a126-e39e738bc7e2",
+  "versionId": "0fc3f2c3-84a5-4809-9985-098741f5f94f",
   "triggerCount": 0,
   "shared": [
     {
