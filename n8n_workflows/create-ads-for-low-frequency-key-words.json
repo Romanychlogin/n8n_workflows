@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-06T14:27:10.046Z",
+  "updatedAt": "2025-11-06T14:30:21.486Z",
   "createdAt": "2025-11-06T13:56:02.796Z",
   "id": "Gi9vc9YfTegfpMjd",
   "name": "Create ads for low frequency key words",
@@ -388,7 +388,7 @@
     },
     {
       "parameters": {
-        "jsCode": "const out = [];\nconst items =[];\nconst items_ext =[];\nfor (const item of $input.all()) {\n  items.push({id:item.json.ads_group_id,length:item.json.key_words_length})\n  \n}\n\nout.push({\n      json: {        \n        items \n      }\n    });\n\nreturn out;\n\n\n\n\n"
+        "jsCode": "const out = [];\nconst items =[];\nconst items_ext =[];\nfor (const item of $input.all()) {\n  items.push({id:item.json.ads_group_id,length:item.json.key_words_length});\n  items_ext.push({id:item.json.ads_group_id,length:item.json.key_words_length});\n    }));\n     \n}\nconst ItemsbyId = Object.fromEntries(\n    items_ext.map(o => [o.id, o])\nout.push({\n      json: {        \n        items,ItemsbyId \n      }\n    });\n\nreturn out;\n\n\n\n\n"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -891,7 +891,7 @@
       }
     ]
   },
-  "versionId": "053b817a-f868-4ebc-b3f2-c479ed5ce9e7",
+  "versionId": "d1e73af9-1723-4c5b-ac6d-52980a58bf1d",
   "triggerCount": 0,
   "shared": [
     {
