@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-06T13:39:06.190Z",
+  "updatedAt": "2025-11-06T13:53:56.935Z",
   "createdAt": "2025-11-04T16:36:35.686Z",
   "id": "16IidE6jjF6hXcGl",
   "name": "Create groups for low frequency key words",
@@ -372,7 +372,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -2736,
+        -2784,
         32
       ],
       "id": "5299c9cb-5e15-492e-87d1-c05a6bd97805",
@@ -389,8 +389,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        -1408,
-        -48
+        -1296,
+        -32
       ],
       "id": "6f24f1a3-bc9c-489c-9698-add4cabefbce",
       "name": "Insert group",
@@ -433,34 +433,10 @@
       "typeVersion": 2,
       "position": [
         -2944,
-        64
+        32
       ],
       "id": "64a1d25f-7129-462d-860b-16bae19ac97d",
       "name": "Save company Description"
-    },
-    {
-      "parameters": {
-        "workflowId": {
-          "__rl": true,
-          "value": "hRxuEgrN8DQgZm0y",
-          "mode": "list",
-          "cachedResultUrl": "/workflow/hRxuEgrN8DQgZm0y",
-          "cachedResultName": "Create ad for low frequency key words"
-        },
-        "workflowInputs": {
-          "mappingMode": "defineBelow",
-          "value": {}
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.executeWorkflow",
-      "typeVersion": 1.3,
-      "position": [
-        -1200,
-        -48
-      ],
-      "id": "34ec5349-1975-4a7b-a5a9-68c171b3d3fd",
-      "name": "Call 'Create ad for low frequency key words'"
     }
   ],
   "connections": {
@@ -652,7 +628,7 @@
       "main": [
         [
           {
-            "node": "Call 'Create ad for low frequency key words'",
+            "node": "Get current step and tokens saved",
             "type": "main",
             "index": 0
           }
@@ -676,17 +652,6 @@
         [
           {
             "node": "generate array",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Call 'Create ad for low frequency key words'": {
-      "main": [
-        [
-          {
-            "node": "Get current step and tokens saved",
             "type": "main",
             "index": 0
           }
@@ -720,7 +685,7 @@
       }
     ]
   },
-  "versionId": "251e4cee-bd39-4d3e-872b-226994a86ea1",
+  "versionId": "148c7538-dd4d-4ceb-8cae-3c89ccf217ac",
   "triggerCount": 0,
   "shared": [
     {
