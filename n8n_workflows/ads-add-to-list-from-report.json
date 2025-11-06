@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-05T19:05:06.207Z",
+  "updatedAt": "2025-11-06T13:28:29.069Z",
   "createdAt": "2025-11-05T13:50:52.126Z",
   "id": "MhWRad4Kq8hLA1E7",
   "name": "ADS add to list from report",
@@ -53,8 +53,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        -480,
-        -624
+        -592,
+        -608
       ],
       "id": "4b641025-e49d-4a58-a38a-e66ecfbca3d7",
       "name": "Mark_workflow_total_steps",
@@ -73,8 +73,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -240,
-        -672
+        -400,
+        -640
       ],
       "id": "f5dddf63-be36-422f-8f83-ff62173b6e5c",
       "name": "Init total counter"
@@ -90,7 +90,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        3200,
+        1776,
         -1424
       ],
       "id": "d7228ced-45c9-43a8-86e0-45ada8394829",
@@ -106,7 +106,7 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "update current_list set is_adv_processed=true where  list_id=$3",
+        "query": "update current_list set is_adv_processed=true where  list_id=$1",
         "options": {
           "queryReplacement": "={{ $('Loop Over Items').last().json.list_id }}"
         }
@@ -237,7 +237,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        -784,
+        -848,
         -768
       ],
       "id": "0d1e70bc-78a9-4eef-9369-f3d33eb63e85",
@@ -294,8 +294,8 @@
       "type": "n8n-nodes-base.merge",
       "typeVersion": 3.2,
       "position": [
-        -48,
-        -784
+        -192,
+        -736
       ],
       "id": "7fdd04b5-17e7-4ba9-9faf-386a67c62f5a",
       "name": "Merge2"
@@ -330,6 +330,7 @@
       "id": "e63e4fbb-ea43-4914-b4a6-cb329cbe29fe",
       "name": "Execute a SQL query",
       "executeOnce": true,
+      "alwaysOutputData": true,
       "credentials": {
         "postgres": {
           "id": "Hx2VFmUi5WO2K4QX",
@@ -591,6 +592,74 @@
           "name": "Postgres account 2"
         }
       }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "2695d6f1-5c0e-414c-aa90-049fa9a2b691",
+              "leftValue": "={{ $input.first().json }}",
+              "rightValue": "",
+              "operator": {
+                "type": "object",
+                "operation": "empty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -704,
+        -768
+      ],
+      "id": "30bdc3da-7c55-4824-8295-69d00c81e4a7",
+      "name": "If nothing to add"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "2695d6f1-5c0e-414c-aa90-049fa9a2b691",
+              "leftValue": "={{ $input.first().json }}",
+              "rightValue": "",
+              "operator": {
+                "type": "object",
+                "operation": "empty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1280,
+        -1088
+      ],
+      "id": "74e92d7c-7991-4e91-9174-e424b7ab208a",
+      "name": "If nothing to add1"
     }
   ],
   "connections": {
@@ -682,12 +751,7 @@
       "main": [
         [
           {
-            "node": "Mark_workflow_total_steps",
-            "type": "main",
-            "index": 0
-          },
-          {
-            "node": "Merge2",
+            "node": "If nothing to add",
             "type": "main",
             "index": 0
           }
@@ -794,7 +858,7 @@
       "main": [
         [
           {
-            "node": "Loop Over Items2",
+            "node": "If nothing to add1",
             "type": "main",
             "index": 0
           }
@@ -895,6 +959,47 @@
           }
         ]
       ]
+    },
+    "If nothing to add": {
+      "main": [
+        [
+          {
+            "node": "Execute a SQL query",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Mark_workflow_total_steps",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If nothing to add1": {
+      "main": [
+        [
+          {
+            "node": "Mark_workflow_completed",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Loop Over Items2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
@@ -932,12 +1037,12 @@
           "root_execution_id": 179684,
           "company_id": 1,
           "threshhold": "0.79",
-          "import_id": "10"
+          "import_id": "4"
         }
       }
     ]
   },
-  "versionId": "29cf4a1a-9fe7-4c9b-a8cb-171c415d8fc4",
+  "versionId": "d8ae10d9-1e4c-4fb8-8b0d-bd4d0be69df1",
   "triggerCount": 0,
   "shared": [
     {
