@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-06T10:38:36.800Z",
+  "updatedAt": "2025-11-06T10:42:45.913Z",
   "createdAt": "2025-11-05T16:49:07.256Z",
   "id": "GE66xiztgKP0D3Za",
   "name": "ADS generate for yandex",
@@ -180,8 +180,10 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "WITH ranked AS (\n  SELECT\n    ad_id,\n    ROW_NUMBER() OVER (\n      ORDER BY COALESCE(count_views,0) + COALESCE(count_convetions,0)*10 DESC,\n               ad_id\n    ) AS rn\n  FROM public.ads_list\n  WHERE company_id = $1\n)\nUPDATE public.ads_list al\nSET remove_hi_demand = TRUE\nFROM ranked r\nWHERE al.ad_id = r.ad_id\n  AND r.rn > $2\n  AND al.company_id = $1\n  AND al.is_hi_demand = TRUE;",
-        "options": {}
+        "query": "WITH ranked AS (\n  SELECT\n    ad_id,\n    ROW_NUMBER() OVER (\n      ORDER BY COALESCE(count_views,0) + COALESCE(count_convetions,0)*$3 DESC,\n               ad_id\n    ) AS rn\n  FROM public.ads_list\n  WHERE company_id = $1\n)\nUPDATE public.ads_list al\nSET remove_hi_demand = TRUE\nFROM ranked r\nWHERE al.ad_id = r.ad_id\n  AND r.rn > $2\n  AND al.company_id = $1\n  AND al.is_hi_demand = TRUE;",
+        "options": {
+          "queryReplacement": "={{ $('When Executed by Another Workflow').last().json.company_id }},{{ $('Set variables').last().json.max_limit }},{{ $('get min limit').last().json.threshold_weight }}"
+        }
       },
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
@@ -202,7 +204,9 @@
       "parameters": {
         "operation": "executeQuery",
         "query": "select * from ads_list where company_id=$1 and remove_hi_demand=true",
-        "options": {}
+        "options": {
+          "queryReplacement": "{{ $('When Executed by Another Workflow').last().json.company_id }}"
+        }
       },
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
@@ -442,9 +446,9 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "UPDATE public.ads_list\nSET add_to_hi_demand = TRUE\nWHERE company_id = $1\n  AND (COALESCE(count_views, 0) + COALESCE(count_convetions, 0) * 10) >= $2\n  AND is_hi_demand = FALSE\n  AND is_own_brand=true\nRETURNING ad_id,\n          (COALESCE(count_views, 0) + COALESCE(count_convetions, 0) * 10) AS weight",
+        "query": "UPDATE public.ads_list\nSET add_to_hi_demand = TRUE\nWHERE company_id = $1\n  AND (COALESCE(count_views, 0) + COALESCE(count_convetions, 0) * $3) >= $2\n  AND is_hi_demand = FALSE\n  AND is_own_brand=true\nRETURNING ad_id,\n          (COALESCE(count_views, 0) + COALESCE(count_convetions, 0) * $3) AS weight",
         "options": {
-          "queryReplacement": ""
+          "queryReplacement": "={{ $('When Executed by Another Workflow').last().json.company_id }},{{ $('get brand limit').last().json.threshold_weight }},{{ $('Set variables').last().json.conversions_weight }}"
         }
       },
       "type": "n8n-nodes-base.postgres",
@@ -465,8 +469,10 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "WITH ranked AS (\n  SELECT\n    ad_id,\n    ROW_NUMBER() OVER (\n      ORDER BY COALESCE(count_views,0) + COALESCE(count_convetions,0)*10 DESC,\n               ad_id\n    ) AS rn\n  FROM public.ads_list\n  WHERE company_id = $1\n  AND is_own_brand=true\n)\nUPDATE public.ads_list al\nSET remove_hi_demand = TRUE\nFROM ranked r\nWHERE al.ad_id = r.ad_id\n  AND r.rn > $2\n  AND al.company_id = $1\n  AND is_own_brand=true\n  AND al.is_hi_demand = TRUE;",
-        "options": {}
+        "query": "WITH ranked AS (\n  SELECT\n    ad_id,\n    ROW_NUMBER() OVER (\n      ORDER BY COALESCE(count_views,0) + COALESCE(count_convetions,0)*$3 DESC,\n               ad_id\n    ) AS rn\n  FROM public.ads_list\n  WHERE company_id = $1\n  AND is_own_brand=true\n)\nUPDATE public.ads_list al\nSET remove_hi_demand = TRUE\nFROM ranked r\nWHERE al.ad_id = r.ad_id\n  AND r.rn > $2\n  AND al.company_id = $1\n  AND is_own_brand=true\n  AND al.is_hi_demand = TRUE;",
+        "options": {
+          "queryReplacement": "={{ $('When Executed by Another Workflow').last().json.company_id }},{{ $('Set variables').last().json.brand_limit }},{{ $('get min limit').last().json.threshold_weight }}"
+        }
       },
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
@@ -1011,7 +1017,7 @@
       }
     ]
   },
-  "versionId": "da4cd5e4-b985-402e-a342-fc0df19857f4",
+  "versionId": "d4c6f6ce-8eb3-41a2-a78c-b13464c2d0fc",
   "triggerCount": 0,
   "shared": [
     {
