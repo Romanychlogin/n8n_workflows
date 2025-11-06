@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-06T11:39:39.365Z",
+  "updatedAt": "2025-11-06T11:49:10.372Z",
   "createdAt": "2025-11-05T16:49:07.256Z",
   "id": "GE66xiztgKP0D3Za",
   "name": "ADS generate for yandex",
@@ -328,7 +328,7 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "select * from ads_groups where company_id=$1 and key_word_length=$2 and key_words_count<200",
+        "query": "select * from ads_groups where company_id=$1 and key_words_length=$2 and key_words_count<200",
         "options": {
           "queryReplacement": "={{ $json.company_id }},{{ $json.key_word_length }}"
         }
@@ -401,7 +401,7 @@
         "operation": "executeQuery",
         "query": "update ads_list set group_yandex_id=$2,to_upload_ad=true  where ad_id=$1",
         "options": {
-          "queryReplacement": ""
+          "queryReplacement": "={{ $('get group').item.json.group_yandex_id }},{{ $('Loop Over Items3').last().json.ad_id }}"
         }
       },
       "type": "n8n-nodes-base.postgres",
@@ -1135,7 +1135,7 @@
       }
     ]
   },
-  "versionId": "7a35e687-ff5f-4ccc-bbda-c390d0558ce0",
+  "versionId": "1dd23539-9c5a-43c5-8a78-35c48021e49b",
   "triggerCount": 0,
   "shared": [
     {
