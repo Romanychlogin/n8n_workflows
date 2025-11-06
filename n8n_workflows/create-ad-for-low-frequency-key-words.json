@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-06T12:09:30.062Z",
+  "updatedAt": "2025-11-06T12:12:17.373Z",
   "createdAt": "2025-11-06T11:50:44.764Z",
   "id": "hRxuEgrN8DQgZm0y",
   "name": "Create ad for low frequency key words",
@@ -161,6 +161,27 @@
       ],
       "id": "3a1f41d1-e5f5-4708-84c6-8bf70d903e0e",
       "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO public.ads_for_groups(\n\tads_group_id, ad_header, ad_text, ad_url, is_active)\n\tVALUES ($1, $2, $3, $4, true);",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -2176,
+        0
+      ],
+      "id": "d4b9ef47-47ff-44bf-8fba-c4fbeef43cdc",
+      "name": "Execute a SQL query",
+      "credentials": {
+        "postgres": {
+          "id": "Hx2VFmUi5WO2K4QX",
+          "name": "Postgres account 2"
+        }
+      }
     }
   ],
   "connections": {
@@ -240,6 +261,17 @@
           }
         ]
       ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Execute a SQL query",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
@@ -269,7 +301,7 @@
       }
     ]
   },
-  "versionId": "28dba1ca-7cae-4d37-9801-f8191fa88106",
+  "versionId": "1d324949-4b63-4201-8889-d3b2c74408ea",
   "triggerCount": 0,
   "shared": [
     {
