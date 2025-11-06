@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-06T12:41:45.114Z",
+  "updatedAt": "2025-11-06T12:52:32.449Z",
   "createdAt": "2025-11-04T13:56:06.291Z",
   "id": "vwRAn8uUM5XZ8OrS",
   "name": "generate ads based on legth",
@@ -21,9 +21,9 @@
       "parameters": {
         "model": {
           "__rl": true,
-          "value": "gpt-5",
+          "value": "gpt-5-2025-08-07",
           "mode": "list",
-          "cachedResultName": "gpt-5"
+          "cachedResultName": "gpt-5-2025-08-07"
         },
         "options": {}
       },
@@ -162,8 +162,7 @@
         -16
       ],
       "id": "40862b4e-6140-48d2-823f-54ad1c81eae0",
-      "name": "AI Agent",
-      "disabled": true
+      "name": "AI Agent"
     },
     {
       "parameters": {
@@ -289,7 +288,7 @@
     "templateCredsSetupCompleted": true
   },
   "pinData": {},
-  "versionId": "4dab6db2-440f-4f7f-a3d4-6a9157d89c77",
+  "versionId": "aa2ef489-439f-4125-a9be-27cd7d9eaa55",
   "triggerCount": 0,
   "shared": [
     {
