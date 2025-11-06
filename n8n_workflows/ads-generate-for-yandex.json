@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-06T11:49:10.372Z",
+  "updatedAt": "2025-11-06T12:15:15.705Z",
   "createdAt": "2025-11-05T16:49:07.256Z",
   "id": "GE66xiztgKP0D3Za",
   "name": "ADS generate for yandex",
@@ -54,8 +54,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        -128,
-        -1616
+        224,
+        -1648
       ],
       "id": "4627ef16-c1a6-4a24-ab26-0cd5419ae583",
       "name": "Mark_workflow_completed",
@@ -510,8 +510,8 @@
       "type": "n8n-nodes-base.splitInBatches",
       "typeVersion": 3,
       "position": [
-        -464,
-        -1184
+        -112,
+        -1216
       ],
       "id": "3ee504d4-2c45-4f95-aa03-4631be97a850",
       "name": "Loop Over Items"
@@ -523,8 +523,8 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        -112,
-        -1376
+        240,
+        -1408
       ],
       "id": "3ccb725b-5e35-45a0-a4df-76f06323f57b",
       "name": "Sticky Note3"
@@ -534,14 +534,14 @@
         "operation": "executeQuery",
         "query": "select * from ads_groups where company_id=$1 and is_own_brand=true and key_words_count<200",
         "options": {
-          "queryReplacement": ""
+          "queryReplacement": "={{ $json.company_id }}"
         }
       },
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        -272,
-        -1104
+        80,
+        -1136
       ],
       "id": "35ade92d-51f5-440b-b072-1f4aea7779a8",
       "name": "get group1",
@@ -560,8 +560,8 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        544,
-        -1152
+        896,
+        -1184
       ],
       "id": "25bea6cc-e35d-4d31-b367-3c18e0bf9ce1",
       "name": "Sticky Note4"
@@ -594,8 +594,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        -80,
-        -1072
+        272,
+        -1104
       ],
       "id": "9f29826c-694e-4fee-addb-338b61fb4a42",
       "name": "If no such group1"
@@ -604,13 +604,15 @@
       "parameters": {
         "operation": "executeQuery",
         "query": "update ads_list set group_yandex_id=$2,to_upload_ad=true  where ad_id=$1",
-        "options": {}
+        "options": {
+          "queryReplacement": "={{ $('get group').item.json.group_yandex_id }},{{ $('Loop Over Items').last().json.ad_id }}"
+        }
       },
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        528,
-        -944
+        880,
+        -976
       ],
       "id": "3d4a2f43-7eab-4bbb-aed3-8c21921e1bbf",
       "name": "update ads data1",
@@ -628,8 +630,8 @@
       "type": "n8n-nodes-base.stopAndError",
       "typeVersion": 1,
       "position": [
-        272,
-        -1216
+        624,
+        -1248
       ],
       "id": "fc1cd747-d4e1-44c7-b20a-7ae896455367",
       "name": "Stop and Error"
@@ -645,8 +647,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        256,
-        -960
+        608,
+        -992
       ],
       "id": "b2a2f439-c94e-49b4-b68c-a909a4a5f444",
       "name": "update group1",
@@ -661,16 +663,19 @@
       "parameters": {
         "operation": "executeQuery",
         "query": "select *, length (key_word) as key_word_length from ads_list where company_id=$1 and is_hi_demand=false and group_yandex_id is null AND is_own_brand=true",
-        "options": {}
+        "options": {
+          "queryReplacement": "={{ $('When Executed by Another Workflow').last().json.company_id }}"
+        }
       },
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        -752,
-        -1184
+        -736,
+        -1216
       ],
       "id": "cd7e03d5-4980-4ff1-8676-85ab3c165db2",
       "name": "get brand low demand to add",
+      "executeOnce": true,
       "credentials": {
         "postgres": {
           "id": "Hx2VFmUi5WO2K4QX",
@@ -745,6 +750,40 @@
       ],
       "id": "6f217e06-86e9-4a96-b2e8-3f5a9b854165",
       "name": "If nothing to add"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "2695d6f1-5c0e-414c-aa90-049fa9a2b691",
+              "leftValue": "={{ $input.first().json }}",
+              "rightValue": "",
+              "operator": {
+                "type": "object",
+                "operation": "empty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -448,
+        -1248
+      ],
+      "id": "e69c4ed4-8345-4e76-aeb7-c40be8b5879a",
+      "name": "If nothing to add1"
     }
   ],
   "connections": {
@@ -1051,7 +1090,7 @@
       "main": [
         [
           {
-            "node": "Loop Over Items",
+            "node": "If nothing to add1",
             "type": "main",
             "index": 0
           }
@@ -1088,6 +1127,24 @@
         [
           {
             "node": "Loop Over Items3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If nothing to add1": {
+      "main": [
+        [
+          {
+            "node": "Mark_workflow_completed",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Loop Over Items",
             "type": "main",
             "index": 0
           }
@@ -1135,7 +1192,7 @@
       }
     ]
   },
-  "versionId": "1dd23539-9c5a-43c5-8a78-35c48021e49b",
+  "versionId": "da3ad44a-9fd5-45a5-b038-628c40bfa98b",
   "triggerCount": 0,
   "shared": [
     {
