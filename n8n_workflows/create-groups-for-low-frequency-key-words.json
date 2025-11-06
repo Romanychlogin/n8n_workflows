@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-06T16:08:59.057Z",
+  "updatedAt": "2025-11-06T19:05:33.258Z",
   "createdAt": "2025-11-04T16:36:35.686Z",
   "id": "16IidE6jjF6hXcGl",
   "name": "Create groups for low frequency key words",
@@ -344,7 +344,7 @@
     },
     {
       "parameters": {
-        "jsCode": "// Настраиваемые параметры с дефолтами\nlet minLen = 1;\nlet maxLen = 56;\nlet step   = 1;\n\n// Валидация и нормализация\nif (!Number.isFinite(minLen) || !Number.isFinite(maxLen) || !Number.isFinite(step)) {\n  throw new Error('min_length, max_length и step должны быть числами.');\n}\nif (step <= 0) {\n  throw new Error('step должен быть положительным числом.');\n}\nif (minLen > maxLen) {\n  // Меняем местами, если диапазон указан в обратном порядке\n  [minLen, maxLen] = [maxLen, minLen];\n}\n\n// Генерация выходных элементов\nconst items = [];\nlet group_name='';\nfor (const item of $input.all()) {\ngroup_name='Группа ¨' +  item.json.service_name+ '¨ с ключем длиной ';\nfor (let key_length = minLen; key_length <= maxLen; key_length += step) {\n  items.push({\n    json: {\n      key_length,\n      group_name: group_name + key_length\n    }\n  });\n}\n\n}\nreturn items;"
+        "jsCode": "// Настраиваемые параметры с дефолтами\nlet minLen = 1;\nlet maxLen = 56;\nlet step   = 1;\n\n// Валидация и нормализация\nif (!Number.isFinite(minLen) || !Number.isFinite(maxLen) || !Number.isFinite(step)) {\n  throw new Error('min_length, max_length и step должны быть числами.');\n}\nif (step <= 0) {\n  throw new Error('step должен быть положительным числом.');\n}\nif (minLen > maxLen) {\n  // Меняем местами, если диапазон указан в обратном порядке\n  [minLen, maxLen] = [maxLen, minLen];\n}\n\n// Генерация выходных элементов\nconst items = [];\nlet group_name='';\nfor (const item of $input.all()) {\ngroup_name='Группа ¨' +  item.json.service_name+ '¨ с ключем длиной ';\nfor (let key_length = minLen; key_length <= maxLen; key_length += step) {\n  items.push({\n    json: {\n      key_length,\n      group_name: group_name + key_length,\n      service_id: item.json.service_id\n    }\n  });\n}\n\n}\nreturn items;"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -358,9 +358,9 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "INSERT INTO public.ads_groups(\n\t company_id, group_name, key_words_length, is_own_brand)\n\tVALUES ($1, $2, $3, false);",
+        "query": "INSERT INTO public.ads_groups(\n\t company_id, group_name, key_words_length, is_own_brand,service_id)\n\tVALUES ($1, $2, $3, false,$4);",
         "options": {
-          "queryReplacement": "=[\n   { \"value\": \"={{ $('When Executed by Another Workflow').last().json.company_id }}\" },\n   { \"value\": \"={{ $('Loop Over Items').last().json.group_name }}\" },\n   { \"value\": \"={{ $('Loop Over Items').last().json.key_length }}\" }  \n]"
+          "queryReplacement": "=[\n   { \"value\": \"={{ $('When Executed by Another Workflow').last().json.company_id }}\" },\n   { \"value\": \"={{ $('Loop Over Items').last().json.group_name }}\" },\n   { \"value\": \"={{ $('Loop Over Items').last().json.key_length }}\" },\n   { \"value\": \"={{ $('Loop Over Items').last().json.service_id }}\" }\n]"
         }
       },
       "type": "n8n-nodes-base.postgres",
@@ -381,9 +381,9 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "INSERT INTO public.ads_groups(\n\t company_id, group_name,  is_own_brand)\n\tVALUES ($1, $2, true);",
+        "query": "INSERT INTO public.ads_groups(\n\t company_id, group_name,  is_own_brand,service_id)\n\tVALUES ($1, $2, true,$3);",
         "options": {
-          "queryReplacement": "={{ $('When Executed by Another Workflow').last().json.company_id }},{{ $json.group_name }}\n\n"
+          "queryReplacement": "={{ $('When Executed by Another Workflow').last().json.company_id }},{{ $json.group_name }},{{ $json.service_id }}\n\n"
         }
       },
       "type": "n8n-nodes-base.postgres",
@@ -405,7 +405,7 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "SELECT\n    cs.company_name,\n    cs.company_url,\n    serv.service_name\nFROM companies cs\nJOIN company_services serv\n    ON cs.company_id = serv.company_id\nWHERE cs.company_id = $1;",
+        "query": "SELECT\n    cs.company_name,\n    cs.company_url,\n    serv.service_name,\n    serv.service_id\nFROM companies cs\nJOIN company_services serv\n    ON cs.company_id = serv.company_id\nWHERE cs.company_id = $1;",
         "options": {
           "queryReplacement": "={{ $('When Executed by Another Workflow').item.json.company_id }}"
         }
@@ -427,7 +427,7 @@
     },
     {
       "parameters": {
-        "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\ninputitems=$('Get services').all();\nconst items = [];\nconst Branditems = [];\nfor (const item of inputitems) {\n  Branditems.push({\n    json: {group_name: `Брендовые низкочастотные запросы ¨${item.json.service_name}¨`}});\n}\nreturn Branditems;"
+        "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\ninputitems=$('Get services').all();\nconst items = [];\nconst Branditems = [];\nfor (const item of inputitems) {\n  Branditems.push({\n    json: {group_name: `Брендовые низкочастотные запросы ¨${item.json.service_name}¨`, service_id:item.json.service_id}});\n}\nreturn Branditems;"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -685,7 +685,7 @@
       }
     ]
   },
-  "versionId": "de6de221-cf04-4778-a4f1-dc29c19393a8",
+  "versionId": "ca694d52-1d3b-424e-a017-9a4420f9ec56",
   "triggerCount": 0,
   "shared": [
     {
