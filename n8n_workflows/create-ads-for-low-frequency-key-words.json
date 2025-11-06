@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-06T14:30:21.486Z",
+  "updatedAt": "2025-11-06T16:49:38.514Z",
   "createdAt": "2025-11-06T13:56:02.796Z",
   "id": "Gi9vc9YfTegfpMjd",
   "name": "Create ads for low frequency key words",
@@ -29,7 +29,7 @@
       "typeVersion": 1.1,
       "position": [
         -1104,
-        -448
+        -512
       ],
       "id": "572080a5-3454-44bc-9776-afbf2b9a2e97",
       "name": "Get a file",
@@ -50,7 +50,7 @@
       "typeVersion": 1,
       "position": [
         -928,
-        -448
+        -512
       ],
       "id": "a64eb95b-776f-4575-a58d-4f18080c3cca",
       "name": "Extract from File1"
@@ -63,7 +63,7 @@
       "typeVersion": 2,
       "position": [
         -784,
-        -416
+        -480
       ],
       "id": "6cdc6488-633c-4cf9-b082-c4b51cb4c095",
       "name": "Code1"
@@ -75,8 +75,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        192,
-        -192
+        2560,
+        480
       ],
       "id": "23348f33-3462-40e4-8980-3a0b494cc219",
       "name": "Set prompt"
@@ -388,20 +388,20 @@
     },
     {
       "parameters": {
-        "jsCode": "const out = [];\nconst items =[];\nconst items_ext =[];\nfor (const item of $input.all()) {\n  items.push({id:item.json.ads_group_id,length:item.json.key_words_length});\n  items_ext.push({id:item.json.ads_group_id,length:item.json.key_words_length});\n    }));\n     \n}\nconst ItemsbyId = Object.fromEntries(\n    items_ext.map(o => [o.id, o])\nout.push({\n      json: {        \n        items,ItemsbyId \n      }\n    });\n\nreturn out;\n\n\n\n\n"
+        "jsCode": "const out = [];\nconst items =[];\nconst items_ext =[];\nfor (const item of $input.all()) {\n  items.push({id:item.json.ads_group_id,length:item.json.key_words_length});\n  items_ext.push({id:item.json.ads_group_id,length:item.json.key_words_length,service_id:item.json.service_id});\n    }));\n     \n}\nconst ItemsbyId = Object.fromEntries(\n    items_ext.map(o => [o.id, o])\nout.push({\n      json: {        \n        items,ItemsbyId \n      }\n    });\n\nreturn out;\n\n\n\n\n"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -16,
-        -192
+        1728,
+        352
       ],
       "id": "04f3a71d-4a31-42da-9ed2-59b0393610b5",
       "name": "Slice  into batches strings"
     },
     {
       "parameters": {
-        "jsCode": "// 1) Берём строку JSON из указанного поля\nlet raw = $input.first().json?.output?.[1]?.content?.[0]?.text;\n\n// Удаляем ```...``` и парсим JSON\nfunction stripCodeFences(s) {\n  if (typeof s !== 'string') return s;\n  let t = s.trim();\n  if (t.startsWith('```')) t = t.replace(/^```[a-zA-Z]*\\n?/, '').replace(/```$/, '').trim();\n  return t;\n}\nfunction safeParseJSON(x) {\n  if (x == null) return null;\n  if (typeof x === 'object') return x;\n  const s = stripCodeFences(String(x));\n  try { return JSON.parse(s); } catch {\n    const m = s.match(/{[\\s\\S]*}/);\n    if (m) { try { return JSON.parse(m[0]); } catch {} }\n    return null;\n  }\n}\n\nconst obj = safeParseJSON(raw);\n\n// === ГЛАВНОЕ ИЗМЕНЕНИЕ: используем url_strings вместо phrases ===\nif (!obj || !Array.isArray(obj.url_strings)) {\n  return [{ json: { note: 'url_strings not found', Items: [], count: 0 } }];\n}\n\n// 2) Источник мапы по id из другой ноды (если есть)\nconst itemsById = $('keywords headers and texts').last().json?.ItemsbyId ?? {};\n\n// 3) Формируем выходные элементы\nconst out = [];\nfor (const it of obj.url_strings) {\n  if (!it || typeof it !== 'object') continue;\n\n  const ad_url  = typeof it.url_string === 'string' && it.url_string.trim() ? it.url_string.trim() : null;\n  const ad_id = typeof it.id === 'string' && it.id.trim() ? it.id.trim() : null;\n  if (!ad_url || !list_id) continue;\n\n  const src = itemsById[list_id] ?? {};\n  const ad_header = src?.header ?? '';\n  const ad_text   = src?.ad_text ?? '';\n  const key_word  = src?.phrase ?? '';\n\n  out.push({\n    json: { ad_id, ad_url, ad_header, ad_text, key_word }\n  });\n}\n\nreturn out;"
+        "jsCode": "// 1) Берём строку JSON из указанного поля\nlet raw = $input.first().json?.output?.[1]?.content?.[0]?.text;\n\n// Удаляем ```...``` и парсим JSON\nfunction stripCodeFences(s) {\n  if (typeof s !== 'string') return s;\n  let t = s.trim();\n  if (t.startsWith('```')) t = t.replace(/^```[a-zA-Z]*\\n?/, '').replace(/```$/, '').trim();\n  return t;\n}\nfunction safeParseJSON(x) {\n  if (x == null) return null;\n  if (typeof x === 'object') return x;\n  const s = stripCodeFences(String(x));\n  try { return JSON.parse(s); } catch {\n    const m = s.match(/{[\\s\\S]*}/);\n    if (m) { try { return JSON.parse(m[0]); } catch {} }\n    return null;\n  }\n}\n\nconst obj = safeParseJSON(raw);\n\n// === ГЛАВНОЕ ИЗМЕНЕНИЕ: используем url_strings вместо phrases ===\nif (!obj || !Array.isArray(obj.url_strings)) {\n  return [{ json: { note: 'url_strings not found', Items: [], count: 0 } }];\n}\n\n// 2) Источник мапы по id из другой ноды (если есть)\nconst itemsById = $('Slice  into batches strings').last().json?.ItemsbyId ?? {};\n\n// 3) Формируем выходные элементы\nconst out = [];\nfor (const it of obj.url_strings) {\n  if (!it || typeof it !== 'object') continue;\n\n  const ad_url  = typeof it.url_string === 'string' && it.url_string.trim() ? it.url_string.trim() : null;\n  const ad_id = typeof it.id === 'string' && it.id.trim() ? it.id.trim() : null;\n  if (!ad_url || !list_id) continue;\n\n  const src = itemsById[list_id] ?? {};\n  const ad_header = src?.header ?? '';\n  const ad_text   = src?.ad_text ?? '';\n  const key_word  = src?.phrase ?? '';\n\n  out.push({\n    json: { ad_id, ad_url, ad_header, ad_text, key_word }\n  });\n}\n\nreturn out;"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -476,8 +476,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        560,
-        -192
+        2896,
+        480
       ],
       "id": "acdb7097-eda9-4fc9-8677-fe102c9604b8",
       "name": "HTTP Request",
@@ -496,8 +496,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        368,
-        -192
+        2720,
+        480
       ],
       "id": "5325f467-a9ee-4be1-aebe-a196bbc5c47e",
       "name": "Set API JSON"
@@ -538,6 +538,370 @@
           "name": "PGvector"
         }
       }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Function-Node (Run Once)\nconst workflowData = $getWorkflowStaticData('global');\nworkflowData.company_description = $json.company_name + ' ' + $json.service_name+ ' ' + $json.service_description;\nworkflowData.company_description_with_url = $json.company_name + ' ' + $json.service_name+ ' ' + $json.service_description + ' сервис доступен по адресу: ' + $json.service_url;\nreturn items;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        640,
+        368
+      ],
+      "id": "e8489874-7a87-4c77-b22f-d58e7d906376",
+      "name": "save description"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "select cs.service_name,c.company_name,cs.service_description,cs.service_url,cs.service_id from companies c, company_services cs where c.company_id=cs.company_id and c.company_id=$1",
+        "options": {
+          "queryReplacement": "{{ $('set variables').item.json.company_id }}"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -112,
+        176
+      ],
+      "id": "c737719e-4053-4f10-b246-c20a7627a082",
+      "name": "Services list",
+      "credentials": {
+        "postgres": {
+          "id": "Hx2VFmUi5WO2K4QX",
+          "name": "Postgres account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        336,
+        352
+      ],
+      "id": "66fc7e00-7fad-4441-91c0-eb60ead28d8b",
+      "name": "Loop Over Items1"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "ebafa31d-edf7-41c0-a06e-e884ad9595ea",
+              "name": "is_first",
+              "value": "=true",
+              "type": "boolean"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1904,
+        352
+      ],
+      "id": "c25a381b-619a-434a-9b66-9eaa4863807a",
+      "name": "set first_item1"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "ebafa31d-edf7-41c0-a06e-e884ad9595ea",
+              "name": "is_first",
+              "value": "=false",
+              "type": "boolean"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2336,
+        480
+      ],
+      "id": "1cf9eeb8-c605-478f-8fbe-09b7edeb6cff",
+      "name": "reset first_item"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "b13ec6fc-ce2d-48a1-a4c7-6ded529707ec",
+              "leftValue": "={{$input.first().json.success}}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1008,
+        368
+      ],
+      "id": "623e5d3e-600e-43d5-9f79-809f339013f4",
+      "name": "If empty"
+    },
+    {
+      "parameters": {
+        "mode": "chooseBranch",
+        "numberInputs": 3
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        1552,
+        352
+      ],
+      "id": "03487d2b-5f8b-4d17-ac63-77fbab94d003",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "select * from service_urls where service_id=$1",
+        "options": {
+          "queryReplacement": "={{ $json.service_id }}"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        1216,
+        464
+      ],
+      "id": "1b050b38-dd47-4111-9cc1-8459a9770246",
+      "name": "get service urls",
+      "executeOnce": true,
+      "credentials": {
+        "postgres": {
+          "id": "Hx2VFmUi5WO2K4QX",
+          "name": "Postgres account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "\n\n// 1) Собираем и чистим массив URL'ов\nlet urls = [];\nfor (const { json } of $input.all()) {\n  const v = json?.service_url;\n  if (v == null) continue;\n  const s = String(v).trim();\n  if (s) urls.push(s);\n}\n\n\n\n\n\n// 4) Возвращаем и массив, и строку\nreturn [{ json: { urls,  count: urls.length } }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1376,
+        464
+      ],
+      "id": "bb7bfcb9-82c3-4fb6-b321-1e3e24e07345",
+      "name": "string for service urls"
+    },
+    {
+      "parameters": {
+        "content": "потом используем для ограничения structured output AI, чтобы исключить глюки",
+        "height": 384,
+        "width": 352
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -464,
+        592
+      ],
+      "id": "a6b3831a-40cd-4ea3-827b-c5a18fa8fcf0",
+      "name": "Sticky Note5"
+    },
+    {
+      "parameters": {
+        "options": {
+          "reset": "={{ $json.is_first }}"
+        }
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        2048,
+        480
+      ],
+      "id": "7fbe77bf-0bd8-4a4e-99dc-4fec54d08010",
+      "name": "Loop Over Items2"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "select ag.* from ads_groups ag where company_id=$1 and service_id=$2 and is_own_brand=false and not exists \n(select 1 from ads_for_groups ads where ag.ads_group_id=ads.ads_group_id) order by key_words_length",
+        "options": {
+          "queryReplacement": "=[{{ $('When Executed by Another Workflow').item.json.company_id }},{{ $json.service_id }}]"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        864,
+        368
+      ],
+      "id": "90186f99-acdf-469d-9e5d-d8a375cebf82",
+      "name": "Get groups by service",
+      "alwaysOutputData": true,
+      "credentials": {
+        "postgres": {
+          "id": "Hx2VFmUi5WO2K4QX",
+          "name": "Postgres account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const urlEnum = $('string for service urls').last().json.urls ?? [];\n\nreturn [{\n  json:{\n  \"model\": \"gpt-5\",\n  \"input\": [\n    {\n      \"role\": \"developer\",\n      \"content\": [\n        {\n          \"type\": \"input_text\",\n          \"text\": \"Strictly follow provided instructions and response format\"\n        }\n      ]\n    },\n    {\n      \"role\": \"user\",\n      \"content\": [\n        {\n          \"type\": \"input_text\",\n          \"text\": $json.my_prompt\n        }\n      ]\n    }\n  ],\n  \"text\": {\n    \"format\": {\n      \"type\": \"json_schema\",\n      \"name\": \"url_strings\",\n      \"strict\": true,\n      \"schema\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"url_strings\": {\n            \"type\": \"array\",\n            \"description\": \"List of URL objects.\",\n            \"items\": {\n              \"type\": \"object\",\n              \"properties\": {\n                \"url_string\": {\n                  \"type\": \"string\",\n                  \"enum\": urlEnum,\n                  \"description\": \"A valid URL from the allowed list.\"\n                },\n                \"id\": {\n                  \"type\": \"string\",\n                  \"description\": \"Unique identifier for the URL object.\",\n                  \"minLength\": 1\n                }\n              },\n              \"required\": [\n                \"url_string\",\n                \"id\"\n              ],\n              \"additionalProperties\": false\n            },\n            \"minItems\": 0\n          }\n        },\n        \"required\": [\n          \"url_strings\"\n        ],\n        \"additionalProperties\": false\n      }\n    },\n    \"verbosity\": \"low\"\n  },\n  \"reasoning\": {\n    \"effort\": \"minimal\",\n    \"summary\": \"auto\"\n  },\n  \n  \"store\": false,\n  \"include\": [\n    \"reasoning.encrypted_content\",\n    \"web_search_call.action.sources\"\n  ]\n}\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3600,
+        464
+      ],
+      "id": "66da9722-8ce5-485e-8275-2fad58ce3478",
+      "name": "Set API JSON2"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.openai.com/v1/responses",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "openAiApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{$json}}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        3888,
+        448
+      ],
+      "id": "91946c21-e920-445e-bb56-15e4d74d9222",
+      "name": "HTTP Request2",
+      "retryOnFail": true,
+      "credentials": {
+        "openAiApi": {
+          "id": "m4NScyhZzV3hBcTr",
+          "name": "OpenAi Yads"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const workflowData = $getWorkflowStaticData('global');\nlet my_prompt = workflowData.my_prompt_url.data;\n\nfor (const item of $input.all()) {\n  item.json.my_prompt = my_prompt.replaceAll(\"{{company_description}}\", workflowData.company_description_with_url).replaceAll(\"{{header_ad_text}}\", JSON.stringify($json.Items));\n}\n\nreturn $input.all();"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3296,
+        480
+      ],
+      "id": "7bf2dba4-0b52-494e-bed9-7c496fb6497e",
+      "name": "Set prompt2"
+    },
+    {
+      "parameters": {
+        "jsCode": "// 1) Читаем строку JSON из указанного поля\nlet raw = $input.first().json?.output?.[1]?.content?.[0]?.text;\n\n// Минимальная чистка и парсинг\nfunction stripCodeFences(s) {\n  if (typeof s !== 'string') return s;\n  let t = s.trim();\n  if (t.startsWith('```')) t = t.replace(/^```[a-zA-Z]*\\n?/, '').replace(/```$/, '').trim();\n  return t;\n}\nfunction parseJson(s) {\n  const t = stripCodeFences(String(s ?? ''));\n  try { return JSON.parse(t); } catch { return null; }\n}\n\nconst obj = parseJson(raw);\nif (!obj || !Array.isArray(obj.ad_texts)) {\n  return [{ json: { Items: [], ItemsbyId: {}, note: 'ad_texts not found' } }];\n}\n\nconst itemsById = $('keywords and headers').last().json?.ItemsbyId ?? {};\n\n// 3) Собираем выход\nconst Items = [];\nfor (const h of obj.ad_texts) {\n  if (!h || typeof h !== 'object') continue;\n\n  const id = String(h.id ?? '');\n  const ad_text = String(h.ad_text ?? '');\n  const ad_header = String(h.ad_header ?? '');\n\n  if (!id || !ad_text) continue;\n  \n  Items.push({ ad_header, ad_text, id });\n}\n\n// 4) Индекс по id -> объект\nconst ItemsbyId = Object.fromEntries(Items.map(o => [o.id, o]));\n\n// 5) Возврат\nreturn [{\n  json: {\n    Items,\n    ItemsbyId\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3088,
+        480
+      ],
+      "id": "4e1e7e9e-0eca-4b7e-9b24-e981fd3b0505",
+      "name": "headers and texts"
+    },
+    {
+      "parameters": {
+        "resource": "file",
+        "operation": "get",
+        "owner": {
+          "__rl": true,
+          "value": "Romanychlogin",
+          "mode": "name"
+        },
+        "repository": {
+          "__rl": true,
+          "value": "n8n_prompts",
+          "mode": "list",
+          "cachedResultName": "n8n_prompts",
+          "cachedResultUrl": "https://github.com/Romanychlogin/n8n_prompts"
+        },
+        "filePath": "ad_template_url.txt",
+        "additionalParameters": {}
+      },
+      "type": "n8n-nodes-base.github",
+      "typeVersion": 1.1,
+      "position": [
+        -1152,
+        -336
+      ],
+      "id": "314f99ce-8e51-47a8-89ad-1cb33401b459",
+      "name": "Get a file2",
+      "webhookId": "7f9ef4b6-b452-45c1-87d0-50bf224e0663",
+      "credentials": {
+        "githubApi": {
+          "id": "JQAFAcMNS9Ylyb0V",
+          "name": "GitHub account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "text",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        -992,
+        -320
+      ],
+      "id": "2ca98048-17e5-49ae-bc16-2e94f7970398",
+      "name": "Extract from File2"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Function-Node (Run Once)\nconst workflowData = $getWorkflowStaticData('global');\nworkflowData.my_prompt_url = items[0].json;\nreturn items;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -832,
+        -320
+      ],
+      "id": "ecf45e08-fd8f-470a-aee9-bf4ed72fdd59",
+      "name": "Code2"
     }
   ],
   "connections": {
@@ -567,7 +931,7 @@
       "main": [
         [
           {
-            "node": "get company data",
+            "node": "Get a file2",
             "type": "main",
             "index": 0
           }
@@ -744,7 +1108,7 @@
       "main": [
         [
           {
-            "node": "Slice  into batches strings",
+            "node": "Services list",
             "type": "main",
             "index": 0
           }
@@ -755,7 +1119,7 @@
       "main": [
         [
           {
-            "node": "Set prompt",
+            "node": "set first_item1",
             "type": "main",
             "index": 0
           }
@@ -804,7 +1168,7 @@
       "main": [
         [
           {
-            "node": "update calls counters2",
+            "node": "headers and texts",
             "type": "main",
             "index": 0
           }
@@ -824,13 +1188,7 @@
     },
     "Loop Over Items": {
       "main": [
-        [
-          {
-            "node": "Mark_workflow_completed",
-            "type": "main",
-            "index": 0
-          }
-        ],
+        [],
         [
           {
             "node": "Normalize texts",
@@ -845,6 +1203,213 @@
         [
           {
             "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "save description": {
+      "main": [
+        [
+          {
+            "node": "Get groups by service",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Services list": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items1": {
+      "main": [
+        [],
+        [
+          {
+            "node": "save description",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "set first_item1": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If empty": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "get service urls",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Slice  into batches strings",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "get service urls": {
+      "main": [
+        [
+          {
+            "node": "string for service urls",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "string for service urls": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Loop Over Items2": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "reset first_item",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get groups by service": {
+      "main": [
+        [
+          {
+            "node": "If empty",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "reset first_item": {
+      "main": [
+        [
+          {
+            "node": "Set prompt",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set API JSON2": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set prompt2": {
+      "main": [
+        [
+          {
+            "node": "Set API JSON2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "headers and texts": {
+      "main": [
+        [
+          {
+            "node": "Set prompt2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get a file2": {
+      "main": [
+        [
+          {
+            "node": "Extract from File2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File2": {
+      "main": [
+        [
+          {
+            "node": "Code2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code2": {
+      "main": [
+        [
+          {
+            "node": "get company data",
             "type": "main",
             "index": 0
           }
@@ -891,7 +1456,7 @@
       }
     ]
   },
-  "versionId": "d1e73af9-1723-4c5b-ac6d-52980a58bf1d",
+  "versionId": "9c9238f7-282b-46b1-9d97-5a2cdf217edf",
   "triggerCount": 0,
   "shared": [
     {
