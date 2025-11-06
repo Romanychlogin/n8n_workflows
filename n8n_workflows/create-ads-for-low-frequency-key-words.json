@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-06T16:49:38.514Z",
+  "updatedAt": "2025-11-06T17:00:27.992Z",
   "createdAt": "2025-11-06T13:56:02.796Z",
   "id": "Gi9vc9YfTegfpMjd",
   "name": "Create ads for low frequency key words",
@@ -182,8 +182,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        2896,
-        -144
+        6240,
+        752
       ],
       "id": "179bea22-151b-42a0-9471-91289a514fba",
       "name": "If"
@@ -195,8 +195,8 @@
       "type": "n8n-nodes-base.stopAndError",
       "typeVersion": 1,
       "position": [
-        3120,
-        -224
+        6464,
+        672
       ],
       "id": "bf8d0f6a-6ca1-4783-b066-f56863a33416",
       "name": "Stop and Error"
@@ -229,8 +229,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        2640,
-        -160
+        5984,
+        736
       ],
       "id": "219d6a30-22af-4ba5-a670-0606ee0d0dcd",
       "name": "check if termination is requested",
@@ -248,8 +248,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1744,
-        -176
+        5312,
+        720
       ],
       "id": "e056a163-6c38-4daa-a16f-3ef6bbe182fc",
       "name": "Normalize texts"
@@ -261,8 +261,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        2144,
-        -176
+        5616,
+        720
       ],
       "id": "0534c795-db1f-46b1-8605-deb5f444f9ca",
       "name": "Get current step saved"
@@ -278,8 +278,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        2352,
-        -176
+        5792,
+        752
       ],
       "id": "a55ae209-829e-443e-ae8c-f1c76173e9de",
       "name": "Mark_workflow_passed_steps1",
@@ -302,8 +302,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        1936,
-        -176
+        5456,
+        720
       ],
       "id": "965e6e72-6047-431e-8122-429ce80ce6c9",
       "name": "update ads",
@@ -312,7 +312,8 @@
           "id": "Hx2VFmUi5WO2K4QX",
           "name": "Postgres account 2"
         }
-      }
+      },
+      "disabled": true
     },
     {
       "parameters": {
@@ -401,13 +402,13 @@
     },
     {
       "parameters": {
-        "jsCode": "// 1) Берём строку JSON из указанного поля\nlet raw = $input.first().json?.output?.[1]?.content?.[0]?.text;\n\n// Удаляем ```...``` и парсим JSON\nfunction stripCodeFences(s) {\n  if (typeof s !== 'string') return s;\n  let t = s.trim();\n  if (t.startsWith('```')) t = t.replace(/^```[a-zA-Z]*\\n?/, '').replace(/```$/, '').trim();\n  return t;\n}\nfunction safeParseJSON(x) {\n  if (x == null) return null;\n  if (typeof x === 'object') return x;\n  const s = stripCodeFences(String(x));\n  try { return JSON.parse(s); } catch {\n    const m = s.match(/{[\\s\\S]*}/);\n    if (m) { try { return JSON.parse(m[0]); } catch {} }\n    return null;\n  }\n}\n\nconst obj = safeParseJSON(raw);\n\n// === ГЛАВНОЕ ИЗМЕНЕНИЕ: используем url_strings вместо phrases ===\nif (!obj || !Array.isArray(obj.url_strings)) {\n  return [{ json: { note: 'url_strings not found', Items: [], count: 0 } }];\n}\n\n// 2) Источник мапы по id из другой ноды (если есть)\nconst itemsById = $('Slice  into batches strings').last().json?.ItemsbyId ?? {};\n\n// 3) Формируем выходные элементы\nconst out = [];\nfor (const it of obj.url_strings) {\n  if (!it || typeof it !== 'object') continue;\n\n  const ad_url  = typeof it.url_string === 'string' && it.url_string.trim() ? it.url_string.trim() : null;\n  const ad_id = typeof it.id === 'string' && it.id.trim() ? it.id.trim() : null;\n  if (!ad_url || !list_id) continue;\n\n  const src = itemsById[list_id] ?? {};\n  const ad_header = src?.header ?? '';\n  const ad_text   = src?.ad_text ?? '';\n  const key_word  = src?.phrase ?? '';\n\n  out.push({\n    json: { ad_id, ad_url, ad_header, ad_text, key_word }\n  });\n}\n\nreturn out;"
+        "jsCode": "// 1) Берём строку JSON из указанного поля\nlet raw = $input.first().json?.output?.[1]?.content?.[0]?.text;\n\n// Удаляем ```...``` и парсим JSON\nfunction stripCodeFences(s) {\n  if (typeof s !== 'string') return s;\n  let t = s.trim();\n  if (t.startsWith('```')) t = t.replace(/^```[a-zA-Z]*\\n?/, '').replace(/```$/, '').trim();\n  return t;\n}\nfunction safeParseJSON(x) {\n  if (x == null) return null;\n  if (typeof x === 'object') return x;\n  const s = stripCodeFences(String(x));\n  try { return JSON.parse(s); } catch {\n    const m = s.match(/{[\\s\\S]*}/);\n    if (m) { try { return JSON.parse(m[0]); } catch {} }\n    return null;\n  }\n}\n\nconst obj = safeParseJSON(raw);\n\n// === ГЛАВНОЕ ИЗМЕНЕНИЕ: используем url_strings вместо phrases ===\nif (!obj || !Array.isArray(obj.url_strings)) {\n  return [{ json: { note: 'url_strings not found', Items: [], count: 0 } }];\n}\n\n// 2) Источник мапы по id из другой ноды (если есть)\n\nconst itemsById = $('headers and texts').last().json?.ItemsbyId ?? {};\n\n// 3) Формируем выходные элементы\nconst out = [];\nfor (const it of obj.url_strings) {\n  if (!it || typeof it !== 'object') continue;\n\n  const ad_url  = typeof it.url_string === 'string' && it.url_string.trim() ? it.url_string.trim() : null;\n  const ads_group_id = typeof it.id === 'string' && it.id.trim() ? it.id.trim() : null;\n  if (!ad_url || !list_id) continue;\n\n  const src = itemsById[ads_group_id] ?? {};\n  const ad_header = src?.ad_header ?? '';\n  const ad_text   = src?.ad_text ?? '';\n  const length  = src?.length ?? '';\n\n  out.push({\n    json: { ads_group_id, ad_url, ad_header, ad_text, length }\n  });\n}\n\nreturn out;"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1264,
-        -192
+        4592,
+        448
       ],
       "id": "41763681-66e9-497d-a0b9-8dd4810902e2",
       "name": "Separate output items"
@@ -419,8 +420,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        816,
-        -192
+        4144,
+        448
       ],
       "id": "ba7ce00b-5c08-4902-b4ef-35cb9f79feb2",
       "name": "update calls counters2"
@@ -436,8 +437,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        960,
-        -48
+        4288,
+        592
       ],
       "id": "d963970b-2225-4c0f-896f-103cc4d429ba",
       "name": "Save_tokens_usage",
@@ -456,8 +457,8 @@
       "type": "n8n-nodes-base.merge",
       "typeVersion": 3.2,
       "position": [
-        1088,
-        -192
+        4416,
+        448
       ],
       "id": "ee2e7345-4ed4-4fc8-8c7a-7ed180c48857",
       "name": "Merge1"
@@ -504,13 +505,15 @@
     },
     {
       "parameters": {
-        "options": {}
+        "options": {
+          "reset": "={{ $json.is_first2 }}"
+        }
       },
       "type": "n8n-nodes-base.splitInBatches",
       "typeVersion": 3,
       "position": [
-        1536,
-        -192
+        4880,
+        624
       ],
       "id": "697b5b09-aa0c-45a4-b943-7f74d7e58571",
       "name": "Loop Over Items"
@@ -526,8 +529,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        1808,
-        -752
+        800,
+        32
       ],
       "id": "9a135ac1-a5e8-4c5f-a298-c47977d7b6ef",
       "name": "Mark_workflow_completed",
@@ -830,7 +833,7 @@
     },
     {
       "parameters": {
-        "jsCode": "// 1) Читаем строку JSON из указанного поля\nlet raw = $input.first().json?.output?.[1]?.content?.[0]?.text;\n\n// Минимальная чистка и парсинг\nfunction stripCodeFences(s) {\n  if (typeof s !== 'string') return s;\n  let t = s.trim();\n  if (t.startsWith('```')) t = t.replace(/^```[a-zA-Z]*\\n?/, '').replace(/```$/, '').trim();\n  return t;\n}\nfunction parseJson(s) {\n  const t = stripCodeFences(String(s ?? ''));\n  try { return JSON.parse(t); } catch { return null; }\n}\n\nconst obj = parseJson(raw);\nif (!obj || !Array.isArray(obj.ad_texts)) {\n  return [{ json: { Items: [], ItemsbyId: {}, note: 'ad_texts not found' } }];\n}\n\nconst itemsById = $('keywords and headers').last().json?.ItemsbyId ?? {};\n\n// 3) Собираем выход\nconst Items = [];\nfor (const h of obj.ad_texts) {\n  if (!h || typeof h !== 'object') continue;\n\n  const id = String(h.id ?? '');\n  const ad_text = String(h.ad_text ?? '');\n  const ad_header = String(h.ad_header ?? '');\n\n  if (!id || !ad_text) continue;\n  \n  Items.push({ ad_header, ad_text, id });\n}\n\n// 4) Индекс по id -> объект\nconst ItemsbyId = Object.fromEntries(Items.map(o => [o.id, o]));\n\n// 5) Возврат\nreturn [{\n  json: {\n    Items,\n    ItemsbyId\n  }\n}];"
+        "jsCode": "// 1) Читаем строку JSON из указанного поля\nlet raw = $input.first().json?.output?.[1]?.content?.[0]?.text;\n\n// Минимальная чистка и парсинг\nfunction stripCodeFences(s) {\n  if (typeof s !== 'string') return s;\n  let t = s.trim();\n  if (t.startsWith('```')) t = t.replace(/^```[a-zA-Z]*\\n?/, '').replace(/```$/, '').trim();\n  return t;\n}\nfunction parseJson(s) {\n  const t = stripCodeFences(String(s ?? ''));\n  try { return JSON.parse(t); } catch { return null; }\n}\n\nconst obj = parseJson(raw);\nif (!obj || !Array.isArray(obj.ad_texts)) {\n  return [{ json: { Items: [], ItemsbyId: {}, note: 'ad_texts not found' } }];\n}\n\nconst itemsById = $('Slice  into batches strings').last().json?.ItemsbyId ?? {};\n\n// 3) Собираем выход\nconst Items = [];\nconst Itemsext = [];\nfor (const h of obj.ad_texts) {\n  if (!h || typeof h !== 'object') continue;\n\n  const id = String(h.id ?? '');\n  const ad_text = String(h.ad_text ?? '');\n  const ad_header = String(h.ad_header ?? '');\n  const length = itemsById[id].length;\n  if (!id || !ad_text) continue;\n  \n  Items.push({ ad_header, ad_text, id });\n  Itemsext.push({ ad_header, ad_text, id,length});\n}\n\n// 4) Индекс по id -> объект\nconst ItemsbyId = Object.fromEntries(Itemsext.map(o => [o.id, o]));\n\n// 5) Возврат\nreturn [{\n  json: {\n    Items,\n    ItemsbyId\n  }\n}];"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -902,6 +905,54 @@
       ],
       "id": "ecf45e08-fd8f-470a-aee9-bf4ed72fdd59",
       "name": "Code2"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "ebafa31d-edf7-41c0-a06e-e884ad9595ea",
+              "name": "is_first2",
+              "value": "=true",
+              "type": "boolean"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        4736,
+        464
+      ],
+      "id": "d29cf49b-7d30-4446-bb31-419ff4d0bd74",
+      "name": "set first_item"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "ebafa31d-edf7-41c0-a06e-e884ad9595ea",
+              "name": "is_first2",
+              "value": "=false",
+              "type": "boolean"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        5120,
+        720
+      ],
+      "id": "9052e5e1-d94e-4dbb-a48f-1941c0bdedf4",
+      "name": "reset first_item1"
     }
   ],
   "connections": {
@@ -1188,10 +1239,16 @@
     },
     "Loop Over Items": {
       "main": [
-        [],
         [
           {
-            "node": "Normalize texts",
+            "node": "Loop Over Items2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "reset first_item1",
             "type": "main",
             "index": 0
           }
@@ -1202,7 +1259,7 @@
       "main": [
         [
           {
-            "node": "Loop Over Items",
+            "node": "set first_item",
             "type": "main",
             "index": 0
           }
@@ -1233,7 +1290,13 @@
     },
     "Loop Over Items1": {
       "main": [
-        [],
+        [
+          {
+            "node": "Mark_workflow_completed",
+            "type": "main",
+            "index": 0
+          }
+        ],
         [
           {
             "node": "save description",
@@ -1415,6 +1478,39 @@
           }
         ]
       ]
+    },
+    "HTTP Request2": {
+      "main": [
+        [
+          {
+            "node": "update calls counters2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "set first_item": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "reset first_item1": {
+      "main": [
+        [
+          {
+            "node": "Normalize texts",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
@@ -1456,7 +1552,7 @@
       }
     ]
   },
-  "versionId": "9c9238f7-282b-46b1-9d97-5a2cdf217edf",
+  "versionId": "03f5528b-9970-451f-93a4-0f3b5bcc5445",
   "triggerCount": 0,
   "shared": [
     {
