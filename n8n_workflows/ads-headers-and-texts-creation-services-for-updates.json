@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-06T13:49:54.283Z",
+  "updatedAt": "2025-11-06T14:04:20.851Z",
   "createdAt": "2025-09-28T11:31:13.045Z",
   "id": "lBAh8kjoXRX0aGUF",
   "name": "ADS headers and texts creation services for updates",
@@ -423,203 +423,6 @@
       ],
       "id": "5bf259e9-7170-460e-ba0b-ae8e1c3475e6",
       "name": "Set prompt2"
-    },
-    {
-      "parameters": {
-        "schema": {
-          "__rl": true,
-          "mode": "list",
-          "value": "public"
-        },
-        "table": {
-          "__rl": true,
-          "value": "current_ads_list",
-          "mode": "list",
-          "cachedResultName": "current_ads_list"
-        },
-        "columns": {
-          "mappingMode": "defineBelow",
-          "value": {
-            "ad_header": "={{ $('Loop Over Items2').last().json.ad_header }}",
-            "ad_text": "={{ $('Loop Over Items2').last().json.ad_text }}",
-            "ad_url": "={{$('Loop Over Items2').last().json.ad_url + '?utm_source=yandex&utm_medium=cpc&utm_campaign={campaign_id}&utm_content={ad_id}&utm_term={keyword}.{device_type}.{region_name}&block={position_type}.{position}.{source}'}}",
-            "company_id": "={{ $('Loop Over Items').last().json.ItemsbyId[$('Loop Over Items2').last().json.list_id].company_id }}",
-            "group_name": "={{ $('Loop Over Items2').last().json.ad_header }}",
-            "service_id": "={{ $('Loop Over Items').last().json.ItemsbyId[$('Loop Over Items2').last().json.list_id].service_id }}",
-            "report_id": "={{ $('Loop Over Items').last().json.ItemsbyId[$('Loop Over Items2').last().json.list_id].report_id }}",
-            "key_word": "={{ $('Loop Over Items2').last().json.key_word }}",
-            "campaign_id": "={{ $('Loop Over Items').last().json.ItemsbyId[$('Loop Over Items2').last().json.list_id].campaign_id }}",
-            "list_id": "={{ $('Loop Over Items2').last().json.list_id}}"
-          },
-          "matchingColumns": [],
-          "schema": [
-            {
-              "id": "ad_id",
-              "displayName": "ad_id",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "number",
-              "canBeUsedToMatch": true,
-              "removed": true
-            },
-            {
-              "id": "group_name",
-              "displayName": "group_name",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true,
-              "removed": false
-            },
-            {
-              "id": "key_word",
-              "displayName": "key_word",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true,
-              "removed": false
-            },
-            {
-              "id": "ad_header",
-              "displayName": "ad_header",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true
-            },
-            {
-              "id": "ad_text",
-              "displayName": "ad_text",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true
-            },
-            {
-              "id": "group_id",
-              "displayName": "group_id",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "number",
-              "canBeUsedToMatch": true,
-              "removed": true
-            },
-            {
-              "id": "ad_url",
-              "displayName": "ad_url",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true
-            },
-            {
-              "id": "company_id",
-              "displayName": "company_id",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "number",
-              "canBeUsedToMatch": true,
-              "removed": false
-            },
-            {
-              "id": "service_id",
-              "displayName": "service_id",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "number",
-              "canBeUsedToMatch": true,
-              "removed": false
-            },
-            {
-              "id": "report_id",
-              "displayName": "report_id",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "number",
-              "canBeUsedToMatch": true,
-              "removed": false
-            },
-            {
-              "id": "need_check",
-              "displayName": "need_check",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "boolean",
-              "canBeUsedToMatch": true,
-              "removed": true
-            },
-            {
-              "id": "resolution",
-              "displayName": "resolution",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true,
-              "removed": true
-            },
-            {
-              "id": "update_required",
-              "displayName": "update_required",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "boolean",
-              "canBeUsedToMatch": true,
-              "removed": true
-            },
-            {
-              "id": "campaign_id",
-              "displayName": "campaign_id",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "number",
-              "canBeUsedToMatch": true,
-              "removed": false
-            },
-            {
-              "id": "list_id",
-              "displayName": "list_id",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "number",
-              "canBeUsedToMatch": true,
-              "removed": false
-            }
-          ],
-          "attemptToConvertTypes": false,
-          "convertFieldsToString": false
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.postgres",
-      "typeVersion": 2.6,
-      "position": [
-        6656,
-        -16
-      ],
-      "id": "8c922024-79bf-4e07-ace4-89f6ba09d54e",
-      "name": "Insert rows in a table",
-      "credentials": {
-        "postgres": {
-          "id": "Hx2VFmUi5WO2K4QX",
-          "name": "Postgres account 2"
-        }
-      }
     },
     {
       "parameters": {
@@ -1138,7 +941,7 @@
     },
     {
       "parameters": {
-        "jsCode": "// 1) Берём строку JSON из указанного поля\nlet raw = $input.first().json?.output?.[1]?.content?.[0]?.text;\n\n// Удаляем ```...``` и парсим JSON\nfunction stripCodeFences(s) {\n  if (typeof s !== 'string') return s;\n  let t = s.trim();\n  if (t.startsWith('```')) t = t.replace(/^```[a-zA-Z]*\\n?/, '').replace(/```$/, '').trim();\n  return t;\n}\nfunction safeParseJSON(x) {\n  if (x == null) return null;\n  if (typeof x === 'object') return x;\n  const s = stripCodeFences(String(x));\n  try { return JSON.parse(s); } catch {\n    const m = s.match(/{[\\s\\S]*}/);\n    if (m) { try { return JSON.parse(m[0]); } catch {} }\n    return null;\n  }\n}\n\nconst obj = safeParseJSON(raw);\n\n// === ГЛАВНОЕ ИЗМЕНЕНИЕ: используем url_strings вместо phrases ===\nif (!obj || !Array.isArray(obj.url_strings)) {\n  return [{ json: { note: 'url_strings not found', Items: [], count: 0 } }];\n}\n\n// 2) Источник мапы по id из другой ноды (если есть)\nconst itemsById = $('keywords headers and texts').last().json?.ItemsbyId ?? {};\n\n// 3) Формируем выходные элементы\nconst out = [];\nfor (const it of obj.url_strings) {\n  if (!it || typeof it !== 'object') continue;\n\n  const ad_url  = typeof it.url_string === 'string' && it.url_string.trim() ? it.url_string.trim() : null;\n  const ad_id = typeof it.id === 'string' && it.id.trim() ? it.id.trim() : null;\n  if (!ad_url || !list_id) continue;\n\n  const src = itemsById[list_id] ?? {};\n  const ad_header = src?.header ?? '';\n  const ad_text   = src?.ad_text ?? '';\n  const key_word  = src?.phrase ?? '';\n\n  out.push({\n    json: { ad_id, ad_url, ad_header, ad_text, key_word }\n  });\n}\n\nreturn out;"
+        "jsCode": "// 1) Берём строку JSON из указанного поля\nlet raw = $input.first().json?.output?.[1]?.content?.[0]?.text;\n\n// Удаляем ```...``` и парсим JSON\nfunction stripCodeFences(s) {\n  if (typeof s !== 'string') return s;\n  let t = s.trim();\n  if (t.startsWith('```')) t = t.replace(/^```[a-zA-Z]*\\n?/, '').replace(/```$/, '').trim();\n  return t;\n}\nfunction safeParseJSON(x) {\n  if (x == null) return null;\n  if (typeof x === 'object') return x;\n  const s = stripCodeFences(String(x));\n  try { return JSON.parse(s); } catch {\n    const m = s.match(/{[\\s\\S]*}/);\n    if (m) { try { return JSON.parse(m[0]); } catch {} }\n    return null;\n  }\n}\n\nconst obj = safeParseJSON(raw);\n\n// === ГЛАВНОЕ ИЗМЕНЕНИЕ: используем url_strings вместо phrases ===\nif (!obj || !Array.isArray(obj.url_strings)) {\n  return [{ json: { note: 'url_strings not found', Items: [], count: 0 } }];\n}\n\n// 2) Источник мапы по id из другой ноды (если есть)\nconst itemsById = $('keywords headers and texts').last().json?.ItemsbyId ?? {};\n\n// 3) Формируем выходные элементы\nconst out = [];\nfor (const it of obj.url_strings) {\n  if (!it || typeof it !== 'object') continue;\n\n  const ad_url  = typeof it.url_string === 'string' && it.url_string.trim() ? it.url_string.trim() : null;\n  const ad_id = typeof it.id === 'string' && it.id.trim() ? it.id.trim() : null;\n  if (!ad_url || !ad_id) continue;\n\n  const src = itemsById[ad_id] ?? {};\n  const ad_header = src?.header ?? '';\n  const ad_text   = src?.ad_text ?? '';\n  const key_word  = src?.phrase ?? '';\n\n  out.push({\n    json: { ad_id, ad_url, ad_header, ad_text, key_word }\n  });\n}\n\nreturn out;"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -1315,7 +1118,7 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "update ads_list set ad_header=$2, ad_text=$3, ad_url=$4 where ad_id=$1",
+        "query": "update ads_list set ad_header=$2, ad_text=$3, ad_url=$4,add_to_hi_demand=false where ad_id=$1",
         "options": {
           "queryReplacement": "={{ $('Loop Over Items2').last().json.ad_id}},{{ $('Loop Over Items2').last().json.ad_header }},{{ $('Loop Over Items2').last().json.ad_text }},{{ $('Loop Over Items2').last().json.ad_url }}"
         }
@@ -1323,7 +1126,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        6448,
+        6544,
         -16
       ],
       "id": "edffbd8e-9c84-4ae5-99d4-8924088fe9c6",
@@ -1558,17 +1361,6 @@
         [
           {
             "node": "update calls counters2",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Insert rows in a table": {
-      "main": [
-        [
-          {
-            "node": "Get current step saved",
             "type": "main",
             "index": 0
           }
@@ -1947,7 +1739,7 @@
       "main": [
         [
           {
-            "node": "Insert rows in a table",
+            "node": "Get current step saved",
             "type": "main",
             "index": 0
           }
@@ -1994,7 +1786,7 @@
       }
     ]
   },
-  "versionId": "97d2dc03-ca48-4617-b7ec-a1e6bf126882",
+  "versionId": "cdeb6c37-5ed8-4d62-8cb8-f153430e76ab",
   "triggerCount": 0,
   "shared": [
     {
