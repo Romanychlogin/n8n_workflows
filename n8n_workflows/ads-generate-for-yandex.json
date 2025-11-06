@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-06T10:42:45.913Z",
+  "updatedAt": "2025-11-06T11:26:24.379Z",
   "createdAt": "2025-11-05T16:49:07.256Z",
   "id": "GE66xiztgKP0D3Za",
   "name": "ADS generate for yandex",
@@ -111,7 +111,7 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "WITH w AS (\n  SELECT COALESCE(count_views,0) + COALESCE(count_convetions,0)*$3 AS weight\n  FROM public.ads_list where company_id=$1\n)\nSELECT COALESCE(\n  (SELECT weight FROM w ORDER BY weight DESC NULLS LAST OFFSET $2 LIMIT 1),\n  (SELECT MIN(weight) FROM w)  -- если строк < 450, берём минимальный вес в таблице\n) AS threshold_weight;",
+        "query": "WITH w AS (\n  SELECT COALESCE(count_views,0) + COALESCE(count_convetions,0)*$3 AS weight\n  FROM public.ads_list where company_id=$1\n)\nSELECT COALESCE(\n  (SELECT weight FROM w ORDER BY weight DESC NULLS LAST OFFSET $2 LIMIT 1)+1,\n  (SELECT MIN(weight) FROM w)  -- если строк < 450, берём минимальный вес в таблице\n) AS threshold_weight;",
         "options": {
           "queryReplacement": "={{ $('When Executed by Another Workflow').last().json.company_id }},{{ $json.min_limit }},{{ $json.conversions_weight }}"
         }
@@ -134,7 +134,7 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "WITH w AS (\n  SELECT COALESCE(count_views,0) + COALESCE(count_convetions,0)*$3 AS weight\n  FROM public.ads_list where company_id=$1 and is_own_brand=true\n)\nSELECT COALESCE(\n  (SELECT weight FROM w ORDER BY weight DESC NULLS LAST OFFSET $2 LIMIT 1),\n  (SELECT MIN(weight) FROM w)  -- если строк < 450, берём минимальный вес в таблице\n) AS threshold_weight;",
+        "query": "WITH w AS (\n  SELECT COALESCE(count_views,0) + COALESCE(count_convetions,0)*$3 AS weight\n  FROM public.ads_list where company_id=$1 and is_own_brand=true\n)\nSELECT COALESCE(\n  (SELECT weight FROM w ORDER BY weight DESC NULLS LAST OFFSET $2 LIMIT 1)+1,\n  (SELECT MIN(weight) FROM w)  -- если строк < 450, берём минимальный вес в таблице\n) AS threshold_weight;",
         "options": {
           "queryReplacement": "={{ $('When Executed by Another Workflow').last().json.company_id }},{{ $('Set variables').item.json.brand_limit }},{{ $('Set variables').item.json.conversions_weight }}"
         }
@@ -170,6 +170,7 @@
       ],
       "id": "7fcc1086-215d-442d-854c-f357b2f63ebc",
       "name": "Mark to move to high demand",
+      "executeOnce": true,
       "credentials": {
         "postgres": {
           "id": "Hx2VFmUi5WO2K4QX",
@@ -193,6 +194,7 @@
       ],
       "id": "3adfeff7-cae1-4aaf-8bd3-8a5f301811bb",
       "name": "Mark to remove from high demand",
+      "executeOnce": true,
       "credentials": {
         "postgres": {
           "id": "Hx2VFmUi5WO2K4QX",
@@ -216,6 +218,8 @@
       ],
       "id": "ecdaeece-cfb3-4b3a-b278-6eaf22de700a",
       "name": "get to remove",
+      "alwaysOutputData": true,
+      "executeOnce": true,
       "credentials": {
         "postgres": {
           "id": "Hx2VFmUi5WO2K4QX",
@@ -459,6 +463,7 @@
       ],
       "id": "996b10c9-1997-4fd0-a758-4f1b623cabe4",
       "name": "Mark to move to high demand brand",
+      "executeOnce": true,
       "credentials": {
         "postgres": {
           "id": "Hx2VFmUi5WO2K4QX",
@@ -482,6 +487,7 @@
       ],
       "id": "19f9fcab-bd62-4789-848c-4689749ecadf",
       "name": "Mark to remove from high demand brand",
+      "executeOnce": true,
       "credentials": {
         "postgres": {
           "id": "Hx2VFmUi5WO2K4QX",
@@ -663,6 +669,40 @@
           "name": "Postgres account 2"
         }
       }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "2695d6f1-5c0e-414c-aa90-049fa9a2b691",
+              "leftValue": "={{ $input.first().json }}",
+              "rightValue": "",
+              "operator": {
+                "type": "object",
+                "operation": "empty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -1840,
+        -144
+      ],
+      "id": "b9962ed8-a1cb-4098-85c4-dd7ac48f520c",
+      "name": "If nothing to remove"
     }
   ],
   "connections": {
@@ -747,7 +787,7 @@
       "main": [
         [
           {
-            "node": "Loop Over Items1",
+            "node": "If nothing to remove",
             "type": "main",
             "index": 0
           }
@@ -975,6 +1015,24 @@
           }
         ]
       ]
+    },
+    "If nothing to remove": {
+      "main": [
+        [
+          {
+            "node": "get low demand to add",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Loop Over Items1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
@@ -1017,7 +1075,7 @@
       }
     ]
   },
-  "versionId": "d4c6f6ce-8eb3-41a2-a78c-b13464c2d0fc",
+  "versionId": "98a5ef32-3f87-4ce5-ad45-95a98b2f3813",
   "triggerCount": 0,
   "shared": [
     {
