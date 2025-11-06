@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-06T13:57:07.105Z",
+  "updatedAt": "2025-11-06T14:18:37.503Z",
   "createdAt": "2025-11-06T13:56:02.796Z",
   "id": "Gi9vc9YfTegfpMjd",
   "name": "Create ads for low frequency key words",
@@ -15,8 +15,8 @@
       "type": "n8n-nodes-base.splitInBatches",
       "typeVersion": 3,
       "position": [
-        1920,
-        -128
+        432,
+        -192
       ],
       "id": "df2dd3a9-48bb-430a-9ad1-ccbfbd20403c",
       "name": "Loop Over Items"
@@ -90,7 +90,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        2560,
+        2768,
         -448
       ],
       "id": "2c64eacc-f622-4651-8595-53a7ac92d2ee",
@@ -110,7 +110,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        2768,
+        2976,
         -464
       ],
       "id": "8cee3d99-94c8-431c-b1c0-fe2ae7b349d6",
@@ -175,24 +175,11 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        2368,
+        2576,
         -432
       ],
       "id": "23348f33-3462-40e4-8980-3a0b494cc219",
       "name": "Set prompt"
-    },
-    {
-      "parameters": {
-        "jsCode": "// Function-Node (Run Once)\nconst workflowData = $getWorkflowStaticData('global');\nworkflowData.company_description = $json.company_name + ' ' + $json.service_name+ ' ' + $json.service_description;\nworkflowData.company_description_with_url = $json.company_name + ' ' + $json.service_name+ ' ' + $json.service_description + ' сервис доступен по адресу: ' + $json.service_url;\nreturn items;"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        576,
-        -240
-      ],
-      "id": "9b2358ab-645e-4aff-9f5d-b7e0791553bd",
-      "name": "save description"
     },
     {
       "parameters": {
@@ -201,7 +188,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        3632,
+        3840,
         -528
       ],
       "id": "00281bd6-77ed-4fac-831c-b56f643c874d",
@@ -221,7 +208,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        3808,
+        4016,
         -528
       ],
       "id": "b398ad3d-0318-4273-b816-b511788b64be",
@@ -241,7 +228,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        3392,
+        3600,
         -512
       ],
       "id": "5d9a0401-6ca0-4bf8-bfeb-63d2de04e307",
@@ -254,7 +241,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        4480,
+        4688,
         -544
       ],
       "id": "acd6096c-d5cd-4cc4-9acc-37f1429a8910",
@@ -274,7 +261,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        4768,
+        4976,
         -560
       ],
       "id": "c8d1639b-e0b7-442e-bc38-3d74e89564c4",
@@ -294,7 +281,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        4240,
+        4448,
         -528
       ],
       "id": "4f7296fe-a718-4255-9a6b-af11d0f7b6c5",
@@ -485,7 +472,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        6656,
+        6864,
         -16
       ],
       "id": "29600ddd-69a9-45a3-9bfd-0535922b3983",
@@ -496,90 +483,6 @@
           "name": "Postgres account 2"
         }
       }
-    },
-    {
-      "parameters": {
-        "operation": "executeQuery",
-        "query": "select cs.service_name,c.company_name,cs.service_description,cs.service_url,cs.service_id from companies c, company_services cs where c.company_id=cs.company_id and c.company_id=$1",
-        "options": {
-          "queryReplacement": "{{ $('set variables').item.json.company_id }}"
-        }
-      },
-      "type": "n8n-nodes-base.postgres",
-      "typeVersion": 2.6,
-      "position": [
-        -384,
-        176
-      ],
-      "id": "84048237-b6d7-4526-9151-929b88ef54a8",
-      "name": "Services list",
-      "credentials": {
-        "postgres": {
-          "id": "Hx2VFmUi5WO2K4QX",
-          "name": "Postgres account 2"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "options": {}
-      },
-      "type": "n8n-nodes-base.splitInBatches",
-      "typeVersion": 3,
-      "position": [
-        208,
-        -256
-      ],
-      "id": "35aa2cd7-31de-4a5f-a8c9-ac9985620f0b",
-      "name": "Loop Over Items1"
-    },
-    {
-      "parameters": {
-        "assignments": {
-          "assignments": [
-            {
-              "id": "ebafa31d-edf7-41c0-a06e-e884ad9595ea",
-              "name": "is_first",
-              "value": "=true",
-              "type": "boolean"
-            }
-          ]
-        },
-        "includeOtherFields": true,
-        "options": {}
-      },
-      "type": "n8n-nodes-base.set",
-      "typeVersion": 3.4,
-      "position": [
-        1776,
-        -256
-      ],
-      "id": "7979f7bc-b96a-48b9-a5c9-e252a4da6d05",
-      "name": "set first_item1"
-    },
-    {
-      "parameters": {
-        "assignments": {
-          "assignments": [
-            {
-              "id": "ebafa31d-edf7-41c0-a06e-e884ad9595ea",
-              "name": "is_first",
-              "value": "=false",
-              "type": "boolean"
-            }
-          ]
-        },
-        "includeOtherFields": true,
-        "options": {}
-      },
-      "type": "n8n-nodes-base.set",
-      "typeVersion": 3.4,
-      "position": [
-        2064,
-        -320
-      ],
-      "id": "b27a16c6-0021-49a8-817d-05b11859a2e3",
-      "name": "reset first_item"
     },
     {
       "parameters": {
@@ -596,41 +499,6 @@
     },
     {
       "parameters": {
-        "assignments": {
-          "assignments": [
-            {
-              "id": "f74ac992-90a4-4403-a75e-17656de76902",
-              "name": "company_id",
-              "value": "={{ $json.company_id }}",
-              "type": "number"
-            },
-            {
-              "id": "172a851e-fdc7-4f3c-b095-88687e8a392a",
-              "name": "threshhold",
-              "value": "={{ $json.threshhold }}",
-              "type": "number"
-            },
-            {
-              "id": "8e206de1-1acb-41d4-a215-0c0e11fd97b0",
-              "name": "import_id",
-              "value": "={{ $json.import_id }}",
-              "type": "number"
-            }
-          ]
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.set",
-      "typeVersion": 3.4,
-      "position": [
-        -1088,
-        -736
-      ],
-      "id": "01ad38f6-a700-4fc7-b714-e09a1cf5d41b",
-      "name": "set variables"
-    },
-    {
-      "parameters": {
         "operation": "executeQuery",
         "query": "INSERT INTO business_processes_states (business_process_id, company_id,n8n_workflow_execution_id,n8n_workflow_root_execution_id, started)\nSELECT MAX(business_process_id), $2,$3,$4, NOW()\nFROM public.business_processes\nWHERE n8n_process_name = $1;",
         "options": {
@@ -640,7 +508,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        -864,
+        -1104,
         -736
       ],
       "id": "51966fa2-8af0-4bb5-8d89-af02bcf4f720",
@@ -650,21 +518,22 @@
           "id": "4YkdFJcdTgzo9hkz",
           "name": "PGvector"
         }
-      }
+      },
+      "disabled": true
     },
     {
       "parameters": {
         "operation": "executeQuery",
         "query": "update business_processes_states set steps_total=$2 where  n8n_workflow_execution_id=$1",
         "options": {
-          "queryReplacement": "=[{{$execution.id}},{{$json.total}}]"
+          "queryReplacement": "=[{{$execution.id}},{{$input.all().length}}]"
         }
       },
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        -976,
-        272
+        -624,
+        -16
       ],
       "id": "0beb3433-0c7e-4efd-be05-cf1f454546e3",
       "name": "Mark_workflow_total_steps",
@@ -683,8 +552,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -784,
-        288
+        -464,
+        -32
       ],
       "id": "38f6cfd5-f8d7-4e04-887b-6fee63de6aa6",
       "name": "Init total counter"
@@ -700,8 +569,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        720,
-        -768
+        640,
+        -560
       ],
       "id": "4966832b-593e-42b9-9c5d-29fb6c03aa52",
       "name": "Mark_workflow_completed",
@@ -712,40 +581,6 @@
           "name": "PGvector"
         }
       }
-    },
-    {
-      "parameters": {
-        "conditions": {
-          "options": {
-            "caseSensitive": true,
-            "leftValue": "",
-            "typeValidation": "strict",
-            "version": 2
-          },
-          "conditions": [
-            {
-              "id": "b13ec6fc-ce2d-48a1-a4c7-6ded529707ec",
-              "leftValue": "={{$input.first().json.success}}",
-              "rightValue": "",
-              "operator": {
-                "type": "boolean",
-                "operation": "true",
-                "singleValue": true
-              }
-            }
-          ],
-          "combinator": "and"
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.if",
-      "typeVersion": 2.2,
-      "position": [
-        880,
-        -240
-      ],
-      "id": "33baa5ae-740e-4b72-becc-0d08edf89962",
-      "name": "If empty"
     },
     {
       "parameters": {
@@ -774,7 +609,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        7536,
+        7744,
         -48
       ],
       "id": "179bea22-151b-42a0-9471-91289a514fba",
@@ -787,7 +622,7 @@
       "type": "n8n-nodes-base.stopAndError",
       "typeVersion": 1,
       "position": [
-        7728,
+        7936,
         -48
       ],
       "id": "bf8d0f6a-6ca1-4783-b066-f56863a33416",
@@ -821,7 +656,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        7312,
+        7520,
         -32
       ],
       "id": "219d6a30-22af-4ba5-a670-0606ee0d0dcd",
@@ -835,142 +670,12 @@
     },
     {
       "parameters": {
-        "content": "обновить все запоосы, добавить report id"
-      },
-      "type": "n8n-nodes-base.stickyNote",
-      "typeVersion": 1,
-      "position": [
-        -576,
-        464
-      ],
-      "id": "2a503c41-5df6-4125-863f-359273c215b2",
-      "name": "Sticky Note"
-    },
-    {
-      "parameters": {
-        "content": "key word обрезать до 7 слов!!!!!!",
-        "height": 176
-      },
-      "type": "n8n-nodes-base.stickyNote",
-      "typeVersion": 1,
-      "position": [
-        1120,
-        -464
-      ],
-      "id": "f02d7d9d-b9db-4694-89e1-e9f908bd0e7e",
-      "name": "Sticky Note4"
-    },
-    {
-      "parameters": {
-        "mode": "chooseBranch",
-        "numberInputs": 3
-      },
-      "type": "n8n-nodes-base.merge",
-      "typeVersion": 3.2,
-      "position": [
-        1424,
-        -256
-      ],
-      "id": "3d90f1bd-bbe7-49c4-b838-23ab46468201",
-      "name": "Merge"
-    },
-    {
-      "parameters": {
-        "operation": "executeQuery",
-        "query": "select * from service_urls where service_id=$1",
-        "options": {
-          "queryReplacement": "={{ $json.service_id }}"
-        }
-      },
-      "type": "n8n-nodes-base.postgres",
-      "typeVersion": 2.6,
-      "position": [
-        1088,
-        -144
-      ],
-      "id": "85c57a62-35a0-431f-b7ec-7da9c5629be5",
-      "name": "get service urls",
-      "executeOnce": true,
-      "credentials": {
-        "postgres": {
-          "id": "Hx2VFmUi5WO2K4QX",
-          "name": "Postgres account 2"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "jsCode": "\n\n// 1) Собираем и чистим массив URL'ов\nlet urls = [];\nfor (const { json } of $input.all()) {\n  const v = json?.service_url;\n  if (v == null) continue;\n  const s = String(v).trim();\n  if (s) urls.push(s);\n}\n\n\n\n\n\n// 4) Возвращаем и массив, и строку\nreturn [{ json: { urls,  count: urls.length } }];"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        1248,
-        -144
-      ],
-      "id": "000c6aea-7bef-4779-a91a-01a2d84e1d16",
-      "name": "string for service urls"
-    },
-    {
-      "parameters": {
-        "content": "потом используем для ограничения structured output AI, чтобы исключить глюки",
-        "height": 384,
-        "width": 352
-      },
-      "type": "n8n-nodes-base.stickyNote",
-      "typeVersion": 1,
-      "position": [
-        608,
-        -416
-      ],
-      "id": "356d7a5e-8ec3-4553-85d5-c62326acc719",
-      "name": "Sticky Note5"
-    },
-    {
-      "parameters": {
-        "jsCode": "// Сколько входящих элементов агрегировать в одном выходящем (в пределах одного service_name)\nconst BATCH_SIZE = 100;\n\nfunction toIdString(v) {\n  if (typeof v === 'bigint') return v.toString();\n  if (typeof v === 'number') return Number.isFinite(v) ? Math.trunc(v).toString() : '';\n  if (typeof v === 'string') return v;\n  return v != null && v.toString ? v.toString() : '';\n}\n\nfunction toStr(v) {\n  return v == null ? '' : String(v);\n}\n\nconst inputItems = $input.all();\nconst out = [];\n\nlet i = 0;\nwhile (i < inputItems.length) {\n  // Старт новой группы по service_name\n  const first = inputItems[i]?.json ?? {};\n  const groupService = toStr(first.service_name);\n\n  // Собираем все подряд идущие элементы с тем же service_name\n  const group = [];\n  while (i < inputItems.length) {\n    const cur = inputItems[i]?.json ?? {};\n \n\n    if (toStr(cur.service_name) !== groupService) break;\n    group.push(cur);\n    i++;\n  }\n\n  // Метаданные сервиса (одинаковые в группе)\n  const svcCompany       = toStr(first.company_name);\n  const svcName          = groupService;\n  const svcDescription   = toStr(first.service_description);\n\n  // Режем группу на пачки по BATCH_SIZE\n  for (let start = 0; start < group.length; start += BATCH_SIZE) {\n    const chunk = group.slice(start, start + BATCH_SIZE);\n\n  \n  \n\n    \n    const items = chunk.map(j => ({\n      id: toIdString(j.ad_id),           // берем content_id => строка\n      phrase: toStr(j.key_word)\n    }));\n    const items_ext = chunk.map(j => ({\n      id: toIdString(j.ad_id),           // берем content_id => строка\n      phrase: toStr(j.key_word),\n      service_id:toIdString(j.service_id),\n      company_id:toIdString(j.company_id),\n      campaign_id:toIdString(j.campaign_id)\n    }));\n    const ItemsbyId = Object.fromEntries(\n    items_ext.map(o => [o.id, o]) \n    );\n    out.push({\n      json: {\n        \n        items,\n        ItemsbyId \n      }\n    });\n  }\n}\n\nreturn out;\n\n\n\n\n"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        1600,
-        -272
-      ],
-      "id": "8f249d4c-1451-439d-8a75-e1d51198a40a",
-      "name": "Slice  into batches strings"
-    },
-    {
-      "parameters": {
-        "operation": "executeQuery",
-        "query": "select * from ads_list where company_id=$1 and service_id=$2 and add_to_hi_demand=true",
-        "options": {
-          "queryReplacement": "=[{{ $('set variables').item.json.company_id }},{{ $json.service_id }}]"
-        }
-      },
-      "type": "n8n-nodes-base.postgres",
-      "typeVersion": 2.6,
-      "position": [
-        736,
-        -240
-      ],
-      "id": "9f216357-011f-4214-bf92-140a3afc004e",
-      "name": "Get report items to add",
-      "alwaysOutputData": true,
-      "credentials": {
-        "postgres": {
-          "id": "Hx2VFmUi5WO2K4QX",
-          "name": "Postgres account 2"
-        }
-      }
-    },
-    {
-      "parameters": {
         "jsCode": "// 1) Читаем строку JSON из указанного поля\nlet raw = $input.first().json?.output?.[1]?.content?.[0]?.text;\n\n// Минимальная чистка и парсинг\nfunction stripCodeFences(s) {\n  if (typeof s !== 'string') return s;\n  let t = s.trim();\n  if (t.startsWith('```')) t = t.replace(/^```[a-zA-Z]*\\n?/, '').replace(/```$/, '').trim();\n  return t;\n}\nfunction parseJson(s) {\n  const t = stripCodeFences(String(s ?? ''));\n  try { return JSON.parse(t); } catch { return null; }\n}\n\nconst obj = parseJson(raw);\nif (!obj || !Array.isArray(obj.headers)) {\n  return [{ json: { Items: [], ItemsbyId: {} } }];\n}\n\n// 2) Прямой доступ к словарю ItemsbyId из указанной ноды\nconst sourceItemsById = $('Loop Over Items').last().json?.ItemsbyId ?? {};\n\n// 3) Собираем массив элементов { phrase, header, id }\nconst Items = [];\nfor (const h of obj.headers) {\n  if (!h || typeof h !== 'object') continue;\n  const id = String(h.id ?? '');\n  const header = String(h.header ?? '');\n  if (!id || !header) continue;\n\n  const phrase = String(sourceItemsById[id]?.phrase ?? '');\n  Items.push({ phrase, header, id });\n}\n\n// 4) Строим словарь по id -> объект\nconst ItemsbyId = Object.fromEntries(\n  Items.map(it => [it.id, it])\n);\n\n// 5) Возвращаем один элемент с полями Items и ItemsbyId\nreturn [{\n  json: {\n    Items,\n    ItemsbyId\n  }\n}];"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        2976,
+        3184,
         -464
       ],
       "id": "fdadbe90-8133-48fc-a085-5f2cfcc3303b",
@@ -983,7 +688,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        4016,
+        4224,
         -528
       ],
       "id": "20e379fc-cbf0-4ae4-a226-e7cfd69791f7",
@@ -996,7 +701,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        5408,
+        5616,
         -528
       ],
       "id": "c0a693ec-01c7-46a8-ac00-4891bc754290",
@@ -1011,7 +716,7 @@
       "type": "n8n-nodes-base.splitInBatches",
       "typeVersion": 3,
       "position": [
-        5744,
+        5952,
         -144
       ],
       "id": "697b5b09-aa0c-45a4-b943-7f74d7e58571",
@@ -1035,7 +740,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        5584,
+        5792,
         -528
       ],
       "id": "393dd258-f3a5-46dd-b1cc-634440627ef8",
@@ -1059,7 +764,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        6032,
+        6240,
         -16
       ],
       "id": "5b4af80e-c353-4052-961a-e39a298a43d7",
@@ -1072,7 +777,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        6240,
+        6448,
         -16
       ],
       "id": "e056a163-6c38-4daa-a16f-3ef6bbe182fc",
@@ -1085,7 +790,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        6848,
+        7056,
         -16
       ],
       "id": "0534c795-db1f-46b1-8605-deb5f444f9ca",
@@ -1102,7 +807,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        7104,
+        7312,
         -32
       ],
       "id": "a55ae209-829e-443e-ae8c-f1c76173e9de",
@@ -1122,7 +827,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        4960,
+        5168,
         -528
       ],
       "id": "03fbdab5-5938-4029-a534-02c232fac050",
@@ -1139,7 +844,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        5104,
+        5312,
         -384
       ],
       "id": "9c54406b-b852-4dd0-91d2-6ae1b3aade58",
@@ -1159,7 +864,7 @@
       "type": "n8n-nodes-base.merge",
       "typeVersion": 3.2,
       "position": [
-        5232,
+        5440,
         -528
       ],
       "id": "12d4c6d4-16c7-4cbc-accb-a86a09e6fb3b",
@@ -1176,11 +881,47 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        6448,
+        6656,
         -16
       ],
       "id": "965e6e72-6047-431e-8122-429ce80ce6c9",
       "name": "update ads",
+      "credentials": {
+        "postgres": {
+          "id": "Hx2VFmUi5WO2K4QX",
+          "name": "Postgres account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Function-Node (Run Once)\nconst workflowData = $getWorkflowStaticData('global');\nworkflowData.company_description = items[0].json.company_description;\nreturn items;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -976,
+        -160
+      ],
+      "id": "18e8ee28-73f8-4553-aa7c-95ab3e5d424b",
+      "name": "Save company Description"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "select ag.* from ads_groups ag where company_id=$1 and is_own_brand=false and not exists \n(select 1 from ads_for_groups ads where ag.ads_group_id=ads.ads_group_id) order by key_words_length\n",
+        "options": {
+          "queryReplacement": "={{ $('When Executed by Another Workflow').item.json.company_id }}"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -768,
+        -160
+      ],
+      "id": "00856f50-b171-4b39-b608-f22a3ef744e8",
+      "name": "get groups without ads",
       "credentials": {
         "postgres": {
           "id": "Hx2VFmUi5WO2K4QX",
@@ -1199,11 +940,11 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        -544,
-        -432
+        -1184,
+        -160
       ],
       "id": "50562128-4d1f-4e86-a4c9-7ea756f0a68d",
-      "name": "Execute a SQL query",
+      "name": "get company data",
       "credentials": {
         "postgres": {
           "id": "Hx2VFmUi5WO2K4QX",
@@ -1213,16 +954,63 @@
     },
     {
       "parameters": {
-        "jsCode": "// Function-Node (Run Once)\nconst workflowData = $getWorkflowStaticData('global');\nworkflowData.company_description = items[0].json.company_description;\nreturn items;"
+        "mode": "chooseBranch"
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        -272,
+        -192
+      ],
+      "id": "f006260e-d8f7-411e-807c-e524cb575e7e",
+      "name": "Merge2"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "063ee3ba-bfb9-458f-bd25-477e56cdde6d",
+              "leftValue": "={{ $json.is_own_brand }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "false",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        704,
+        -208
+      ],
+      "id": "fe4fa45d-b56e-443c-bef2-71cc5e989a97",
+      "name": "If not branded"
+    },
+    {
+      "parameters": {
+        "jsCode": "const out = [];\nconst items =[];\nconst items_ext =[];\nfor (const item of $input.all()) {\n  items.push({id:item.json.ads_group_id,length:item.json.key_words_length})\n  \n}\n\nout.push({\n      json: {        \n        items \n      }\n    });\n\nreturn out;\n\n\n\n\n"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -368,
-        -432
+        -16,
+        -192
       ],
-      "id": "18e8ee28-73f8-4553-aa7c-95ab3e5d424b",
-      "name": "Save company Description"
+      "id": "04f3a71d-4a31-42da-9ed2-59b0393610b5",
+      "name": "Slice  into batches strings"
     }
   ],
   "connections": {
@@ -1230,14 +1018,14 @@
       "main": [
         [
           {
-            "node": "Loop Over Items1",
+            "node": "Mark_workflow_completed",
             "type": "main",
             "index": 0
           }
         ],
         [
           {
-            "node": "reset first_item",
+            "node": "If not branded",
             "type": "main",
             "index": 0
           }
@@ -1270,7 +1058,7 @@
       "main": [
         [
           {
-            "node": "Mark_workflow_total_steps",
+            "node": "get company data",
             "type": "main",
             "index": 0
           }
@@ -1293,17 +1081,6 @@
         [
           {
             "node": "Set API JSON",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "save description": {
-      "main": [
-        [
-          {
-            "node": "Get report items to add",
             "type": "main",
             "index": 0
           }
@@ -1398,69 +1175,7 @@
         ]
       ]
     },
-    "Services list": {
-      "main": [
-        [
-          {
-            "node": "Loop Over Items1",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Loop Over Items1": {
-      "main": [
-        [
-          {
-            "node": "Mark_workflow_completed",
-            "type": "main",
-            "index": 0
-          }
-        ],
-        [
-          {
-            "node": "save description",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "reset first_item": {
-      "main": [
-        [
-          {
-            "node": "Set prompt",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "set first_item1": {
-      "main": [
-        [
-          {
-            "node": "Loop Over Items",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "When Executed by Another Workflow": {
-      "main": [
-        [
-          {
-            "node": "set variables",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "set variables": {
       "main": [
         [
           {
@@ -1497,32 +1212,9 @@
       "main": [
         [
           {
-            "node": "Services list",
+            "node": "Merge2",
             "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "If empty": {
-      "main": [
-        [
-          {
-            "node": "Loop Over Items1",
-            "type": "main",
-            "index": 0
-          }
-        ],
-        [
-          {
-            "node": "Merge",
-            "type": "main",
-            "index": 0
-          },
-          {
-            "node": "get service urls",
-            "type": "main",
-            "index": 0
+            "index": 1
           }
         ]
       ]
@@ -1550,61 +1242,6 @@
         [
           {
             "node": "If",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Merge": {
-      "main": [
-        [
-          {
-            "node": "Slice  into batches strings",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "get service urls": {
-      "main": [
-        [
-          {
-            "node": "string for service urls",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "string for service urls": {
-      "main": [
-        [
-          {
-            "node": "Merge",
-            "type": "main",
-            "index": 1
-          }
-        ]
-      ]
-    },
-    "Slice  into batches strings": {
-      "main": [
-        [
-          {
-            "node": "set first_item1",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Get report items to add": {
-      "main": [
-        [
-          {
-            "node": "If empty",
             "type": "main",
             "index": 0
           }
@@ -1766,7 +1403,18 @@
         ]
       ]
     },
-    "Execute a SQL query": {
+    "Save company Description": {
+      "main": [
+        [
+          {
+            "node": "get groups without ads",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "get company data": {
       "main": [
         [
           {
@@ -1775,6 +1423,49 @@
             "index": 0
           }
         ]
+      ]
+    },
+    "get groups without ads": {
+      "main": [
+        [
+          {
+            "node": "Merge2",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Mark_workflow_total_steps",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge2": {
+      "main": [
+        [
+          {
+            "node": "Slice  into batches strings",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If not branded": {
+      "main": [
+        [
+          {
+            "node": "Set prompt",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Slice  into batches strings": {
+      "main": [
+        []
       ]
     }
   },
@@ -1817,7 +1508,7 @@
       }
     ]
   },
-  "versionId": "3b5d170b-0e06-4be4-9964-76f9a5b3f9ee",
+  "versionId": "63abb70c-a0c6-4eef-bf85-249097887433",
   "triggerCount": 0,
   "shared": [
     {
