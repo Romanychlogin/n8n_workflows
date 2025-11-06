@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-06T13:43:09.779Z",
+  "updatedAt": "2025-11-06T15:41:03.052Z",
   "createdAt": "2025-11-05T16:49:07.256Z",
   "id": "GE66xiztgKP0D3Za",
   "name": "ADS generate for yandex",
@@ -277,7 +277,7 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "select *, length (key_word) as key_word_length from ads_list where company_id=$1 and is_hi_demand=false and group_yandex_id is null AND is_own_brand=false",
+        "query": "select *, length (key_word) as key_word_length from ads_list where company_id=$1 and is_hi_demand=false and ads_group_id is null AND is_own_brand=false",
         "options": {
           "queryReplacement": "={{ $('When Executed by Another Workflow').last().json.company_id }}"
         }
@@ -399,9 +399,9 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "update ads_list set group_yandex_id=$2,to_upload_ad=true  where ad_id=$1",
+        "query": "update ads_list set ads_group_id=$2,to_upload_ad=true  where ad_id=$1",
         "options": {
-          "queryReplacement": "={{ $('get group').item.json.group_yandex_id }},{{ $('Loop Over Items3').last().json.ad_id }}"
+          "queryReplacement": "={{ $('Loop Over Items3').item.json.ad_id }},{{ $('get group').item.json.ads_group_id }}"
         }
       },
       "type": "n8n-nodes-base.postgres",
@@ -603,9 +603,9 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "update ads_list set group_yandex_id=$2,to_upload_ad=true  where ad_id=$1",
+        "query": "update ads_list set ads_group_id=$2,to_upload_ad=true  where ad_id=$1",
         "options": {
-          "queryReplacement": "={{ $('get group').item.json.group_yandex_id }},{{ $('Loop Over Items').last().json.ad_id }}"
+          "queryReplacement": "={{ $('Loop Over Items').last().json.ad_id }},{{ $('get group').item.json.ads_group_id }}"
         }
       },
       "type": "n8n-nodes-base.postgres",
@@ -662,7 +662,7 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "select *, length (key_word) as key_word_length from ads_list where company_id=$1 and is_hi_demand=false and group_yandex_id is null AND is_own_brand=true",
+        "query": "select *, length (key_word) as key_word_length from ads_list where company_id=$1 and is_hi_demand=false and ads_group_id is null AND is_own_brand=true",
         "options": {
           "queryReplacement": "={{ $('When Executed by Another Workflow').last().json.company_id }}"
         }
@@ -1192,7 +1192,7 @@
       }
     ]
   },
-  "versionId": "30913603-c48f-42a6-85e5-0cffd5521862",
+  "versionId": "1b20139c-365f-4d8b-9957-f82eac875169",
   "triggerCount": 0,
   "shared": [
     {
