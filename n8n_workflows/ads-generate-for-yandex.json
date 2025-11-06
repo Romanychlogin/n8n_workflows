@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-06T12:15:15.705Z",
+  "updatedAt": "2025-11-06T13:43:09.779Z",
   "createdAt": "2025-11-05T16:49:07.256Z",
   "id": "GE66xiztgKP0D3Za",
   "name": "ADS generate for yandex",
@@ -157,7 +157,7 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "UPDATE public.ads_list\nSET add_to_hi_demand = TRUE\nWHERE company_id = $1\n  AND (COALESCE(count_views, 0) + COALESCE(count_convetions, 0) * $3) >= $2\n  AND is_hi_demand = FALSE\nRETURNING ad_id,\n          (COALESCE(count_views, 0) + COALESCE(count_convetions, 0) * $3) AS weight",
+        "query": "UPDATE public.ads_list\nSET add_to_hi_demand = TRUE, is_hi_demand=true\nWHERE company_id = $1\n  AND (COALESCE(count_views, 0) + COALESCE(count_convetions, 0) * $3) >= $2\n  AND is_hi_demand = FALSE\nRETURNING ad_id,\n          (COALESCE(count_views, 0) + COALESCE(count_convetions, 0) * $3) AS weight",
         "options": {
           "queryReplacement": "={{ $('When Executed by Another Workflow').last().json.company_id }},{{ $('get min limit').last().json.threshold_weight }},{{ $('Set variables').last().json.conversions_weight }}"
         }
@@ -458,7 +458,7 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "UPDATE public.ads_list\nSET add_to_hi_demand = TRUE\nWHERE company_id = $1\n  AND (COALESCE(count_views, 0) + COALESCE(count_convetions, 0) * $3) >= $2\n  AND is_hi_demand = FALSE\n  AND is_own_brand=true\nRETURNING ad_id,\n          (COALESCE(count_views, 0) + COALESCE(count_convetions, 0) * $3) AS weight",
+        "query": "UPDATE public.ads_list\nSET add_to_hi_demand = TRUE, is_hi_demand=true\nWHERE company_id = $1\n  AND (COALESCE(count_views, 0) + COALESCE(count_convetions, 0) * $3) >= $2\n  AND is_hi_demand = FALSE\n  AND is_own_brand=true\nRETURNING ad_id,\n          (COALESCE(count_views, 0) + COALESCE(count_convetions, 0) * $3) AS weight",
         "options": {
           "queryReplacement": "={{ $('When Executed by Another Workflow').last().json.company_id }},{{ $('get brand limit').last().json.threshold_weight }},{{ $('Set variables').last().json.conversions_weight }}"
         }
@@ -1192,7 +1192,7 @@
       }
     ]
   },
-  "versionId": "da3ad44a-9fd5-45a5-b038-628c40bfa98b",
+  "versionId": "30913603-c48f-42a6-85e5-0cffd5521862",
   "triggerCount": 0,
   "shared": [
     {
