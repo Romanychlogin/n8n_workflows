@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-06T10:37:33.466Z",
+  "updatedAt": "2025-11-06T12:41:45.114Z",
   "createdAt": "2025-11-04T13:56:06.291Z",
   "id": "vwRAn8uUM5XZ8OrS",
   "name": "generate ads based on legth",
@@ -108,7 +108,7 @@
     {
       "parameters": {
         "schemaType": "manual",
-        "inputSchema": "{\n  \"$schema\": \"http://json-schema.org/draft-07/schema#\",\n  \"title\": \"Ad Data Schema\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"Ad_header\": {\n      \"type\": \"string\",\n      \"maxLength\": 56,\n      \"description\": \"Заголовок объявления (обязательное поле, не более 56 символов)\"\n    },\n    \"ad_length\": {\n      \"type\": \"number\",\n      \"description\": \"Числовое значение длины (обязательное поле)\"\n    }\n  },\n  \"required\": [\"Ad_header\", \"ad_length\"],\n  \"additionalProperties\": false\n}",
+        "inputSchema": "{\n  \"$schema\": \"http://json-schema.org/draft-07/schema#\",\n  \"title\": \"Ad Data Schema\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"Ad_header\": {\n      \"type\": \"string\",\n      \"maxLength\": 56,\n      \"description\": \"Заголовок объявления (обязательное поле, не более 56 символов)\"\n    },\n    \"Ad_body\": {\n      \"type\": \"string\",\n      \"maxLength\": 81,\n      \"description\": \"Тело объявления (обязательное поле, не более 81 символа)\"\n    },\n    \"ad_length\": {\n      \"type\": \"number\",\n      \"description\": \"Числовое значение длины (обязательное поле)\"\n    }\n  },\n  \"required\": [\"Ad_header\", \"Ad_body\", \"ad_length\"],\n  \"additionalProperties\": false\n}",
         "autoFix": true
       },
       "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
@@ -289,7 +289,7 @@
     "templateCredsSetupCompleted": true
   },
   "pinData": {},
-  "versionId": "4b653ba1-669f-465d-8b50-5ddd031b82e8",
+  "versionId": "4dab6db2-440f-4f7f-a3d4-6a9157d89c77",
   "triggerCount": 0,
   "shared": [
     {
