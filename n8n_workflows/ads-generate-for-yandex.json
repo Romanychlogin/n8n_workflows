@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-06T10:29:26.797Z",
+  "updatedAt": "2025-11-06T10:38:36.800Z",
   "createdAt": "2025-11-05T16:49:07.256Z",
   "id": "GE66xiztgKP0D3Za",
   "name": "ADS generate for yandex",
@@ -80,7 +80,7 @@
             {
               "id": "fa758de8-3da4-45ce-9539-b2843cc62eb1",
               "name": "max_limit",
-              "value": 450,
+              "value": 500,
               "type": "number"
             },
             {
@@ -111,9 +111,9 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "WITH w AS (\n  SELECT COALESCE(count_views,0) + COALESCE(count_convetions,0)*10 AS weight\n  FROM public.ads_list where company_id=$1\n)\nSELECT COALESCE(\n  (SELECT weight FROM w ORDER BY weight DESC NULLS LAST OFFSET $2 LIMIT 1),\n  (SELECT MIN(weight) FROM w)  -- если строк < 450, берём минимальный вес в таблице\n) AS threshold_weight;",
+        "query": "WITH w AS (\n  SELECT COALESCE(count_views,0) + COALESCE(count_convetions,0)*$3 AS weight\n  FROM public.ads_list where company_id=$1\n)\nSELECT COALESCE(\n  (SELECT weight FROM w ORDER BY weight DESC NULLS LAST OFFSET $2 LIMIT 1),\n  (SELECT MIN(weight) FROM w)  -- если строк < 450, берём минимальный вес в таблице\n) AS threshold_weight;",
         "options": {
-          "queryReplacement": ""
+          "queryReplacement": "={{ $('When Executed by Another Workflow').last().json.company_id }},{{ $json.min_limit }},{{ $json.conversions_weight }}"
         }
       },
       "type": "n8n-nodes-base.postgres",
@@ -134,9 +134,9 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "WITH w AS (\n  SELECT COALESCE(count_views,0) + COALESCE(count_convetions,0)*10 AS weight\n  FROM public.ads_list where company_id=$1 and is_own_brand=true\n)\nSELECT COALESCE(\n  (SELECT weight FROM w ORDER BY weight DESC NULLS LAST OFFSET $2 LIMIT 1),\n  (SELECT MIN(weight) FROM w)  -- если строк < 450, берём минимальный вес в таблице\n) AS threshold_weight;",
+        "query": "WITH w AS (\n  SELECT COALESCE(count_views,0) + COALESCE(count_convetions,0)*$3 AS weight\n  FROM public.ads_list where company_id=$1 and is_own_brand=true\n)\nSELECT COALESCE(\n  (SELECT weight FROM w ORDER BY weight DESC NULLS LAST OFFSET $2 LIMIT 1),\n  (SELECT MIN(weight) FROM w)  -- если строк < 450, берём минимальный вес в таблице\n) AS threshold_weight;",
         "options": {
-          "queryReplacement": ""
+          "queryReplacement": "={{ $('When Executed by Another Workflow').last().json.company_id }},{{ $('Set variables').item.json.brand_limit }},{{ $('Set variables').item.json.conversions_weight }}"
         }
       },
       "type": "n8n-nodes-base.postgres",
@@ -157,9 +157,9 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "UPDATE public.ads_list\nSET add_to_hi_demand = TRUE\nWHERE company_id = $1\n  AND (COALESCE(count_views, 0) + COALESCE(count_convetions, 0) * 10) >= $2\n  AND is_hi_demand = FALSE\nRETURNING ad_id,\n          (COALESCE(count_views, 0) + COALESCE(count_convetions, 0) * 10) AS weight",
+        "query": "UPDATE public.ads_list\nSET add_to_hi_demand = TRUE\nWHERE company_id = $1\n  AND (COALESCE(count_views, 0) + COALESCE(count_convetions, 0) * $3) >= $2\n  AND is_hi_demand = FALSE\nRETURNING ad_id,\n          (COALESCE(count_views, 0) + COALESCE(count_convetions, 0) * $3) AS weight",
         "options": {
-          "queryReplacement": ""
+          "queryReplacement": "={{ $('When Executed by Another Workflow').last().json.company_id }},{{ $('get min limit').last().json.threshold_weight }},{{ $('Set variables').last().json.conversions_weight }}"
         }
       },
       "type": "n8n-nodes-base.postgres",
@@ -1011,7 +1011,7 @@
       }
     ]
   },
-  "versionId": "4be0bb31-b88d-4831-a206-ceaf2dd6f289",
+  "versionId": "da4cd5e4-b985-402e-a342-fc0df19857f4",
   "triggerCount": 0,
   "shared": [
     {
