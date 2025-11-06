@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-06T11:26:24.379Z",
+  "updatedAt": "2025-11-06T11:39:39.365Z",
   "createdAt": "2025-11-05T16:49:07.256Z",
   "id": "GE66xiztgKP0D3Za",
   "name": "ADS generate for yandex",
@@ -254,8 +254,10 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "update ads_list set group_yandex_id=null, ads_yandex_id=null, key_word_yandex_id=null,is_hi_demand=false,remove_hi_demand=false",
-        "options": {}
+        "query": "update ads_list set group_yandex_id=null, ads_yandex_id=null, key_word_yandex_id=null,is_hi_demand=false,remove_hi_demand=false where ad_id=$1",
+        "options": {
+          "queryReplacement": "={{ $('Loop Over Items1').item.json.ad_id }}"
+        }
       },
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
@@ -276,7 +278,9 @@
       "parameters": {
         "operation": "executeQuery",
         "query": "select *, length (key_word) as key_word_length from ads_list where company_id=$1 and is_hi_demand=false and group_yandex_id is null AND is_own_brand=false",
-        "options": {}
+        "options": {
+          "queryReplacement": "={{ $('When Executed by Another Workflow').last().json.company_id }}"
+        }
       },
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
@@ -286,6 +290,8 @@
       ],
       "id": "04251d8c-e828-4df1-ae54-5a8b91f628c7",
       "name": "get low demand to add",
+      "executeOnce": true,
+      "alwaysOutputData": true,
       "credentials": {
         "postgres": {
           "id": "Hx2VFmUi5WO2K4QX",
@@ -300,7 +306,7 @@
       "type": "n8n-nodes-base.splitInBatches",
       "typeVersion": 3,
       "position": [
-        -1056,
+        -880,
         -512
       ],
       "id": "e874c39f-162b-4c6d-86e0-0e1f349365e7",
@@ -324,13 +330,13 @@
         "operation": "executeQuery",
         "query": "select * from ads_groups where company_id=$1 and key_word_length=$2 and key_words_count<200",
         "options": {
-          "queryReplacement": ""
+          "queryReplacement": "={{ $json.company_id }},{{ $json.key_word_length }}"
         }
       },
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        -864,
+        -688,
         -432
       ],
       "id": "432f5b2c-f2a5-43d2-ab82-14c55d65faad",
@@ -350,7 +356,7 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        -48,
+        128,
         -480
       ],
       "id": "789e6bee-03d8-4afb-a488-9dedfea6af8e",
@@ -384,7 +390,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        -672,
+        -496,
         -400
       ],
       "id": "bb0ca27e-e215-4375-9599-415152a55581",
@@ -394,12 +400,14 @@
       "parameters": {
         "operation": "executeQuery",
         "query": "update ads_list set group_yandex_id=$2,to_upload_ad=true  where ad_id=$1",
-        "options": {}
+        "options": {
+          "queryReplacement": ""
+        }
       },
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        -64,
+        112,
         -272
       ],
       "id": "df9f23e0-4ffd-48a3-b696-bfa637d129f1",
@@ -418,7 +426,7 @@
       "type": "n8n-nodes-base.stopAndError",
       "typeVersion": 1,
       "position": [
-        -320,
+        -144,
         -544
       ],
       "id": "e9d3214f-cb55-4ed8-9802-c4d36e5da873",
@@ -435,7 +443,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        -336,
+        -160,
         -288
       ],
       "id": "70d7b4c3-c5e6-432f-ad3d-32d0709f4a5a",
@@ -703,6 +711,40 @@
       ],
       "id": "b9962ed8-a1cb-4098-85c4-dd7ac48f520c",
       "name": "If nothing to remove"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "2695d6f1-5c0e-414c-aa90-049fa9a2b691",
+              "leftValue": "={{ $input.first().json }}",
+              "rightValue": "",
+              "operator": {
+                "type": "object",
+                "operation": "empty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -1136,
+        -464
+      ],
+      "id": "6f217e06-86e9-4a96-b2e8-3f5a9b854165",
+      "name": "If nothing to add"
     }
   ],
   "connections": {
@@ -838,7 +880,7 @@
       "main": [
         [
           {
-            "node": "Loop Over Items3",
+            "node": "If nothing to add",
             "type": "main",
             "index": 0
           }
@@ -1033,6 +1075,24 @@
           }
         ]
       ]
+    },
+    "If nothing to add": {
+      "main": [
+        [
+          {
+            "node": "get brand low demand to add",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Loop Over Items3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
@@ -1075,7 +1135,7 @@
       }
     ]
   },
-  "versionId": "98a5ef32-3f87-4ce5-ad45-95a98b2f3813",
+  "versionId": "7a35e687-ff5f-4ccc-bbda-c390d0558ce0",
   "triggerCount": 0,
   "shared": [
     {
