@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-05T18:54:27.287Z",
+  "updatedAt": "2025-11-06T10:29:26.797Z",
   "createdAt": "2025-11-05T16:49:07.256Z",
   "id": "GE66xiztgKP0D3Za",
   "name": "ADS generate for yandex",
@@ -40,7 +40,8 @@
           "id": "4YkdFJcdTgzo9hkz",
           "name": "PGvector"
         }
-      }
+      },
+      "disabled": true
     },
     {
       "parameters": {
@@ -1010,7 +1011,7 @@
       }
     ]
   },
-  "versionId": "3d1ee0da-4a99-40ce-b9c4-164728425ba0",
+  "versionId": "4be0bb31-b88d-4831-a206-ceaf2dd6f289",
   "triggerCount": 0,
   "shared": [
     {
