@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-06T11:50:15.027Z",
+  "updatedAt": "2025-11-06T11:54:56.739Z",
   "createdAt": "2025-11-04T16:36:35.686Z",
   "id": "16IidE6jjF6hXcGl",
   "name": "Create groups for low frequency key words",
@@ -345,7 +345,7 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "SELECT\n    cs.company_name,\n    cs.company_url,\n    string_agg(\n        concat_ws(' ', serv.service_name, serv.service_description),\n        ' '\n    ) AS services_description\nFROM companies cs\nJOIN company_services serv\n    ON cs.company_id = serv.company_id\nWHERE cs.company_id = $1\nGROUP BY\n    cs.company_name,\n    cs.company_url;",
+        "query": "SELECT\n    cs.company_name,\n    cs.company_url,\n    string_agg(\n        concat_ws(' ', company_name,serv.service_name, serv.service_description),\n        ' '\n    ) AS company_description\nFROM companies cs\nJOIN company_services serv\n    ON cs.company_id = serv.company_id\nWHERE cs.company_id = $1\nGROUP BY\n    cs.company_name,\n    cs.company_url;",
         "options": {
           "queryReplacement": "={{ $('When Executed by Another Workflow').item.json.company_id }}"
         }
@@ -353,7 +353,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        -3072,
+        -3120,
         32
       ],
       "id": "edd14432-041c-47f0-9df4-37c225e33225",
@@ -372,7 +372,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -2800,
+        -2736,
         32
       ],
       "id": "5299c9cb-5e15-492e-87d1-c05a6bd97805",
@@ -424,6 +424,19 @@
           "name": "Postgres account 2"
         }
       }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Function-Node (Run Once)\nconst workflowData = $getWorkflowStaticData('global');\nworkflowData.company_description = items[0].json.company_description;\nreturn items;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -2944,
+        64
+      ],
+      "id": "64a1d25f-7129-462d-860b-16bae19ac97d",
+      "name": "Save company Description"
     }
   ],
   "connections": {
@@ -588,7 +601,7 @@
       "main": [
         [
           {
-            "node": "generate array",
+            "node": "Save company Description",
             "type": "main",
             "index": 0
           }
@@ -633,6 +646,17 @@
           }
         ]
       ]
+    },
+    "Save company Description": {
+      "main": [
+        [
+          {
+            "node": "generate array",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
@@ -661,7 +685,7 @@
       }
     ]
   },
-  "versionId": "96998adb-b809-439f-b462-dfeed55ad1e5",
+  "versionId": "b50ace2b-8038-404d-a965-1a96c1b9290f",
   "triggerCount": 0,
   "shared": [
     {
