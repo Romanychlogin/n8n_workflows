@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-07T12:19:53.301Z",
+  "updatedAt": "2025-11-07T12:48:05.439Z",
   "createdAt": "2025-09-30T17:56:19.098Z",
   "id": "UUlsZU9GOCmdvDHg",
   "name": "extract data for updates with header",
@@ -17,7 +17,7 @@
       "type": "n8n-nodes-base.convertToFile",
       "typeVersion": 1.1,
       "position": [
-        1456,
+        1552,
         -80
       ],
       "id": "f01b45d2-eae8-43cf-826b-8e9fc600423b",
@@ -277,8 +277,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        1120,
-        -80
+        1344,
+        -32
       ],
       "id": "53b9c994-d82d-4051-b03a-357724c272e3",
       "name": "Edit Fields"
@@ -402,7 +402,7 @@
       "type": "n8n-nodes-base.readWriteFile",
       "typeVersion": 1,
       "position": [
-        1664,
+        1760,
         -80
       ],
       "id": "ac2619a8-f9bb-4862-a2ed-ac37f73009d6",
@@ -640,23 +640,11 @@
     },
     {
       "parameters": {
-        "content": "High demand объявления",
-        "height": 512,
-        "width": 1440
-      },
-      "type": "n8n-nodes-base.stickyNote",
-      "typeVersion": 1,
-      "position": [
-        -32,
-        -272
-      ],
-      "id": "5e6c7f23-831c-4943-b99c-67edc9003dec",
-      "name": "Sticky Note1"
-    },
-    {
-      "parameters": {
         "operation": "executeQuery",
-        "options": {}
+        "query": "SELECT '-' as add_adv,al.key_word, al.company_id, al.service_id, al.report_id, al.campaign_id, ag.group_name,ag.group_yandex_id,ads.ad_header,ads.ad_text,ads.ad_url\n\tFROM ads_list al,ads_groups ag, ads_for_groups ads \n\twhere al.is_own_brand=false and al.to_upload_ad=true and al.is_hi_demand=false and al.ads_group_id=ag.ads_group_id and ag.ads_group_id=ads.ads_group_id and company_id=$1",
+        "options": {
+          "queryReplacement": "={{ $('When Executed by Another Workflow').item.json.company_id }}"
+        }
       },
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
@@ -756,6 +744,17 @@
       ],
       "id": "94be3fb4-7f1b-40ac-adc6-f8aeda9cc0dc",
       "name": "Merge2"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        1136,
+        96
+      ],
+      "id": "112654eb-f5cd-4b45-918a-469d777eda8c",
+      "name": "append"
     }
   ],
   "connections": {
@@ -989,7 +988,7 @@
       "main": [
         [
           {
-            "node": "Edit Fields",
+            "node": "append",
             "type": "main",
             "index": 0
           }
@@ -1060,6 +1059,28 @@
           }
         ]
       ]
+    },
+    "Merge2": {
+      "main": [
+        [
+          {
+            "node": "append",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "append": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
@@ -1092,7 +1113,7 @@
       }
     ]
   },
-  "versionId": "ac8a03b9-d1cb-4605-b99f-25df6f34e324",
+  "versionId": "2b7d8cf4-6290-45fd-a50b-b176778d57ea",
   "triggerCount": 0,
   "shared": [
     {
