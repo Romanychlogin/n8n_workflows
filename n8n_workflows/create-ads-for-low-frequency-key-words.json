@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-07T09:57:53.760Z",
+  "updatedAt": "2025-11-07T10:01:42.551Z",
   "createdAt": "2025-11-06T13:56:02.796Z",
   "id": "Gi9vc9YfTegfpMjd",
   "name": "Create ads for low frequency key words",
@@ -70,7 +70,7 @@
     },
     {
       "parameters": {
-        "jsCode": "const workflowData = $getWorkflowStaticData('global');\nlet my_prompt = workflowData.my_prompt.data;\n\nfor (const item of $input.all()) {\n  item.json.my_prompt = my_prompt.replaceAll(\"{{company_description}}\", workflowData.company_description).replaceAll(\"{{templates_required}}\", JSON.stringify($json.items));\n}\n\nreturn $input.all();"
+        "jsCode": "const workflowData = $getWorkflowStaticData('global');\nlet my_prompt = workflowData.my_prompt.data;\n\nfor (const item of $input.all()) {\n  item.json.my_prompt = my_prompt.replaceAll(\"{{company_description}}\", workflowData.company_description).replaceAll(\"{{templates_required}}\", JSON.stringify($json.items));\n  item.json.company_description=workflowData.company_description;\n    item.json.company_description_url=workflowData.company_description_with_url;\n    \n}\n\nreturn $input.all();"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -128,8 +128,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        -880,
-        288
+        -320,
+        -176
       ],
       "id": "0beb3433-0c7e-4efd-be05-cf1f454546e3",
       "name": "Mark_workflow_total_steps",
@@ -148,8 +148,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -608,
-        272
+        -160,
+        -192
       ],
       "id": "38f6cfd5-f8d7-4e04-887b-6fee63de6aa6",
       "name": "Init total counter"
@@ -311,7 +311,8 @@
           "id": "Hx2VFmUi5WO2K4QX",
           "name": "Postgres account 2"
         }
-      }
+      },
+      "disabled": true
     },
     {
       "parameters": {
@@ -324,11 +325,12 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        -1280,
-        224
+        -752,
+        -16
       ],
       "id": "00856f50-b171-4b39-b608-f22a3ef744e8",
       "name": "get groups without ads",
+      "alwaysOutputData": true,
       "credentials": {
         "postgres": {
           "id": "Hx2VFmUi5WO2K4QX",
@@ -343,8 +345,8 @@
       "type": "n8n-nodes-base.merge",
       "typeVersion": 3.2,
       "position": [
-        -416,
-        112
+        -16,
+        -320
       ],
       "id": "f006260e-d8f7-411e-807c-e524cb575e7e",
       "name": "Merge2"
@@ -530,8 +532,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        -192,
-        -352
+        224,
+        -400
       ],
       "id": "c737719e-4053-4f10-b246-c20a7627a082",
       "name": "Services list",
@@ -664,7 +666,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        1120,
+        1088,
         -432
       ],
       "id": "90186f99-acdf-469d-9e5d-d8a375cebf82",
@@ -799,6 +801,40 @@
       ],
       "id": "9052e5e1-d94e-4dbb-a48f-1941c0bdedf4",
       "name": "reset first_item1"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "b13ec6fc-ce2d-48a1-a4c7-6ded529707ec",
+              "leftValue": "={{$input.first().json}}",
+              "rightValue": "",
+              "operator": {
+                "type": "object",
+                "operation": "empty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -512,
+        -368
+      ],
+      "id": "567b588b-9e14-4506-9d9d-f2c3b10c3b2b",
+      "name": "If empty1"
     }
   ],
   "connections": {
@@ -967,12 +1003,7 @@
       "main": [
         [
           {
-            "node": "Merge2",
-            "type": "main",
-            "index": 0
-          },
-          {
-            "node": "Mark_workflow_total_steps",
+            "node": "If empty1",
             "type": "main",
             "index": 0
           }
@@ -1264,6 +1295,29 @@
           }
         ]
       ]
+    },
+    "If empty1": {
+      "main": [
+        [
+          {
+            "node": "Mark_workflow_completed",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Mark_workflow_total_steps",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
@@ -1491,7 +1545,7 @@
       }
     ]
   },
-  "versionId": "938f56a7-4341-4a1c-841a-12e07f934a9f",
+  "versionId": "faa7dacd-8eb6-4bdd-ab11-b0ddd18c5617",
   "triggerCount": 0,
   "shared": [
     {
