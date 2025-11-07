@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-07T09:27:02.403Z",
+  "updatedAt": "2025-11-07T09:36:19.528Z",
   "createdAt": "2025-11-06T13:56:02.796Z",
   "id": "Gi9vc9YfTegfpMjd",
   "name": "Create ads for low frequency key words",
@@ -115,7 +115,8 @@
           "id": "4YkdFJcdTgzo9hkz",
           "name": "PGvector"
         }
-      }
+      },
+      "disabled": true
     },
     {
       "parameters": {
@@ -401,7 +402,7 @@
     },
     {
       "parameters": {
-        "jsCode": "\n\n\n// 2) Источник мапы по id из другой ноды (если есть)\n\nconst itemsById = $('headers and texts').last().json?.ItemsbyId ?? {};\n\n// 3) Формируем выходные элементы\nconst out = [];\nfor (const it of $input.first().json?.Items) {\n  if (!it || typeof it !== 'object') continue;\n\n  const ads_group_id = typeof it.id === 'string' && it.id.trim() ? it.id.trim() : null;\n  const src = itemsById[ads_group_id] ?? {};\n  const ad_header = src?.ad_header ?? '';\n  const ad_text   = src?.ad_text ?? '';\n  const length  = src?.length ?? '';\n  \n  const ad_url  = src?.service_url ?? '';\n\n  out.push({\n    json: { ads_group_id, ad_url, ad_header, ad_text, length }\n  });\n}\n\nreturn out;"
+        "jsCode": "\n\n\n// 2) Источник мапы по id из другой ноды (если есть)\n\nconst itemsById = $('headers and texts').last().json?.ItemsbyId ?? {};\nconst user_requestsbyId = $('Slice  into batches strings').last().json?.user_requestsbyId ?? {};\n// 3) Формируем выходные элементы\nconst out = [];\nfor (const it of $input.first().json?.Items) {\n  if (!it || typeof it !== 'object') continue;\n\n  const ads_group_id = typeof it.id === 'string' && it.id.trim() ? it.id.trim() : null;\n  const src = itemsById[ads_group_id] ?? {};\n  const length  = src?.length ?? '';\n  const ad_header = user_requestsbyId[length].text + src?.ad_header ?? '';\n  const ad_text   = user_requestsbyId[length].text + src?.ad_text ?? '';\n  \n  \n  const ad_url  = src?.service_url ?? '';\n\n  out.push({\n    json: { ads_group_id, ad_url, ad_header, ad_text, length }\n  });\n}\n\nreturn out;"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -781,7 +782,7 @@
     },
     {
       "parameters": {
-        "jsCode": "// 1) Читаем строку JSON из указанного поля\nlet raw = $input.first().json?.output?.[1]?.content?.[0]?.text;\n\n// Минимальная чистка и парсинг\nfunction stripCodeFences(s) {\n  if (typeof s !== 'string') return s;\n  let t = s.trim();\n  if (t.startsWith('```')) t = t.replace(/^```[a-zA-Z]*\\n?/, '').replace(/```$/, '').trim();\n  return t;\n}\nfunction parseJson(s) {\n  const t = stripCodeFences(String(s ?? ''));\n  try { return JSON.parse(t); } catch { return null; }\n}\n\nconst obj = parseJson(raw);\nif (!obj || !Array.isArray(obj.ad_texts)) {\n  return [{ json: { Items: [], ItemsbyId: {}, note: 'ad_texts not found' } }];\n}\n\nconst itemsById = $('Slice  into batches strings').last().json?.ItemsbyId ?? {};\nconst user_requestsbyId = $('Slice  into batches strings').last().json?.user_requestsbyId ?? {};\n\n// 3) Собираем выход\nconst Items = [];\nconst Itemsext = [];\nfor (const h of obj.ad_texts) {\n  if (!h || typeof h !== 'object') continue;\n\n  const id = String(h.id ?? '');\n  const ad_text = String(h.ad_text ?? '');\n  const ad_header = String(h.ad_header ?? '');\n  const length = itemsById[id].length;\n  const service_url = itemsById[id].service_url;\n  if (!id || !ad_text) continue;\n  \n  Items.push({ ad_header:user_requestsbyId[length]+ad_header, ad_text, id });\n  Itemsext.push({ ad_header:user_requestsbyId[length]+ad_header, ad_text, id,length,service_url});\n}\n\n// 4) Индекс по id -> объект\nconst ItemsbyId = Object.fromEntries(Itemsext.map(o => [o.id, o]));\n\n// 5) Возврат\nreturn [{\n  json: {\n    Items,\n    ItemsbyId\n  }\n}];"
+        "jsCode": "// 1) Читаем строку JSON из указанного поля\nlet raw = $input.first().json?.output?.[1]?.content?.[0]?.text;\n\n// Минимальная чистка и парсинг\nfunction stripCodeFences(s) {\n  if (typeof s !== 'string') return s;\n  let t = s.trim();\n  if (t.startsWith('```')) t = t.replace(/^```[a-zA-Z]*\\n?/, '').replace(/```$/, '').trim();\n  return t;\n}\nfunction parseJson(s) {\n  const t = stripCodeFences(String(s ?? ''));\n  try { return JSON.parse(t); } catch { return null; }\n}\n\nconst obj = parseJson(raw);\nif (!obj || !Array.isArray(obj.ad_texts)) {\n  return [{ json: { Items: [], ItemsbyId: {}, note: 'ad_texts not found' } }];\n}\n\nconst itemsById = $('Slice  into batches strings').last().json?.ItemsbyId ?? {};\nconst user_requestsbyId = $('Slice  into batches strings').last().json?.user_requestsbyId ?? {};\n\n// 3) Собираем выход\nconst Items = [];\nconst Itemsext = [];\nfor (const h of obj.ad_texts) {\n  if (!h || typeof h !== 'object') continue;\n\n  const id = String(h.id ?? '');\n  const ad_text = String(h.ad_text ?? '');\n  const ad_header = String(h.ad_header ?? '');\n  const length = itemsById[id].length;\n  const service_url = itemsById[id].service_url;\n  if (!id || !ad_text) continue;\n  \n  Items.push({ ad_header:ad_header, ad_text, id });\n  Itemsext.push({ ad_header:ad_header, ad_text, id,length,service_url});\n}\n\n// 4) Индекс по id -> объект\nconst ItemsbyId = Object.fromEntries(Itemsext.map(o => [o.id, o]));\n\n// 5) Возврат\nreturn [{\n  json: {\n    Items,\n    ItemsbyId\n  }\n}];"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -1653,7 +1654,7 @@
       }
     ]
   },
-  "versionId": "9b528a24-3212-4b30-b999-3ed31a4bb86a",
+  "versionId": "5458a886-9610-4f04-b0d4-b4827afb26e5",
   "triggerCount": 0,
   "shared": [
     {
