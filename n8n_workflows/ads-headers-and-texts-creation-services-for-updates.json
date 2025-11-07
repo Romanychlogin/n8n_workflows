@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-07T13:59:44.740Z",
+  "updatedAt": "2025-11-07T14:06:44.515Z",
   "createdAt": "2025-09-28T11:31:13.045Z",
   "id": "lBAh8kjoXRX0aGUF",
   "name": "ADS headers and texts creation services for updates",
@@ -1017,7 +1017,7 @@
     },
     {
       "parameters": {
-        "jsCode": "function normalizeText(text) {\n  if (text == null) return text;\n  let s = String(text);\n\n  // --- Dashes → ASCII hyphen-minus (-)\n  s = s\n    .replace(/\\u2014/g, \"-\") // em dash\n    .replace(/\\u2013/g, \"-\") // en dash\n    .replace(/\\u2012/g, \"-\") // figure dash\n    .replace(/\\u2015/g, \"-\") // horizontal bar\n    .replace(/\\u2212/g, \"-\"); // minus sign\n\n  // --- Special spaces → regular space\n  s = s\n    .replace(/\\u00A0/g, \" \") // no-break space\n    .replace(/\\u2009/g, \" \") // thin space\n    .replace(/\\u200A/g, \" \") // hair space\n    .replace(/\\u2007/g, \" \") // figure space\n    .replace(/\\u2008/g, \" \"); // punctuation space\n\n  // --- Collapse any whitespace runs to a single space\n  s = s.replace(/\\s+/g, \" \");\n  s = s.replace(/[^A-Za-zА-Яа-яЁё.,;:!?'\"«»()[\\]{}\\u2026\\u2014\\u2013\\-#\\s]+/g, '');\n  return s;\n}\n// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nfor (const item of $input.all()) {\n  item.json.ad_header=normalizeText(item.json.ad_header);\n  item.json.ad_text=normalizeText(item.json.ad_text);  \n}\n\nreturn $input.all();"
+        "jsCode": "function normalizeText(text) {\n  if (text == null) return text;\n  let s = String(text);\n\n  // --- Dashes → ASCII hyphen-minus (-)\n  s = s\n    .replace(/\\u2014/g, \"-\") // em dash\n    .replace(/\\u2013/g, \"-\") // en dash\n    .replace(/\\u2012/g, \"-\") // figure dash\n    .replace(/\\u2015/g, \"-\") // horizontal bar\n    .replace(/\\u2212/g, \"-\"); // minus sign\n\n  // --- Special spaces → regular space\n  s = s\n    .replace(/\\u00A0/g, \" \") // no-break space\n    .replace(/\\u2009/g, \" \") // thin space\n    .replace(/\\u200A/g, \" \") // hair space\n    .replace(/\\u2007/g, \" \") // figure space\n    .replace(/\\u2008/g, \" \"); // punctuation space\n\n  // --- Collapse any whitespace runs to a single space\n  s = s.replace(/\\s+/g, \" \");\n  s = s.replace(/[^0-9A-Za-zА-Яа-яЁё.,;:!?'\"«»()[\\]{}\\u2026\\u2014\\u2013\\-#\\s]+/g, '');\n  return s;\n}\n// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nfor (const item of $input.all()) {\n  item.json.ad_header=normalizeText(item.json.ad_header);\n  item.json.ad_text=normalizeText(item.json.ad_text);  \n}\n\nreturn $input.all();"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -1786,7 +1786,7 @@
       }
     ]
   },
-  "versionId": "7fbe2453-e469-40c9-882b-150ed0891e65",
+  "versionId": "8284df38-200f-48b3-a026-c35472b570ca",
   "triggerCount": 0,
   "shared": [
     {
