@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-07T12:48:05.439Z",
+  "updatedAt": "2025-11-07T13:09:52.495Z",
   "createdAt": "2025-09-30T17:56:19.098Z",
   "id": "UUlsZU9GOCmdvDHg",
   "name": "extract data for updates with header",
@@ -664,7 +664,7 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "SELECT '-' as add_adv,ad.*, cs1.service_bid,regexp_replace(\n    cs1.service_name,\n    '[^a-zA-Zа-яА-ЯёЁ ]',\n    '',\n    'g'\n) AS cleaned_service_name\nFROM current_ads_list A ad, company_services cs \nWHERE cs.service_id=ad.service_id and  ad.is_hi_demand=true and ad.company_id = $1 AND ad.need_check=false \n  order by service_name,count_clics desc;",
+        "query": "SELECT '-' as add_adv,ad.*, cs1.service_bid,regexp_replace(\n    cs1.service_name,\n    '[^a-zA-Zа-яА-ЯёЁ ]',\n    '',\n    'g'\n) AS cleaned_service_name\nFROM current_ads_list ad, company_services cs \nWHERE cs.service_id=ad.service_id and  ad.is_hi_demand=true and ad.company_id = $1 AND ad.need_check=false \n  order by service_name,count_clics desc;",
         "options": {
           "queryReplacement": "={{ $json.company_id }}"
         }
@@ -1113,7 +1113,7 @@
       }
     ]
   },
-  "versionId": "2b7d8cf4-6290-45fd-a50b-b176778d57ea",
+  "versionId": "d9ac7a1c-354c-4397-b76d-733d797f9ef5",
   "triggerCount": 0,
   "shared": [
     {
