@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-07T14:17:17.159Z",
+  "updatedAt": "2025-11-07T16:29:33.492Z",
   "createdAt": "2025-11-06T13:56:02.796Z",
   "id": "Gi9vc9YfTegfpMjd",
   "name": "Create ads for low frequency key words",
@@ -295,7 +295,7 @@
         "operation": "executeQuery",
         "query": "INSERT INTO public.ads_for_groups(\n\t ads_group_id, ad_header, ad_text, ad_url, is_active)\n\tVALUES ($1, $2, $3, $4, true);",
         "options": {
-          "queryReplacement": "={{ $json.ads_group_id }},{{ $json.ad_header }},{{ $json.ad_text }},{{ $json.ad_url }}"
+          "queryReplacement": "={{ [\n  $json.ads_group_id,\n  $json.ad_header,\n  $json.ad_text,\n  $json.ad_url\n]}}"
         }
       },
       "type": "n8n-nodes-base.postgres",
@@ -1529,7 +1529,7 @@
       }
     ]
   },
-  "versionId": "73b44264-7eb7-49b5-aeb4-c81fc688ea80",
+  "versionId": "529d6e16-3e37-49c1-91d8-70abef332617",
   "triggerCount": 0,
   "shared": [
     {
