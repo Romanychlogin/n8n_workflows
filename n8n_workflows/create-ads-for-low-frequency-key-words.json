@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-07T09:36:19.528Z",
+  "updatedAt": "2025-11-07T09:40:36.830Z",
   "createdAt": "2025-11-06T13:56:02.796Z",
   "id": "Gi9vc9YfTegfpMjd",
   "name": "Create ads for low frequency key words",
@@ -115,8 +115,7 @@
           "id": "4YkdFJcdTgzo9hkz",
           "name": "PGvector"
         }
-      },
-      "disabled": true
+      }
     },
     {
       "parameters": {
@@ -294,9 +293,9 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "INSERT INTO public.ads_for_groups(\n\t ads_group_id, ad_header, ad_text, ad_url, is_active)\n\tVALUES ($1, $2, $3, $4, $5,true);",
+        "query": "INSERT INTO public.ads_for_groups(\n\t ads_group_id, ad_header, ad_text, ad_url, is_active)\n\tVALUES ($1, $2, $3, $4, true);",
         "options": {
-          "queryReplacement": "={{ $('Loop Over Items').last().json.ad_id}},{{ $('Loop Over Items').last().json.ad_header }},{{ $('Loop Over Items').last().json.ad_text }},{{ $('Loop Over Items').last().json.ad_url }}"
+          "queryReplacement": "={{ $json.ads_group_id }},{{ $json.ad_header }},{{ $json.ad_text }},{{ $json.ad_url }}"
         }
       },
       "type": "n8n-nodes-base.postgres",
@@ -312,8 +311,7 @@
           "id": "Hx2VFmUi5WO2K4QX",
           "name": "Postgres account 2"
         }
-      },
-      "disabled": true
+      }
     },
     {
       "parameters": {
@@ -1654,7 +1652,7 @@
       }
     ]
   },
-  "versionId": "5458a886-9610-4f04-b0d4-b4827afb26e5",
+  "versionId": "eeb6e70b-14c0-43cc-91e3-a7cfcac036bd",
   "triggerCount": 0,
   "shared": [
     {
