@@ -1,6 +1,6 @@
 {
+  "updatedAt": "2025-11-07T13:46:22.628Z",
   "createdAt": "2025-09-30T12:45:50.445Z",
-  "updatedAt": "2025-10-24T11:29:19.735Z",
   "id": "c0NgmBzgLxUE7Wno",
   "name": "ADV_campaign_get_service",
   "active": false,
@@ -457,15 +457,15 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "select kw.service_id from ads_list kw where kw.ad_header=$2 and kw.company_id=$1",
+        "query": "select kw.service_id from ads_list kw where kw.ads_yandex_id=$2 and kw.company_id=$1",
         "options": {
-          "queryReplacement": "=[{{ $('When Executed by Another Workflow').item.json.company_id }},{{ $('Loop Over Items').last().json.ads_header }}]"
+          "queryReplacement": "=[{{ $('When Executed by Another Workflow').item.json.company_id }},{{ $('Loop Over Items').last().json.ads_yandex_id }}]"
         }
       },
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        2048,
+        1952,
         -80
       ],
       "id": "0be1cb0e-9bcc-48fd-9e17-fb5c81a0da31",
@@ -1231,12 +1231,12 @@
       }
     ]
   },
-  "versionId": "e5d4cdf1-f676-4bd8-9865-d3a527f440ab",
+  "versionId": "f3d683f6-be0a-4b47-8cee-310f9f8bc889",
   "triggerCount": 0,
   "shared": [
     {
-      "createdAt": "2025-09-30T12:45:50.445Z",
       "updatedAt": "2025-09-30T12:45:50.445Z",
+      "createdAt": "2025-09-30T12:45:50.445Z",
       "role": "workflow:owner",
       "workflowId": "c0NgmBzgLxUE7Wno",
       "projectId": "spKmbJLU4mvACXIB"
@@ -1244,8 +1244,8 @@
   ],
   "tags": [
     {
-      "createdAt": "2025-10-06T13:06:54.644Z",
       "updatedAt": "2025-10-06T13:06:54.644Z",
+      "createdAt": "2025-10-06T13:06:54.644Z",
       "id": "DBEf57wUDunVJUG6",
       "name": "campaign update"
     }
