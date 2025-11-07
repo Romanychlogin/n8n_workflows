@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-05T14:51:41.031Z",
+  "updatedAt": "2025-11-07T16:49:33.502Z",
   "createdAt": "2025-10-20T11:13:37.232Z",
   "id": "b9eGU4g5DID0kq2E",
   "name": "ADV_campaign_analysis_initial",
@@ -55,6 +55,16 @@
               "id": "deb678ac-4d48-4237-94bc-9c3002003a59",
               "leftValue": "={{String($json.condition_type ?? '').toLowerCase()}}",
               "rightValue": "word-by-word",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            },
+            {
+              "id": "e117281b-306a-4b19-9405-cb514653ee19",
+              "leftValue": "={{String($json.condition_type ?? '').toLowerCase()}}",
+              "rightValue": "keyword",
               "operator": {
                 "type": "string",
                 "operation": "equals",
@@ -3280,7 +3290,7 @@
       }
     ]
   },
-  "versionId": "55b91e19-93e3-4101-b09e-fe52e0e819f5",
+  "versionId": "2eb1463b-9133-4dbb-a2ea-6831f7b3194a",
   "triggerCount": 0,
   "shared": [
     {
