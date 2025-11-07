@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-07T14:20:04.667Z",
+  "updatedAt": "2025-11-07T14:26:31.095Z",
   "createdAt": "2025-09-30T17:56:19.098Z",
   "id": "UUlsZU9GOCmdvDHg",
   "name": "extract data for updates with header",
@@ -17,7 +17,7 @@
       "type": "n8n-nodes-base.convertToFile",
       "typeVersion": 1.1,
       "position": [
-        1552,
+        1760,
         -80
       ],
       "id": "f01b45d2-eae8-43cf-826b-8e9fc600423b",
@@ -32,7 +32,7 @@
       "type": "n8n-nodes-base.dropbox",
       "typeVersion": 1,
       "position": [
-        2864,
+        3072,
         -48
       ],
       "id": "b481d235-879e-4fb6-8731-744f3bc50137",
@@ -277,7 +277,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        1344,
+        1552,
         -32
       ],
       "id": "53b9c994-d82d-4051-b03a-357724c272e3",
@@ -347,7 +347,7 @@
       "type": "n8n-nodes-base.merge",
       "typeVersion": 3.2,
       "position": [
-        2016,
+        2224,
         -48
       ],
       "id": "9aa4f336-7e95-4bdf-9fee-405847ce75b2",
@@ -402,7 +402,7 @@
       "type": "n8n-nodes-base.readWriteFile",
       "typeVersion": 1,
       "position": [
-        1760,
+        1968,
         -80
       ],
       "id": "ac2619a8-f9bb-4862-a2ed-ac37f73009d6",
@@ -435,7 +435,7 @@
       "type": "n8n-nodes-base.readWriteFile",
       "typeVersion": 1,
       "position": [
-        2432,
+        2640,
         -48
       ],
       "id": "67ba370d-0684-4fe6-8a84-a2a35e0f5ac0",
@@ -478,7 +478,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        3360,
+        3568,
         -48
       ],
       "id": "fd0c474e-3c85-49da-8b04-974c678d19c7",
@@ -498,7 +498,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        3136,
+        3344,
         -48
       ],
       "id": "ce44d4a7-1ea3-4902-b717-bc24301b7400",
@@ -511,7 +511,7 @@
       "type": "n8n-nodes-base.executeCommand",
       "typeVersion": 1,
       "position": [
-        2224,
+        2432,
         -48
       ],
       "id": "f6e7cc99-94ef-42fb-b65f-795c421487f9",
@@ -580,67 +580,6 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "SELECT\n  string_agg(NULLIF(btrim(ql.link_header), ''),      '||' ORDER BY link_id) AS link_headers_text,\n  string_agg(NULLIF(btrim(ql.link_description), ''), '||' ORDER BY link_id) AS link_descriptions_text,\n  string_agg(NULLIF(btrim(ql.link_url), ''),         '||' ORDER BY link_id) AS link_urls_text\nFROM public.adv_campaign_quick_links ql  where ql.campaign_id=$1;",
-        "options": {
-          "queryReplacement": "={{ $json.campaign_id }}"
-        }
-      },
-      "type": "n8n-nodes-base.postgres",
-      "typeVersion": 2.6,
-      "position": [
-        400,
-        32
-      ],
-      "id": "85334352-4cf0-46d8-a7da-795b5cf1de0b",
-      "name": "Get quick links",
-      "executeOnce": true,
-      "credentials": {
-        "postgres": {
-          "id": "Hx2VFmUi5WO2K4QX",
-          "name": "Postgres account 2"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "operation": "executeQuery",
-        "query": "SELECT\n  string_agg(NULLIF(btrim(ql.callout_text), ''),      '||' ORDER BY callout_id) AS link_callout_text\n  \nFROM adv_campaign_callouts ql  where ql.campaign_id=$1;",
-        "options": {
-          "queryReplacement": "={{ $('Get high demand ads').item.json.campaign_id }}"
-        }
-      },
-      "type": "n8n-nodes-base.postgres",
-      "typeVersion": 2.6,
-      "position": [
-        592,
-        32
-      ],
-      "id": "491dd3b0-f29d-479b-a746-928176044731",
-      "name": "Get callouts",
-      "executeOnce": true,
-      "credentials": {
-        "postgres": {
-          "id": "Hx2VFmUi5WO2K4QX",
-          "name": "Postgres account 2"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "mode": "chooseBranch"
-      },
-      "type": "n8n-nodes-base.merge",
-      "typeVersion": 3.2,
-      "position": [
-        912,
-        -80
-      ],
-      "id": "711c3041-cd6a-40a5-b357-5afd17462cf3",
-      "name": "Merge1"
-    },
-    {
-      "parameters": {
-        "operation": "executeQuery",
         "query": "SELECT '-' as add_adv,al.key_word, al.company_id, al.service_id, al.report_id, al.campaign_id, ag.group_name,ag.group_yandex_id,ads.ad_header,ads.ad_text,ads.ad_url,cs.service_bid\n\tFROM ads_list al,ads_groups ag, ads_for_groups ads,company_services cs\n\twhere al.is_own_brand=false and al.to_upload_ad=true and al.is_hi_demand=false and al.ads_group_id=ag.ads_group_id and ag.ads_group_id=ads.ads_group_id and cs.service_id=al.service_id and al.company_id=$1",
         "options": {
           "queryReplacement": "={{ $('When Executed by Another Workflow').item.json.company_id }}"
@@ -649,8 +588,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        16,
-        384
+        96,
+        176
       ],
       "id": "7d8194d8-7c91-4520-9868-78ec5de2263a",
       "name": "Get low demand ads",
@@ -673,8 +612,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        96,
-        -64
+        128,
+        -48
       ],
       "id": "16819f54-d4a3-4020-994a-9cdba0646688",
       "name": "Get high demand ads",
@@ -687,6 +626,30 @@
       }
     },
     {
+      "parameters": {},
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        544,
+        64
+      ],
+      "id": "112654eb-f5cd-4b45-918a-469d777eda8c",
+      "name": "append"
+    },
+    {
+      "parameters": {
+        "mode": "chooseBranch"
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        1248,
+        16
+      ],
+      "id": "1499ca4e-aecb-4086-99d6-a7cc58149494",
+      "name": "Merge2"
+    },
+    {
       "parameters": {
         "operation": "executeQuery",
         "query": "SELECT\n  string_agg(NULLIF(btrim(ql.link_header), ''),      '||' ORDER BY link_id) AS link_headers_text,\n  string_agg(NULLIF(btrim(ql.link_description), ''), '||' ORDER BY link_id) AS link_descriptions_text,\n  string_agg(NULLIF(btrim(ql.link_url), ''),         '||' ORDER BY link_id) AS link_urls_text\nFROM public.adv_campaign_quick_links ql  where ql.campaign_id=$1;",
@@ -697,11 +660,11 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        288,
-        560
+        816,
+        208
       ],
-      "id": "a9485924-43f5-45bd-a103-a030dd0ddaab",
-      "name": "Get quick links1",
+      "id": "c0ee0885-fed5-4d94-9d85-b54e08708aa8",
+      "name": "Get quick links",
       "executeOnce": true,
       "credentials": {
         "postgres": {
@@ -715,17 +678,17 @@
         "operation": "executeQuery",
         "query": "SELECT\n  string_agg(NULLIF(btrim(ql.callout_text), ''),      '||' ORDER BY callout_id) AS link_callout_text\n  \nFROM adv_campaign_callouts ql  where ql.campaign_id=$1;",
         "options": {
-          "queryReplacement": "={{ $('Get low demand ads').item.json.campaign_id }}"
+          "queryReplacement": "={{ $('If not empty').item.json.campaign_id }}"
         }
       },
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        480,
-        560
+        944,
+        112
       ],
-      "id": "3a7f1119-db1b-4178-a8be-8cdfabd7f720",
-      "name": "Get callouts1",
+      "id": "162c3a74-a3af-470b-b9be-d386f7ee41ca",
+      "name": "Get callouts",
       "executeOnce": true,
       "credentials": {
         "postgres": {
@@ -736,27 +699,36 @@
     },
     {
       "parameters": {
-        "mode": "chooseBranch"
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "7dac2a7c-779d-4edd-ac14-6fad98dfb988",
+              "leftValue": "={{ $input.first().json.values().length }}",
+              "rightValue": 1,
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
       },
-      "type": "n8n-nodes-base.merge",
-      "typeVersion": 3.2,
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
       "position": [
-        800,
-        400
+        688,
+        368
       ],
-      "id": "94be3fb4-7f1b-40ac-adc6-f8aeda9cc0dc",
-      "name": "Merge2"
-    },
-    {
-      "parameters": {},
-      "type": "n8n-nodes-base.merge",
-      "typeVersion": 3.2,
-      "position": [
-        1136,
-        96
-      ],
-      "id": "112654eb-f5cd-4b45-918a-469d777eda8c",
-      "name": "append"
+      "id": "72c67d6b-5388-486a-a41c-647b535a3cd0",
+      "name": "If not empty"
     }
   ],
   "connections": {
@@ -975,18 +947,7 @@
         ]
       ]
     },
-    "Get quick links": {
-      "main": [
-        [
-          {
-            "node": "Get callouts",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Merge1": {
+    "Get high demand ads": {
       "main": [
         [
           {
@@ -997,60 +958,22 @@
         ]
       ]
     },
-    "Get callouts": {
-      "main": [
-        [
-          {
-            "node": "Merge1",
-            "type": "main",
-            "index": 1
-          }
-        ]
-      ]
-    },
-    "Get high demand ads": {
-      "main": [
-        [
-          {
-            "node": "Get quick links",
-            "type": "main",
-            "index": 0
-          },
-          {
-            "node": "Merge1",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Get quick links1": {
-      "main": [
-        [
-          {
-            "node": "Get callouts1",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Get callouts1": {
-      "main": [
-        [
-          {
-            "node": "Merge2",
-            "type": "main",
-            "index": 1
-          }
-        ]
-      ]
-    },
     "Get low demand ads": {
       "main": [
         [
           {
-            "node": "Get quick links1",
+            "node": "append",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "append": {
+      "main": [
+        [
+          {
+            "node": "If not empty",
             "type": "main",
             "index": 0
           },
@@ -1066,20 +989,49 @@
       "main": [
         [
           {
-            "node": "append",
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get quick links": {
+      "main": [
+        [
+          {
+            "node": "Get callouts",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get callouts": {
+      "main": [
+        [
+          {
+            "node": "Merge2",
             "type": "main",
             "index": 1
           }
         ]
       ]
     },
-    "append": {
+    "If not empty": {
       "main": [
         [
           {
-            "node": "Edit Fields",
+            "node": "Get quick links",
             "type": "main",
             "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Merge2",
+            "type": "main",
+            "index": 1
           }
         ]
       ]
@@ -1115,7 +1067,7 @@
       }
     ]
   },
-  "versionId": "8e939cdf-a689-460e-95cf-fedf11108044",
+  "versionId": "7309c878-94e4-4e37-bd40-67b67302957f",
   "triggerCount": 0,
   "shared": [
     {
