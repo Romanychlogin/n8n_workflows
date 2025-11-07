@@ -1,6 +1,6 @@
 {
+  "updatedAt": "2025-11-07T14:05:38.134Z",
   "createdAt": "2025-10-07T21:30:12.820Z",
-  "updatedAt": "2025-11-02T15:00:04.629Z",
   "id": "d4D0Fp4pO6Ch7S7C",
   "name": "CRM lead process",
   "active": true,
@@ -228,7 +228,7 @@
       },
       "type": "n8n-nodes-base.stickyNote",
       "position": [
-        -16,
+        192,
         -256
       ],
       "typeVersion": 1,
@@ -537,12 +537,12 @@
   "staticData": null,
   "meta": null,
   "pinData": {},
-  "versionId": "f3806316-2349-4cbd-888a-8afcee67ed72",
+  "versionId": "99fad781-c954-4bd3-8ac5-7006aa757c38",
   "triggerCount": 1,
   "shared": [
     {
-      "createdAt": "2025-10-07T21:30:12.820Z",
       "updatedAt": "2025-10-07T21:30:12.820Z",
+      "createdAt": "2025-10-07T21:30:12.820Z",
       "role": "workflow:owner",
       "workflowId": "d4D0Fp4pO6Ch7S7C",
       "projectId": "spKmbJLU4mvACXIB"
