@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-07T10:43:45.473Z",
+  "updatedAt": "2025-11-07T12:19:53.301Z",
   "createdAt": "2025-09-30T17:56:19.098Z",
   "id": "UUlsZU9GOCmdvDHg",
   "name": "extract data for updates with header",
@@ -26,7 +26,7 @@
     {
       "parameters": {
         "authentication": "oAuth2",
-        "path": "=/output_id{{ $('select company data').last().json.company_id }}_camp_{{ $('select ads data').last().json.campaign_id }}_{{ $('select company data').last().json.start_date }}_{{ $('select company data').last().json.end_date }}.xlsx",
+        "path": "=/output_id{{ $('select company data').last().json.company_id }}_camp_{{ $('Get high demand ads').last().json.campaign_id }}_{{ $('select company data').last().json.start_date }}_{{ $('select company data').last().json.end_date }}.xlsx",
         "binaryData": true
       },
       "type": "n8n-nodes-base.dropbox",
@@ -51,7 +51,7 @@
             {
               "id": "e22ad154-2123-49fe-9e5a-c7fe836825f8",
               "name": "add_adv",
-              "value": "=-",
+              "value": "={{ $json.add_adv }}",
               "type": "string"
             },
             {
@@ -286,29 +286,6 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "SELECT ad.*, cs1.service_bid,regexp_replace(\n    cs1.service_name,\n    '[^a-zA-Zа-яА-ЯёЁ ]',\n    '',\n    'g'\n) AS cleaned_service_name\nFROM current_ads_list A ad, company_services cs \nWHERE cs.service_id=ad.service_id and  ad.is_hi_demand=true and ad.company_id = $1 AND ad.need_check=false \n  order by service_name,count_clics desc;",
-        "options": {
-          "queryReplacement": "={{ $json.company_id }}"
-        }
-      },
-      "type": "n8n-nodes-base.postgres",
-      "typeVersion": 2.6,
-      "position": [
-        96,
-        -64
-      ],
-      "id": "16819f54-d4a3-4020-994a-9cdba0646688",
-      "name": "select ads data",
-      "credentials": {
-        "postgres": {
-          "id": "Hx2VFmUi5WO2K4QX",
-          "name": "Postgres account 2"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "operation": "executeQuery",
         "query": "select c.*, ((ri.start_date AT TIME ZONE 'UTC')::date)::text as start_date,((ri.end_date AT TIME ZONE 'UTC')::date)::text as end_date from companies c, report_import ri where c.company_id=c.company_id and c.company_id=$1 and ri.import_id=$2",
         "options": {
           "queryReplacement": "={{ $('When Executed by Another Workflow').item.json.company_id }},{{ $('When Executed by Another Workflow').item.json.import_id }}"
@@ -393,8 +370,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        688,
-        352
+        672,
+        896
       ],
       "id": "1cde0995-75f3-4bee-949a-1ced75d68421",
       "name": "set template path"
@@ -410,8 +387,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 2,
       "position": [
-        1040,
-        336
+        1024,
+        880
       ]
     },
     {
@@ -442,8 +419,8 @@
       "type": "n8n-nodes-base.readWriteFile",
       "typeVersion": 1,
       "position": [
-        1312,
-        336
+        1296,
+        880
       ],
       "id": "f908967b-84a2-4607-96ea-c5b14af7593c",
       "name": "Read/Write Files from Disk1"
@@ -471,8 +448,8 @@
       "type": "n8n-nodes-base.executeCommand",
       "typeVersion": 1,
       "position": [
-        -48,
-        480
+        -64,
+        1024
       ],
       "id": "24acbe67-b547-4d6a-b1e5-c5d9eae3d48d",
       "name": "Set package"
@@ -484,8 +461,8 @@
       "type": "n8n-nodes-base.executeCommand",
       "typeVersion": 1,
       "position": [
-        400,
-        528
+        384,
+        1072
       ],
       "id": "0da68622-f5d3-495d-8a4b-2dd87d61e499",
       "name": "set script"
@@ -529,7 +506,7 @@
     },
     {
       "parameters": {
-        "command": "=node xlsx_apply_template.js \\\n  template.xlsx \\\n  target.xlsx \\\n  output.xlsx \\\n  12 1 1 \\\n  \"{{ $('select ads data').last().json.campaign_id }}\" \\\n  \"{{$('When Executed by Another Workflow').first().json.minus_words}}\" \\\n  true"
+        "command": "=node xlsx_apply_template.js \\\n  template.xlsx \\\n  target.xlsx \\\n  output.xlsx \\\n  12 1 1 \\\n  \"{{ $('Get high demand ads').last().json.campaign_id }}\" \\\n  \"{{$('When Executed by Another Workflow').first().json.minus_words}}\" \\\n  true"
       },
       "type": "n8n-nodes-base.executeCommand",
       "typeVersion": 1,
@@ -568,8 +545,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        -288,
-        304
+        -304,
+        848
       ],
       "id": "65723235-66e2-4693-b508-5c7be2939b4d",
       "name": "If script already created"
@@ -581,8 +558,8 @@
       "type": "n8n-nodes-base.executeCommand",
       "typeVersion": 1,
       "position": [
-        -624,
-        288
+        -640,
+        832
       ],
       "id": "0a730af9-b945-4ab0-a59b-7965db6bc247",
       "name": "check if script exists"
@@ -594,8 +571,8 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        -688,
-        448
+        -704,
+        992
       ],
       "id": "c09dd066-4f5c-485c-b6ac-008bdba1cd48",
       "name": "Sticky Note"
@@ -629,7 +606,7 @@
         "operation": "executeQuery",
         "query": "SELECT\n  string_agg(NULLIF(btrim(ql.callout_text), ''),      '||' ORDER BY callout_id) AS link_callout_text\n  \nFROM adv_campaign_callouts ql  where ql.campaign_id=$1;",
         "options": {
-          "queryReplacement": "={{ $('select ads data').item.json.campaign_id }}"
+          "queryReplacement": "={{ $('Get high demand ads').item.json.campaign_id }}"
         }
       },
       "type": "n8n-nodes-base.postgres",
@@ -675,6 +652,110 @@
       ],
       "id": "5e6c7f23-831c-4943-b99c-67edc9003dec",
       "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        16,
+        384
+      ],
+      "id": "7d8194d8-7c91-4520-9868-78ec5de2263a",
+      "name": "Get low demand ads",
+      "credentials": {
+        "postgres": {
+          "id": "Hx2VFmUi5WO2K4QX",
+          "name": "Postgres account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT '-' as add_adv,ad.*, cs1.service_bid,regexp_replace(\n    cs1.service_name,\n    '[^a-zA-Zа-яА-ЯёЁ ]',\n    '',\n    'g'\n) AS cleaned_service_name\nFROM current_ads_list A ad, company_services cs \nWHERE cs.service_id=ad.service_id and  ad.is_hi_demand=true and ad.company_id = $1 AND ad.need_check=false \n  order by service_name,count_clics desc;",
+        "options": {
+          "queryReplacement": "={{ $json.company_id }}"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        96,
+        -64
+      ],
+      "id": "16819f54-d4a3-4020-994a-9cdba0646688",
+      "name": "Get high demand ads",
+      "credentials": {
+        "postgres": {
+          "id": "Hx2VFmUi5WO2K4QX",
+          "name": "Postgres account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT\n  string_agg(NULLIF(btrim(ql.link_header), ''),      '||' ORDER BY link_id) AS link_headers_text,\n  string_agg(NULLIF(btrim(ql.link_description), ''), '||' ORDER BY link_id) AS link_descriptions_text,\n  string_agg(NULLIF(btrim(ql.link_url), ''),         '||' ORDER BY link_id) AS link_urls_text\nFROM public.adv_campaign_quick_links ql  where ql.campaign_id=$1;",
+        "options": {
+          "queryReplacement": "={{ $json.campaign_id }}"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        288,
+        560
+      ],
+      "id": "a9485924-43f5-45bd-a103-a030dd0ddaab",
+      "name": "Get quick links1",
+      "executeOnce": true,
+      "credentials": {
+        "postgres": {
+          "id": "Hx2VFmUi5WO2K4QX",
+          "name": "Postgres account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT\n  string_agg(NULLIF(btrim(ql.callout_text), ''),      '||' ORDER BY callout_id) AS link_callout_text\n  \nFROM adv_campaign_callouts ql  where ql.campaign_id=$1;",
+        "options": {
+          "queryReplacement": "={{ $('Get low demand ads').item.json.campaign_id }}"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        480,
+        560
+      ],
+      "id": "3a7f1119-db1b-4178-a8be-8cdfabd7f720",
+      "name": "Get callouts1",
+      "executeOnce": true,
+      "credentials": {
+        "postgres": {
+          "id": "Hx2VFmUi5WO2K4QX",
+          "name": "Postgres account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "chooseBranch"
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        800,
+        400
+      ],
+      "id": "94be3fb4-7f1b-40ac-adc6-f8aeda9cc0dc",
+      "name": "Merge2"
     }
   ],
   "connections": {
@@ -700,27 +781,16 @@
         ]
       ]
     },
-    "select ads data": {
-      "main": [
-        [
-          {
-            "node": "Get quick links",
-            "type": "main",
-            "index": 0
-          },
-          {
-            "node": "Merge1",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "select company data": {
       "main": [
         [
           {
-            "node": "select ads data",
+            "node": "Get high demand ads",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Get low demand ads",
             "type": "main",
             "index": 0
           }
@@ -936,6 +1006,60 @@
           }
         ]
       ]
+    },
+    "Get high demand ads": {
+      "main": [
+        [
+          {
+            "node": "Get quick links",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get quick links1": {
+      "main": [
+        [
+          {
+            "node": "Get callouts1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get callouts1": {
+      "main": [
+        [
+          {
+            "node": "Merge2",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Get low demand ads": {
+      "main": [
+        [
+          {
+            "node": "Get quick links1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
@@ -968,7 +1092,7 @@
       }
     ]
   },
-  "versionId": "20fcf42f-d000-4f9e-8896-32b62fc08cfa",
+  "versionId": "ac8a03b9-d1cb-4605-b99f-25df6f34e324",
   "triggerCount": 0,
   "shared": [
     {
