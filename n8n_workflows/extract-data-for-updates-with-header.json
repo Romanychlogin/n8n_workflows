@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-07T13:22:45.767Z",
+  "updatedAt": "2025-11-07T14:20:04.667Z",
   "createdAt": "2025-09-30T17:56:19.098Z",
   "id": "UUlsZU9GOCmdvDHg",
   "name": "extract data for updates with header",
@@ -641,7 +641,7 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "SELECT '-' as add_adv,al.key_word, al.company_id, al.service_id, al.report_id, al.campaign_id, ag.group_name,ag.group_yandex_id,ads.ad_header,ads.ad_text,ads.ad_url\n\tFROM ads_list al,ads_groups ag, ads_for_groups ads \n\twhere al.is_own_brand=false and al.to_upload_ad=true and al.is_hi_demand=false and al.ads_group_id=ag.ads_group_id and ag.ads_group_id=ads.ads_group_id and al.company_id=$1",
+        "query": "SELECT '-' as add_adv,al.key_word, al.company_id, al.service_id, al.report_id, al.campaign_id, ag.group_name,ag.group_yandex_id,ads.ad_header,ads.ad_text,ads.ad_url,cs.service_bid\n\tFROM ads_list al,ads_groups ag, ads_for_groups ads,company_services cs\n\twhere al.is_own_brand=false and al.to_upload_ad=true and al.is_hi_demand=false and al.ads_group_id=ag.ads_group_id and ag.ads_group_id=ads.ads_group_id and cs.service_id=al.service_id and al.company_id=$1",
         "options": {
           "queryReplacement": "={{ $('When Executed by Another Workflow').item.json.company_id }}"
         }
@@ -654,6 +654,7 @@
       ],
       "id": "7d8194d8-7c91-4520-9868-78ec5de2263a",
       "name": "Get low demand ads",
+      "alwaysOutputData": true,
       "credentials": {
         "postgres": {
           "id": "Hx2VFmUi5WO2K4QX",
@@ -677,6 +678,7 @@
       ],
       "id": "16819f54-d4a3-4020-994a-9cdba0646688",
       "name": "Get high demand ads",
+      "alwaysOutputData": true,
       "credentials": {
         "postgres": {
           "id": "Hx2VFmUi5WO2K4QX",
@@ -1113,7 +1115,7 @@
       }
     ]
   },
-  "versionId": "7c9f3b83-b4bf-4050-82db-cc675b76638a",
+  "versionId": "8e939cdf-a689-460e-95cf-fedf11108044",
   "triggerCount": 0,
   "shared": [
     {
