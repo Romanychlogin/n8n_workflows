@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-06T14:04:20.851Z",
+  "updatedAt": "2025-11-07T09:38:47.501Z",
   "createdAt": "2025-09-28T11:31:13.045Z",
   "id": "lBAh8kjoXRX0aGUF",
   "name": "ADS headers and texts creation services for updates",
@@ -183,7 +183,7 @@
     },
     {
       "parameters": {
-        "jsCode": "// Function-Node (Run Once)\nconst workflowData = $getWorkflowStaticData('global');\nworkflowData.company_description = $json.company_name + ' ' + $json.service_name+ ' ' + $json.service_description;\nworkflowData.company_description_with_url = $json.company_name + ' ' + $json.service_name+ ' ' + $json.service_description + ' сервис доступен по адресу: ' + $json.service_url;\nreturn items;"
+        "jsCode": "// Function-Node (Run Once)\nconst workflowData = $getWorkflowStaticData('global');\nworkflowData.company_description = $json.company_name + ' ' + $json.service_name+ ' ' + $json.service_description;\nworkflowData.company_description_with_url = $json.company_name + ' ' + $json.service_name+ ' ' + $json.service_description_with_url;\nreturn items;"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -427,7 +427,7 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "select cs.service_name,c.company_name,cs.service_description,cs.service_url,cs.service_id from companies c, company_services cs where c.company_id=cs.company_id and c.company_id=$1",
+        "query": "select cs.service_name,c.company_name,cs.service_description,service_description_with_url,cs.service_url,cs.service_id from companies c, company_services cs where c.company_id=cs.company_id and c.company_id=$1",
         "options": {
           "queryReplacement": "{{ $('set variables').item.json.company_id }}"
         }
@@ -1786,7 +1786,7 @@
       }
     ]
   },
-  "versionId": "cdeb6c37-5ed8-4d62-8cb8-f153430e76ab",
+  "versionId": "2a3fe006-d465-4214-81cd-4764b2495f50",
   "triggerCount": 0,
   "shared": [
     {
