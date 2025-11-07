@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-07T11:05:41.207Z",
+  "updatedAt": "2025-11-07T11:25:34.995Z",
   "createdAt": "2025-11-06T13:56:02.796Z",
   "id": "Gi9vc9YfTegfpMjd",
   "name": "Create ads for low frequency key words",
@@ -365,7 +365,7 @@
     },
     {
       "parameters": {
-        "jsCode": "\n\n\n// 2) Источник мапы по id из другой ноды (если есть)\nconst utm_string='?utm_source=yandex&utm_medium=cpc&utm_campaign={campaign_id}&utm_content={ad_id}&utm_term={keyword}.{device_type}.{region_name}&block={position_type}.{position}.{source}';\nconst itemsById = $('headers and texts').last().json?.ItemsbyId ?? {};\n\n// 3) Формируем выходные элементы\nconst out = [];\nfor (const it of $input.first().json?.Items) {\n  if (!it || typeof it !== 'object') continue;\n\n  const ads_group_id = typeof it.id === 'string' && it.id.trim() ? it.id.trim() : null;\n  const src = itemsById[ads_group_id] ?? {};\n  const length  = src?.length ?? '';\n  const ad_header = src?.ad_header ?? '';\n  const ad_text   = src?.ad_text ?? '';\n  \n  \n  const ad_url  = src?.service_url ?? '' + utm_string;\n\n  out.push({\n    json: { ads_group_id, ad_url, ad_header, ad_text, length }\n  });\n}\n\nreturn out;"
+        "jsCode": "\n\n\n// 2) Источник мапы по id из другой ноды (если есть)\nconst utm_string='?utm_source=yandex&utm_medium=cpc&utm_campaign={campaign_id}&utm_content={ad_id}&utm_term={keyword}.{device_type}.{region_name}&block={position_type}.{position}.{source}';\nconst itemsById = $('headers and texts').last().json?.ItemsbyId ?? {};\n\n// 3) Формируем выходные элементы\nconst out = [];\nfor (const it of $input.first().json?.Items) {\n  if (!it || typeof it !== 'object') continue;\n\n  const ads_group_id = typeof it.id === 'string' && it.id.trim() ? it.id.trim() : null;\n  const src = itemsById[ads_group_id] ?? {};\n  const length  = src?.length ?? '';\n  const ad_header = src?.ad_header ?? '';\n  const ad_text   = src?.ad_text ?? '';\n  \n  \n  const ad_url  = src?.service_url + utm_string;\n\n  out.push({\n    json: { ads_group_id, ad_url, ad_header, ad_text, length }\n  });\n}\n\nreturn out;"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -1371,7 +1371,7 @@
       }
     ]
   },
-  "versionId": "7296a90c-f87f-4bce-9a50-74a5edad3a20",
+  "versionId": "e2c2fe07-2251-44f7-a9ff-f10d6215946c",
   "triggerCount": 0,
   "shared": [
     {
