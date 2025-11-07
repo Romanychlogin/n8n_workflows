@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-07T16:02:01.147Z",
+  "updatedAt": "2025-11-07T16:20:22.068Z",
   "createdAt": "2025-09-28T11:31:13.045Z",
   "id": "lBAh8kjoXRX0aGUF",
   "name": "ADS headers and texts creation services for updates",
@@ -675,12 +675,11 @@
           "conditions": [
             {
               "id": "b13ec6fc-ce2d-48a1-a4c7-6ded529707ec",
-              "leftValue": "={{$input.first().json.success}}",
-              "rightValue": "",
+              "leftValue": "={{$input.first().json.values().length}}",
+              "rightValue": 1,
               "operator": {
-                "type": "boolean",
-                "operation": "true",
-                "singleValue": true
+                "type": "number",
+                "operation": "gt"
               }
             }
           ],
@@ -1120,7 +1119,7 @@
         "operation": "executeQuery",
         "query": "update ads_list set ad_header=$2, ad_text=$3, ad_url=$4,add_to_hi_demand=false,to_upload_ad=true,group_name=$2 where ad_id=$1\nreturning ad_id,ad_text,ad_url",
         "options": {
-          "queryReplacement": "=[\n  { \"value\": \"={{ $('Loop Over Items2').last().json.ad_id}}\" },\n  { \"value\": \"={{ $('Loop Over Items2').last().json.ad_header }}\" },\n  { \"value\": \"={{ $('Loop Over Items2').last().json.ad_text }}\" },\n  { \"value\": \"={{ $('Loop Over Items2').last().json.ad_url }}\" }\n]"
+          "queryReplacement": "={{ [\n  $('Loop Over Items2').last().json.ad_id,\n  $('Loop Over Items2').last().json.ad_header,\n  $('Loop Over Items2').last().json.ad_text,\n  $('Loop Over Items2').last().json.ad_url\n]}}"
         }
       },
       "type": "n8n-nodes-base.postgres",
@@ -1488,19 +1487,19 @@
       "main": [
         [
           {
-            "node": "Loop Over Items1",
+            "node": "get service urls",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge",
             "type": "main",
             "index": 0
           }
         ],
         [
           {
-            "node": "Merge",
-            "type": "main",
-            "index": 0
-          },
-          {
-            "node": "get service urls",
+            "node": "Loop Over Items1",
             "type": "main",
             "index": 0
           }
@@ -2200,7 +2199,7 @@
       }
     ]
   },
-  "versionId": "85c5475e-7e9f-4d31-a1b8-b272e97c028c",
+  "versionId": "cf2d8e14-45ae-4487-a605-3190dfa9c6f9",
   "triggerCount": 0,
   "shared": [
     {
