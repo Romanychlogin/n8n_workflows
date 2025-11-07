@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-07T09:38:47.501Z",
+  "updatedAt": "2025-11-07T10:59:24.929Z",
   "createdAt": "2025-09-28T11:31:13.045Z",
   "id": "lBAh8kjoXRX0aGUF",
   "name": "ADS headers and texts creation services for updates",
@@ -941,7 +941,7 @@
     },
     {
       "parameters": {
-        "jsCode": "// 1) Берём строку JSON из указанного поля\nlet raw = $input.first().json?.output?.[1]?.content?.[0]?.text;\n\n// Удаляем ```...``` и парсим JSON\nfunction stripCodeFences(s) {\n  if (typeof s !== 'string') return s;\n  let t = s.trim();\n  if (t.startsWith('```')) t = t.replace(/^```[a-zA-Z]*\\n?/, '').replace(/```$/, '').trim();\n  return t;\n}\nfunction safeParseJSON(x) {\n  if (x == null) return null;\n  if (typeof x === 'object') return x;\n  const s = stripCodeFences(String(x));\n  try { return JSON.parse(s); } catch {\n    const m = s.match(/{[\\s\\S]*}/);\n    if (m) { try { return JSON.parse(m[0]); } catch {} }\n    return null;\n  }\n}\n\nconst obj = safeParseJSON(raw);\n\n// === ГЛАВНОЕ ИЗМЕНЕНИЕ: используем url_strings вместо phrases ===\nif (!obj || !Array.isArray(obj.url_strings)) {\n  return [{ json: { note: 'url_strings not found', Items: [], count: 0 } }];\n}\n\n// 2) Источник мапы по id из другой ноды (если есть)\nconst itemsById = $('keywords headers and texts').last().json?.ItemsbyId ?? {};\n\n// 3) Формируем выходные элементы\nconst out = [];\nfor (const it of obj.url_strings) {\n  if (!it || typeof it !== 'object') continue;\n\n  const ad_url  = typeof it.url_string === 'string' && it.url_string.trim() ? it.url_string.trim() : null;\n  const ad_id = typeof it.id === 'string' && it.id.trim() ? it.id.trim() : null;\n  if (!ad_url || !ad_id) continue;\n\n  const src = itemsById[ad_id] ?? {};\n  const ad_header = src?.header ?? '';\n  const ad_text   = src?.ad_text ?? '';\n  const key_word  = src?.phrase ?? '';\n\n  out.push({\n    json: { ad_id, ad_url, ad_header, ad_text, key_word }\n  });\n}\n\nreturn out;"
+        "jsCode": "// 1) Берём строку JSON из указанного поля\nlet raw = $input.first().json?.output?.[1]?.content?.[0]?.text;\n\n// Удаляем ```...``` и парсим JSON\nfunction stripCodeFences(s) {\n  if (typeof s !== 'string') return s;\n  let t = s.trim();\n  if (t.startsWith('```')) t = t.replace(/^```[a-zA-Z]*\\n?/, '').replace(/```$/, '').trim();\n  return t;\n}\nfunction safeParseJSON(x) {\n  if (x == null) return null;\n  if (typeof x === 'object') return x;\n  const s = stripCodeFences(String(x));\n  try { return JSON.parse(s); } catch {\n    const m = s.match(/{[\\s\\S]*}/);\n    if (m) { try { return JSON.parse(m[0]); } catch {} }\n    return null;\n  }\n}\n\nconst obj = safeParseJSON(raw);\n\n// === ГЛАВНОЕ ИЗМЕНЕНИЕ: используем url_strings вместо phrases ===\nif (!obj || !Array.isArray(obj.url_strings)) {\n  return [{ json: { note: 'url_strings not found', Items: [], count: 0 } }];\n}\n\n// 2) Источник мапы по id из другой ноды (если есть)\nconst itemsById = $('keywords headers and texts').last().json?.ItemsbyId ?? {};\nconst utm_string='?utm_source=yandex&utm_medium=cpc&utm_campaign={campaign_id}&utm_content={ad_id}&utm_term={keyword}.{device_type}.{region_name}&block={position_type}.{position}.{source}';\n// 3) Формируем выходные элементы\nconst out = [];\nfor (const it of obj.url_strings) {\n  if (!it || typeof it !== 'object') continue;\n\n  const ad_url  = typeof it.url_string === 'string' && it.url_string.trim() ? it.url_string.trim() : null;\n  let ad_id = typeof it.id === 'string' && it.id.trim() ? it.id.trim() : null;\n  ad_id = ad_id + utm_string;\n  if (!ad_url || !ad_id) continue;\n\n  const src = itemsById[ad_id] ?? {};\n  const ad_header = src?.header ?? '';\n  const ad_text   = src?.ad_text ?? '';\n  const key_word  = src?.phrase ?? '';\n\n  out.push({\n    json: { ad_id, ad_url, ad_header, ad_text, key_word }\n  });\n}\n\nreturn out;"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -1786,7 +1786,7 @@
       }
     ]
   },
-  "versionId": "2a3fe006-d465-4214-81cd-4764b2495f50",
+  "versionId": "b882163c-cc95-4a1a-89dc-de8e0526098e",
   "triggerCount": 0,
   "shared": [
     {
