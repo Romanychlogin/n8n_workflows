@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-07T10:01:42.551Z",
+  "updatedAt": "2025-11-07T10:11:57.520Z",
   "createdAt": "2025-11-06T13:56:02.796Z",
   "id": "Gi9vc9YfTegfpMjd",
   "name": "Create ads for low frequency key words",
@@ -835,6 +835,19 @@
       ],
       "id": "567b588b-9e14-4506-9d9d-f2c3b10c3b2b",
       "name": "If empty1"
+    },
+    {
+      "parameters": {
+        "content": "Долг - генерация объявлений для брендовых запросов"
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -688,
+        -736
+      ],
+      "id": "eea6dd8b-1549-4edb-bc72-1138869668fb",
+      "name": "Sticky Note"
     }
   ],
   "connections": {
@@ -1545,7 +1558,7 @@
       }
     ]
   },
-  "versionId": "faa7dacd-8eb6-4bdd-ab11-b0ddd18c5617",
+  "versionId": "5df285a3-00f9-4041-9aed-a28592742f60",
   "triggerCount": 0,
   "shared": [
     {
