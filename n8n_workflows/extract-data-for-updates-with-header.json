@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-07T13:09:52.495Z",
+  "updatedAt": "2025-11-07T13:12:01.466Z",
   "createdAt": "2025-09-30T17:56:19.098Z",
   "id": "UUlsZU9GOCmdvDHg",
   "name": "extract data for updates with header",
@@ -641,7 +641,7 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "SELECT '-' as add_adv,al.key_word, al.company_id, al.service_id, al.report_id, al.campaign_id, ag.group_name,ag.group_yandex_id,ads.ad_header,ads.ad_text,ads.ad_url\n\tFROM ads_list al,ads_groups ag, ads_for_groups ads \n\twhere al.is_own_brand=false and al.to_upload_ad=true and al.is_hi_demand=false and al.ads_group_id=ag.ads_group_id and ag.ads_group_id=ads.ads_group_id and company_id=$1",
+        "query": "SELECT '-' as add_adv,al.key_word, al.company_id, al.service_id, al.report_id, al.campaign_id, ag.group_name,ag.group_yandex_id,ads.ad_header,ads.ad_text,ads.ad_url\n\tFROM ads_list al,ads_groups ag, ads_for_groups ads \n\twhere al.is_own_brand=false and al.to_upload_ad=true and al.is_hi_demand=false and al.ads_group_id=ag.ads_group_id and ag.ads_group_id=ads.ads_group_id and al.company_id=$1",
         "options": {
           "queryReplacement": "={{ $('When Executed by Another Workflow').item.json.company_id }}"
         }
@@ -664,7 +664,7 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "SELECT '-' as add_adv,ad.*, cs1.service_bid,regexp_replace(\n    cs1.service_name,\n    '[^a-zA-Zа-яА-ЯёЁ ]',\n    '',\n    'g'\n) AS cleaned_service_name\nFROM current_ads_list ad, company_services cs \nWHERE cs.service_id=ad.service_id and  ad.is_hi_demand=true and ad.company_id = $1 AND ad.need_check=false \n  order by service_name,count_clics desc;",
+        "query": "SELECT '-' as add_adv,ad.*, cs.service_bid,regexp_replace(\n    cs.service_name,\n    '[^a-zA-Zа-яА-ЯёЁ ]',\n    '',\n    'g'\n) AS cleaned_service_name\nFROM current_ads_list ad, company_services cs \nWHERE cs.service_id=ad.service_id and  ad.is_hi_demand=true and ad.company_id = $1 AND ad.to_upload_ad=true\n  order by service_name,count_clics desc;",
         "options": {
           "queryReplacement": "={{ $json.company_id }}"
         }
@@ -1113,7 +1113,7 @@
       }
     ]
   },
-  "versionId": "d9ac7a1c-354c-4397-b76d-733d797f9ef5",
+  "versionId": "49765f88-a49e-456b-90cf-0e2cf7737acb",
   "triggerCount": 0,
   "shared": [
     {
