@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-07T15:59:53.624Z",
+  "updatedAt": "2025-11-07T16:02:01.147Z",
   "createdAt": "2025-09-28T11:31:13.045Z",
   "id": "lBAh8kjoXRX0aGUF",
   "name": "ADS headers and texts creation services for updates",
@@ -1118,7 +1118,7 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "update ads_list set ad_header=$2, ad_text=$3, ad_url=$4,add_to_hi_demand=false,to_upload_ad=true,group_name=$2 where ad_id=$1",
+        "query": "update ads_list set ad_header=$2, ad_text=$3, ad_url=$4,add_to_hi_demand=false,to_upload_ad=true,group_name=$2 where ad_id=$1\nreturning ad_id,ad_text,ad_url",
         "options": {
           "queryReplacement": "=[\n  { \"value\": \"={{ $('Loop Over Items2').last().json.ad_id}}\" },\n  { \"value\": \"={{ $('Loop Over Items2').last().json.ad_header }}\" },\n  { \"value\": \"={{ $('Loop Over Items2').last().json.ad_text }}\" },\n  { \"value\": \"={{ $('Loop Over Items2').last().json.ad_url }}\" }\n]"
         }
@@ -2200,7 +2200,7 @@
       }
     ]
   },
-  "versionId": "c027caaa-76cf-46f0-a821-d965fa256d6f",
+  "versionId": "85c5475e-7e9f-4d31-a1b8-b272e97c028c",
   "triggerCount": 0,
   "shared": [
     {
