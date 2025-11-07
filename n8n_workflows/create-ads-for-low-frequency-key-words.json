@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-06T20:59:12.879Z",
+  "updatedAt": "2025-11-07T05:55:12.837Z",
   "createdAt": "2025-11-06T13:56:02.796Z",
   "id": "Gi9vc9YfTegfpMjd",
   "name": "Create ads for low frequency key words",
@@ -473,7 +473,7 @@
         "specifyBody": "json",
         "jsonBody": "={{$json}}",
         "options": {
-          "timeout": 30000
+          "timeout": 90000
         }
       },
       "type": "n8n-nodes-base.httpRequest",
@@ -1554,7 +1554,7 @@
       }
     ]
   },
-  "versionId": "3f1b4074-7f4c-4f8f-b9c8-a658b16102ad",
+  "versionId": "f97b1e27-ffa3-4f95-b56f-8113fe4856a6",
   "triggerCount": 0,
   "shared": [
     {
