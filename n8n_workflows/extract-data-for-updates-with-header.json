@@ -1,6 +1,6 @@
 {
+  "updatedAt": "2025-11-07T10:43:45.473Z",
   "createdAt": "2025-09-30T17:56:19.098Z",
-  "updatedAt": "2025-10-24T07:59:41.309Z",
   "id": "UUlsZU9GOCmdvDHg",
   "name": "extract data for updates with header",
   "active": false,
@@ -51,7 +51,7 @@
             {
               "id": "e22ad154-2123-49fe-9e5a-c7fe836825f8",
               "name": "add_adv",
-              "value": "={{ $json.add_adv }}",
+              "value": "=-",
               "type": "string"
             },
             {
@@ -153,7 +153,7 @@
             {
               "id": "c060b10e-692d-4334-8efa-6f7caf10a9f7",
               "name": "company_id",
-              "value": "={{ $('select company data').first().json.yandex_id }}",
+              "value": "={{ $json.campaign_id }}",
               "type": "string"
             },
             {
@@ -286,7 +286,7 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "SELECT ad.*, cs1.service_bid, regexp_replace(\n    cs1.service_name,\n    '[^a-zA-Zа-яА-ЯёЁ ]',\n    '',\n    'g'\n) AS cleaned_service_name,cs1.count_clics\nFROM current_ads_list AS ad\nLEFT JOIN LATERAL (\n    SELECT cs.service_bid,cs.service_name, COALESCE(kw.count_clics,0) as count_clics\n    FROM current_list kw\n    JOIN company_services cs\n      ON cs.service_id = kw.service_id\n     AND cs.company_id = ad.company_id       -- если есть привязка к компании — рекомендую\n    WHERE kw.list_id = ad.list_id  \n    ORDER BY cs.service_bid DESC NULLS LAST  -- критерий выбора ОДНОЙ записи\n    LIMIT 1\n) AS cs1 ON TRUE\n\nWHERE ad.company_id = $1 AND ad.need_check=false order by service_name,count_clics desc;",
+        "query": "SELECT ad.*, cs1.service_bid,regexp_replace(\n    cs1.service_name,\n    '[^a-zA-Zа-яА-ЯёЁ ]',\n    '',\n    'g'\n) AS cleaned_service_name\nFROM current_ads_list A ad, company_services cs \nWHERE cs.service_id=ad.service_id and  ad.is_hi_demand=true and ad.company_id = $1 AND ad.need_check=false \n  order by service_name,count_clics desc;",
         "options": {
           "queryReplacement": "={{ $json.company_id }}"
         }
@@ -294,7 +294,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        240,
+        96,
         -64
       ],
       "id": "16819f54-d4a3-4020-994a-9cdba0646688",
@@ -317,8 +317,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        -96,
-        -64
+        -240,
+        -48
       ],
       "id": "96c57c21-ef6a-4ed7-87d3-2594efbb56f3",
       "name": "select company data",
@@ -328,19 +328,6 @@
           "name": "Postgres account 2"
         }
       }
-    },
-    {
-      "parameters": {
-        "jsCode": "// === настройки ===\nconst BATCH_SIZE = 50;\n\n// все входные элементы\nconst inputItems = $input.all();           // [{ json: {...} }, ...]\nconst rows = inputItems.map(i => i.json);\n\n// 1) группируем по cleaned_service_name (сохраняем порядок появления)\nconst byService = new Map();\nfor (const rec of rows) {\n  const key = rec.cleaned_service_name ?? '';\n  if (!byService.has(key)) byService.set(key, []);\n  byService.get(key).push(rec);\n}\n\nconst out = [];\n\n// 2) по каждой группе режем на пачки ≤ 50\nfor (const [serviceName, list] of byService.entries()) {\n  for (let offset = 0, batchNo = 1; offset < list.length; offset += BATCH_SIZE, batchNo++) {\n    const batch = list.slice(offset, offset + BATCH_SIZE);\n    if (batch.length === 0) continue;\n    const serviceNameDate=serviceName+'_'+$('select company data').first().json.start_date+'_'+$('select company data').first().json.end_date;\n    const groupName = `${serviceNameDate}_${batchNo}`;\n\n    // Берём шаблон из первой записи пачки\n    const first = batch[0] ?? {};\n    const templateHeader = first.ad_header;\n    const templateText   = first.ad_text;\n    const templateUrl    = first.ad_url;\n\n    // 2.1) ОРИГИНАЛЬНЫЕ записи пачки:\n    //     ad_header/ad_text/ad_url = из первой записи пачки\n    for (const rec of batch) {\n      out.push({\n        json: {\n          ...rec,\n          group_name: groupName,\n          ad_header: templateHeader,\n          ad_text:   templateText,\n          ad_url:    templateUrl,\n          add_adv:'-'\n        },\n      });\n    }\n\n    // 2.2) Дубликаты всех, КРОМЕ первой, с пустым key_word\n    for (let i = 1; i < batch.length; i++) {\n      out.push({\n        json: {\n          ...batch[i],\n          group_name: groupName,\n          key_word: '', // очищаем только key_words\n          add_adv:'+'\n        },\n      });\n    }\n  }\n}\n\nreturn out;"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        592,
-        -192
-      ],
-      "id": "8a20bdc0-26f0-48a8-a962-4ff2b49c80bd",
-      "name": "Code in JavaScript"
     },
     {
       "parameters": {
@@ -406,8 +393,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        672,
-        240
+        688,
+        352
       ],
       "id": "1cde0995-75f3-4bee-949a-1ced75d68421",
       "name": "set template path"
@@ -424,7 +411,7 @@
       "typeVersion": 2,
       "position": [
         1040,
-        288
+        336
       ]
     },
     {
@@ -455,8 +442,8 @@
       "type": "n8n-nodes-base.readWriteFile",
       "typeVersion": 1,
       "position": [
-        1296,
-        288
+        1312,
+        336
       ],
       "id": "f908967b-84a2-4607-96ea-c5b14af7593c",
       "name": "Read/Write Files from Disk1"
@@ -624,8 +611,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        544,
-        96
+        400,
+        32
       ],
       "id": "85334352-4cf0-46d8-a7da-795b5cf1de0b",
       "name": "Get quick links",
@@ -648,8 +635,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        736,
-        96
+        592,
+        32
       ],
       "id": "491dd3b0-f29d-479b-a746-928176044731",
       "name": "Get callouts",
@@ -663,214 +650,31 @@
     },
     {
       "parameters": {
-        "mode": "chooseBranch",
-        "numberInputs": 3
+        "mode": "chooseBranch"
       },
       "type": "n8n-nodes-base.merge",
       "typeVersion": 3.2,
       "position": [
         912,
-        -48
+        -80
       ],
       "id": "711c3041-cd6a-40a5-b357-5afd17462cf3",
       "name": "Merge1"
     },
     {
       "parameters": {
-        "content": "UPDATE CURRENT_ADS_LIST!!! WITH THE GROUP_nameS"
+        "content": "High demand объявления",
+        "height": 512,
+        "width": 1440
       },
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        96,
-        -288
+        -32,
+        -272
       ],
       "id": "5e6c7f23-831c-4943-b99c-67edc9003dec",
       "name": "Sticky Note1"
-    },
-    {
-      "parameters": {
-        "operation": "update",
-        "schema": {
-          "__rl": true,
-          "mode": "list",
-          "value": "public"
-        },
-        "table": {
-          "__rl": true,
-          "value": "current_ads_list",
-          "mode": "list",
-          "cachedResultName": "current_ads_list"
-        },
-        "columns": {
-          "mappingMode": "defineBelow",
-          "value": {
-            "ad_id": "={{ $json.ad_id }}",
-            "group_name": "={{ $json.group_name }}"
-          },
-          "matchingColumns": [
-            "ad_id"
-          ],
-          "schema": [
-            {
-              "id": "ad_id",
-              "displayName": "ad_id",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "number",
-              "canBeUsedToMatch": true,
-              "removed": false
-            },
-            {
-              "id": "group_name",
-              "displayName": "group_name",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true
-            },
-            {
-              "id": "key_word",
-              "displayName": "key_word",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true,
-              "removed": true
-            },
-            {
-              "id": "ad_header",
-              "displayName": "ad_header",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true,
-              "removed": true
-            },
-            {
-              "id": "ad_text",
-              "displayName": "ad_text",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true,
-              "removed": true
-            },
-            {
-              "id": "group_id",
-              "displayName": "group_id",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "number",
-              "canBeUsedToMatch": true,
-              "removed": true
-            },
-            {
-              "id": "ad_url",
-              "displayName": "ad_url",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true,
-              "removed": true
-            },
-            {
-              "id": "company_id",
-              "displayName": "company_id",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "number",
-              "canBeUsedToMatch": true,
-              "removed": true
-            },
-            {
-              "id": "service_id",
-              "displayName": "service_id",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "number",
-              "canBeUsedToMatch": true,
-              "removed": true
-            },
-            {
-              "id": "report_id",
-              "displayName": "report_id",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "number",
-              "canBeUsedToMatch": true,
-              "removed": true
-            },
-            {
-              "id": "need_check",
-              "displayName": "need_check",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "boolean",
-              "canBeUsedToMatch": true,
-              "removed": true
-            },
-            {
-              "id": "resolution",
-              "displayName": "resolution",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true,
-              "removed": true
-            },
-            {
-              "id": "update_required",
-              "displayName": "update_required",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "boolean",
-              "canBeUsedToMatch": true,
-              "removed": true
-            },
-            {
-              "id": "campaign_id",
-              "displayName": "campaign_id",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "number",
-              "canBeUsedToMatch": true,
-              "removed": true
-            }
-          ],
-          "attemptToConvertTypes": false,
-          "convertFieldsToString": false
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.postgres",
-      "typeVersion": 2.6,
-      "position": [
-        608,
-        -32
-      ],
-      "id": "d457696c-4438-41a0-9d85-226053061d4a",
-      "name": "add group name",
-      "credentials": {
-        "postgres": {
-          "id": "Hx2VFmUi5WO2K4QX",
-          "name": "Postgres account 2"
-        }
-      }
     }
   ],
   "connections": {
@@ -900,17 +704,12 @@
       "main": [
         [
           {
-            "node": "Code in JavaScript",
-            "type": "main",
-            "index": 0
-          },
-          {
             "node": "Get quick links",
             "type": "main",
             "index": 0
           },
           {
-            "node": "add group name",
+            "node": "Merge1",
             "type": "main",
             "index": 0
           }
@@ -922,17 +721,6 @@
         [
           {
             "node": "select ads data",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Code in JavaScript": {
-      "main": [
-        [
-          {
-            "node": "Merge1",
             "type": "main",
             "index": 0
           }
@@ -1144,17 +932,6 @@
           {
             "node": "Merge1",
             "type": "main",
-            "index": 2
-          }
-        ]
-      ]
-    },
-    "add group name": {
-      "main": [
-        [
-          {
-            "node": "Merge1",
-            "type": "main",
             "index": 1
           }
         ]
@@ -1191,12 +968,12 @@
       }
     ]
   },
-  "versionId": "ccd2ba7f-1ced-42cc-bd18-885ed9f0ab88",
+  "versionId": "20fcf42f-d000-4f9e-8896-32b62fc08cfa",
   "triggerCount": 0,
   "shared": [
     {
-      "createdAt": "2025-09-30T17:56:19.098Z",
       "updatedAt": "2025-09-30T17:56:19.098Z",
+      "createdAt": "2025-09-30T17:56:19.098Z",
       "role": "workflow:owner",
       "workflowId": "UUlsZU9GOCmdvDHg",
       "projectId": "spKmbJLU4mvACXIB"
@@ -1204,8 +981,8 @@
   ],
   "tags": [
     {
-      "createdAt": "2025-10-06T13:06:54.644Z",
       "updatedAt": "2025-10-06T13:06:54.644Z",
+      "createdAt": "2025-10-06T13:06:54.644Z",
       "id": "DBEf57wUDunVJUG6",
       "name": "campaign update"
     }
