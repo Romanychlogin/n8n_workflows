@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-07T14:26:31.095Z",
+  "updatedAt": "2025-11-08T06:14:07.234Z",
   "createdAt": "2025-09-30T17:56:19.098Z",
   "id": "UUlsZU9GOCmdvDHg",
   "name": "extract data for updates with header",
@@ -580,7 +580,7 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "SELECT '-' as add_adv,al.key_word, al.company_id, al.service_id, al.report_id, al.campaign_id, ag.group_name,ag.group_yandex_id,ads.ad_header,ads.ad_text,ads.ad_url,cs.service_bid\n\tFROM ads_list al,ads_groups ag, ads_for_groups ads,company_services cs\n\twhere al.is_own_brand=false and al.to_upload_ad=true and al.is_hi_demand=false and al.ads_group_id=ag.ads_group_id and ag.ads_group_id=ads.ads_group_id and cs.service_id=al.service_id and al.company_id=$1",
+        "query": "SELECT\n  '-' AS add_adv,\n  /* key_word с заглавной первой буквой */\n  CASE\n    WHEN al.key_word IS NULL OR al.key_word = '' THEN al.key_word\n    ELSE UPPER(SUBSTR(al.key_word, 1, 1)) || SUBSTR(al.key_word, 2)\n  END AS key_word,\n  al.company_id,\n  al.service_id,\n  al.report_id,\n  al.campaign_id,\n  ag.group_name,\n  ag.group_yandex_id,\n\n  /* ad_header: замена #...# на max_kw + заглавная первая буква */\n  CASE\n    WHEN rep.hdr IS NULL OR rep.hdr = '' THEN rep.hdr\n    ELSE UPPER(SUBSTR(rep.hdr, 1, 1)) || SUBSTR(rep.hdr, 2)\n  END AS ad_header,\n\n  /* ad_text: замена #...# на max_kw + заглавная первая буква */\n  CASE\n    WHEN rep.txt IS NULL OR rep.txt = '' THEN rep.txt\n    ELSE UPPER(SUBSTR(rep.txt, 1, 1)) || SUBSTR(rep.txt, 2)\n  END AS ad_text,\n\n  ads.ad_url,\n  cs.service_bid\nFROM ads_list         al\nJOIN ads_groups       ag  ON ag.ads_group_id  = al.ads_group_id\nJOIN ads_for_groups   ads ON ads.ads_group_id = ag.ads_group_id\nJOIN company_services cs  ON cs.service_id    = al.service_id\n\n/* берём key_word с максимальным count_views в рамках группы и компании */\nCROSS JOIN LATERAL (\n  SELECT al2.key_word AS max_kw\n  FROM ads_list al2\n  WHERE al2.ads_group_id = ag.ads_group_id\n    AND al2.company_id   = al.company_id\n  ORDER BY COALESCE(al2.count_views, 0) DESC, al2.key_word\n  LIMIT 1\n) kw\n\n/* предварительно формируем строки после замены #...# */\nCROSS JOIN LATERAL (\n  SELECT\n    regexp_replace(ads.ad_header, '#[^#]*#', kw.max_kw, 'g') AS hdr,\n    regexp_replace(ads.ad_text,   '#[^#]*#', kw.max_kw, 'g') AS txt\n) rep\n\nWHERE\n  al.is_own_brand   = FALSE\n  AND al.to_upload_ad = TRUE\n  AND al.is_hi_demand = FALSE\n  AND al.company_id  = $1;",
         "options": {
           "queryReplacement": "={{ $('When Executed by Another Workflow').item.json.company_id }}"
         }
@@ -1067,7 +1067,7 @@
       }
     ]
   },
-  "versionId": "7309c878-94e4-4e37-bd40-67b67302957f",
+  "versionId": "92248f0e-de0b-41e6-b7e0-30155bfbc148",
   "triggerCount": 0,
   "shared": [
     {
