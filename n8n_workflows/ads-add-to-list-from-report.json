@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-06T13:37:30.315Z",
+  "updatedAt": "2025-11-08T05:51:03.644Z",
   "createdAt": "2025-11-05T13:50:52.126Z",
   "id": "MhWRad4Kq8hLA1E7",
   "name": "ADS add to list from report",
@@ -302,7 +302,7 @@
     },
     {
       "parameters": {
-        "jsCode": "\n// 3) Обрезаем по ближайшему целому слову до 56 символов\nfunction trimToWordBoundary(s, max = 56) {\n  if (s.length <= max) return s;\n  const slice = s.slice(0, max);\n  const cut = slice.lastIndexOf(' ');\n  return cut === -1 ? slice : slice.slice(0, cut);\n}\n\n\n\nfor (const item of $input.all()) {\nconst raw = String(item.json.key_word ?? '').normalize('NFKC');\n\n// 1) Очистка (оставляем буквы/цифры/пробелы)\nconst cleaned = raw\n  .replace(/[^\\p{L}\\p{N}\\s]+/gu, ' ') // для новых Node\n  // .replace(/[^A-Za-zА-Яа-яЁё0-9\\s]+/g, ' ') // для старых Node\n  .replace(/\\s+/g, ' ')\n  .trim();\n\n// 2) Оставляем не более 7 слов\nconst first7 = cleaned.split(' ').slice(0, 7).join(' ');\n\n\n  item.json.key_word = trimToWordBoundary(first7, 56);\n}\n \n\nreturn $input.all()\n\n\n\n\n"
+        "jsCode": "\n// 3) Обрезаем по ближайшему целому слову до 56 символов\nfunction trimToWordBoundary(s, max = 56) {\n  if (s.length <= max) return s;\n  const slice = s.slice(0, max);\n  const cut = slice.lastIndexOf(' ');\n  return cut === -1 ? slice : slice.slice(0, cut);\n}\n\n\n\nfor (const item of $input.all()) {\nconst raw = String(item.json.key_word ?? '').normalize('NFKC');\n\n// 1) Очистка (оставляем буквы/цифры/пробелы)\nconst cleaned = raw\n  .replace(/[^\\p{L}\\p{N}\\s\"]+/gu, ' ')        // новые Node (Unicode)\n  // .replace(/[^A-Za-zА-Яа-яЁё0-9\\s\"]+/g, ' ') // старые Node\n  .replace(/\\s+/g, ' ')\n  .trim();\n\n// 2) Оставляем не более 7 слов\nconst first7 = cleaned.split(' ').slice(0, 7).join(' ');\n\n\n  item.json.key_word = trimToWordBoundary(first7, 56);\n}\n \n\nreturn $input.all()\n\n\n\n\n"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -1041,7 +1041,7 @@
       }
     ]
   },
-  "versionId": "d732e3b8-1147-4e33-b6c6-1da925942674",
+  "versionId": "80c0e169-9d94-4761-a7f6-a7c3cad98b43",
   "triggerCount": 0,
   "shared": [
     {
