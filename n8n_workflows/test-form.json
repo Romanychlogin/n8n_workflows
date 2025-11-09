@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-09T21:00:50.158Z",
+  "updatedAt": "2025-11-09T21:40:24.350Z",
   "createdAt": "2025-11-09T14:44:54.282Z",
   "id": "XsTmBlu5hybU9K85",
   "name": "Test form",
@@ -97,8 +97,9 @@
     },
     {
       "parameters": {
+        "httpMethod": "POST",
         "path": "12b5fd5b-882f-44bc-95a5-3a7baf31d4e3",
-        "responseMode": "lastNode",
+        "responseMode": "responseNode",
         "options": {}
       },
       "type": "n8n-nodes-base.webhook",
@@ -125,6 +126,85 @@
       "id": "b587fd00-a4f3-4963-b2d7-d95e9b075701",
       "name": "Webhook1",
       "webhookId": "7761af7e-68c6-4e99-ab82-e3acfdc463bc"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "12b5fd5b-882f-44bc-95a5-3a7baf31d4e3",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        224,
+        -16
+      ],
+      "id": "880d6317-dab2-4131-8cd4-3f1c5609d4f0",
+      "name": "Webhook2",
+      "webhookId": "e1569fda-e945-494e-a815-b5b5ae5b5ce4"
+    },
+    {
+      "parameters": {
+        "options": {
+          "responseCode": 204,
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Access-Control-Allow-Origin",
+                "value": "https://trylesson.storage.yandexcloud.net"
+              },
+              {
+                "name": "Access-Control-Allow-Methods",
+                "value": "POST, OPTIONS"
+              },
+              {
+                "name": "Access-Control-Allow-Headers",
+                "value": "Content-Type"
+              },
+              {
+                "name": "Access-Control-Max-Age",
+                "value": "86400"
+              }
+            ]
+          }
+        }
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [
+        432,
+        -16
+      ],
+      "id": "714eaadd-a2a6-4874-adc6-80d1e0b74108",
+      "name": "Respond to Webhook"
+    },
+    {
+      "parameters": {
+        "options": {
+          "responseCode": 200,
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Access-Control-Allow-Origin",
+                "value": "https://trylesson.storage.yandexcloud.net"
+              },
+              {
+                "name": "Vary",
+                "value": "Origin"
+              }
+            ]
+          }
+        }
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [
+        352,
+        -208
+      ],
+      "id": "e2d4a082-f046-4cc6-8747-ef7c7122c2c6",
+      "name": "Respond to Webhook1"
     }
   ],
   "connections": {
@@ -160,6 +240,28 @@
         [
           {
             "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook2": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook1",
             "type": "main",
             "index": 0
           }
@@ -873,8 +975,8 @@
       }
     ]
   },
-  "versionId": "80e617d0-08f4-4a07-a415-2b166a7c17a7",
-  "triggerCount": 2,
+  "versionId": "1830e230-65a4-4c59-b14e-125909feadff",
+  "triggerCount": 3,
   "shared": [
     {
       "updatedAt": "2025-11-09T14:44:54.282Z",
