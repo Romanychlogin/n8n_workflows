@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-09T21:40:24.350Z",
+  "updatedAt": "2025-11-09T21:41:12.964Z",
   "createdAt": "2025-11-09T14:44:54.282Z",
   "id": "XsTmBlu5hybU9K85",
   "name": "Test form",
@@ -142,7 +142,8 @@
       ],
       "id": "880d6317-dab2-4131-8cd4-3f1c5609d4f0",
       "name": "Webhook2",
-      "webhookId": "e1569fda-e945-494e-a815-b5b5ae5b5ce4"
+      "webhookId": "e1569fda-e945-494e-a815-b5b5ae5b5ce4",
+      "disabled": true
     },
     {
       "parameters": {
@@ -975,8 +976,8 @@
       }
     ]
   },
-  "versionId": "1830e230-65a4-4c59-b14e-125909feadff",
-  "triggerCount": 3,
+  "versionId": "e80b0bd3-6fcf-479f-a632-389cd4ae6121",
+  "triggerCount": 2,
   "shared": [
     {
       "updatedAt": "2025-11-09T14:44:54.282Z",
