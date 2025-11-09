@@ -1,7 +1,7 @@
 {
-  "updatedAt": "2025-11-05T00:41:25.293Z",
-  "createdAt": "2025-11-04T13:56:06.291Z",
-  "id": "vwRAn8uUM5XZ8OrS",
+  "updatedAt": "2025-11-09T20:24:51.753Z",
+  "createdAt": "2025-11-09T20:24:51.753Z",
+  "id": "fkNzZ1tjhcmwJbgx",
   "name": "My workflow 4",
   "active": false,
   "isArchived": false,
@@ -11,172 +11,34 @@
       "type": "n8n-nodes-base.manualTrigger",
       "typeVersion": 1,
       "position": [
-        -272,
-        -16
+        0,
+        0
       ],
-      "id": "eeba2de7-c753-41fd-bda8-e693d49e4f5c",
+      "id": "f9d8ea7d-543d-4255-94f4-302d497d9f05",
       "name": "When clicking ‘Execute workflow’"
     },
     {
       "parameters": {
-        "jsCode": "// persistent storage этой ноды\nconst data = $getWorkflowStaticData('node');\n\n// 1) пытаемся взять length из первого входного item'а\nlet inputLen;\nif (items && items.length > 0 && items[0].json) {\n  const candidate = Number(items[0].json.length);\n  if (Number.isFinite(candidate)) inputLen = candidate;\n}\n\n// 2) базовое значение: либо из входа, либо из staticData\nconst base = (inputLen !== undefined) ? inputLen : (Number(data.length) || 0);\n\n// 3) инкремент\nconst next = base + 1;\n\n// 4) сохраняем «вечный» счётчик между запусками\ndata.length = next;\n\n// 5) возвращаем как единственный item (можно слить с входом при желании)\nreturn [{ length: next }];"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        816,
-        352
-      ],
-      "id": "66c3935e-c3f9-4ff2-88a3-24435a859020",
-      "name": "Code in JavaScript"
-    },
-    {
-      "parameters": {
-        "model": {
-          "__rl": true,
-          "value": "gpt-5",
-          "mode": "list",
-          "cachedResultName": "gpt-5"
-        },
-        "options": {}
-      },
-      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
-      "typeVersion": 1.2,
-      "position": [
-        368,
-        400
-      ],
-      "id": "d3566fc5-a1f6-4a4e-bd4b-917398c09c76",
-      "name": "OpenAI Chat Model",
-      "credentials": {
-        "openAiApi": {
-          "id": "m4NScyhZzV3hBcTr",
-          "name": "OpenAi Yads"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "assignments": {
-          "assignments": [
+        "url": "https://n8n-main-production-4310.up.railway.app/webhook/12b5fd5b-882f-44bc-95a5-3a7baf31d4e3",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
             {
-              "id": "ad8f0673-a3a6-4ea8-ba63-9ffe5ec31d57",
-              "name": "company description",
-              "value": "KIBERone Саратов Октябрьский IT школа KIBERone KIBERone – международная КиберШкола программирования и цифровых технологий для детей от 6 до 14 лет.  Позиционирование бренда: KIBERone — первая международная КиберШкола будущего для IT-поколения 6–14 лет, признана ЮНЕСКО лучшей детской образовательной IT-школой в мире. Бренд является партнером Microsoft, Roblox и Samsung. Бесплатные пробные уроки  Основные услуги и программы:  Полный перечень модулей:  Вводный модуль (основы цифровой грамотности)  Основы программирования Scratch Jr  Создание игр на Scratch  ПиктоМир (алгоритмическое мышление)  CodeMonkey (логика и программирование)  Устройство компьютера  Эффектные презентации (PowerPoint, Desygner)  QR-коды  Деловые люди (предпринимательство)  Google Blockly (визуальное программирование)  Roblox Studio (создание игр)  Kodu Game Lab (3D-программирование)  Разработка мобильных приложений в Thunkable  Blender (3D-моделирование)  Компьютерная грамотность  Minecraft Education  Нейросети (основы ИИ)  Alice 3D (3D-программирование)  Run Marco (основы алгоритмов)  Исполнители: Чертёжник и Черепашка  GIF-анимация  Tinkercad (3D-проектирование)  Кибербезопасность  Construct 2 (создание 2D-игр)  Компас-3D (САПР)  Основы HTML (веб-разработка)  Голосовой помощник Алиса  Создание лендинга (Tilda)  Python (создание игр)  Чат-бот на Python  Web-дизайн (Figma)  Web-мастер (HTML+CSS)  Motion Design  Unreal Engine 4 (игровой движок)  JavaScript (игры)  C# (создание 2D-игр)  C++  Java (создание приложений)  Unity 3D (игры)  Олимпиадное программирование  Облачные технологии, Блокчейн, Data Science  PHP+SQL  Photoshop  Подготовка к олимпиадам  Приложения Google  Летние программы:  Летние IT-интенсивы (краткосрочные программы по направлениям Roblox, Minecraft, Python и др.)  Летние КИБЕРканикулы (городской лагерь с IT-обучением и развлекательной программой)  Дополнительные механики:  Кибервалюта («кибероны») для мотивации учеников, обмен на мерч на КиберМаркете  Тьюторы и преподаватели:  Опытные специалисты с практическим опытом и педагогической подготовкой  Другие важные разделы:  Новости (новости школы и сети)  СМИ о нас (публикации о школе)  Фотогалерея (фото с мероприятий и уроков)  Видео (видеоматериалы о школе)  Расписание занятий (время занятий для групп и пробных уроков)  Локации (адрес школы в Октябрьском районе Саратова, ул. Тараса Шевченко, 8)  Оплата (способы оплаты и договор-оферта)  Сертификаты (активация промокодов партнеров)  Контакты (телефон +7 963 112-49-11, email saratov@kiber-one.com.\\n- Не раскрывай рассуждения.\\n\\nOUTPUT FORMAT (строго)\\n- Выводи по одному заголовку на запись\\n- Не добавляй пустых строк до или после.\\n- Не добавляй пояснений, слов вроде “Заголовок” и т.п.\\n\\nRULES FOR GENERATION\\n1.\\tСохранение слов:\\nВсе слова из соответствующей исходной фразы должны присутствовать в заголовке (с возможной перестановкой для правильного порядка слов).\\n2.\\tКорректность и ясность:\\n- Исправь орфографию, грамматику, порядок слов.\\n- Удали жаргон, оставив корректный вариант.\\n- Начни с заглавной буквы.\\n3.\\tРелевантность и уточнение:\\nЗаголовок должен оставаться максимально близким к исходной фразе, но при этом уточнять её в сторону услуг компании (добавляя контекст — например, “онлайн”, “для детей”, “курсы”, “обучение”, если это соответствует KIBERone Саратов Октябрьский IT школа KIBERone KIBERone – международная КиберШкола программирования и цифровых технологий для детей от 6 до 14 лет.  Позиционирование бренда: KIBERone — первая международная КиберШкола будущего для IT-поколения 6–14 лет, признана ЮНЕСКО лучшей детской образовательной IT-школой в мире. Бренд является партнером Microsoft, Roblox и Samsung. Бесплатные пробные уроки  Основные услуги и программы:  Полный перечень модулей:  Вводный модуль (основы цифровой грамотности)  Основы программирования Scratch Jr  Создание игр на Scratch  ПиктоМир (алгоритмическое мышление)  CodeMonkey (логика и программирование)  Устройство компьютера  Эффектные презентации (PowerPoint, Desygner)  QR-коды  Деловые люди (предпринимательство)  Google Blockly (визуальное программирование)  Roblox Studio (создание игр)  Kodu Game Lab (3D-программирование)  Разработка мобильных приложений в Thunkable  Blender (3D-моделирование)  Компьютерная грамотность  Minecraft Education  Нейросети (основы ИИ)  Alice 3D (3D-программирование)  Run Marco (основы алгоритмов)  Исполнители: Чертёжник и Черепашка  GIF-анимация  Tinkercad (3D-проектирование)  Кибербезопасность  Construct 2 (создание 2D-игр)  Компас-3D (САПР)  Основы HTML (веб-разработка)  Голосовой помощник Алиса  Создание лендинга (Tilda)  Python (создание игр)  Чат-бот на Python  Web-дизайн (Figma)  Web-мастер (HTML+CSS)  Motion Design  Unreal Engine 4 (игровой движок)  JavaScript (игры)  C# (создание 2D-игр)  C++  Java (создание приложений)  Unity 3D (игры)  Олимпиадное программирование  Облачные технологии, Блокчейн, Data Science  PHP+SQL  Photoshop  Подготовка к олимпиадам  Приложения Google  Летние программы:  Летние IT-интенсивы (краткосрочные программы по направлениям Roblox, Minecraft, Python и др.)  Летние КИБЕРканикулы (городской лагерь с IT-обучением и развлекательной программой)  Дополнительные механики:  Кибервалюта («кибероны») для мотивации учеников, обмен на мерч на КиберМаркете  Тьюторы и преподаватели:  Опытные специалисты с практическим опытом и педагогической подготовкой  Другие важные разделы:  Новости (новости школы и сети)  СМИ о нас (публикации о школе)  Фотогалерея (фото с мероприятий и уроков)  Видео (видеоматериалы о школе)  Расписание занятий (время занятий для групп и пробных уроков)  Локации (адрес школы в Октябрьском районе Саратова, ул. Тараса Шевченко, 8)  Оплата (способы оплаты и договор-оферта)  Сертификаты (активация промокодов партнеров)  Контакты (телефон +7 963 112-49-11, email saratov@kiber-one.com)",
-              "type": "string"
-            },
-            {
-              "id": "db9b8246-b0e8-4f39-af43-3b6759bdf636",
-              "name": "length",
-              "value": 33,
-              "type": "number"
+              "name": "type",
+              "value": "dates"
             }
           ]
         },
         "options": {}
       },
-      "type": "n8n-nodes-base.set",
-      "typeVersion": 3.4,
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
       "position": [
-        -16,
-        -16
+        208,
+        0
       ],
-      "id": "d8e35db3-7149-4aca-ba81-80a278423464",
-      "name": "Edit Fields"
-    },
-    {
-      "parameters": {
-        "conditions": {
-          "options": {
-            "caseSensitive": true,
-            "leftValue": "",
-            "typeValidation": "loose",
-            "version": 2
-          },
-          "conditions": [
-            {
-              "id": "3b684365-d6b8-4428-ab67-cbbcbdc077c9",
-              "leftValue": "={{ $item.json.length }}",
-              "rightValue": 2,
-              "operator": {
-                "type": "number",
-                "operation": "gt"
-              }
-            }
-          ],
-          "combinator": "and"
-        },
-        "looseTypeValidation": true,
-        "options": {}
-      },
-      "type": "n8n-nodes-base.if",
-      "typeVersion": 2.2,
-      "position": [
-        816,
-        -16
-      ],
-      "id": "35ed5ab5-4c4e-4fe6-8162-123194ae2977",
-      "name": "If"
-    },
-    {
-      "parameters": {
-        "schemaType": "manual",
-        "inputSchema": "{\n  \"$schema\": \"http://json-schema.org/draft-07/schema#\",\n  \"title\": \"Ad Data Schema\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"Ad_header\": {\n      \"type\": \"string\",\n      \"maxLength\": 56,\n      \"description\": \"Заголовок объявления (обязательное поле, не более 56 символов)\"\n    },\n    \"ad_length\": {\n      \"type\": \"number\",\n      \"description\": \"Числовое значение длины (обязательное поле)\"\n    }\n  },\n  \"required\": [\"Ad_header\", \"ad_length\"],\n  \"additionalProperties\": false\n}",
-        "autoFix": true
-      },
-      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
-      "typeVersion": 1.3,
-      "position": [
-        432,
-        208
-      ],
-      "id": "0719e6f0-9cec-43b9-af3e-f706032cf211",
-      "name": "Structured Output Parser"
-    },
-    {
-      "parameters": {
-        "jsCode": "// Персистентное хранилище для этой Code-ноды\nconst store = $getWorkflowStaticData('node');\n\n// Сбрасываем rows один раз на запуск воркфлоу\nconst execId = $execution.id;        // id текущего запуска\nif (store._execId !== execId) {\n  store._execId = execId;\n  store.rows = [];\n}\n\nconst inItems = $input.all();\n\nfor (const item of inItems) {\n  const out = item.json.output ?? {};\n  store.rows.push({\n    Ad_header: out.Ad_header,\n    length: out.length,\n  });\n}\n\nreturn inItems; // пропускаем дальше по циклу"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        656,
-        -16
-      ],
-      "id": "5abc883d-c9ad-4bce-a37a-e033820f870b",
-      "name": "Code in JavaScript1"
-    },
-    {
-      "parameters": {
-        "jsCode": "const store = $getWorkflowStaticData('node');\nconst rows = store.rows ?? [];\n\nif (!rows.length) {\n  return [{ json: { info: 'Нет данных для CSV' } }];\n}\n\n// отдаём строки как items → дальше Spreadsheet File: To File (CSV)\nreturn rows.map(r => ({ json: r }));"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        1040,
-        -32
-      ],
-      "id": "8aa3a80f-7bc2-4c5f-acda-e9d8cca2f4fd",
-      "name": "Code in JavaScript2"
-    },
-    {
-      "parameters": {
-        "promptType": "define",
-        "text": "=SYSTEM\n- Твоя задача — к каждому запросу пользователя с заранее известной длиной {{length}} создать один заголовок обьявления на основе услуг компании {{company_description}}\" , строго соблюдая правила.\n- В ответе выводи только готовые заголовки в требуемом формате.\n\nCONSTRAINTS\n- Язык вывода — всегда только русский.\n- Максимум 56 символов (считай Unicode-символы, а не байты), включая исходный  запрос с длиной {{length}} и новый текст.\n- Разрешены только буквы русского и латинского алфавита и цифры.\n- Никаких кавычек, знаков препинания (кроме пробелов), эмодзи, тегов, разметки, пояснений.\n- Не предлагай никаких других услуг, кроме связанных с \"{{company_description}}\".\n- Не раскрывай рассуждения.\n\nOUTPUT FORMAT (строго)\n- Выводи по одному заголовку на запись\n- Не добавляй пустых строк до или после.\n- Не добавляй пояснений, слов вроде “Заголовок” и т.п.\n\nRULES FOR GENERATION\n0. Примеры запросов от пользователя - используй их, чтобы состыковать с заголовком по смыслу: \npython основы\nroblox студио\nroblox студия\nблендер уроки\nвебинар unity\nкурс по unity\nкурс по анрил\nкурс фронтенд\nкурсы gamedev\ntoldox roblox studio\nweb разработка курсы\nweb разработка уроки\nкурс 3d 2d animation\nкурс по презентациям\nкурсы php разработка\nкурсы веб разработка\n3д моделирование курс\ncoding for kids школа\nkiberone школа программирования\nайти программирование для детей\nакватика школа программирования\nвиды программирования для детей\nвремя обучения программированию\nигра программирование для детей\nизучение программирование курсы\nизучение программирования детям\n1.\tЗапрос от пользователя может быть любым текстом, мы заранее не знаем его содержимое, только его длину  {{ $json.length }}. Вот несколько примеров прежних запросов, постарайся сделать так, чтобы конечный заголовок совпал с ними по смыслу.\n2.\tКорректность и ясность:\n- Не используй жаргон.\n- Начни с прописной (не заглавной) буквы.\n- Все географические названия (города, страны, области, регионы, районы, улицы и т.п.) всегда пиши с Заглавной буквы. Делать заглавными другие слова не надо. \n- Если ты добавляешь в заголовок название компании - не забывай предлог \"в\".\n3.\tРелевантность и уточнение:\nЗаголовок должен предлагать услуги компании, добавляя к исходной фразе больше релевантной информации о компании из \"{{ $json[\"company description\"] }}\" — например, “курсы”, “обучение”, \"услуги\", \"оффлайн\", \"предложение\" и тд, чтобы привлечь пользователя.\n4. Ограничение длины:\n- Старайся использовать всю возможную длину, но с сохранением смысла и ограничением в 56 символов.\n- Никогда не обрывай слова.\n- Если нужно сократить - убирай дополнительные уточнения, но сохраняй смысл и исходные слова.\n5.\tЗапрещено:\n- Использовать спецсимволы (например, #, –, “, +, .)\n- Выдавать комментарии или пояснения.\n- Не используй нецензурную лексику, оскорбления или неприемлемые выражения. \n\nEXAMPLES:\n- в школе KiberOne для детей и подростков\n- запишись сегодня на бесплатное пробное занятие\n- узнай больше!\n\nPOST-CHECK (всегда перед выводом)\n- Правильная орфография и порядок слов.\n- Длина output + {{ $json.length }} ≤ 56 символов.\n- Текст осмысленный и предлагает услуги компании.\n- Верни для каждого ID фразы соответствующий заголовок",
-        "hasOutputParser": true,
-        "options": {
-          "systemMessage": "Ты — генератор заголовков рекламных объявлений. Твоя задача по каждой пользовательской фразе создать один короткий заголовок, строго соблюдая правила."
-        }
-      },
-      "type": "@n8n/n8n-nodes-langchain.agent",
-      "typeVersion": 3,
-      "position": [
-        368,
-        -16
-      ],
-      "id": "40862b4e-6140-48d2-823f-54ad1c81eae0",
-      "name": "AI Agent",
-      "disabled": true
+      "id": "134ac1b5-8107-4121-ad16-836b90279a18",
+      "name": "HTTP Request"
     }
   ],
   "connections": {
@@ -184,96 +46,7 @@
       "main": [
         [
           {
-            "node": "Edit Fields",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Code in JavaScript": {
-      "main": [
-        [
-          {
-            "node": "AI Agent",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "OpenAI Chat Model": {
-      "ai_languageModel": [
-        [
-          {
-            "node": "Structured Output Parser",
-            "type": "ai_languageModel",
-            "index": 0
-          },
-          {
-            "node": "AI Agent",
-            "type": "ai_languageModel",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Edit Fields": {
-      "main": [
-        [
-          {
-            "node": "AI Agent",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "If": {
-      "main": [
-        [
-          {
-            "node": "Code in JavaScript2",
-            "type": "main",
-            "index": 0
-          }
-        ],
-        [
-          {
-            "node": "Code in JavaScript",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Structured Output Parser": {
-      "ai_outputParser": [
-        [
-          {
-            "node": "AI Agent",
-            "type": "ai_outputParser",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Code in JavaScript1": {
-      "main": [
-        [
-          {
-            "node": "If",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "AI Agent": {
-      "main": [
-        [
-          {
-            "node": "Code in JavaScript1",
+            "node": "HTTP Request",
             "type": "main",
             "index": 0
           }
@@ -285,18 +58,16 @@
     "executionOrder": "v1"
   },
   "staticData": null,
-  "meta": {
-    "templateCredsSetupCompleted": true
-  },
+  "meta": null,
   "pinData": {},
-  "versionId": "758a1b3c-a9ac-4d3f-bf79-112a02d8d6e5",
+  "versionId": "8b105505-9b57-4275-9225-31795c8ed5a1",
   "triggerCount": 0,
   "shared": [
     {
-      "updatedAt": "2025-11-04T13:56:06.291Z",
-      "createdAt": "2025-11-04T13:56:06.291Z",
+      "updatedAt": "2025-11-09T20:24:51.753Z",
+      "createdAt": "2025-11-09T20:24:51.753Z",
       "role": "workflow:owner",
-      "workflowId": "vwRAn8uUM5XZ8OrS",
+      "workflowId": "fkNzZ1tjhcmwJbgx",
       "projectId": "spKmbJLU4mvACXIB"
     }
   ],
