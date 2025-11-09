@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-09T20:41:04.111Z",
+  "updatedAt": "2025-11-09T21:00:50.158Z",
   "createdAt": "2025-11-09T14:44:54.282Z",
   "id": "XsTmBlu5hybU9K85",
   "name": "Test form",
@@ -175,35 +175,6 @@
     "templateCredsSetupCompleted": true
   },
   "pinData": {
-    "Webhook": [
-      {
-        "json": {
-          "headers": {
-            "host": "n8n-main-production-4310.up.railway.app",
-            "user-agent": "axios/1.12.0",
-            "content-length": "16",
-            "accept": "application/json,text/html,application/xhtml+xml,application/xml,text/*;q=0.9, image/*;q=0.8, */*;q=0.7",
-            "accept-encoding": "gzip, compress, deflate, br",
-            "content-type": "application/json",
-            "x-forwarded-for": "208.77.244.75",
-            "x-forwarded-host": "n8n-main-production-4310.up.railway.app",
-            "x-forwarded-proto": "https",
-            "x-railway-edge": "railway/europe-west4-drams3a",
-            "x-railway-request-id": "T5xSWvs_Rza-B1i_5nX1uw",
-            "x-real-ip": "208.77.244.75",
-            "x-request-start": "1762719900124"
-          },
-          "params": {},
-          "query": {},
-          "body": {
-            "type": "dates",
-            "selected_date": "2025-11-09"
-          },
-          "webhookUrl": "https://n8n-main-production-4310.up.railway.app/webhook/12b5fd5b-882f-44bc-95a5-3a7baf31d4e3",
-          "executionMode": "production"
-        }
-      }
-    ],
     "HTTP Request": [
       {
         "json": {
@@ -902,7 +873,7 @@
       }
     ]
   },
-  "versionId": "a164a793-195c-4fa1-a20d-2d4a6497be0b",
+  "versionId": "80e617d0-08f4-4a07-a415-2b166a7c17a7",
   "triggerCount": 2,
   "shared": [
     {
