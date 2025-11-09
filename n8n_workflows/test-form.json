@@ -1,9 +1,9 @@
 {
-  "updatedAt": "2025-11-09T15:02:24.302Z",
+  "updatedAt": "2025-11-09T20:23:55.159Z",
   "createdAt": "2025-11-09T14:44:54.282Z",
   "id": "XsTmBlu5hybU9K85",
   "name": "Test form",
-  "active": false,
+  "active": true,
   "isArchived": false,
   "nodes": [
     {
@@ -39,8 +39,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.3,
       "position": [
-        -32,
-        -16
+        -272,
+        -208
       ],
       "id": "ae077d4d-f575-4b04-862c-b94ad485c1c6",
       "name": "HTTP Request"
@@ -48,7 +48,7 @@
     {
       "parameters": {
         "method": "POST",
-        "url": "https://kiberonesaratov.s20.online/v2api/1/regular-lesson/index",
+        "url": "https://kiberonesaratov.s20.online/v2api/1/lesson/index",
         "sendHeaders": true,
         "headerParameters": {
           "parameters": [
@@ -62,7 +62,11 @@
         "bodyParameters": {
           "parameters": [
             {
-              "name": "is_active",
+              "name": "lesson_type_id",
+              "value": "3"
+            },
+            {
+              "name": "status",
               "value": "1"
             }
           ]
@@ -72,23 +76,45 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.3,
       "position": [
-        176,
-        -16
+        -64,
+        -208
       ],
       "id": "773f88e1-ed4c-48ff-ba22-fcc9659a5f37",
       "name": "HTTP Request1"
+    },
+    {
+      "parameters": {
+        "jsCode": "// n8n Code node (JavaScript)\n\n// 1) Достаём массив lessons из входного JSON, независимо от того,\n//    пришёл ли он как объект с items или как массив с объектом внутри.\nconst payload = $input.first().json;\n\nlet lessons = [];\nif (Array.isArray(payload)) {\n  lessons = payload[0]?.items ?? [];\n} else if (Array.isArray(payload?.items)) {\n  lessons = payload.items;\n} else if (payload && Array.isArray(payload[0]?.items)) {\n  lessons = payload[0].items;\n} else if (Array.isArray(payload)) {\n  lessons = payload; // на случай, если сами items пришли напрямую\n}\n\nconst pad = n => String(n).padStart(2, '0');\nconst now = new Date();\nconst todayStr = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}`;\n\n// 2) Фильтруем занятия по дате (не старше текущей даты)\nconst futureOrToday = lessons.filter(l => typeof l?.date === 'string' && l.date >= todayStr);\n\n// 3) Собираем уникальные даты и сортируем\nconst dateSet = new Set(futureOrToday.map(l => l.date));\nconst dates = Array.from(dateSet).sort();\n\n// 4) Строим адресованный массив времен по датам\nconst timesByDate = {};\nfor (const l of futureOrToday) {\n  const date = l.date;\n  // Безопасно извлекаем \"HH:MM\" из строк вида \"YYYY-MM-DD HH:MM:SS\"\n  const from = typeof l.time_from === 'string' ? l.time_from.slice(11, 16) : null;\n  const to   = typeof l.time_to   === 'string' ? l.time_to.slice(11, 16)   : null;\n\n  if (!from || !to) continue;\n\n  if (!timesByDate[date]) timesByDate[date] = [];\n  timesByDate[date].push({ from, to });\n}\nconst src = $('Webhook').last()?.json ?? {};\nconst { type, selected_date } = src;\n\nlet out = [];\n\nif (type === 'dates') {\n  out = Array.isArray(dates) ? dates : [];\n} else if (type === 'times') {\n  const list = timesByDate?.[selected_date];\n  out = Array.isArray(list) ? list : [];\n}\n\n// Возвращаем один item\nreturn [{ json: { out } }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        144,
+        -208
+      ],
+      "id": "d550a73c-1199-45ac-9b27-4d40a4c232a1",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "path": "12b5fd5b-882f-44bc-95a5-3a7baf31d4e3",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -512,
+        -208
+      ],
+      "id": "81959dde-03f0-470b-aa09-2575fab7dead",
+      "name": "Webhook",
+      "webhookId": "12b5fd5b-882f-44bc-95a5-3a7baf31d4e3"
     }
   ],
   "connections": {
     "When clicking ‘Execute workflow’": {
       "main": [
-        [
-          {
-            "node": "HTTP Request",
-            "type": "main",
-            "index": 0
-          }
-        ]
+        []
       ]
     },
     "HTTP Request": {
@@ -101,16 +127,496 @@
           }
         ]
       ]
+    },
+    "HTTP Request1": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
     "executionOrder": "v1"
   },
   "staticData": null,
-  "meta": null,
-  "pinData": {},
-  "versionId": "1dbd43de-54ea-4480-b898-de73d17b7bf8",
-  "triggerCount": 0,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {
+    "HTTP Request": [
+      {
+        "json": {
+          "token": "14cc5d1bb83477218972a9b3f6550e19"
+        }
+      }
+    ],
+    "HTTP Request1": [
+      {
+        "json": {
+          "total": 17,
+          "count": 17,
+          "page": 0,
+          "items": [
+            {
+              "id": 6866,
+              "branch_id": 1,
+              "date": "2025-12-11",
+              "time_from": "2025-12-11 19:00:01",
+              "time_to": "2025-12-11 20:00:00",
+              "lesson_type_id": 3,
+              "status": 1,
+              "subject_id": 6,
+              "room_id": 5,
+              "teacher_ids": [],
+              "customer_ids": [],
+              "group_ids": [],
+              "streaming": false,
+              "note": "",
+              "topic": "",
+              "homework": null,
+              "created_at": "2025-09-30 09:43:34",
+              "updated_at": "2025-09-30 09:43:34",
+              "regular_id": null,
+              "details": []
+            },
+            {
+              "id": 6876,
+              "branch_id": 1,
+              "date": "2025-12-10",
+              "time_from": "2025-12-10 14:30:01",
+              "time_to": "2025-12-10 15:30:00",
+              "lesson_type_id": 3,
+              "status": 1,
+              "subject_id": 6,
+              "room_id": 5,
+              "teacher_ids": [],
+              "customer_ids": [],
+              "group_ids": [],
+              "streaming": false,
+              "note": "",
+              "topic": "",
+              "homework": null,
+              "created_at": "2025-09-30 10:04:57",
+              "updated_at": "2025-09-30 10:04:57",
+              "regular_id": null,
+              "details": []
+            },
+            {
+              "id": 6865,
+              "branch_id": 1,
+              "date": "2025-12-04",
+              "time_from": "2025-12-04 19:00:01",
+              "time_to": "2025-12-04 20:00:00",
+              "lesson_type_id": 3,
+              "status": 1,
+              "subject_id": 6,
+              "room_id": 5,
+              "teacher_ids": [],
+              "customer_ids": [],
+              "group_ids": [],
+              "streaming": false,
+              "note": "",
+              "topic": "",
+              "homework": null,
+              "created_at": "2025-09-30 09:43:18",
+              "updated_at": "2025-09-30 09:43:18",
+              "regular_id": null,
+              "details": []
+            },
+            {
+              "id": 6875,
+              "branch_id": 1,
+              "date": "2025-12-03",
+              "time_from": "2025-12-03 14:30:01",
+              "time_to": "2025-12-03 15:30:00",
+              "lesson_type_id": 3,
+              "status": 1,
+              "subject_id": 6,
+              "room_id": 5,
+              "teacher_ids": [],
+              "customer_ids": [],
+              "group_ids": [],
+              "streaming": false,
+              "note": "",
+              "topic": "",
+              "homework": null,
+              "created_at": "2025-09-30 10:04:17",
+              "updated_at": "2025-09-30 10:04:17",
+              "regular_id": null,
+              "details": []
+            },
+            {
+              "id": 6900,
+              "branch_id": 1,
+              "date": "2025-11-30",
+              "time_from": "2025-11-30 09:00:01",
+              "time_to": "2025-11-30 10:00:00",
+              "lesson_type_id": 3,
+              "status": 1,
+              "subject_id": 6,
+              "room_id": null,
+              "teacher_ids": [
+                10
+              ],
+              "customer_ids": [],
+              "group_ids": [],
+              "streaming": false,
+              "note": "",
+              "topic": "",
+              "homework": null,
+              "created_at": "2025-11-01 12:41:17",
+              "updated_at": "2025-11-01 12:41:17",
+              "regular_id": null,
+              "details": []
+            },
+            {
+              "id": 6899,
+              "branch_id": 1,
+              "date": "2025-11-29",
+              "time_from": "2025-11-29 11:00:01",
+              "time_to": "2025-11-29 12:00:00",
+              "lesson_type_id": 3,
+              "status": 1,
+              "subject_id": 6,
+              "room_id": null,
+              "teacher_ids": [
+                11
+              ],
+              "customer_ids": [],
+              "group_ids": [],
+              "streaming": false,
+              "note": "",
+              "topic": "",
+              "homework": null,
+              "created_at": "2025-11-01 12:40:59",
+              "updated_at": "2025-11-01 12:40:59",
+              "regular_id": null,
+              "details": []
+            },
+            {
+              "id": 6864,
+              "branch_id": 1,
+              "date": "2025-11-27",
+              "time_from": "2025-11-27 19:00:01",
+              "time_to": "2025-11-27 20:00:00",
+              "lesson_type_id": 3,
+              "status": 1,
+              "subject_id": 6,
+              "room_id": 5,
+              "teacher_ids": [],
+              "customer_ids": [],
+              "group_ids": [],
+              "streaming": false,
+              "note": "",
+              "topic": "",
+              "homework": null,
+              "created_at": "2025-09-30 09:42:49",
+              "updated_at": "2025-11-02 15:02:19",
+              "regular_id": null,
+              "details": []
+            },
+            {
+              "id": 6874,
+              "branch_id": 1,
+              "date": "2025-11-26",
+              "time_from": "2025-11-26 14:30:01",
+              "time_to": "2025-11-26 15:30:00",
+              "lesson_type_id": 3,
+              "status": 1,
+              "subject_id": 6,
+              "room_id": 5,
+              "teacher_ids": [],
+              "customer_ids": [],
+              "group_ids": [],
+              "streaming": false,
+              "note": "",
+              "topic": "",
+              "homework": null,
+              "created_at": "2025-09-30 10:03:33",
+              "updated_at": "2025-09-30 10:03:33",
+              "regular_id": null,
+              "details": []
+            },
+            {
+              "id": 6898,
+              "branch_id": 1,
+              "date": "2025-11-23",
+              "time_from": "2025-11-23 09:00:01",
+              "time_to": "2025-11-23 10:00:00",
+              "lesson_type_id": 3,
+              "status": 1,
+              "subject_id": 6,
+              "room_id": 5,
+              "teacher_ids": [
+                10
+              ],
+              "customer_ids": [],
+              "group_ids": [],
+              "streaming": false,
+              "note": "",
+              "topic": "",
+              "homework": null,
+              "created_at": "2025-11-01 12:40:32",
+              "updated_at": "2025-11-01 12:40:32",
+              "regular_id": null,
+              "details": []
+            },
+            {
+              "id": 6897,
+              "branch_id": 1,
+              "date": "2025-11-22",
+              "time_from": "2025-11-22 11:00:01",
+              "time_to": "2025-11-22 12:00:00",
+              "lesson_type_id": 3,
+              "status": 1,
+              "subject_id": 6,
+              "room_id": 5,
+              "teacher_ids": [
+                11
+              ],
+              "customer_ids": [],
+              "group_ids": [],
+              "streaming": false,
+              "note": "",
+              "topic": "",
+              "homework": null,
+              "created_at": "2025-11-01 12:40:14",
+              "updated_at": "2025-11-01 12:40:14",
+              "regular_id": null,
+              "details": []
+            },
+            {
+              "id": 6863,
+              "branch_id": 1,
+              "date": "2025-11-20",
+              "time_from": "2025-11-20 19:00:01",
+              "time_to": "2025-11-20 20:00:00",
+              "lesson_type_id": 3,
+              "status": 1,
+              "subject_id": 6,
+              "room_id": 5,
+              "teacher_ids": [],
+              "customer_ids": [
+                19488
+              ],
+              "group_ids": [],
+              "streaming": false,
+              "note": "",
+              "topic": "",
+              "homework": null,
+              "created_at": "2025-09-30 09:42:35",
+              "updated_at": "2025-11-03 14:23:24",
+              "regular_id": null,
+              "details": [
+                {
+                  "id": 21033,
+                  "branch_id": 1,
+                  "customer_id": 19488,
+                  "lesson_id": 6863,
+                  "ctt_id": null,
+                  "reason_id": null,
+                  "is_attend": null,
+                  "commission": "0.00",
+                  "grade": null,
+                  "homework_grade_id": null,
+                  "bonus": null,
+                  "note": null
+                }
+              ]
+            },
+            {
+              "id": 6873,
+              "branch_id": 1,
+              "date": "2025-11-19",
+              "time_from": "2025-11-19 14:30:01",
+              "time_to": "2025-11-19 15:30:00",
+              "lesson_type_id": 3,
+              "status": 1,
+              "subject_id": 6,
+              "room_id": 5,
+              "teacher_ids": [],
+              "customer_ids": [],
+              "group_ids": [],
+              "streaming": false,
+              "note": "",
+              "topic": "",
+              "homework": null,
+              "created_at": "2025-09-30 10:03:12",
+              "updated_at": "2025-09-30 10:03:12",
+              "regular_id": null,
+              "details": []
+            },
+            {
+              "id": 6896,
+              "branch_id": 1,
+              "date": "2025-11-16",
+              "time_from": "2025-11-16 09:00:01",
+              "time_to": "2025-11-16 10:00:00",
+              "lesson_type_id": 3,
+              "status": 1,
+              "subject_id": 6,
+              "room_id": null,
+              "teacher_ids": [
+                10
+              ],
+              "customer_ids": [],
+              "group_ids": [],
+              "streaming": false,
+              "note": "",
+              "topic": "",
+              "homework": null,
+              "created_at": "2025-11-01 12:39:38",
+              "updated_at": "2025-11-01 12:39:38",
+              "regular_id": null,
+              "details": []
+            },
+            {
+              "id": 6895,
+              "branch_id": 1,
+              "date": "2025-11-15",
+              "time_from": "2025-11-15 11:00:01",
+              "time_to": "2025-11-15 12:00:00",
+              "lesson_type_id": 3,
+              "status": 1,
+              "subject_id": 6,
+              "room_id": null,
+              "teacher_ids": [
+                11
+              ],
+              "customer_ids": [],
+              "group_ids": [],
+              "streaming": false,
+              "note": "",
+              "topic": "",
+              "homework": null,
+              "created_at": "2025-11-01 12:38:20",
+              "updated_at": "2025-11-01 12:38:20",
+              "regular_id": null,
+              "details": []
+            },
+            {
+              "id": 6862,
+              "branch_id": 1,
+              "date": "2025-11-13",
+              "time_from": "2025-11-13 19:00:01",
+              "time_to": "2025-11-13 20:00:00",
+              "lesson_type_id": 3,
+              "status": 1,
+              "subject_id": 6,
+              "room_id": 5,
+              "teacher_ids": [],
+              "customer_ids": [],
+              "group_ids": [],
+              "streaming": false,
+              "note": "",
+              "topic": "",
+              "homework": null,
+              "created_at": "2025-09-30 09:42:12",
+              "updated_at": "2025-09-30 09:42:12",
+              "regular_id": null,
+              "details": []
+            },
+            {
+              "id": 6872,
+              "branch_id": 1,
+              "date": "2025-11-12",
+              "time_from": "2025-11-12 14:30:01",
+              "time_to": "2025-11-12 15:30:00",
+              "lesson_type_id": 3,
+              "status": 1,
+              "subject_id": 6,
+              "room_id": 5,
+              "teacher_ids": [],
+              "customer_ids": [],
+              "group_ids": [],
+              "streaming": false,
+              "note": "",
+              "topic": "",
+              "homework": null,
+              "created_at": "2025-09-30 10:02:52",
+              "updated_at": "2025-09-30 10:02:52",
+              "regular_id": null,
+              "details": []
+            },
+            {
+              "id": 6882,
+              "branch_id": 1,
+              "date": "2025-11-09",
+              "time_from": "2025-11-09 09:00:01",
+              "time_to": "2025-11-09 10:00:00",
+              "lesson_type_id": 3,
+              "status": 1,
+              "subject_id": 6,
+              "room_id": 5,
+              "teacher_ids": [
+                10
+              ],
+              "customer_ids": [
+                19490,
+                19491
+              ],
+              "group_ids": [],
+              "streaming": false,
+              "note": "",
+              "topic": "",
+              "homework": null,
+              "created_at": "2025-09-30 10:07:37",
+              "updated_at": "2025-11-05 15:31:35",
+              "regular_id": null,
+              "details": [
+                {
+                  "id": 21035,
+                  "branch_id": 1,
+                  "customer_id": 19490,
+                  "lesson_id": 6882,
+                  "ctt_id": null,
+                  "reason_id": null,
+                  "is_attend": null,
+                  "commission": "0.00",
+                  "grade": null,
+                  "homework_grade_id": null,
+                  "bonus": null,
+                  "note": null
+                },
+                {
+                  "id": 21036,
+                  "branch_id": 1,
+                  "customer_id": 19491,
+                  "lesson_id": 6882,
+                  "ctt_id": null,
+                  "reason_id": null,
+                  "is_attend": null,
+                  "commission": "0.00",
+                  "grade": null,
+                  "homework_grade_id": null,
+                  "bonus": null,
+                  "note": null
+                }
+              ]
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "versionId": "9c0afc20-69b5-40c4-aa3c-55a11e4cc8ae",
+  "triggerCount": 1,
   "shared": [
     {
       "updatedAt": "2025-11-09T14:44:54.282Z",
