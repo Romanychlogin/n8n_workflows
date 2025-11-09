@@ -1,0 +1,81 @@
+{
+  "updatedAt": "2025-11-09T14:47:08.513Z",
+  "createdAt": "2025-11-09T14:44:54.282Z",
+  "id": "XsTmBlu5hybU9K85",
+  "name": "Test form",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -240,
+        -16
+      ],
+      "id": "390a8b45-1a69-40fd-a5a0-0da0d5bf0a9e",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://kiberonesaratov.s20.online/v2api/auth/login",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "email",
+              "value": "romanych.mail@yandex.ru"
+            },
+            {
+              "name": "api_key",
+              "value": "7787cfc1-47a2-11f0-b9b8-3cecefbdd1ae"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        -32,
+        -16
+      ],
+      "id": "ae077d4d-f575-4b04-862c-b94ad485c1c6",
+      "name": "HTTP Request"
+    }
+  ],
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": {},
+  "versionId": "7acafde8-765e-48cf-b9c9-8427bd985320",
+  "triggerCount": 0,
+  "shared": [
+    {
+      "updatedAt": "2025-11-09T14:44:54.282Z",
+      "createdAt": "2025-11-09T14:44:54.282Z",
+      "role": "workflow:owner",
+      "workflowId": "XsTmBlu5hybU9K85",
+      "projectId": "spKmbJLU4mvACXIB"
+    }
+  ],
+  "tags": [],
+  "file_name": "test-form.json"
+}
