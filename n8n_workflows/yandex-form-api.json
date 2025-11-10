@@ -1,0 +1,86 @@
+{
+  "updatedAt": "2025-11-10T10:14:05.129Z",
+  "createdAt": "2025-11-10T10:12:13.473Z",
+  "id": "fsy7TJJRLJ5nc0Fc",
+  "name": "yandex form API",
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "7761af7e-68c6-4e99-ab82-e3acfdc463bc",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "d3beae44-1400-44d8-8010-8ecbae0b2f2c",
+      "name": "Webhook",
+      "webhookId": "d0b73f09-ea23-4cd3-a92c-db7497c60763"
+    },
+    {
+      "parameters": {
+        "options": {
+          "responseCode": 200,
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Access-Control-Allow-Origin",
+                "value": "https://trylesson.storage.yandexcloud.net"
+              },
+              {
+                "name": "Vary",
+                "value": "Origin"
+              }
+            ]
+          }
+        }
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [
+        272,
+        0
+      ],
+      "id": "a2712e29-ad95-4946-ae6c-bc49b0a3914e",
+      "name": "Respond to Webhook1"
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": {},
+  "versionId": "4a8e241d-9410-40c6-afc3-2419db5d9647",
+  "triggerCount": 1,
+  "shared": [
+    {
+      "updatedAt": "2025-11-10T10:12:13.473Z",
+      "createdAt": "2025-11-10T10:12:13.473Z",
+      "role": "workflow:owner",
+      "workflowId": "fsy7TJJRLJ5nc0Fc",
+      "projectId": "spKmbJLU4mvACXIB"
+    }
+  ],
+  "tags": [],
+  "file_name": "yandex-form-api.json"
+}
