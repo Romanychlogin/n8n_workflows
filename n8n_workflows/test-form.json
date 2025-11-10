@@ -1,9 +1,9 @@
 {
-  "updatedAt": "2025-11-10T08:09:41.104Z",
+  "updatedAt": "2025-11-10T10:11:53.164Z",
   "createdAt": "2025-11-09T14:44:54.282Z",
   "id": "XsTmBlu5hybU9K85",
   "name": "Test form",
-  "active": true,
+  "active": false,
   "isArchived": false,
   "nodes": [
     {
