@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-10T14:37:03.504Z",
+  "updatedAt": "2025-11-10T17:37:07.743Z",
   "createdAt": "2025-11-10T10:12:13.473Z",
   "id": "fsy7TJJRLJ5nc0Fc",
   "name": "yandex form API",
@@ -44,7 +44,7 @@
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.4,
       "position": [
-        272,
+        192,
         0
       ],
       "id": "a2712e29-ad95-4946-ae6c-bc49b0a3914e",
@@ -60,7 +60,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        512,
+        416,
         0
       ],
       "id": "42a54067-a57c-4667-ad1c-e7cc9d4c9851",
@@ -73,11 +73,94 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        752,
+        640,
         0
       ],
       "id": "3c64d274-b17a-4fab-8cbe-edfc72e08a16",
       "name": "Send Lead data to CRM"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://kiberonesaratov.s20.online/v2api/1/lesson/index",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-ALFACRM-TOKEN",
+              "value": "={{ $json.token }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "id",
+              "value": "6899"
+            },
+            {
+              "name": "status",
+              "value": "1"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        976,
+        0
+      ],
+      "id": "6489580f-2f2d-4c52-bda3-32190f00d54e",
+      "name": "Get Lesson by ID"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\n$input.first().json.items[0].customer_ids.push(19514);\n\n\nreturn $input.all();"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1168,
+        0
+      ],
+      "id": "ad50f613-7889-4355-aee8-71887ad29db4",
+      "name": "Append students to the list"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://kiberonesaratov.s20.online/v2api/1/lesson/update?id={{ $json.items[0].id }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-ALFACRM-TOKEN",
+              "value": "={{ $('HTTP Request').item.json.token }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "customer_ids",
+              "value": "={{$input.first().json.items[0].customer_ids}}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        1376,
+        0
+      ],
+      "id": "ae6e46d2-40ea-4fc1-99a8-93a471fd0909",
+      "name": "Push updated students list"
     }
   ],
   "connections": {
@@ -108,6 +191,33 @@
         [
           {
             "node": "Set CRM data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Lead data to CRM": {
+      "main": [
+        []
+      ]
+    },
+    "Get Lesson by ID": {
+      "main": [
+        [
+          {
+            "node": "Append students to the list",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append students to the list": {
+      "main": [
+        [
+          {
+            "node": "Push updated students list",
             "type": "main",
             "index": 0
           }
@@ -164,7 +274,7 @@
       }
     ]
   },
-  "versionId": "9d061747-322b-4e9c-8eaf-5102b7d214e3",
+  "versionId": "92b755ec-2b08-4180-9b0a-cb7abdc4218b",
   "triggerCount": 1,
   "shared": [
     {
