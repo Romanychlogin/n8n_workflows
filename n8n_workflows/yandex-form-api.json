@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-10T18:09:02.675Z",
+  "updatedAt": "2025-11-10T18:28:04.816Z",
   "createdAt": "2025-11-10T10:12:13.473Z",
   "id": "fsy7TJJRLJ5nc0Fc",
   "name": "yandex form API",
@@ -60,7 +60,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        160,
+        352,
         0
       ],
       "id": "42a54067-a57c-4667-ad1c-e7cc9d4c9851",
@@ -192,12 +192,13 @@
     },
     {
       "parameters": {
-        "jsCode": "// n8n Code (JavaScript) — Run Once for All Items\nconst items = await $input.all();\n\n// --- helpers ---\nconst notEmpty = v => v !== undefined && v !== null && String(v).trim() !== '';\n\nfunction tryParseJSON(s) {\n  if (typeof s !== 'string') return s;\n  try { return JSON.parse(s); } catch { return s; }\n}\n\nfunction getQueryParam(url, name) {\n  try { return new URL(String(url)).searchParams.get(name); } catch { return null; }\n}\n\n/**\n * Рекурсивно находит ВСЕ ключи \"lead_source_id\" и подменяет значение.\n * Сохраняет тип: если раньше было \"40\" (string), запишет \"8\"/\"3\" как строку.\n * Возвращает количество замен.\n */\nfunction replaceLeadSourceId(obj, newValNumber) {\n  let count = 0;\n  const stack = [obj];\n  const seen = new Set();\n\n  while (stack.length) {\n    const cur = stack.pop();\n    if (!cur || typeof cur !== 'object') continue;\n    if (seen.has(cur)) continue;\n    seen.add(cur);\n\n    if (Array.isArray(cur)) {\n      for (const v of cur) if (v && typeof v === 'object') stack.push(v);\n      continue;\n    }\n\n    for (const [k, v] of Object.entries(cur)) {\n      if (k === 'lead_source_id') {\n        const keepString = typeof v === 'string';\n        cur[k] = keepString ? String(newValNumber) : newValNumber;\n        count++;\n      }\n      if (v && typeof v === 'object') stack.push(v);\n    }\n  }\n  return count;\n}\n\nfor (const item of items) {\n  const src = item.json ?? item;\n\n  // --- где взять yclid ---\n  let yclid = src.yclid ?? src.yclidid ?? null;\n\n  // из page_url (?yclid=...)\n  if (!notEmpty(yclid) && src.page_url) {\n    const q = getQueryParam(src.page_url, 'yclid');\n    if (notEmpty(q)) yclid = q;\n  }\n\n  // из custom_value_json (если там хранится)\n  if (!notEmpty(yclid) && src.custom_value_json) {\n    const cv = tryParseJSON(src.custom_value_json);\n    if (cv && typeof cv === 'object' && 'yclid' in cv && notEmpty(cv.yclid)) {\n      yclid = cv.yclid;\n    }\n  }\n\n  const newVal = notEmpty(yclid) ? 8 : 3;\n\n  // подменяем ВЕЗДЕ, где уже есть lead_source_id\n  const replaced = replaceLeadSourceId(src, newVal);\n\n  // лог для проверки\n  console.log({ resolved_yclid: yclid ?? null, new_lead_source_id: newVal, replaced_keys: replaced });\n\n  // если нужно также гарантированно обновить верхнеуровневое значение (которое ты показал в примере),\n  // и оно есть в корне — продублируем:\n  if ('lead_source_id' in src) {\n    src.lead_source_id = typeof src.lead_source_id === 'string' ? String(newVal) : newVal;\n  }\n\n  // записываем обратно в item\n  if (item.json) item.json = src; else Object.assign(item, src);\n}\n\nreturn items;"
+        "mode": "runOnceForEachItem",
+        "jsCode": "const hasVal = v => v !== null && v !== undefined && String(v).trim() !== '';\n\nconst yclid = $json.yclid ?? $json.body?.yclid ?? null;\nconst etext = $json.etext ?? $json.body?.etext ?? null;\n\nconst lead_source_id = (hasVal(yclid) || hasVal(etext)) ? 8 : 3;\n\nreturn {\n  ...$json,\n  body: {\n    ...($json.body ?? {}),\n    lead_source_id,          // кладём прямо в body\n  },\n};"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        352,
+        160,
         0
       ],
       "id": "79f5740d-dbe2-4a03-96c8-06d23385ae67",
@@ -220,7 +221,7 @@
       "main": [
         [
           {
-            "node": "update lead_source_id",
+            "node": "Send Lead data to CRM",
             "type": "main",
             "index": 0
           }
@@ -231,7 +232,7 @@
       "main": [
         [
           {
-            "node": "Set CRM data",
+            "node": "update lead_source_id",
             "type": "main",
             "index": 0
           }
@@ -286,7 +287,7 @@
       "main": [
         [
           {
-            "node": "Send Lead data to CRM",
+            "node": "Set CRM data",
             "type": "main",
             "index": 0
           }
@@ -299,8 +300,58 @@
   },
   "staticData": null,
   "meta": null,
-  "pinData": {},
-  "versionId": "a969c789-c3c2-43d7-b438-11c33e4fa68b",
+  "pinData": {
+    "Webhook": [
+      {
+        "json": {
+          "headers": {
+            "host": "n8n-main-production-4310.up.railway.app",
+            "user-agent": "axios/1.13.2",
+            "content-length": "693",
+            "accept": "application/json, text/plain, */*",
+            "accept-encoding": "gzip, compress, deflate, br",
+            "content-type": "application/json",
+            "x-forwarded-for": "185.206.167.210",
+            "x-forwarded-host": "n8n-main-production-4310.up.railway.app",
+            "x-forwarded-proto": "https",
+            "x-railway-edge": "railway/europe-west4-drams3a",
+            "x-railway-request-id": "P8RklfL6SuGQ7rTC0-QtfA",
+            "x-real-ip": "185.206.167.210",
+            "x-request-start": "1762797804811"
+          },
+          "params": {},
+          "query": {},
+          "body": {
+            "form": "trial_lesson",
+            "location": "ул. Т. Г. Шевченко, 8",
+            "subject": "Пробное занятие — 1 час",
+            "selected_date": "2025-11-30",
+            "selected_lesson_id": 6900,
+            "selected_time_from": "09:00",
+            "selected_time_to": "10:00",
+            "parent_name": "ANana",
+            "phone": "79117932216",
+            "email": "anton@anaont.ru",
+            "child_name": "new wizard test",
+            "child_birthdate": "10.10.2010",
+            "etext": null,
+            "utm_campaign": null,
+            "utm_content": null,
+            "utm_source": null,
+            "utm_term": null,
+            "yclid": "dhkjhkh4k34hk",
+            "meta": {
+              "page_url": "https://trylesson.storage.yandexcloud.net/index.html",
+              "user_agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 18_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.5 Mobile/15E148 Safari/604.1"
+            }
+          },
+          "webhookUrl": "https://n8n-main-production-4310.up.railway.app/webhook/7761af7e-68c6-4e99-ab82-e3acfdc463bc",
+          "executionMode": "production"
+        }
+      }
+    ]
+  },
+  "versionId": "bb3d4636-1cb8-4289-875c-beff9677b624",
   "triggerCount": 1,
   "shared": [
     {
