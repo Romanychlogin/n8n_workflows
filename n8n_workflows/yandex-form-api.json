@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-10T17:37:07.743Z",
+  "updatedAt": "2025-11-10T17:50:33.163Z",
   "createdAt": "2025-11-10T10:12:13.473Z",
   "id": "fsy7TJJRLJ5nc0Fc",
   "name": "yandex form API",
@@ -60,7 +60,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        416,
+        368,
         0
       ],
       "id": "42a54067-a57c-4667-ad1c-e7cc9d4c9851",
@@ -73,7 +73,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        640,
+        560,
         0
       ],
       "id": "3c64d274-b17a-4fab-8cbe-edfc72e08a16",
@@ -97,7 +97,7 @@
           "parameters": [
             {
               "name": "id",
-              "value": "6899"
+              "value": "={{ $('Webhook').item.json.body.selected_lesson_id }}"
             },
             {
               "name": "status",
@@ -110,7 +110,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.3,
       "position": [
-        976,
+        960,
         0
       ],
       "id": "6489580f-2f2d-4c52-bda3-32190f00d54e",
@@ -123,7 +123,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1168,
+        1152,
         0
       ],
       "id": "ad50f613-7889-4355-aee8-71887ad29db4",
@@ -138,7 +138,7 @@
           "parameters": [
             {
               "name": "X-ALFACRM-TOKEN",
-              "value": "={{ $('HTTP Request').item.json.token }}"
+              "value": "={{ $('Get X-ALFACRM-TOKEN').item.json.token }}"
             }
           ]
         },
@@ -156,11 +156,39 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.3,
       "position": [
-        1376,
+        1360,
         0
       ],
       "id": "ae6e46d2-40ea-4fc1-99a8-93a471fd0909",
       "name": "Push updated students list"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://kiberonesaratov.s20.online/v2api/auth/login",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "email",
+              "value": "={{ $('Set CRM data').item.json.alfacrm.email }}"
+            },
+            {
+              "name": "api_key",
+              "value": "={{ $('Set CRM data').item.json.alfacrm.api_key }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        768,
+        0
+      ],
+      "id": "84324a82-fd46-4178-bab3-c1c89262b33b",
+      "name": "Get X-ALFACRM-TOKEN"
     }
   ],
   "connections": {
@@ -199,7 +227,13 @@
     },
     "Send Lead data to CRM": {
       "main": [
-        []
+        [
+          {
+            "node": "Get X-ALFACRM-TOKEN",
+            "type": "main",
+            "index": 0
+          }
+        ]
       ]
     },
     "Get Lesson by ID": {
@@ -223,6 +257,17 @@
           }
         ]
       ]
+    },
+    "Get X-ALFACRM-TOKEN": {
+      "main": [
+        [
+          {
+            "node": "Get Lesson by ID",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
@@ -237,17 +282,17 @@
           "headers": {
             "host": "n8n-main-production-4310.up.railway.app",
             "user-agent": "axios/1.13.2",
-            "content-length": "593",
+            "content-length": "589",
             "accept": "application/json, text/plain, */*",
             "accept-encoding": "gzip, compress, deflate, br",
             "content-type": "application/json",
-            "x-forwarded-for": "185.206.167.158",
+            "x-forwarded-for": "178.154.236.43",
             "x-forwarded-host": "n8n-main-production-4310.up.railway.app",
             "x-forwarded-proto": "https",
             "x-railway-edge": "railway/europe-west4-drams3a",
-            "x-railway-request-id": "KxwTrrHqRreogP1zN8N_Fg",
-            "x-real-ip": "185.206.167.158",
-            "x-request-start": "1762784785719"
+            "x-railway-request-id": "n_v874_0RvSJqjWrjUJq2g",
+            "x-real-ip": "178.154.236.43",
+            "x-request-start": "1762796492418"
           },
           "params": {},
           "query": {},
@@ -256,13 +301,14 @@
             "location": "ул. Т. Г. Шевченко, 8",
             "subject": "Пробное занятие — 1 час",
             "selected_date": "2025-11-29",
+            "selected_lesson_id": 6899,
             "selected_time_from": "11:00",
             "selected_time_to": "12:00",
-            "parent_name": "Anton new date",
+            "parent_name": "Anton test",
             "phone": "79117932216",
-            "email": "test@test.ru",
-            "child_name": "Артееттетететеете",
-            "child_birthdate": "31.10.2009",
+            "email": "ananan@anana.ru",
+            "child_name": "Artem",
+            "child_birthdate": "10.10.2010",
             "meta": {
               "page_url": "https://trylesson.storage.yandexcloud.net/index.html",
               "user_agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 18_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.5 Mobile/15E148 Safari/604.1"
@@ -274,7 +320,7 @@
       }
     ]
   },
-  "versionId": "92b755ec-2b08-4180-9b0a-cb7abdc4218b",
+  "versionId": "5486a8e5-9687-4c9c-905e-5724d85e8094",
   "triggerCount": 1,
   "shared": [
     {
