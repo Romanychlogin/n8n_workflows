@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-10T13:53:14.200Z",
+  "updatedAt": "2025-11-10T14:03:08.747Z",
   "createdAt": "2025-11-10T13:35:24.421Z",
   "id": "Wnsw79fmux6MqiZq",
   "name": "ADV_campaign_IDs load",
@@ -406,7 +406,7 @@
     },
     {
       "parameters": {
-        "jsCode": "// Вход: Binary -> data (CSV)\n// Настройка: \"Binary property\": data\nconst bin = items[0].binary.data;\nconst buf = Buffer.from(bin.data, 'base64');\nconst text = buf.toString('utf-8'); // или cp1251 при необходимости\n\nconst lines = text.split(/\\r?\\n/);\n// Здесь укажи число служебных строк, например 4\nconst start = 14; \nconst trimmed = lines.slice(start).join('\\n');\n\nreturn [\n  {\n    binary: {\n      data: {\n        data: Buffer.from(trimmed, 'utf-8').toString('base64'),\n        fileName: 'cleaned.csv',\n        mimeType: 'text/csv',\n      }\n    }\n  }\n];"
+        "jsCode": "// Вход: Binary -> data (CSV)\n// Настройка: \"Binary property\": data\nconst bin = items[0].binary.data;\nconst buf = Buffer.from(bin.data, 'base64');\nconst text = buf.toString('utf-8'); // или cp1251 при необходимости\n\nconst lines = text.split(/\\r?\\n/);\n// Здесь укажи число служебных строк, например 4\nconst start = 8; \nconst trimmed = lines.slice(start).join('\\n');\n\nreturn [\n  {\n    binary: {\n      data: {\n        data: Buffer.from(trimmed, 'utf-8').toString('base64'),\n        fileName: 'cleaned.csv',\n        mimeType: 'text/csv',\n      }\n    }\n  }\n];"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -986,7 +986,7 @@
       }
     ]
   },
-  "versionId": "c4bcb69b-c056-4911-ad66-ad707ac12a46",
+  "versionId": "0bc65b8d-3017-4254-b24e-22de29de5e7c",
   "triggerCount": 0,
   "shared": [
     {
