@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-10T10:11:53.164Z",
+  "updatedAt": "2025-11-10T14:08:44.822Z",
   "createdAt": "2025-11-09T14:44:54.282Z",
   "id": "XsTmBlu5hybU9K85",
   "name": "Test form",
@@ -37,7 +37,7 @@
     {
       "parameters": {
         "method": "POST",
-        "url": "https://kiberonesaratov.s20.online/v2api/1/lesson/index",
+        "url": "https://kiberonesaratov.s20.online/v2api/1/customer/index",
         "sendHeaders": true,
         "headerParameters": {
           "parameters": [
@@ -48,18 +48,6 @@
           ]
         },
         "sendBody": true,
-        "bodyParameters": {
-          "parameters": [
-            {
-              "name": "lesson_type_id",
-              "value": "3"
-            },
-            {
-              "name": "status",
-              "value": "1"
-            }
-          ]
-        },
         "options": {}
       },
       "type": "n8n-nodes-base.httpRequest",
@@ -127,6 +115,54 @@
       ],
       "id": "e2d4a082-f046-4cc6-8747-ef7c7122c2c6",
       "name": "Respond to Webhook1"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://kiberonesaratov.s20.online/v2api/1/lesson/index",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-ALFACRM-TOKEN",
+              "value": "={{ $json.token }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "lesson_type_id",
+              "value": "3"
+            },
+            {
+              "name": "status",
+              "value": "1"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        -16,
+        96
+      ],
+      "id": "67909fe9-8252-4a48-bd44-90f0cbe0c730",
+      "name": "HTTP Request2"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -560,
+        96
+      ],
+      "id": "c36c22da-4237-4c4b-8aa7-3cc3be78c432",
+      "name": "When clicking ‘Execute workflow’"
     }
   ],
   "connections": {
@@ -143,13 +179,7 @@
     },
     "HTTP Request1": {
       "main": [
-        [
-          {
-            "node": "Code in JavaScript",
-            "type": "main",
-            "index": 0
-          }
-        ]
+        []
       ]
     },
     "Webhook": {
@@ -173,6 +203,17 @@
           }
         ]
       ]
+    },
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
@@ -183,7 +224,7 @@
     "templateCredsSetupCompleted": true
   },
   "pinData": {},
-  "versionId": "d12ea506-5953-49f5-abea-063a4c6b9a4d",
+  "versionId": "0c474acf-0095-425e-a165-ca1667bd62fb",
   "triggerCount": 1,
   "shared": [
     {
