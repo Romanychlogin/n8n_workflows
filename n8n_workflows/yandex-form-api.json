@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-10T18:28:04.816Z",
+  "updatedAt": "2025-11-10T18:39:53.000Z",
   "createdAt": "2025-11-10T10:12:13.473Z",
   "id": "fsy7TJJRLJ5nc0Fc",
   "name": "yandex form API",
@@ -68,7 +68,7 @@
     },
     {
       "parameters": {
-        "jsCode": "async function http(req) { return await this.helpers.httpRequest(req); }\n\nasync function login(self, { host, email, api_key }) {\n  const res = await http.call(self, {\n    method: 'POST',\n    url: `https://${host}/v2api/auth/login`,\n    headers: { 'Content-Type': 'application/json' },\n    body: { email, api_key },\n    json: true,\n  });\n  if (!res?.token) throw new Error('Auth failed');\n  return res.token;\n}\n\nasync function createCustomer(self, { host, token, payload }) {\n  try {\n    const res = await http.call(self, {\n      method: 'POST',\n      url: `https://${host}/v2api/1/customer/create`,\n      headers: {\n        'Content-Type': 'application/json',\n        'X-ALFACRM-TOKEN': token,\n      },\n      body: payload,\n      json: true,\n      gzip: true,\n      timeout: 20000,\n    });\n    return { success: true, response: res };\n  } catch (err) {\n    return {\n      success: false,\n      status: err?.response?.statusCode,\n      error: err?.response?.body || err.message,\n    };\n  }\n}\n\n// ---------- helpers ----------\nconst notEmpty = v => v !== undefined && v !== null && String(v).trim() !== '';\nconst toNum = v => {\n  if (!notEmpty(v)) return undefined;\n  const n = Number(String(v).trim());\n  return Number.isFinite(n) ? n : undefined;\n};\nfunction asObj(maybe) {\n  if (!maybe) return {};\n  if (typeof maybe === 'object') return maybe;\n  if (typeof maybe === 'string') {\n    try { return JSON.parse(maybe); } catch { return {}; }\n  }\n  return {};\n}\nfunction firstNonEmpty(arr) {\n  for (const v of arr) if (notEmpty(v)) return String(v).trim();\n  return '';\n}\n\n// нормализуем телефон: оставляем + и цифры, приводим к +XXXXXXXX, базовая валидация (8..15 цифр)\nfunction normalizePhone(raw) {\n  const s = String(raw || '').trim();\n  if (!s) return '';\n  let keep = s.replace(/[^\\d+]/g, '');\n\n  if (keep.startsWith('00')) keep = '+' + keep.slice(2);\n\n  const digitsOnly = keep.replace(/\\D/g, '');\n  if (digitsOnly.length === 11 && keep[0] === '8') keep = '+7' + digitsOnly.slice(1);\n  if (keep[0] !== '+') keep = '+' + digitsOnly;\n\n  const finalDigits = keep.replace(/\\D/g, '');\n  if (finalDigits.length < 8 || finalDigits.length > 15) return '';\n  return keep;\n}\n\nfunction buildNote({ message, city }) {\n  const lines = [];\n  if (notEmpty(message)) lines.push(`Сообщение: ${message}`);\n  if (notEmpty(city))     lines.push(`Город: ${city}`);\n  return lines.join('\\n');\n}\n\n// ---------- MAIN ----------\nconst items = await $input.all();\nconst out = [];\n\nfor (const item of items) {\n  const input = item.json ?? item;\n  const conf = input.alfacrm || {};\n\n  // email здесь — только для авторизации\n  const host    = conf.host  || input.host;\n  const apiMail = conf.email || input.email;\n  const api_key = conf.api_key || input.api_key;\n  if (!host || !apiMail || !api_key) {\n    throw new Error('Provide alfacrm.host, alfacrm.email, alfacrm.api_key');\n  }\n\n  const token = await login(this, { host, email: apiMail, api_key });\n  const lead_source_id = toNum(input.lead_source_id) ?? 3;\n\n  // реальные данные формы приходят в body.*\n  const src = input.body ?? input;\n\n  // ===== Маппинг =====\n  const childName  = firstNonEmpty([ src.child_name, src['child name'] ]) || 'Без имени';\n  const parentName = firstNonEmpty([ src.parent_name ]);\n\n  // dob: БЕЗ каких-либо преобразований или trim — как пришло, так и уходит\n  const dobRawExists = Object.prototype.hasOwnProperty.call(src, 'child_birthdate');\n  const dob_raw_value = dobRawExists ? src.child_birthdate : undefined;\n  const dob_type = typeof dob_raw_value;\n  const dob = dob_raw_value; // ← отправляем как есть\n\n  const phoneRaw   = firstNonEmpty([ src.phone ]);\n  const phone      = normalizePhone(phoneRaw);\n  const emailForm  = firstNonEmpty([ src.email ]);\n\n  // contact_contacts — массив, только телефон\n  const contact_contacts = [phone].filter(notEmpty);\n  // email — отдельный массив\n  const emailArr = [emailForm].filter(notEmpty);\n\n  const message = firstNonEmpty([ src.message ]);\n  const city    = firstNonEmpty([ src.city ]);\n  const note    = buildNote({ message, city });\n\n  // UTM / yclid\n  const utm_source   = src.utm_source   || '';\n  const utm_medium   = src.utm_medium   || '';\n  const utm_campaign = src.utm_campaign || '';\n  const utm_content  = src.utm_content  || '';\n  const utm_term     = src.utm_term     || '';\n  const yclid        = src.yclid        || '';\n\n  const custom_value_json = JSON.stringify({\n    utm_source, utm_medium, utm_campaign, utm_content, utm_term, yclid,\n  });\n\n  const payload = {\n    name: childName,\n    ...(notEmpty(parentName) ? { legal_name: parentName } : {}),\n    ...(dob_raw_value !== undefined && dob_raw_value !== null ? { dob } : {}), // вообще без изменений\n    branch_ids: [1],\n    legal_type: 1,\n    is_study: 0,\n    lead_source_id,\n\n    ...(notEmpty(phone) ? { phone: [phone] } : {}),\n    ...(contact_contacts.length ? { contact_contacts } : {}),\n    ...(emailArr.length ? { email: emailArr } : {}),\n\n    ...(notEmpty(note) ? { note } : {}),\n\n    ...(notEmpty(utm_source)   ? { custom_utm_source: utm_source } : {}),\n    ...(notEmpty(utm_medium)   ? { custom_utm_medium: utm_medium } : {}),\n    ...(notEmpty(utm_campaign) ? { custom_utm_campaign: utm_campaign } : {}),\n    ...(notEmpty(utm_content)  ? { custom_utm_content: utm_content } : {}),\n    ...(notEmpty(utm_term)     ? { custom_utm_term: utm_term } : {}),\n    ...(notEmpty(yclid)        ? { custom_yclid: yclid } : {}),\n    custom_value_json,\n  };\n\n  const res = await createCustomer(this, { host, token, payload });\n\n  out.push({\n    json: {\n      success: res.success,\n      response: res.response,\n      sent: payload,\n      },\n    }\n  });\n}\n\nreturn out;"
+        "jsCode": "async function http(req) { return await this.helpers.httpRequest(req); }\n\nasync function login(self, { host, email, api_key }) {\n  const res = await http.call(self, {\n    method: 'POST',\n    url: `https://${host}/v2api/auth/login`,\n    headers: { 'Content-Type': 'application/json' },\n    body: { email, api_key },\n    json: true,\n  });\n  if (!res?.token) throw new Error('Auth failed');\n  return res.token;\n}\n\nasync function createCustomer(self, { host, token, payload }) {\n  try {\n    const res = await http.call(self, {\n      method: 'POST',\n      url: `https://${host}/v2api/1/customer/create`,\n      headers: {\n        'Content-Type': 'application/json',\n        'X-ALFACRM-TOKEN': token,\n      },\n      body: payload,\n      json: true,\n      gzip: true,\n      timeout: 20000,\n    });\n    return { success: true, response: res };\n  } catch (err) {\n    return {\n      success: false,\n      status: err?.response?.statusCode,\n      error: err?.response?.body || err.message,\n    };\n  }\n}\n\n// ---------- helpers ----------\nconst notEmpty = v => v !== undefined && v !== null && String(v).trim() !== '';\nconst toNum = v => {\n  if (!notEmpty(v)) return undefined;\n  const n = Number(String(v).trim());\n  return Number.isFinite(n) ? n : undefined;\n};\nfunction asObj(maybe) {\n  if (!maybe) return {};\n  if (typeof maybe === 'object') return maybe;\n  if (typeof maybe === 'string') {\n    try { return JSON.parse(maybe); } catch { return {}; }\n  }\n  return {};\n}\nfunction firstNonEmpty(arr) {\n  for (const v of arr) if (notEmpty(v)) return String(v).trim();\n  return '';\n}\n\n// нормализуем телефон: оставляем + и цифры, приводим к +XXXXXXXX, базовая валидация (8..15 цифр)\nfunction normalizePhone(raw) {\n  const s = String(raw || '').trim();\n  if (!s) return '';\n  let keep = s.replace(/[^\\d+]/g, '');\n\n  if (keep.startsWith('00')) keep = '+' + keep.slice(2);\n\n  const digitsOnly = keep.replace(/\\D/g, '');\n  if (digitsOnly.length === 11 && keep[0] === '8') keep = '+7' + digitsOnly.slice(1);\n  if (keep[0] !== '+') keep = '+' + digitsOnly;\n\n  const finalDigits = keep.replace(/\\D/g, '');\n  if (finalDigits.length < 8 || finalDigits.length > 15) return '';\n  return keep;\n}\n\nfunction buildNote({ message, city }) {\n  const lines = [];\n  if (notEmpty(message)) lines.push(`Сообщение: ${message}`);\n  if (notEmpty(city))     lines.push(`Город: ${city}`);\n  return lines.join('\\n');\n}\n\n// ---------- MAIN ----------\nconst items = await $input.all();\nconst out = [];\n\nfor (const item of items) {\n  const input = item.json ?? item;\n  const conf = input.alfacrm || {};\n\n  // email здесь — только для авторизации\n  const host    = conf.host  || input.host;\n  const apiMail = conf.email || input.email;\n  const api_key = conf.api_key || input.api_key;\n  if (!host || !apiMail || !api_key) {\n    throw new Error('Provide alfacrm.host, alfacrm.email, alfacrm.api_key');\n  }\n\n  const token = await login(this, { host, email: apiMail, api_key });\n  const lead_source_id = toNum(input.lead_source_id) ?? 3;\n\n  // реальные данные формы приходят в body.*\n  const src = input.body ?? input;\n\n  // ===== Маппинг =====\n  const childName  = firstNonEmpty([ src.child_name, src['child name'] ]) || 'Без имени';\n  const parentName = firstNonEmpty([ src.parent_name ]);\n\n  // dob: БЕЗ каких-либо преобразований или trim — как пришло, так и уходит\n  const dobRawExists = Object.prototype.hasOwnProperty.call(src, 'child_birthdate');\n  const dob_raw_value = dobRawExists ? src.child_birthdate : undefined;\n  const dob_type = typeof dob_raw_value;\n  const dob = dob_raw_value; // ← отправляем как есть\n\n  const phoneRaw   = firstNonEmpty([ src.phone ]);\n  const phone      = normalizePhone(phoneRaw);\n  const emailForm  = firstNonEmpty([ src.email ]);\n\n  // contact_contacts — массив, только телефон\n  const contact_contacts = [phone].filter(notEmpty);\n  // email — отдельный массив\n  const emailArr = [emailForm].filter(notEmpty);\n\n  const message = firstNonEmpty([ src.message ]);\n  const city    = firstNonEmpty([ src.city ]);\n  const note    = buildNote({ message, city });\n\n  // UTM / yclid\n  const utm_source   = src.utm_source   || '';\n  const utm_medium   = src.utm_medium   || '';\n  const utm_campaign = src.utm_campaign || '';\n  const utm_content  = src.utm_content  || '';\n  const utm_term     = src.utm_term     || '';\n  const yclid        = src.yclid        || '';\n\n  const custom_value_json = JSON.stringify({\n    utm_source, utm_medium, utm_campaign, utm_content, utm_term, yclid,\n  });\n\n  const payload = {\n    name: childName,\n    ...(notEmpty(parentName) ? { legal_name: parentName } : {}),\n    ...(dob_raw_value !== undefined && dob_raw_value !== null ? { dob } : {}), // вообще без изменений\n    branch_ids: [1],\n    legal_type: 1,\n    is_study: 0,\n    lead_source_id,\n\n    ...(notEmpty(phone) ? { phone: [phone] } : {}),\n    ...(contact_contacts.length ? { contact_contacts } : {}),\n    ...(emailArr.length ? { email: emailArr } : {}),\n\n    ...(notEmpty(note) ? { note } : {}),\n\n    ...(notEmpty(utm_source)   ? { custom_utm_source: utm_source } : {}),\n    ...(notEmpty(utm_medium)   ? { custom_utm_medium: utm_medium } : {}),\n    ...(notEmpty(utm_campaign) ? { custom_utm_campaign: utm_campaign } : {}),\n    ...(notEmpty(utm_content)  ? { custom_utm_content: utm_content } : {}),\n    ...(notEmpty(utm_term)     ? { custom_utm_term: utm_term } : {}),\n    ...(notEmpty(yclid)        ? { custom_yclid: yclid } : {}),\n    custom_value_json,\n  };\n\n  const res = await createCustomer(this, { host, token, payload });\n\n  out.push({\n    json: {\n      success: res.success,\n      response: res.response,\n      sent: payload,\n      // дебаг по дате: что пришло и что ушло\n      debug_dob: {\n        dob_raw_value,\n        dob_type,\n        dob_in_payload: dob,\n      },\n    }\n  });\n}\n\nreturn out;"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -110,8 +110,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.3,
       "position": [
-        960,
-        0
+        1312,
+        -128
       ],
       "id": "6489580f-2f2d-4c52-bda3-32190f00d54e",
       "name": "Get Lesson by ID"
@@ -123,8 +123,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1152,
-        0
+        1504,
+        -128
       ],
       "id": "ad50f613-7889-4355-aee8-71887ad29db4",
       "name": "Append students to the list"
@@ -156,8 +156,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.3,
       "position": [
-        1360,
-        0
+        1712,
+        -128
       ],
       "id": "ae6e46d2-40ea-4fc1-99a8-93a471fd0909",
       "name": "Push updated students list"
@@ -184,8 +184,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.3,
       "position": [
-        768,
-        0
+        1088,
+        -128
       ],
       "id": "84324a82-fd46-4178-bab3-c1c89262b33b",
       "name": "Get X-ALFACRM-TOKEN"
@@ -203,6 +203,40 @@
       ],
       "id": "79f5740d-dbe2-4a03-96c8-06d23385ae67",
       "name": "update lead_source_id"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "0b3d1241-1a83-445e-8789-456d7fa99bcd",
+              "leftValue": "={{ $('Webhook').item.json.body.selected_lesson_id }}",
+              "rightValue": "",
+              "operator": {
+                "type": "number",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        816,
+        0
+      ],
+      "id": "8676e85d-8140-4ca6-80bf-4b6393ff4d76",
+      "name": "If there is a selected lesson"
     }
   ],
   "connections": {
@@ -243,7 +277,7 @@
       "main": [
         [
           {
-            "node": "Get X-ALFACRM-TOKEN",
+            "node": "If there is a selected lesson",
             "type": "main",
             "index": 0
           }
@@ -293,6 +327,17 @@
           }
         ]
       ]
+    },
+    "If there is a selected lesson": {
+      "main": [
+        [
+          {
+            "node": "Get X-ALFACRM-TOKEN",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
@@ -307,17 +352,17 @@
           "headers": {
             "host": "n8n-main-production-4310.up.railway.app",
             "user-agent": "axios/1.13.2",
-            "content-length": "693",
+            "content-length": "648",
             "accept": "application/json, text/plain, */*",
             "accept-encoding": "gzip, compress, deflate, br",
             "content-type": "application/json",
-            "x-forwarded-for": "185.206.167.210",
+            "x-forwarded-for": "51.250.53.82",
             "x-forwarded-host": "n8n-main-production-4310.up.railway.app",
             "x-forwarded-proto": "https",
             "x-railway-edge": "railway/europe-west4-drams3a",
-            "x-railway-request-id": "P8RklfL6SuGQ7rTC0-QtfA",
-            "x-real-ip": "185.206.167.210",
-            "x-request-start": "1762797804811"
+            "x-railway-request-id": "Da3c_m2EQI65iRm2m3z_FQ",
+            "x-real-ip": "51.250.53.82",
+            "x-request-start": "1762799455287"
           },
           "params": {},
           "query": {},
@@ -325,21 +370,21 @@
             "form": "trial_lesson",
             "location": "ул. Т. Г. Шевченко, 8",
             "subject": "Пробное занятие — 1 час",
-            "selected_date": "2025-11-30",
-            "selected_lesson_id": 6900,
-            "selected_time_from": "09:00",
-            "selected_time_to": "10:00",
-            "parent_name": "ANana",
-            "phone": "79117932216",
-            "email": "anton@anaont.ru",
-            "child_name": "new wizard test",
-            "child_birthdate": "10.10.2010",
+            "selected_date": null,
+            "selected_lesson_id": null,
+            "selected_time_from": null,
+            "selected_time_to": null,
+            "parent_name": "Фтещт",
+            "phone": "89117932216",
+            "email": null,
+            "child_name": "",
+            "child_birthdate": null,
             "etext": null,
             "utm_campaign": null,
             "utm_content": null,
             "utm_source": null,
             "utm_term": null,
-            "yclid": "dhkjhkh4k34hk",
+            "yclid": null,
             "meta": {
               "page_url": "https://trylesson.storage.yandexcloud.net/index.html",
               "user_agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 18_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.5 Mobile/15E148 Safari/604.1"
@@ -351,7 +396,7 @@
       }
     ]
   },
-  "versionId": "bb3d4636-1cb8-4289-875c-beff9677b624",
+  "versionId": "5e56a543-93d9-407c-88bd-2d0a4dea4bec",
   "triggerCount": 1,
   "shared": [
     {
