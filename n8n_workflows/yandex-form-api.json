@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-10T18:56:09.284Z",
+  "updatedAt": "2025-11-10T19:16:13.481Z",
   "createdAt": "2025-11-10T10:12:13.473Z",
   "id": "fsy7TJJRLJ5nc0Fc",
   "name": "yandex form API",
@@ -77,7 +77,9 @@
         0
       ],
       "id": "3c64d274-b17a-4fab-8cbe-edfc72e08a16",
-      "name": "Send Lead data to CRM"
+      "name": "Send Lead data to CRM",
+      "retryOnFail": true,
+      "waitBetweenTries": 5000
     },
     {
       "parameters": {
@@ -114,7 +116,9 @@
         -128
       ],
       "id": "6489580f-2f2d-4c52-bda3-32190f00d54e",
-      "name": "Get Lesson by ID"
+      "name": "Get Lesson by ID",
+      "retryOnFail": true,
+      "waitBetweenTries": 5000
     },
     {
       "parameters": {
@@ -160,7 +164,9 @@
         -128
       ],
       "id": "ae6e46d2-40ea-4fc1-99a8-93a471fd0909",
-      "name": "Push updated students list"
+      "name": "Push updated students list",
+      "retryOnFail": true,
+      "waitBetweenTries": 5000
     },
     {
       "parameters": {
@@ -188,21 +194,9 @@
         -128
       ],
       "id": "84324a82-fd46-4178-bab3-c1c89262b33b",
-      "name": "Get X-ALFACRM-TOKEN"
-    },
-    {
-      "parameters": {
-        "mode": "runOnceForEachItem",
-        "jsCode": "const hasVal = v => v !== null && v !== undefined && String(v).trim() !== '';\n\nconst yclid = $json.yclid ?? $json.body?.yclid ?? null;\nconst etext = $json.etext ?? $json.body?.etext ?? null;\n\nconst lead_source_id = (hasVal(yclid) || hasVal(etext)) ? 8 : 3;\n\nreturn {\n  ...$json,\n  body: {\n    ...($json.body ?? {}),\n    lead_source_id,          // кладём прямо в body\n  },\n};"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        160,
-        0
-      ],
-      "id": "79f5740d-dbe2-4a03-96c8-06d23385ae67",
-      "name": "update lead_source_id"
+      "name": "Get X-ALFACRM-TOKEN",
+      "retryOnFail": true,
+      "waitBetweenTries": 5000
     },
     {
       "parameters": {
@@ -237,6 +231,20 @@
       ],
       "id": "8676e85d-8140-4ca6-80bf-4b6393ff4d76",
       "name": "If there is a selected lesson"
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "const hasVal = v => v !== null && v !== undefined && String(v).trim() !== '';\n\nconst yclid = $json.yclid ?? $json.body?.yclid ?? null;\nconst etext = $json.etext ?? $json.body?.etext ?? null;\n\nconst lead_source_id = (hasVal(yclid) || hasVal(etext)) ? 8 : 3;\n\nreturn {\n  ...$json,\n  body: {\n    ...($json.body ?? {}),\n    lead_source_id,          // кладём прямо в body\n  },\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        160,
+        0
+      ],
+      "id": "79f5740d-dbe2-4a03-96c8-06d23385ae67",
+      "name": "Update lead_source_id"
     }
   ],
   "connections": {
@@ -266,7 +274,7 @@
       "main": [
         [
           {
-            "node": "update lead_source_id",
+            "node": "Update lead_source_id",
             "type": "main",
             "index": 0
           }
@@ -317,22 +325,22 @@
         ]
       ]
     },
-    "update lead_source_id": {
+    "If there is a selected lesson": {
       "main": [
         [
           {
-            "node": "Set CRM data",
+            "node": "Get X-ALFACRM-TOKEN",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "If there is a selected lesson": {
+    "Update lead_source_id": {
       "main": [
         [
           {
-            "node": "Get X-ALFACRM-TOKEN",
+            "node": "Set CRM data",
             "type": "main",
             "index": 0
           }
@@ -396,7 +404,7 @@
       }
     ]
   },
-  "versionId": "09957557-af3b-4579-a535-1795c29a84f1",
+  "versionId": "fd27d2ee-05f8-4c16-8a95-24582ba77998",
   "triggerCount": 1,
   "shared": [
     {
