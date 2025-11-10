@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-10T13:48:45.114Z",
+  "updatedAt": "2025-11-10T13:53:14.200Z",
   "createdAt": "2025-11-10T13:35:24.421Z",
   "id": "Wnsw79fmux6MqiZq",
   "name": "ADV_campaign_IDs load",
@@ -721,7 +721,7 @@
     },
     {
       "parameters": {
-        "jsCode": "// Извлекаем campaign_id из имени файла вида \"<campaign_id>.xlsx\"\nreturn $input.all().map(item => {\n  const binKey = Object.keys(item.binary ?? {})[0]; // обычно \"data\"\n  const meta = binKey ? item.binary[binKey] : undefined;\n\n  // имя файла: сначала fileName, на всякий — \"File Name\"\n  const fileName = meta?.fileName ?? meta?.[\"File Name\"] ?? \"\";\n  const baseName = String(fileName).trim().split(/[\\\\/]/).pop(); // убираем путь, если есть\n\n  // Строго: только \"<числа>.xlsx\"; запасной вариант — первая числовая последовательность\n  const m = baseName.match(/^(\\d+)\\.xlsx$/i) || baseName.match(/(\\d+)/);\n\n  const campaign_id = m?.[1] ?? null;\n\n  return {\n    json: {\n      ...item.json,\n      campaign_id,   // строкой, чтобы избежать переполнения; при необходимости Number(campaign_id)\n      file_name: fileName,\n      bin_key: binKey,\n    },\n    binary: item.binary, // сохраняем бинарные данные\n  };\n});"
+        "jsCode": "// Извлекаем campaign_id из имени файла вида \"<campaign_id>.xlsx\"\nreturn $input.all().map(item => {\n  const binKey = Object.keys(item.binary ?? {})[0]; // обычно \"data\"\n  const meta = binKey ? item.binary[binKey] : undefined;\n\n  // имя файла: сначала fileName, на всякий — \"File Name\"\n  const fileName = meta?.fileName ?? meta?.[\"File Name\"] ?? \"\";\n  const baseName = String(fileName).trim().split(/[\\\\/]/).pop(); // убираем путь, если есть\n\n  // Строго: только \"<числа>.csv\"; запасной вариант — первая числовая последовательность\n  const m = baseName.match(/^(\\d+)\\.csv$/i) || baseName.match(/(\\d+)/);\n\n  const campaign_id = m?.[1] ?? null;\n\n  return {\n    json: {\n      ...item.json,\n      campaign_id,   // строкой, чтобы избежать переполнения; при необходимости Number(campaign_id)\n      file_name: fileName,\n      bin_key: binKey,\n    },\n    binary: item.binary, // сохраняем бинарные данные\n  };\n});"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -980,13 +980,13 @@
         "json": {
           "id": "4f5WJ06ItW520O75",
           "root_execution_id": 32924,
-          "yandex_report_dropbox_file_path": "https://www.dropbox.com/scl/fi/q5ciuv7hk365ekf93pcvj/704708210.xlsx?rlkey=ajgn7gkcg6hztozb5i3abwmd9&dl=1",
+          "yandex_report_dropbox_file_path": "https://www.dropbox.com/scl/fi/y5ta5w9gd7ux4ml4mi5bc/704708210.csv?rlkey=s1prv35zb1r8dypxvi0lywd1d&dl=1",
           "threshhold": "0.88"
         }
       }
     ]
   },
-  "versionId": "0a3d28f5-8f60-4110-81a1-4e4ba219b69a",
+  "versionId": "c4bcb69b-c056-4911-ad66-ad707ac12a46",
   "triggerCount": 0,
   "shared": [
     {
