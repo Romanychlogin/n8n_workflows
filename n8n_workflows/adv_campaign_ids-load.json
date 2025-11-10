@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-10T14:03:08.747Z",
+  "updatedAt": "2025-11-10T18:00:32.626Z",
   "createdAt": "2025-11-10T13:35:24.421Z",
   "id": "Wnsw79fmux6MqiZq",
   "name": "ADV_campaign_IDs load",
@@ -43,7 +43,7 @@
       "type": "n8n-nodes-base.splitInBatches",
       "typeVersion": 3,
       "position": [
-        2320,
+        2528,
         -112
       ],
       "id": "68e8b1ab-193b-4ef4-a216-d605a08a0a47",
@@ -74,221 +74,6 @@
       ],
       "id": "ce8f2c1a-b90e-4f36-9678-19d55636de76",
       "name": "Sticky Note1"
-    },
-    {
-      "parameters": {
-        "schema": {
-          "__rl": true,
-          "mode": "list",
-          "value": "public"
-        },
-        "table": {
-          "__rl": true,
-          "value": "current_list",
-          "mode": "list",
-          "cachedResultName": "current_list"
-        },
-        "columns": {
-          "mappingMode": "defineBelow",
-          "value": {
-            "key_word": "={{ $json['Поисковый запрос'] }}",
-            "campaign_id": "={{ $json['№ Кампании'] }}",
-            "used_keyword": "={{ $json['Условие показа'] }}",
-            "group_id": "={{ $json['№ Группы'] }}",
-            "condition_type": "={{ $json['Тип соответствия'] }}",
-            "category": "={{ $json['Категория таргетинга'] }}",
-            "ads_header": "={{ $json['Заголовок'] }}",
-            "count_views": "={{ $json['Показы'] }}",
-            "count_clics": "={{ $json['Клики'] }}",
-            "count_convetions": "={{ $json['Конверсии'] }}",
-            "company_id": "={{ $json.company_id }}",
-            "report_id": "={{ $('report import record').item.json.import_id }}",
-            "service_id": 0
-          },
-          "matchingColumns": [
-            "id"
-          ],
-          "schema": [
-            {
-              "id": "list_id",
-              "displayName": "list_id",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "number",
-              "canBeUsedToMatch": true,
-              "removed": true
-            },
-            {
-              "id": "key_word",
-              "displayName": "key_word",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true
-            },
-            {
-              "id": "campaign_id",
-              "displayName": "campaign_id",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "number",
-              "canBeUsedToMatch": true
-            },
-            {
-              "id": "used_keyword",
-              "displayName": "used_keyword",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true
-            },
-            {
-              "id": "group_id",
-              "displayName": "group_id",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "number",
-              "canBeUsedToMatch": true
-            },
-            {
-              "id": "condition_type",
-              "displayName": "condition_type",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true,
-              "removed": false
-            },
-            {
-              "id": "category",
-              "displayName": "category",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true
-            },
-            {
-              "id": "ads_header",
-              "displayName": "ads_header",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true
-            },
-            {
-              "id": "resolution",
-              "displayName": "resolution",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true
-            },
-            {
-              "id": "count_views",
-              "displayName": "count_views",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "number",
-              "canBeUsedToMatch": true
-            },
-            {
-              "id": "count_clics",
-              "displayName": "count_clics",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "number",
-              "canBeUsedToMatch": true
-            },
-            {
-              "id": "count_convetions",
-              "displayName": "count_convetions",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "number",
-              "canBeUsedToMatch": true
-            },
-            {
-              "id": "ai_response_tokens",
-              "displayName": "ai_response_tokens",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "number",
-              "canBeUsedToMatch": true,
-              "removed": true
-            },
-            {
-              "id": "company_id",
-              "displayName": "company_id",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "number",
-              "canBeUsedToMatch": true,
-              "removed": false
-            },
-            {
-              "id": "report_id",
-              "displayName": "report_id",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "number",
-              "canBeUsedToMatch": true,
-              "removed": false
-            },
-            {
-              "id": "service_id",
-              "displayName": "service_id",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "number",
-              "canBeUsedToMatch": true,
-              "removed": false
-            },
-            {
-              "id": "is_adv_processed",
-              "displayName": "is_adv_processed",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "boolean",
-              "canBeUsedToMatch": true,
-              "removed": true
-            }
-          ],
-          "attemptToConvertTypes": false,
-          "convertFieldsToString": false
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.postgres",
-      "typeVersion": 2.6,
-      "position": [
-        3200,
-        -96
-      ],
-      "id": "6a738735-2db5-4d16-b68f-30371cf09b7c",
-      "name": "Insert rows in a table",
-      "credentials": {
-        "postgres": {
-          "id": "Hx2VFmUi5WO2K4QX",
-          "name": "Postgres account 2"
-        }
-      }
     },
     {
       "parameters": {
@@ -390,7 +175,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        2640,
+        2848,
         -304
       ],
       "id": "7beaa1a1-5f7b-48ec-81c4-2ddae9b33d61",
@@ -424,7 +209,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        2496,
+        2704,
         -96
       ],
       "id": "e7ce3f80-ed1a-4a67-8882-e80b14e4bc52",
@@ -439,7 +224,7 @@
       "type": "n8n-nodes-base.merge",
       "typeVersion": 3.2,
       "position": [
-        2096,
+        2304,
         -112
       ],
       "id": "936d55f2-bc27-4a11-a1d0-914ed2693cb0",
@@ -489,7 +274,7 @@
       "typeVersion": 2,
       "position": [
         3424,
-        -112
+        -96
       ],
       "id": "4648c3cf-eed1-4859-9beb-3470ce284e33",
       "name": "Get current step  saved"
@@ -505,7 +290,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        4160,
+        4368,
         -128
       ],
       "id": "d8296d69-da8c-4e04-9ffe-459ba0e5e52b",
@@ -545,7 +330,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        3664,
+        3776,
         -80
       ],
       "id": "c492db07-b5df-493b-8229-6959ba687aa2",
@@ -663,7 +448,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        1616,
+        1824,
         -304
       ],
       "id": "340c6ec8-2afc-48a6-a9dc-c8d551c80cbf",
@@ -684,7 +469,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        3904,
+        4112,
         -96
       ],
       "id": "5ecfd689-1b3b-45de-9202-4401deeeacaf",
@@ -713,7 +498,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        2832,
+        3040,
         -304
       ],
       "id": "9898c20f-ffd6-4550-9b1e-c5014ec7fc30",
@@ -731,6 +516,42 @@
       ],
       "id": "ed771a97-a0f8-45b9-880b-9eef10c17ab2",
       "name": "get campaign ID"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "UPDATE public.ads_list\n\tSET group_yandex_id=$3, ads_yandex_id=$4, key_word_yandex_id=$5\n\tWHERE company_id=$1 and key_word=$2;",
+        "options": {
+          "queryReplacement": "={{ $json.company_id }},{{ $json['Фраза (с минус-словами)'] }},{{ $json['ID группы'] }},{{ $json['ID объявления'] }},{{ $json['ID фразы'] }}"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        3024,
+        -96
+      ],
+      "id": "6a738735-2db5-4d16-b68f-30371cf09b7c",
+      "name": "Execute a SQL query",
+      "credentials": {
+        "postgres": {
+          "id": "Hx2VFmUi5WO2K4QX",
+          "name": "Postgres account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Берём все входные items\nconst items = $input.all();\n\n// 1) Удаляем первый элемент\nconst withoutFirst = items.slice(1);\n\n// 2) Удаляем объекты, где поле 'Фраза (с минус-словами)' равно '\\t---autotargeting'\n//    Дополнительно страхуемся на случай лишних пробелов/табов (trim).\nconst filtered = withoutFirst.filter(item => {\n  const v = item?.json?.['Фраза (с минус-словами)'];\n  // строгая проверка таб+строка И проверка после trim\n  const isAuto = v === '\\t---autotargeting' || String(v ?? '').trim() === '---autotargeting';\n  return !isAuto;\n});\n\n// Возвращаем результат без изменения бинарных данных\nreturn filtered.map(it => ({ json: it.json, binary: it.binary }));"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1664,
+        -112
+      ],
+      "id": "729681e3-ab8d-43d2-8a77-7e48cb21699f",
+      "name": "Code in JavaScript"
     }
   ],
   "connections": {
@@ -768,17 +589,6 @@
         [
           {
             "node": "sanitizeKey",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Insert rows in a table": {
-      "main": [
-        [
-          {
-            "node": "Get current step  saved",
             "type": "main",
             "index": 0
           }
@@ -827,7 +637,7 @@
       "main": [
         [
           {
-            "node": "Insert rows in a table",
+            "node": "Execute a SQL query",
             "type": "main",
             "index": 0
           }
@@ -836,7 +646,13 @@
     },
     "Merge": {
       "main": [
-        []
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
       ]
     },
     "company_id": {
@@ -865,12 +681,12 @@
       "main": [
         [
           {
-            "node": "Merge",
+            "node": "Mark_workflow_total_steps",
             "type": "main",
             "index": 0
           },
           {
-            "node": "Mark_workflow_total_steps",
+            "node": "Code in JavaScript",
             "type": "main",
             "index": 0
           }
@@ -954,6 +770,28 @@
           }
         ]
       ]
+    },
+    "Execute a SQL query": {
+      "main": [
+        [
+          {
+            "node": "Get current step  saved",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
@@ -986,7 +824,7 @@
       }
     ]
   },
-  "versionId": "0bc65b8d-3017-4254-b24e-22de29de5e7c",
+  "versionId": "13f8f588-52d3-4489-bece-d6b39bf8aaa9",
   "triggerCount": 0,
   "shared": [
     {
