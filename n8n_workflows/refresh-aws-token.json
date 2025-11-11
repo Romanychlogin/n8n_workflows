@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-11T17:44:51.171Z",
+  "updatedAt": "2025-11-11T17:59:15.899Z",
   "createdAt": "2025-11-11T17:33:50.959Z",
   "id": "KDJtWKBxL9g3ZqJp",
   "name": "refresh AWS token",
@@ -32,14 +32,9 @@
         "authentication": "genericCredentialType",
         "genericAuthType": "httpCustomAuth",
         "sendHeaders": true,
-        "headerParameters": {
-          "parameters": [
-            {
-              "name": "Content-Type",
-              "value": "application/json"
-            }
-          ]
-        },
+        "specifyHeaders": "json",
+        "sendBody": true,
+        "specifyBody": "json",
         "options": {}
       },
       "type": "n8n-nodes-base.httpRequest",
@@ -81,7 +76,7 @@
   "staticData": null,
   "meta": null,
   "pinData": {},
-  "versionId": "96ddf836-1bd9-4340-bbdb-e34641ed9d60",
+  "versionId": "45a0fada-6a13-4fcc-81f5-97f9f6b902ce",
   "triggerCount": 0,
   "shared": [
     {
