@@ -1,0 +1,91 @@
+{
+  "updatedAt": "2025-11-11T17:38:11.794Z",
+  "createdAt": "2025-11-11T17:33:50.959Z",
+  "id": "KDJtWKBxL9g3ZqJp",
+  "name": "refresh AWS token",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours",
+              "hoursInterval": 12
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "e7a214fe-8354-4f90-944f-18b1d40f366d",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "url": "https://h9mv0vfn6j.execute-api.us-east-1.amazonaws.com/development/auth/refresh",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBearerAuth",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        208,
+        0
+      ],
+      "id": "003f5b69-1f93-44b0-b06a-6389ba41b64b",
+      "name": "HTTP Request",
+      "credentials": {
+        "httpBearerAuth": {
+          "id": "LTx5lBGpYHCJ3Jmp",
+          "name": "AWS refresh token"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": {},
+  "versionId": "819103ec-9cea-4a72-be88-78435e3e773b",
+  "triggerCount": 0,
+  "shared": [
+    {
+      "updatedAt": "2025-11-11T17:33:50.959Z",
+      "createdAt": "2025-11-11T17:33:50.959Z",
+      "role": "workflow:owner",
+      "workflowId": "KDJtWKBxL9g3ZqJp",
+      "projectId": "spKmbJLU4mvACXIB"
+    }
+  ],
+  "tags": [
+    {
+      "updatedAt": "2025-10-07T08:31:00.329Z",
+      "createdAt": "2025-10-07T08:31:00.329Z",
+      "id": "mr0GomgPqPG1HJmt",
+      "name": "core management"
+    }
+  ],
+  "file_name": "refresh-aws-token.json"
+}
