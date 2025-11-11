@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-07T17:07:06.366Z",
+  "updatedAt": "2025-11-11T17:52:48.449Z",
   "createdAt": "2025-10-22T11:44:28.248Z",
   "id": "4Fw159fAoZfSn72v",
   "name": "ADV_campaign_data_load_API",
@@ -657,6 +657,12 @@
         "url": "=https://eak5kk6vhl.execute-api.us-east-1.amazonaws.com/development/reports/daily?type=SEARCH_QUERY_PERFORMANCE_REPORT&date={{$json.report_date}}&campaign_id={{$json.campaign_yandex_id}}&download=false",
         "authentication": "genericCredentialType",
         "genericAuthType": "httpBearerAuth",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {}
+          ]
+        },
         "options": {}
       },
       "type": "n8n-nodes-base.httpRequest",
@@ -888,7 +894,7 @@
       }
     ]
   },
-  "versionId": "6139175e-a4d0-4a23-8757-b8c21505ace0",
+  "versionId": "5a88ceb4-d518-427b-b082-e37fc0a66df7",
   "triggerCount": 0,
   "shared": [
     {
@@ -901,16 +907,16 @@
   ],
   "tags": [
     {
-      "updatedAt": "2025-10-22T11:44:26.850Z",
-      "createdAt": "2025-10-22T11:44:26.850Z",
-      "id": "TAPLdpwV5vPQJtDW",
-      "name": "API"
-    },
-    {
       "updatedAt": "2025-10-06T13:06:54.644Z",
       "createdAt": "2025-10-06T13:06:54.644Z",
       "id": "DBEf57wUDunVJUG6",
       "name": "campaign update"
+    },
+    {
+      "updatedAt": "2025-10-22T11:44:26.850Z",
+      "createdAt": "2025-10-22T11:44:26.850Z",
+      "id": "TAPLdpwV5vPQJtDW",
+      "name": "API"
     }
   ]
 }
