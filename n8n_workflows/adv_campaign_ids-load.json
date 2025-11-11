@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-10T18:00:32.626Z",
+  "updatedAt": "2025-11-11T16:20:11.521Z",
   "createdAt": "2025-11-10T13:35:24.421Z",
   "id": "Wnsw79fmux6MqiZq",
   "name": "ADV_campaign_IDs load",
@@ -161,8 +161,7 @@
           "id": "4YkdFJcdTgzo9hkz",
           "name": "PGvector"
         }
-      },
-      "disabled": true
+      }
     },
     {
       "parameters": {
@@ -186,8 +185,7 @@
           "id": "4YkdFJcdTgzo9hkz",
           "name": "PGvector"
         }
-      },
-      "disabled": true
+      }
     },
     {
       "parameters": {
@@ -273,7 +271,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        3424,
+        3632,
         -96
       ],
       "id": "4648c3cf-eed1-4859-9beb-3470ce284e33",
@@ -290,7 +288,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        4368,
+        4576,
         -128
       ],
       "id": "d8296d69-da8c-4e04-9ffe-459ba0e5e52b",
@@ -330,7 +328,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        3776,
+        3984,
         -80
       ],
       "id": "c492db07-b5df-493b-8229-6959ba687aa2",
@@ -459,8 +457,7 @@
           "id": "4YkdFJcdTgzo9hkz",
           "name": "PGvector"
         }
-      },
-      "disabled": true
+      }
     },
     {
       "parameters": {
@@ -469,7 +466,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        4112,
+        4320,
         -96
       ],
       "id": "5ecfd689-1b3b-45de-9202-4401deeeacaf",
@@ -498,7 +495,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        3040,
+        3248,
         -304
       ],
       "id": "9898c20f-ffd6-4550-9b1e-c5014ec7fc30",
@@ -520,7 +517,7 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "UPDATE public.ads_list\n\tSET group_yandex_id=$3, ads_yandex_id=$4, key_word_yandex_id=$5\n\tWHERE company_id=$1 and key_word=$2;",
+        "query": "UPDATE public.ads_list\n\tSET group_yandex_id=$3, ads_yandex_id=$4, key_word_yandex_id=$5\n\tWHERE company_id=$1 and key_word=$2 RETURNING *;;",
         "options": {
           "queryReplacement": "={{ $json.company_id }},{{ $json['Фраза (с минус-словами)'] }},{{ $json['ID группы'] }},{{ $json['ID объявления'] }},{{ $json['ID фразы'] }}"
         }
@@ -552,6 +549,63 @@
       ],
       "id": "729681e3-ab8d-43d2-8a77-7e48cb21699f",
       "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "9a96fe8d-32ed-41a4-9ef7-9bd2b6ff9b92",
+              "leftValue": "={{ $json.is_hi_demand}}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "false",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        3232,
+        -96
+      ],
+      "id": "3c1196c6-01b2-49c2-8118-9a59374bc357",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "UPDATE public.ads_groups\n\tSET group_yandex_id=$2\n\tWHERE ads_group_id=$1;",
+        "options": {
+          "queryReplacement": "={{ $json.ads_group_id }},{{ $json.group_yandex_id }}"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        3456,
+        -208
+      ],
+      "id": "b93a7e91-57f4-408f-b54a-d477be76f8fc",
+      "name": "Execute a SQL query1",
+      "credentials": {
+        "postgres": {
+          "id": "Hx2VFmUi5WO2K4QX",
+          "name": "Postgres account 2"
+        }
+      }
     }
   ],
   "connections": {
@@ -775,7 +829,7 @@
       "main": [
         [
           {
-            "node": "Get current step  saved",
+            "node": "If",
             "type": "main",
             "index": 0
           }
@@ -787,6 +841,35 @@
         [
           {
             "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Execute a SQL query1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Get current step  saved",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute a SQL query1": {
+      "main": [
+        [
+          {
+            "node": "Get current step  saved",
             "type": "main",
             "index": 0
           }
@@ -824,7 +907,7 @@
       }
     ]
   },
-  "versionId": "13f8f588-52d3-4489-bece-d6b39bf8aaa9",
+  "versionId": "48a426e8-1425-4972-ac96-cb776fb32ea5",
   "triggerCount": 0,
   "shared": [
     {
