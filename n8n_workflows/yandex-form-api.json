@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-10T19:16:13.481Z",
+  "updatedAt": "2025-11-11T17:56:05.386Z",
   "createdAt": "2025-11-10T10:12:13.473Z",
   "id": "fsy7TJJRLJ5nc0Fc",
   "name": "yandex form API",
@@ -8,7 +8,6 @@
   "nodes": [
     {
       "parameters": {
-        "httpMethod": "POST",
         "path": "7761af7e-68c6-4e99-ab82-e3acfdc463bc",
         "responseMode": "responseNode",
         "options": {}
@@ -272,13 +271,7 @@
     },
     "Respond to Webhook1": {
       "main": [
-        [
-          {
-            "node": "Update lead_source_id",
-            "type": "main",
-            "index": 0
-          }
-        ]
+        []
       ]
     },
     "Send Lead data to CRM": {
@@ -354,23 +347,23 @@
   "staticData": null,
   "meta": null,
   "pinData": {
-    "Webhook": [
+    "Respond to Webhook1": [
       {
         "json": {
           "headers": {
             "host": "n8n-main-production-4310.up.railway.app",
             "user-agent": "axios/1.13.2",
-            "content-length": "648",
+            "content-length": "737",
             "accept": "application/json, text/plain, */*",
             "accept-encoding": "gzip, compress, deflate, br",
             "content-type": "application/json",
-            "x-forwarded-for": "51.250.53.82",
+            "x-forwarded-for": "84.201.183.96",
             "x-forwarded-host": "n8n-main-production-4310.up.railway.app",
             "x-forwarded-proto": "https",
             "x-railway-edge": "railway/europe-west4-drams3a",
-            "x-railway-request-id": "Da3c_m2EQI65iRm2m3z_FQ",
-            "x-real-ip": "51.250.53.82",
-            "x-request-start": "1762799455287"
+            "x-railway-request-id": "82iZwUncRGq5BcGqYqdHTg",
+            "x-real-ip": "84.201.183.96",
+            "x-request-start": "1762870394186"
           },
           "params": {},
           "query": {},
@@ -378,15 +371,15 @@
             "form": "trial_lesson",
             "location": "ул. Т. Г. Шевченко, 8",
             "subject": "Пробное занятие — 1 час",
-            "selected_date": null,
-            "selected_lesson_id": null,
-            "selected_time_from": null,
-            "selected_time_to": null,
-            "parent_name": "Фтещт",
-            "phone": "89117932216",
-            "email": null,
-            "child_name": "",
-            "child_birthdate": null,
+            "selected_date": "2025-11-27",
+            "selected_lesson_id": 6864,
+            "selected_time_from": "19:00",
+            "selected_time_to": "20:00",
+            "parent_name": "Пиу",
+            "phone": "6464646466464",
+            "email": "оаоаллалалабаььаьп",
+            "child_name": "Окоалаллалала",
+            "child_birthdate": "10.11.2025",
             "etext": null,
             "utm_campaign": null,
             "utm_content": null,
@@ -395,7 +388,7 @@
             "yclid": null,
             "meta": {
               "page_url": "https://trylesson.storage.yandexcloud.net/index.html",
-              "user_agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 18_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.5 Mobile/15E148 Safari/604.1"
+              "user_agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 26_0_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) GSA/393.0.825685754 Mobile/15E148 Safari/604.1"
             }
           },
           "webhookUrl": "https://n8n-main-production-4310.up.railway.app/webhook/7761af7e-68c6-4e99-ab82-e3acfdc463bc",
@@ -404,7 +397,7 @@
       }
     ]
   },
-  "versionId": "fd27d2ee-05f8-4c16-8a95-24582ba77998",
+  "versionId": "2bfc2dfb-a002-4b62-beb1-39531f210c0a",
   "triggerCount": 1,
   "shared": [
     {
