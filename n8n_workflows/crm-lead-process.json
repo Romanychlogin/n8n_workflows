@@ -1,9 +1,9 @@
 {
-  "updatedAt": "2025-11-07T14:05:38.134Z",
+  "updatedAt": "2025-11-12T15:14:30.300Z",
   "createdAt": "2025-10-07T21:30:12.820Z",
   "id": "d4D0Fp4pO6Ch7S7C",
   "name": "CRM lead process",
-  "active": true,
+  "active": false,
   "isArchived": false,
   "nodes": [
     {
