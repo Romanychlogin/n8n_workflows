@@ -1,9 +1,9 @@
 {
+  "updatedAt": "2025-11-12T19:46:38.108Z",
   "createdAt": "2025-10-21T12:43:03.776Z",
-  "updatedAt": "2025-11-02T15:38:21.047Z",
   "id": "Z5sOyh4IJtSVsD2a",
   "name": "Recieve form data",
-  "active": true,
+  "active": false,
   "isArchived": false,
   "nodes": [
     {
@@ -200,8 +200,8 @@
   "triggerCount": 1,
   "shared": [
     {
-      "createdAt": "2025-10-21T12:43:03.776Z",
       "updatedAt": "2025-10-21T12:43:03.776Z",
+      "createdAt": "2025-10-21T12:43:03.776Z",
       "role": "workflow:owner",
       "workflowId": "Z5sOyh4IJtSVsD2a",
       "projectId": "spKmbJLU4mvACXIB"
