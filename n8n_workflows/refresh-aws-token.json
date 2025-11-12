@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-12T14:03:15.306Z",
+  "updatedAt": "2025-11-12T14:54:15.527Z",
   "createdAt": "2025-11-11T17:33:50.959Z",
   "id": "KDJtWKBxL9g3ZqJp",
   "name": "refresh AWS token",
@@ -55,34 +55,7 @@
     },
     {
       "parameters": {
-        "jsCode": "// Берём токен из входа\nconst refreshToken = String($input.first().json.refresh_token ?? '').trim();\nif (!refreshToken) {\n  throw new Error('refresh_token пуст');\n}\n\n// Параметры Public API n8n\nconst API_KEY  ='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NDcxZDIyNS1kMGEyLTQ0YzMtOWQ5OS02MTAzNjI2Y2M2NGIiLCJpc3MiOiJuOG4iLCJhdWQiOiJwdWJsaWMtYXBpIiwiaWF0IjoxNzYyOTUzNjg3fQ.eJoTqE3bso8YnTrP2idPTs7f71EfSrQQJIyB_O9qrtQ';\nconst API_BASE = 'https://n8n-main-production-4310.up.railway.app:5678/api/v1';\nconst CRED_NAME = 'AWS refresh';\n\n// Унифицированный вызов Public API\nasync function api(path, method = 'GET', data) {\n  const opts = {\n    method,\n    url: `${API_BASE}${path}`,\n    headers: {\n      'X-N8N-API-KEY': API_KEY,\n      'Content-Type': 'application/json',\n    },\n    json: true,\n  };\n  if (data) opts.body = data;\n  const fn = this.helpers.httpRequest ?? this.helpers.request;\n  return await fn(opts);\n}\n\nfunction toJsonString(obj) {\n  return JSON.stringify(obj ?? {});\n}\n\n// 1) Находим Credential по имени\nconst list = await api('/credentials?limit=250');\nconst items = Array.isArray(list?.data) ? list.data : (Array.isArray(list) ? list : []);\nconst cred = items.find(c => c.name === CRED_NAME);\nif (!cred) {\n  throw new Error(`Credential \"${CRED_NAME}\" не найден`);\n}\n\n// 2) Обновляем данные Credential\nconst payload = {\n  name: cred.name,\n  type: cred.type || 'httpRequest',\n  data: {\n    headerParametersJson: toJsonString({ 'Content-Type': 'application/json' }),\n    queryParametersJson:  toJsonString({}),\n    bodyParametersJson:   toJsonString({ refresh_token: refreshToken }),\n  },\n};\n\n// PATCH /credentials/:id\nconst updated = await api(`/credentials/${cred.id}`, 'PATCH', payload);\n\n// ВАЖНО: вернуть массив объектов-айтемов\nreturn [\n  {\n    json: {\n      ok: true,\n      credentialId: cred.id,\n      credentialName: cred.name,\n      updatedAt: new Date().toISOString(),\n      apiResponse: updated,\n    },\n  },\n];"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        832,
-        0
-      ],
-      "id": "07f3d8f5-7985-456c-8d2e-b56d6a395786",
-      "name": "Code in JavaScript"
-    },
-    {
-      "parameters": {
-        "url": "https://n8n-main-production-4310.up.railway.app:5678/api/v1/credentials?limit=250",
-        "options": {}
-      },
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.3,
-      "position": [
-        464,
-        -288
-      ],
-      "id": "a1793a02-c7dd-4686-8ff6-5424de86e8f3",
-      "name": "HTTP Request1"
-    },
-    {
-      "parameters": {
-        "jsCode": "const items = $input.all();\n\nconst token = String($input.first().json.refresh_token ?? '').trim();\nif (!token) throw new Error('refresh_token отсутствует');\n\nconst customJson = {\n  headers: [{ name: 'Content-Type', value: 'application/json' }],\n  qs: [],\n  body: [{ name: 'refresh_token', value: token }],\n};\n\n// Вариант А (надёжный): поле Data ожидает строку JSON\nfor (const item of items) {\n  item.json.creds_data_str = JSON.stringify({ json: JSON.stringify(customJson) });\n}\n\nreturn items;"
+        "jsCode": "const items = $input.all();\n\nconst token = String($input.first().json.refresh_token ?? '').trim();\nif (!token) throw new Error('refresh_token отсутствует');\n\nconst customJson = {\n  headers: {'Content-Type': 'application/json' },\n   body: { 'refresh_token': token },\n};\n\n// Вариант А (надёжный): поле Data ожидает строку JSON\nfor (const item of items) {\n  item.json.creds_data_str = JSON.stringify({ json: JSON.stringify(customJson) });\n}\n\nreturn items;"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -96,16 +69,16 @@
     {
       "parameters": {
         "resource": "credential",
-        "name": "AWS refresh2",
+        "name": "AWS refresh",
         "credentialTypeName": "httpCustomAuth",
-        "data": "={{ $json.creds_data_str }}",
+        "data": "={{ $('Code in JavaScript1').item.json.creds_data_str }}",
         "requestOptions": {}
       },
       "type": "n8n-nodes-base.n8n",
       "typeVersion": 1,
       "position": [
-        624,
-        0
+        912,
+        -16
       ],
       "id": "d6ea2487-322f-4622-bc97-6e6f39f2ae91",
       "name": "Create a credential",
@@ -113,6 +86,49 @@
         "n8nApi": {
           "id": "WLaJZQv44MOJEghD",
           "name": "n8n account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "credential",
+        "operation": "delete",
+        "credentialId": "4UQBP9BEeOsV3Iel",
+        "requestOptions": {}
+      },
+      "type": "n8n-nodes-base.n8n",
+      "typeVersion": 1,
+      "position": [
+        672,
+        -16
+      ],
+      "id": "41f7b748-9505-45e2-b71a-24acccb8cacd",
+      "name": "Delete a credential",
+      "credentials": {
+        "n8nApi": {
+          "id": "WLaJZQv44MOJEghD",
+          "name": "n8n account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "DO $$\nDECLARE\n  v_name   text := 'AWS refresh';\n  v_new_id text := '4UQBP9BEeOsV3Iel';\n  v_old_id text;\n  v_tmp_name text;\nBEGIN\n  -- блокируем таблицы от конкурентных изменений на время операции\n  LOCK TABLE public.credentials_entity  IN SHARE ROW EXCLUSIVE MODE;\n  LOCK TABLE public.shared_credentials   IN SHARE ROW EXCLUSIVE MODE;\n\n  -- 1) находим исходный id по имени (если имён несколько — берём самый «свежий»)\n  SELECT id\n    INTO v_old_id\n  FROM public.credentials_entity\n  WHERE name = v_name\n  ORDER BY \"updatedAt\" DESC NULLS LAST, \"createdAt\" DESC NULLS LAST\n  LIMIT 1\n  FOR UPDATE;\n\n  IF v_old_id IS NULL THEN\n    RAISE EXCEPTION 'Credential with name \"%\" not found', v_name;\n  END IF;\n\n  IF v_old_id = v_new_id THEN\n    -- уже перенесено\n    RETURN;\n  END IF;\n\n  -- проверим, что нового ID ещё нет\n  IF EXISTS (SELECT 1 FROM public.credentials_entity WHERE id = v_new_id) THEN\n    RAISE EXCEPTION 'Target id \"%\" already exists in credentials_entity', v_new_id;\n  END IF;\n\n  -- 2) создаём «нового родителя» с TEMP-именем (на случай уникальности по name)\n  v_tmp_name := v_name || ' (tmp ' || substr(md5(random()::text),1,6) || ')';\n\n  INSERT INTO public.credentials_entity (id, name, data, type, \"createdAt\", \"updatedAt\", \"isManaged\")\n  SELECT v_new_id, v_tmp_name, ce.data, ce.type, ce.\"createdAt\", NOW(), ce.\"isManaged\"\n  FROM public.credentials_entity ce\n  WHERE ce.id = v_old_id;\n\n  -- 3) перевязываем все ссылки ребёнка на новый id\n  UPDATE public.shared_credentials sc\n  SET \"credentialsId\" = v_new_id,\n      \"updatedAt\"     = NOW()\n  WHERE sc.\"credentialsId\" = v_old_id;\n\n  -- 4) удаляем старого «родителя»\n  DELETE FROM public.credentials_entity\n  WHERE id = v_old_id;\n\n  -- 5) возвращаем исходное имя новой записи\n  UPDATE public.credentials_entity\n  SET name = v_name,\n      \"updatedAt\" = NOW()\n  WHERE id = v_new_id;\nEND $$;",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        1136,
+        -32
+      ],
+      "id": "e2e1bb0c-65b1-4906-94c0-6c0d85737c9a",
+      "name": "Execute a SQL query",
+      "credentials": {
+        "postgres": {
+          "id": "hNuVeLeeeSX0vLBj",
+          "name": "n8n service"
         }
       }
     }
@@ -140,16 +156,11 @@
         ]
       ]
     },
-    "HTTP Request1": {
-      "main": [
-        []
-      ]
-    },
     "Code in JavaScript1": {
       "main": [
         [
           {
-            "node": "Create a credential",
+            "node": "Delete a credential",
             "type": "main",
             "index": 0
           }
@@ -158,7 +169,24 @@
     },
     "Create a credential": {
       "main": [
-        []
+        [
+          {
+            "node": "Execute a SQL query",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Delete a credential": {
+      "main": [
+        [
+          {
+            "node": "Create a credential",
+            "type": "main",
+            "index": 0
+          }
+        ]
       ]
     }
   },
@@ -169,21 +197,8 @@
   "meta": {
     "templateCredsSetupCompleted": true
   },
-  "pinData": {
-    "HTTP Request": [
-      {
-        "json": {
-          "user_id": "",
-          "access_token": "eyJraWQiOiJnOEVRNzFCVmVvSU1nMHN4dTEwQm5lQmRtajNZVTJ5aEVhR2UrY0xiN2dFPSIsImFsZyI6IlJTMjU2In0.eyJzdWIiOiJjNGU4YTQzOC0zMGIxLTcwN2UtNDZjYS03ZWJkZGVhNzQxY2QiLCJpc3MiOiJodHRwczpcL1wvY29nbml0by1pZHAudXMtZWFzdC0xLmFtYXpvbmF3cy5jb21cL3VzLWVhc3QtMV8xeGhLTWlvTkgiLCJjbGllbnRfaWQiOiIxN2w1bGRxZm43YWJ1Y2Nhb2pnMzVqaXNhZCIsIm9yaWdpbl9qdGkiOiI5YmRlM2U0Ny02MzAzLTRiNTMtYjJlYy02ZDUxY2IzNjU5ZWEiLCJldmVudF9pZCI6IjMxMmYwMTM0LTYxZDYtNGRlMi05ZjNhLWJiZTdiYzRkYzFiOCIsInRva2VuX3VzZSI6ImFjY2VzcyIsInNjb3BlIjoiYXdzLmNvZ25pdG8uc2lnbmluLnVzZXIuYWRtaW4iLCJhdXRoX3RpbWUiOjE3NjI4ODI1MDMsImV4cCI6MTc2MzAzOTUwMSwiaWF0IjoxNzYyOTUzMTAxLCJqdGkiOiI2NTY3NDJkYy05MWEzLTQwZjgtOTUyMy1jNDJmY2ZlMWM5ZDYiLCJ1c2VybmFtZSI6IkFsZXhhbmRyLk11cmF2eWV2K244bl8wMUBnbWFpbC5jb20ifQ.gC4Q5rIKAfkh4fy_v22QAFLjQBeXH64Teea4twbJyyGq4yRv69vO6NF25OkcxpwwBlaGmFNYRcA9A-FxX42PtOGjMNBh3pHe3oXSKMAqpTZCz58Y6z7TgPzY_5-YpmLNYTN0Hdqs01HaNLxqc26NgON-eQDwRs7K4ZeI6fP1ImRK7dNNEJmPULdx_YcKminK02ejBjin1haPDRaIm6R_eBQM1mtPTlXlXGA0cwYvfRxClTnbs1frIPqtwktKC6iJmo4dy2vwsTcCXO2UmJnXuP7583sVNkodyG-WmERlbnTI1qJS9ZNGX_0nMlSddExW261Kv476XW6iwe2mtHNJoA",
-          "id_token": "eyJraWQiOiIySmdFcHVIbDREd3d1MjArTlBBb1JwbE9JaFhnZDFEdlFhQSt0a2ZGMXFrPSIsImFsZyI6IlJTMjU2In0.eyJzdWIiOiJjNGU4YTQzOC0zMGIxLTcwN2UtNDZjYS03ZWJkZGVhNzQxY2QiLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwiaXNzIjoiaHR0cHM6XC9cL2NvZ25pdG8taWRwLnVzLWVhc3QtMS5hbWF6b25hd3MuY29tXC91cy1lYXN0LTFfMXhoS01pb05IIiwiY29nbml0bzp1c2VybmFtZSI6IkFsZXhhbmRyLk11cmF2eWV2K244bl8wMUBnbWFpbC5jb20iLCJvcmlnaW5fanRpIjoiOWJkZTNlNDctNjMwMy00YjUzLWIyZWMtNmQ1MWNiMzY1OWVhIiwiYXVkIjoiMTdsNWxkcWZuN2FidWNjYW9qZzM1amlzYWQiLCJldmVudF9pZCI6IjMxMmYwMTM0LTYxZDYtNGRlMi05ZjNhLWJiZTdiYzRkYzFiOCIsInRva2VuX3VzZSI6ImlkIiwiYXV0aF90aW1lIjoxNzYyODgyNTAzLCJleHAiOjE3NjMwMzk1MDEsImlhdCI6MTc2Mjk1MzEwMSwianRpIjoiNmY4NTI5MGEtOGUzOS00M2ZlLWFjYTktNzczNTczZWMxYTIxIiwiZW1haWwiOiJBbGV4YW5kci5NdXJhdnlldituOG5fMDFAZ21haWwuY29tIn0.Aml-MvB5WEipdLR-4E5gKt-KF6I_x9t_9SSEFbmmKmlxXHI_V0Nf3fMhm63YBngB_Vr0sB51t4FSLa3_vqQs7HF_WiJcCJr5I6z0oT4hlKQEt6yxMjNsB372_bJhAuGcw-Bd3rzgEOSAPOfviLg9QoxPCVs-SVe2iTw1GOMwP-LD57NnoKg63kLsjEY5PHzvW0rAn33sXcvWnBq_rErzEB-fX1nuH9_bO5Y14wNxIgyUpdT1o4Fmtf_pAavIxF_LcUmDezxzuogts6l3YGQqaLwn9ayo_2oLdiFd2C06wBA01dXGOF7sBPnWoeMiQBZRw2YGNaQd53Iywk5cvGv2tA",
-          "refresh_token": "eyJjdHkiOiJKV1QiLCJlbmMiOiJBMjU2R0NNIiwiYWxnIjoiUlNBLU9BRVAifQ.TiCdSSDTXDJk4crYiuRv7zOkLzOU8GrPc9nvgS030qJ7Rr2K7HGXXM1Nomf5FhlkSA0u60cXGFGyy-QPK7buWu45zFKQl77_zpTiBgpji97iuBPtoT65uoxbQWvrLpQS5qDu8BDyzNjeX6zrk_qB7lVA418xgPwpbMR9lfCHdj4-FS1DpIIggZe0Y6mZl2pDEvUmpjfwHNYKlhZS4r_Gxs1q7IDgN3GNl7e5hm07dptvGo5VT6pVDPIZfuAV0IhQdVwFyZcXpzxgZcj3gVr11hy47pug7eyol0P0_NX9liUOS6E9SV13Mn43PFXDD7yKsouzmMymS-4--TCyG9QK1A.2rFb8vzsqRtAoSHY.qy3pPDCBOljWpcJIEGx29WkaQ45OM3peIDHvG3HR7eLiREo2rB7_uxC89eJ8ZzFf3BUUs2bf6lYL7RLbF0pnmo--fvoyB6PrZnjSKdPGDU0x6xhUcPuh47wwDiKFVO4D9jR_JApwqpJqUaQo0FBeNURfr8eOkiL4RJwVVqHM0PUQiZ1-xrnOUS5-ybyO70yrz-D9gtd1muwTEZu-l5RGxcEqi_XrnqTU7Pf8hRTvrDFTsRJuHRPieP5ULufmdt_VfAab_0T0MfSEd7rf7bCpymSktY7pvTW8B9xPGkaL_HkqVksH6Qd9oiitgTq5_ET3YdKNVjIV1EVAaw3_fp8YlqnpIkarihjPwv-mirQ9uHM0LnshOOSHKdHADrYOky-8pROTFE60RyTmZUfvbO85wxbNr8a-mL7Wd__XYT3mKUVM4KvJlBBsKjoEsktReFCILxb_TKZrUgIXBFiM3EK54A1aR-eL57v4yY06DTNXTVVU1KSnVNJmn4ksVnnQH7jSWr8aUgr5yJFdbE_0M0wOXH4u0YtTPDQLeOgvrkSYrdjEW9jYIsdHRkZ3gpKwPFtrU1Qr1MfG8Cy1RZ68Ghx2Tx_fZZsSTm65vCCLWl1NCYohnckNdgjzTlmNFTiygMzcVWHRcpDBzCtF0NPQxpywV49vpDJ4fdld5Zs9vNM8dmGMlrIjjrngvgjMVQY4zbcmEmTA5Uh_Pk4H2n3Rttx-RtFRxLaJ3VQGGt5oqD-k-DgqO-I76tpwQhtoUIOzEKLTcZMs1UcPYs4AkIvBewbnSbp21wVIg7vtKAHHi8orU7T2byQebk2KMWbpa2GXlA8-C5_90cZNawfou1k4JpQAqh4Wm2u8sT9J1M7_-wB-SYrut660szZ6HQHrJp9zvFPGLnoAa9EmJDYfuv8qWHJIG8KeJw2Jy2eaxwbQ2OSxc8DFZZnLdMNGztXrYAwuXfXlKjJPmzD1lud6h_NiVcfFl5QsiCKqXIWsrusGjEj7UGWBZtPRGZJHCEbW6bgSL8A_j-SuxWH0DnBegiCsuYEt6X8y5LHvdMjXOJ0cR23zUy0jf1JuS9joSLOwePXreRIfBRNWRNfNX-5vXZuTv5oLP4ewEyfNR2kPvM3UjHojOiuG4gITdwsddKLrj2ecYDtg-sAuBmSyCR-gZpx_90r9Da-A3YOzgT1FjTLjWZ_P17GHUC2qPeOU6OV7JI63I-st0Mv4zlKeB_owMVjpEgYrneCgOi7CfFcjj8KDf32YUIY3Px_PIi7L5bfcqMCqoAP1z1d3viiwipFCdBeo36l7qrailrz8W7RLnc28-CC_QaMxMVH_m9BJa8jdScps.iDkGJuPYFKPZffchHrfRHg",
-          "expires_in": 86400,
-          "token_type": "Bearer"
-        }
-      }
-    ]
-  },
-  "versionId": "0bf6c12d-dfdf-478e-9391-4e61ca62e50a",
+  "pinData": {},
+  "versionId": "1e9497ec-492b-4aca-8e78-968ea493dcb9",
   "triggerCount": 0,
   "shared": [
     {
