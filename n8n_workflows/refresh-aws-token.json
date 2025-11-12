@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-12T13:30:40.361Z",
+  "updatedAt": "2025-11-12T14:03:15.306Z",
   "createdAt": "2025-11-11T17:33:50.959Z",
   "id": "KDJtWKBxL9g3ZqJp",
   "name": "refresh AWS token",
@@ -60,11 +60,61 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        416,
+        832,
         0
       ],
       "id": "07f3d8f5-7985-456c-8d2e-b56d6a395786",
       "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "url": "https://n8n-main-production-4310.up.railway.app:5678/api/v1/credentials?limit=250",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        464,
+        -288
+      ],
+      "id": "a1793a02-c7dd-4686-8ff6-5424de86e8f3",
+      "name": "HTTP Request1"
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\n\nconst token = String($input.first().json.refresh_token ?? '').trim();\nif (!token) throw new Error('refresh_token отсутствует');\n\nconst customJson = {\n  headers: [{ name: 'Content-Type', value: 'application/json' }],\n  qs: [],\n  body: [{ name: 'refresh_token', value: token }],\n};\n\n// Вариант А (надёжный): поле Data ожидает строку JSON\nfor (const item of items) {\n  item.json.creds_data_str = JSON.stringify({ json: JSON.stringify(customJson) });\n}\n\nreturn items;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        416,
+        0
+      ],
+      "id": "996f96f5-1be8-4588-8ae7-945fcf1d1743",
+      "name": "Code in JavaScript1"
+    },
+    {
+      "parameters": {
+        "resource": "credential",
+        "name": "AWS refresh2",
+        "credentialTypeName": "httpCustomAuth",
+        "data": "={{ $json.creds_data_str }}",
+        "requestOptions": {}
+      },
+      "type": "n8n-nodes-base.n8n",
+      "typeVersion": 1,
+      "position": [
+        624,
+        0
+      ],
+      "id": "d6ea2487-322f-4622-bc97-6e6f39f2ae91",
+      "name": "Create a credential",
+      "credentials": {
+        "n8nApi": {
+          "id": "WLaJZQv44MOJEghD",
+          "name": "n8n account"
+        }
+      }
     }
   ],
   "connections": {
@@ -83,11 +133,32 @@
       "main": [
         [
           {
-            "node": "Code in JavaScript",
+            "node": "Code in JavaScript1",
             "type": "main",
             "index": 0
           }
         ]
+      ]
+    },
+    "HTTP Request1": {
+      "main": [
+        []
+      ]
+    },
+    "Code in JavaScript1": {
+      "main": [
+        [
+          {
+            "node": "Create a credential",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create a credential": {
+      "main": [
+        []
       ]
     }
   },
@@ -95,7 +166,9 @@
     "executionOrder": "v1"
   },
   "staticData": null,
-  "meta": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
   "pinData": {
     "HTTP Request": [
       {
@@ -110,7 +183,7 @@
       }
     ]
   },
-  "versionId": "fd5bdec8-132c-48fc-8482-9d719769bc33",
+  "versionId": "0bf6c12d-dfdf-478e-9391-4e61ca62e50a",
   "triggerCount": 0,
   "shared": [
     {
