@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-12T13:18:28.682Z",
+  "updatedAt": "2025-11-12T13:30:40.361Z",
   "createdAt": "2025-11-11T17:33:50.959Z",
   "id": "KDJtWKBxL9g3ZqJp",
   "name": "refresh AWS token",
@@ -55,7 +55,7 @@
     },
     {
       "parameters": {
-        "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nfor (const item of $input.all()) {\n  item.json.myNewField = 1;\n}\n$input.first().json.refresh_token\nreturn $input.all();"
+        "jsCode": "// Берём токен из входа\nconst refreshToken = String($input.first().json.refresh_token ?? '').trim();\nif (!refreshToken) {\n  throw new Error('refresh_token пуст');\n}\n\n// Параметры Public API n8n\nconst API_KEY  ='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NDcxZDIyNS1kMGEyLTQ0YzMtOWQ5OS02MTAzNjI2Y2M2NGIiLCJpc3MiOiJuOG4iLCJhdWQiOiJwdWJsaWMtYXBpIiwiaWF0IjoxNzYyOTUzNjg3fQ.eJoTqE3bso8YnTrP2idPTs7f71EfSrQQJIyB_O9qrtQ';\nconst API_BASE = 'https://n8n-main-production-4310.up.railway.app:5678/api/v1';\nconst CRED_NAME = 'AWS refresh';\n\n// Унифицированный вызов Public API\nasync function api(path, method = 'GET', data) {\n  const opts = {\n    method,\n    url: `${API_BASE}${path}`,\n    headers: {\n      'X-N8N-API-KEY': API_KEY,\n      'Content-Type': 'application/json',\n    },\n    json: true,\n  };\n  if (data) opts.body = data;\n  const fn = this.helpers.httpRequest ?? this.helpers.request;\n  return await fn(opts);\n}\n\nfunction toJsonString(obj) {\n  return JSON.stringify(obj ?? {});\n}\n\n// 1) Находим Credential по имени\nconst list = await api('/credentials?limit=250');\nconst items = Array.isArray(list?.data) ? list.data : (Array.isArray(list) ? list : []);\nconst cred = items.find(c => c.name === CRED_NAME);\nif (!cred) {\n  throw new Error(`Credential \"${CRED_NAME}\" не найден`);\n}\n\n// 2) Обновляем данные Credential\nconst payload = {\n  name: cred.name,\n  type: cred.type || 'httpRequest',\n  data: {\n    headerParametersJson: toJsonString({ 'Content-Type': 'application/json' }),\n    queryParametersJson:  toJsonString({}),\n    bodyParametersJson:   toJsonString({ refresh_token: refreshToken }),\n  },\n};\n\n// PATCH /credentials/:id\nconst updated = await api(`/credentials/${cred.id}`, 'PATCH', payload);\n\n// ВАЖНО: вернуть массив объектов-айтемов\nreturn [\n  {\n    json: {\n      ok: true,\n      credentialId: cred.id,\n      credentialName: cred.name,\n      updatedAt: new Date().toISOString(),\n      apiResponse: updated,\n    },\n  },\n];"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -110,7 +110,7 @@
       }
     ]
   },
-  "versionId": "35517c30-887b-48c5-a654-781438867304",
+  "versionId": "fd5bdec8-132c-48fc-8482-9d719769bc33",
   "triggerCount": 0,
   "shared": [
     {
