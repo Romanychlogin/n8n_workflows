@@ -1,9 +1,9 @@
 {
-  "updatedAt": "2025-11-11T17:56:05.386Z",
+  "updatedAt": "2025-11-12T11:08:41.663Z",
   "createdAt": "2025-11-10T10:12:13.473Z",
   "id": "fsy7TJJRLJ5nc0Fc",
   "name": "yandex form API",
-  "active": true,
+  "active": false,
   "isArchived": false,
   "nodes": [
     {
