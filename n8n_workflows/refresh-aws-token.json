@@ -1,9 +1,9 @@
 {
-  "updatedAt": "2025-11-12T14:54:15.527Z",
+  "updatedAt": "2025-11-12T15:07:19.426Z",
   "createdAt": "2025-11-11T17:33:50.959Z",
   "id": "KDJtWKBxL9g3ZqJp",
   "name": "refresh AWS token",
-  "active": false,
+  "active": true,
   "isArchived": false,
   "nodes": [
     {
@@ -131,6 +131,85 @@
           "name": "n8n service"
         }
       }
+    },
+    {
+      "parameters": {
+        "resource": "credential",
+        "name": "Amazon API",
+        "credentialTypeName": "httpBearerAuth",
+        "data": "={{ $('Code in JavaScript').item.json.creds_data_str }}",
+        "requestOptions": {}
+      },
+      "type": "n8n-nodes-base.n8n",
+      "typeVersion": 1,
+      "position": [
+        816,
+        208
+      ],
+      "id": "96872950-d3f1-47b0-ab4c-5689dfbf4fb3",
+      "name": "Create a credential1",
+      "credentials": {
+        "n8nApi": {
+          "id": "WLaJZQv44MOJEghD",
+          "name": "n8n account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\n\nconst token = String($input.first().json.id_token ?? '').trim();\nif (!token) throw new Error('id_token отсутствует');\n\n\n\n// Вариант А (надёжный): поле Data ожидает строку JSON\nfor (const item of items) {\n  item.json.creds_data_str = JSON.stringify({ token:token });\n}\n\nreturn items;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        352,
+        176
+      ],
+      "id": "06e71ce3-298c-41ab-a27c-7f0921bdc294",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "resource": "credential",
+        "operation": "delete",
+        "credentialId": "ubucXalWOKT3hILu",
+        "requestOptions": {}
+      },
+      "type": "n8n-nodes-base.n8n",
+      "typeVersion": 1,
+      "position": [
+        576,
+        208
+      ],
+      "id": "c966f6ff-dd5c-40d5-94cb-afa6098d7639",
+      "name": "Delete a credential1",
+      "credentials": {
+        "n8nApi": {
+          "id": "WLaJZQv44MOJEghD",
+          "name": "n8n account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "DO $$\nDECLARE\n  v_name   text := 'Amazon API';\n  v_new_id text := 'ubucXalWOKT3hILu';\n  v_old_id text;\n  v_tmp_name text;\nBEGIN\n  -- блокируем таблицы от конкурентных изменений на время операции\n  LOCK TABLE public.credentials_entity  IN SHARE ROW EXCLUSIVE MODE;\n  LOCK TABLE public.shared_credentials   IN SHARE ROW EXCLUSIVE MODE;\n\n  -- 1) находим исходный id по имени (если имён несколько — берём самый «свежий»)\n  SELECT id\n    INTO v_old_id\n  FROM public.credentials_entity\n  WHERE name = v_name\n  ORDER BY \"updatedAt\" DESC NULLS LAST, \"createdAt\" DESC NULLS LAST\n  LIMIT 1\n  FOR UPDATE;\n\n  IF v_old_id IS NULL THEN\n    RAISE EXCEPTION 'Credential with name \"%\" not found', v_name;\n  END IF;\n\n  IF v_old_id = v_new_id THEN\n    -- уже перенесено\n    RETURN;\n  END IF;\n\n  -- проверим, что нового ID ещё нет\n  IF EXISTS (SELECT 1 FROM public.credentials_entity WHERE id = v_new_id) THEN\n    RAISE EXCEPTION 'Target id \"%\" already exists in credentials_entity', v_new_id;\n  END IF;\n\n  -- 2) создаём «нового родителя» с TEMP-именем (на случай уникальности по name)\n  v_tmp_name := v_name || ' (tmp ' || substr(md5(random()::text),1,6) || ')';\n\n  INSERT INTO public.credentials_entity (id, name, data, type, \"createdAt\", \"updatedAt\", \"isManaged\")\n  SELECT v_new_id, v_tmp_name, ce.data, ce.type, ce.\"createdAt\", NOW(), ce.\"isManaged\"\n  FROM public.credentials_entity ce\n  WHERE ce.id = v_old_id;\n\n  -- 3) перевязываем все ссылки ребёнка на новый id\n  UPDATE public.shared_credentials sc\n  SET \"credentialsId\" = v_new_id,\n      \"updatedAt\"     = NOW()\n  WHERE sc.\"credentialsId\" = v_old_id;\n\n  -- 4) удаляем старого «родителя»\n  DELETE FROM public.credentials_entity\n  WHERE id = v_old_id;\n\n  -- 5) возвращаем исходное имя новой записи\n  UPDATE public.credentials_entity\n  SET name = v_name,\n      \"updatedAt\" = NOW()\n  WHERE id = v_new_id;\nEND $$;",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        1056,
+        208
+      ],
+      "id": "89537754-7ff0-429e-b0ff-bf9654714d8e",
+      "name": "Execute a SQL query1",
+      "credentials": {
+        "postgres": {
+          "id": "hNuVeLeeeSX0vLBj",
+          "name": "n8n service"
+        }
+      }
     }
   ],
   "connections": {
@@ -148,6 +227,11 @@
     "HTTP Request": {
       "main": [
         [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          },
           {
             "node": "Code in JavaScript1",
             "type": "main",
@@ -188,18 +272,70 @@
           }
         ]
       ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Delete a credential1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Delete a credential1": {
+      "main": [
+        [
+          {
+            "node": "Create a credential1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create a credential1": {
+      "main": [
+        [
+          {
+            "node": "Execute a SQL query1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
-    "executionOrder": "v1"
+    "executionOrder": "v1",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false
   },
-  "staticData": null,
+  "staticData": {
+    "node:Schedule Trigger": {
+      "recurrenceRules": []
+    }
+  },
   "meta": {
     "templateCredsSetupCompleted": true
   },
-  "pinData": {},
-  "versionId": "1e9497ec-492b-4aca-8e78-968ea493dcb9",
-  "triggerCount": 0,
+  "pinData": {
+    "HTTP Request": [
+      {
+        "json": {
+          "user_id": "",
+          "access_token": "eyJraWQiOiJnOEVRNzFCVmVvSU1nMHN4dTEwQm5lQmRtajNZVTJ5aEVhR2UrY0xiN2dFPSIsImFsZyI6IlJTMjU2In0.eyJzdWIiOiJjNGU4YTQzOC0zMGIxLTcwN2UtNDZjYS03ZWJkZGVhNzQxY2QiLCJpc3MiOiJodHRwczpcL1wvY29nbml0by1pZHAudXMtZWFzdC0xLmFtYXpvbmF3cy5jb21cL3VzLWVhc3QtMV8xeGhLTWlvTkgiLCJjbGllbnRfaWQiOiIxN2w1bGRxZm43YWJ1Y2Nhb2pnMzVqaXNhZCIsIm9yaWdpbl9qdGkiOiI5YmRlM2U0Ny02MzAzLTRiNTMtYjJlYy02ZDUxY2IzNjU5ZWEiLCJldmVudF9pZCI6IjMxMmYwMTM0LTYxZDYtNGRlMi05ZjNhLWJiZTdiYzRkYzFiOCIsInRva2VuX3VzZSI6ImFjY2VzcyIsInNjb3BlIjoiYXdzLmNvZ25pdG8uc2lnbmluLnVzZXIuYWRtaW4iLCJhdXRoX3RpbWUiOjE3NjI4ODI1MDMsImV4cCI6MTc2MzA0NTYzOCwiaWF0IjoxNzYyOTU5MjM4LCJqdGkiOiI2ZTZkZDE1Ni1iN2QyLTRjNmQtOWQ2ZC02ODBmOTQ2MzQxYTIiLCJ1c2VybmFtZSI6IkFsZXhhbmRyLk11cmF2eWV2K244bl8wMUBnbWFpbC5jb20ifQ.FSa9luA5EEKq2_Mnq1hHTHGfsSGwYPDwQxxdMWtfPkPDQlpFnTKKirsYdXEYTBrx7NIPz9KO-TLjuuQdzde65vBZu_aRiT4Civ4sj2EAeP5RJX0uvzwwTXm-fHGiZMw9ZCD7yBPsq3_Tbj598ZegLK6BHPhaS8VRzR7kYtN9FHS5AE2Ian7CJfX_gsZVN7fZxGUJzGjOZFg0oHWwFi_DkdAzTlqHv9vgkwG9kwmBivCt3If-6wW17bNqDwnR3A0Oyhw5uE0lLoutkcR2hglJcfbM564vSz3Zk956X9OaToo0eUt-_-E3xI6rNlC4IMuNv1JGHBmtrJSEe0tKnDdjyg",
+          "id_token": "eyJraWQiOiIySmdFcHVIbDREd3d1MjArTlBBb1JwbE9JaFhnZDFEdlFhQSt0a2ZGMXFrPSIsImFsZyI6IlJTMjU2In0.eyJzdWIiOiJjNGU4YTQzOC0zMGIxLTcwN2UtNDZjYS03ZWJkZGVhNzQxY2QiLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwiaXNzIjoiaHR0cHM6XC9cL2NvZ25pdG8taWRwLnVzLWVhc3QtMS5hbWF6b25hd3MuY29tXC91cy1lYXN0LTFfMXhoS01pb05IIiwiY29nbml0bzp1c2VybmFtZSI6IkFsZXhhbmRyLk11cmF2eWV2K244bl8wMUBnbWFpbC5jb20iLCJvcmlnaW5fanRpIjoiOWJkZTNlNDctNjMwMy00YjUzLWIyZWMtNmQ1MWNiMzY1OWVhIiwiYXVkIjoiMTdsNWxkcWZuN2FidWNjYW9qZzM1amlzYWQiLCJldmVudF9pZCI6IjMxMmYwMTM0LTYxZDYtNGRlMi05ZjNhLWJiZTdiYzRkYzFiOCIsInRva2VuX3VzZSI6ImlkIiwiYXV0aF90aW1lIjoxNzYyODgyNTAzLCJleHAiOjE3NjMwNDU2MzgsImlhdCI6MTc2Mjk1OTIzOCwianRpIjoiYmMwYTg3MjktODcxNy00YWFlLWI3MzYtM2MyNWRhODEyOTJlIiwiZW1haWwiOiJBbGV4YW5kci5NdXJhdnlldituOG5fMDFAZ21haWwuY29tIn0.NMYQD-1XejhYh0DfRqXixhG8sVKPNg8iBCF6Y7VuQQ0yppqqb9Z2NhhyYF58WnKymTJ6C70YswG6rnzbLqLsLJlatxBssP-_FHM7tkm12XwzI2nLOcReWDiHWJY4OSgDOH5jpX7lc2qK51YyEbhDrIbocHYZxqET5GLmecxoZkUSGSqX_p8uzkIyiDHKxkt9ycBlaWPCYdMLa6qiJWOp67TdrO4J0tkXOzQYb7NcT5873xDiHmeWt38p910_9-a9zOBMVdm4GV6MCKNVqos1AC92AMHTLfe1TeXIaCEXaeNUE1lQ31JtAqAc9r_90v8Q-HjjPATlBTE95133yxptNg",
+          "refresh_token": "eyJjdHkiOiJKV1QiLCJlbmMiOiJBMjU2R0NNIiwiYWxnIjoiUlNBLU9BRVAifQ.TiCdSSDTXDJk4crYiuRv7zOkLzOU8GrPc9nvgS030qJ7Rr2K7HGXXM1Nomf5FhlkSA0u60cXGFGyy-QPK7buWu45zFKQl77_zpTiBgpji97iuBPtoT65uoxbQWvrLpQS5qDu8BDyzNjeX6zrk_qB7lVA418xgPwpbMR9lfCHdj4-FS1DpIIggZe0Y6mZl2pDEvUmpjfwHNYKlhZS4r_Gxs1q7IDgN3GNl7e5hm07dptvGo5VT6pVDPIZfuAV0IhQdVwFyZcXpzxgZcj3gVr11hy47pug7eyol0P0_NX9liUOS6E9SV13Mn43PFXDD7yKsouzmMymS-4--TCyG9QK1A.2rFb8vzsqRtAoSHY.qy3pPDCBOljWpcJIEGx29WkaQ45OM3peIDHvG3HR7eLiREo2rB7_uxC89eJ8ZzFf3BUUs2bf6lYL7RLbF0pnmo--fvoyB6PrZnjSKdPGDU0x6xhUcPuh47wwDiKFVO4D9jR_JApwqpJqUaQo0FBeNURfr8eOkiL4RJwVVqHM0PUQiZ1-xrnOUS5-ybyO70yrz-D9gtd1muwTEZu-l5RGxcEqi_XrnqTU7Pf8hRTvrDFTsRJuHRPieP5ULufmdt_VfAab_0T0MfSEd7rf7bCpymSktY7pvTW8B9xPGkaL_HkqVksH6Qd9oiitgTq5_ET3YdKNVjIV1EVAaw3_fp8YlqnpIkarihjPwv-mirQ9uHM0LnshOOSHKdHADrYOky-8pROTFE60RyTmZUfvbO85wxbNr8a-mL7Wd__XYT3mKUVM4KvJlBBsKjoEsktReFCILxb_TKZrUgIXBFiM3EK54A1aR-eL57v4yY06DTNXTVVU1KSnVNJmn4ksVnnQH7jSWr8aUgr5yJFdbE_0M0wOXH4u0YtTPDQLeOgvrkSYrdjEW9jYIsdHRkZ3gpKwPFtrU1Qr1MfG8Cy1RZ68Ghx2Tx_fZZsSTm65vCCLWl1NCYohnckNdgjzTlmNFTiygMzcVWHRcpDBzCtF0NPQxpywV49vpDJ4fdld5Zs9vNM8dmGMlrIjjrngvgjMVQY4zbcmEmTA5Uh_Pk4H2n3Rttx-RtFRxLaJ3VQGGt5oqD-k-DgqO-I76tpwQhtoUIOzEKLTcZMs1UcPYs4AkIvBewbnSbp21wVIg7vtKAHHi8orU7T2byQebk2KMWbpa2GXlA8-C5_90cZNawfou1k4JpQAqh4Wm2u8sT9J1M7_-wB-SYrut660szZ6HQHrJp9zvFPGLnoAa9EmJDYfuv8qWHJIG8KeJw2Jy2eaxwbQ2OSxc8DFZZnLdMNGztXrYAwuXfXlKjJPmzD1lud6h_NiVcfFl5QsiCKqXIWsrusGjEj7UGWBZtPRGZJHCEbW6bgSL8A_j-SuxWH0DnBegiCsuYEt6X8y5LHvdMjXOJ0cR23zUy0jf1JuS9joSLOwePXreRIfBRNWRNfNX-5vXZuTv5oLP4ewEyfNR2kPvM3UjHojOiuG4gITdwsddKLrj2ecYDtg-sAuBmSyCR-gZpx_90r9Da-A3YOzgT1FjTLjWZ_P17GHUC2qPeOU6OV7JI63I-st0Mv4zlKeB_owMVjpEgYrneCgOi7CfFcjj8KDf32YUIY3Px_PIi7L5bfcqMCqoAP1z1d3viiwipFCdBeo36l7qrailrz8W7RLnc28-CC_QaMxMVH_m9BJa8jdScps.iDkGJuPYFKPZffchHrfRHg",
+          "expires_in": 86400,
+          "token_type": "Bearer"
+        }
+      }
+    ]
+  },
+  "versionId": "b4a4074c-664a-4fc2-93c8-f15e7ea92daf",
+  "triggerCount": 1,
   "shared": [
     {
       "updatedAt": "2025-11-11T17:33:50.959Z",
