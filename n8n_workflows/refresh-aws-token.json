@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-11T21:39:15.087Z",
+  "updatedAt": "2025-11-12T13:18:28.682Z",
   "createdAt": "2025-11-11T17:33:50.959Z",
   "id": "KDJtWKBxL9g3ZqJp",
   "name": "refresh AWS token",
@@ -28,6 +28,7 @@
     },
     {
       "parameters": {
+        "method": "POST",
         "url": "https://h9mv0vfn6j.execute-api.us-east-1.amazonaws.com/development/auth/refresh",
         "authentication": "genericCredentialType",
         "genericAuthType": "httpCustomAuth",
@@ -51,6 +52,19 @@
           "name": "AWS refresh"
         }
       }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nfor (const item of $input.all()) {\n  item.json.myNewField = 1;\n}\n$input.first().json.refresh_token\nreturn $input.all();"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        416,
+        0
+      ],
+      "id": "07f3d8f5-7985-456c-8d2e-b56d6a395786",
+      "name": "Code in JavaScript"
     }
   ],
   "connections": {
@@ -64,6 +78,17 @@
           }
         ]
       ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
@@ -71,8 +96,21 @@
   },
   "staticData": null,
   "meta": null,
-  "pinData": {},
-  "versionId": "b15a84d3-bcbe-4cfa-9bb4-99802c120e94",
+  "pinData": {
+    "HTTP Request": [
+      {
+        "json": {
+          "user_id": "",
+          "access_token": "eyJraWQiOiJnOEVRNzFCVmVvSU1nMHN4dTEwQm5lQmRtajNZVTJ5aEVhR2UrY0xiN2dFPSIsImFsZyI6IlJTMjU2In0.eyJzdWIiOiJjNGU4YTQzOC0zMGIxLTcwN2UtNDZjYS03ZWJkZGVhNzQxY2QiLCJpc3MiOiJodHRwczpcL1wvY29nbml0by1pZHAudXMtZWFzdC0xLmFtYXpvbmF3cy5jb21cL3VzLWVhc3QtMV8xeGhLTWlvTkgiLCJjbGllbnRfaWQiOiIxN2w1bGRxZm43YWJ1Y2Nhb2pnMzVqaXNhZCIsIm9yaWdpbl9qdGkiOiI5YmRlM2U0Ny02MzAzLTRiNTMtYjJlYy02ZDUxY2IzNjU5ZWEiLCJldmVudF9pZCI6IjMxMmYwMTM0LTYxZDYtNGRlMi05ZjNhLWJiZTdiYzRkYzFiOCIsInRva2VuX3VzZSI6ImFjY2VzcyIsInNjb3BlIjoiYXdzLmNvZ25pdG8uc2lnbmluLnVzZXIuYWRtaW4iLCJhdXRoX3RpbWUiOjE3NjI4ODI1MDMsImV4cCI6MTc2MzAzOTUwMSwiaWF0IjoxNzYyOTUzMTAxLCJqdGkiOiI2NTY3NDJkYy05MWEzLTQwZjgtOTUyMy1jNDJmY2ZlMWM5ZDYiLCJ1c2VybmFtZSI6IkFsZXhhbmRyLk11cmF2eWV2K244bl8wMUBnbWFpbC5jb20ifQ.gC4Q5rIKAfkh4fy_v22QAFLjQBeXH64Teea4twbJyyGq4yRv69vO6NF25OkcxpwwBlaGmFNYRcA9A-FxX42PtOGjMNBh3pHe3oXSKMAqpTZCz58Y6z7TgPzY_5-YpmLNYTN0Hdqs01HaNLxqc26NgON-eQDwRs7K4ZeI6fP1ImRK7dNNEJmPULdx_YcKminK02ejBjin1haPDRaIm6R_eBQM1mtPTlXlXGA0cwYvfRxClTnbs1frIPqtwktKC6iJmo4dy2vwsTcCXO2UmJnXuP7583sVNkodyG-WmERlbnTI1qJS9ZNGX_0nMlSddExW261Kv476XW6iwe2mtHNJoA",
+          "id_token": "eyJraWQiOiIySmdFcHVIbDREd3d1MjArTlBBb1JwbE9JaFhnZDFEdlFhQSt0a2ZGMXFrPSIsImFsZyI6IlJTMjU2In0.eyJzdWIiOiJjNGU4YTQzOC0zMGIxLTcwN2UtNDZjYS03ZWJkZGVhNzQxY2QiLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwiaXNzIjoiaHR0cHM6XC9cL2NvZ25pdG8taWRwLnVzLWVhc3QtMS5hbWF6b25hd3MuY29tXC91cy1lYXN0LTFfMXhoS01pb05IIiwiY29nbml0bzp1c2VybmFtZSI6IkFsZXhhbmRyLk11cmF2eWV2K244bl8wMUBnbWFpbC5jb20iLCJvcmlnaW5fanRpIjoiOWJkZTNlNDctNjMwMy00YjUzLWIyZWMtNmQ1MWNiMzY1OWVhIiwiYXVkIjoiMTdsNWxkcWZuN2FidWNjYW9qZzM1amlzYWQiLCJldmVudF9pZCI6IjMxMmYwMTM0LTYxZDYtNGRlMi05ZjNhLWJiZTdiYzRkYzFiOCIsInRva2VuX3VzZSI6ImlkIiwiYXV0aF90aW1lIjoxNzYyODgyNTAzLCJleHAiOjE3NjMwMzk1MDEsImlhdCI6MTc2Mjk1MzEwMSwianRpIjoiNmY4NTI5MGEtOGUzOS00M2ZlLWFjYTktNzczNTczZWMxYTIxIiwiZW1haWwiOiJBbGV4YW5kci5NdXJhdnlldituOG5fMDFAZ21haWwuY29tIn0.Aml-MvB5WEipdLR-4E5gKt-KF6I_x9t_9SSEFbmmKmlxXHI_V0Nf3fMhm63YBngB_Vr0sB51t4FSLa3_vqQs7HF_WiJcCJr5I6z0oT4hlKQEt6yxMjNsB372_bJhAuGcw-Bd3rzgEOSAPOfviLg9QoxPCVs-SVe2iTw1GOMwP-LD57NnoKg63kLsjEY5PHzvW0rAn33sXcvWnBq_rErzEB-fX1nuH9_bO5Y14wNxIgyUpdT1o4Fmtf_pAavIxF_LcUmDezxzuogts6l3YGQqaLwn9ayo_2oLdiFd2C06wBA01dXGOF7sBPnWoeMiQBZRw2YGNaQd53Iywk5cvGv2tA",
+          "refresh_token": "eyJjdHkiOiJKV1QiLCJlbmMiOiJBMjU2R0NNIiwiYWxnIjoiUlNBLU9BRVAifQ.TiCdSSDTXDJk4crYiuRv7zOkLzOU8GrPc9nvgS030qJ7Rr2K7HGXXM1Nomf5FhlkSA0u60cXGFGyy-QPK7buWu45zFKQl77_zpTiBgpji97iuBPtoT65uoxbQWvrLpQS5qDu8BDyzNjeX6zrk_qB7lVA418xgPwpbMR9lfCHdj4-FS1DpIIggZe0Y6mZl2pDEvUmpjfwHNYKlhZS4r_Gxs1q7IDgN3GNl7e5hm07dptvGo5VT6pVDPIZfuAV0IhQdVwFyZcXpzxgZcj3gVr11hy47pug7eyol0P0_NX9liUOS6E9SV13Mn43PFXDD7yKsouzmMymS-4--TCyG9QK1A.2rFb8vzsqRtAoSHY.qy3pPDCBOljWpcJIEGx29WkaQ45OM3peIDHvG3HR7eLiREo2rB7_uxC89eJ8ZzFf3BUUs2bf6lYL7RLbF0pnmo--fvoyB6PrZnjSKdPGDU0x6xhUcPuh47wwDiKFVO4D9jR_JApwqpJqUaQo0FBeNURfr8eOkiL4RJwVVqHM0PUQiZ1-xrnOUS5-ybyO70yrz-D9gtd1muwTEZu-l5RGxcEqi_XrnqTU7Pf8hRTvrDFTsRJuHRPieP5ULufmdt_VfAab_0T0MfSEd7rf7bCpymSktY7pvTW8B9xPGkaL_HkqVksH6Qd9oiitgTq5_ET3YdKNVjIV1EVAaw3_fp8YlqnpIkarihjPwv-mirQ9uHM0LnshOOSHKdHADrYOky-8pROTFE60RyTmZUfvbO85wxbNr8a-mL7Wd__XYT3mKUVM4KvJlBBsKjoEsktReFCILxb_TKZrUgIXBFiM3EK54A1aR-eL57v4yY06DTNXTVVU1KSnVNJmn4ksVnnQH7jSWr8aUgr5yJFdbE_0M0wOXH4u0YtTPDQLeOgvrkSYrdjEW9jYIsdHRkZ3gpKwPFtrU1Qr1MfG8Cy1RZ68Ghx2Tx_fZZsSTm65vCCLWl1NCYohnckNdgjzTlmNFTiygMzcVWHRcpDBzCtF0NPQxpywV49vpDJ4fdld5Zs9vNM8dmGMlrIjjrngvgjMVQY4zbcmEmTA5Uh_Pk4H2n3Rttx-RtFRxLaJ3VQGGt5oqD-k-DgqO-I76tpwQhtoUIOzEKLTcZMs1UcPYs4AkIvBewbnSbp21wVIg7vtKAHHi8orU7T2byQebk2KMWbpa2GXlA8-C5_90cZNawfou1k4JpQAqh4Wm2u8sT9J1M7_-wB-SYrut660szZ6HQHrJp9zvFPGLnoAa9EmJDYfuv8qWHJIG8KeJw2Jy2eaxwbQ2OSxc8DFZZnLdMNGztXrYAwuXfXlKjJPmzD1lud6h_NiVcfFl5QsiCKqXIWsrusGjEj7UGWBZtPRGZJHCEbW6bgSL8A_j-SuxWH0DnBegiCsuYEt6X8y5LHvdMjXOJ0cR23zUy0jf1JuS9joSLOwePXreRIfBRNWRNfNX-5vXZuTv5oLP4ewEyfNR2kPvM3UjHojOiuG4gITdwsddKLrj2ecYDtg-sAuBmSyCR-gZpx_90r9Da-A3YOzgT1FjTLjWZ_P17GHUC2qPeOU6OV7JI63I-st0Mv4zlKeB_owMVjpEgYrneCgOi7CfFcjj8KDf32YUIY3Px_PIi7L5bfcqMCqoAP1z1d3viiwipFCdBeo36l7qrailrz8W7RLnc28-CC_QaMxMVH_m9BJa8jdScps.iDkGJuPYFKPZffchHrfRHg",
+          "expires_in": 86400,
+          "token_type": "Bearer"
+        }
+      }
+    ]
+  },
+  "versionId": "35517c30-887b-48c5-a654-781438867304",
   "triggerCount": 0,
   "shared": [
     {
