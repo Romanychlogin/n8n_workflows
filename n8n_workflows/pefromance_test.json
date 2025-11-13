@@ -1,0 +1,242 @@
+{
+  "updatedAt": "2025-11-13T14:16:53.268Z",
+  "createdAt": "2025-11-13T14:02:21.120Z",
+  "id": "TT7oOjUbWA85bxca",
+  "name": "pefromance_test",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -464,
+        16
+      ],
+      "id": "cd12c014-3469-4bf2-8db3-113839d871e9",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Function-Node (Run Once)\nconst workflowData = $getWorkflowStaticData('global');\nworkflowData.steps_passed = 0;\nworkflowData.tokens_used = 0;\n\n// создаём массив из 50 элементов\nconst arr = Array.from({ length: 10 }, () => ({ test: 1 }));\n\n// на выходе нужно вернуть массив объектов, каждый отдельным item\nreturn arr.map(o => ({ json: o }));"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -32,
+        16
+      ],
+      "id": "17ce0e8e-7d5b-47ec-b3e3-73756e7e8fe7",
+      "name": "Init total counter"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO business_processes_states (business_process_id, company_id,n8n_workflow_execution_id,n8n_workflow_root_execution_id, started)\nSELECT MAX(business_process_id), $2,$3,$4, NOW()\nFROM public.business_processes\nWHERE n8n_process_name = $1;",
+        "options": {
+          "queryReplacement": "=[{{$workflow.name}},6,{{$execution.id}},0]"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -224,
+        16
+      ],
+      "id": "ed9cde3a-1204-4811-9478-105f9649f08c",
+      "name": "Mark_workwlow_started",
+      "credentials": {
+        "postgres": {
+          "id": "Hx2VFmUi5WO2K4QX",
+          "name": "Postgres account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "update business_processes_states set finished=NOW() where business_process_id=(select MAX(business_process_id) from business_processes where n8n_process_name=$1) and n8n_workflow_execution_id=$2",
+        "options": {
+          "queryReplacement": "=[{{$workflow.name}},{{$execution.id}}]"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        640,
+        -192
+      ],
+      "id": "7a9e8a4a-520e-4d15-95de-aedf076cf383",
+      "name": "Mark_workflow_completed",
+      "executeOnce": true,
+      "credentials": {
+        "postgres": {
+          "id": "Hx2VFmUi5WO2K4QX",
+          "name": "Postgres account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        176,
+        16
+      ],
+      "id": "603fd568-e7e9-4d6c-a274-8afda7d05c56",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "88uz6djzYqLv137M",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/88uz6djzYqLv137M",
+          "cachedResultName": "test_perfomance_sub"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {}
+        },
+        "mode": "each",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.3,
+      "position": [
+        656,
+        80
+      ],
+      "id": "4f31c72b-2e2e-4295-90dc-f8b5a65061e6",
+      "name": "Call 'test_perfomance_sub'"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "b505918a-2032-4ea9-a102-f98c1612d0a3",
+              "name": "company_id",
+              "value": "9",
+              "type": "string"
+            },
+            {
+              "id": "4d328ab0-0c4e-4c0b-9ef9-4caf20ba0f99",
+              "name": "",
+              "value": "",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        432,
+        64
+      ],
+      "id": "0f5dcca0-dea0-4a7d-9de1-0fefdb5ecccb",
+      "name": "Set variables"
+    }
+  ],
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Mark_workwlow_started",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mark_workwlow_started": {
+      "main": [
+        [
+          {
+            "node": "Init total counter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Init total counter": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [
+          {
+            "node": "Mark_workflow_completed",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Set variables",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Call 'test_perfomance_sub'": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set variables": {
+      "main": [
+        [
+          {
+            "node": "Call 'test_perfomance_sub'",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": {},
+  "versionId": "6d8416e5-18d4-40bc-937a-13c44f76ee01",
+  "triggerCount": 0,
+  "shared": [
+    {
+      "updatedAt": "2025-11-13T14:02:21.120Z",
+      "createdAt": "2025-11-13T14:02:21.120Z",
+      "role": "workflow:owner",
+      "workflowId": "TT7oOjUbWA85bxca",
+      "projectId": "spKmbJLU4mvACXIB"
+    }
+  ],
+  "tags": [],
+  "file_name": "pefromance_test.json"
+}
