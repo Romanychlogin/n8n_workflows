@@ -1,6 +1,6 @@
 {
+  "updatedAt": "2025-11-13T09:17:39.334Z",
   "createdAt": "2025-10-06T13:25:33.741Z",
-  "updatedAt": "2025-10-16T06:56:18.668Z",
   "id": "tbijdiaKB74Iaf6O",
   "name": "core update test management",
   "active": true,
@@ -209,9 +209,9 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "update business_processes_states set error_happened=now(), error_message='test forced by user' \nwhere finished is null and error_happened is null \n  and company_id=$2\nand business_process_id in (select business_process_id from business_processes where n8n_process_name=$1 or root_process_id=(select business_process_id from business_processes where n8n_process_name=$1))\n",
+        "query": "update business_processes_states set error_happened=now(), error_message='test forced by user' \nwhere finished is null and error_happened is null \n  and company_id=$1\n",
         "options": {
-          "queryReplacement": "=[{{$json.root_process_name}},{{ $('On form submission').item.json['Select company id'] }}]"
+          "queryReplacement": "={{ $('On form submission').item.json['Select company id'] }}"
         }
       },
       "type": "n8n-nodes-base.postgres",
@@ -1185,12 +1185,12 @@
     "templateCredsSetupCompleted": true
   },
   "pinData": {},
-  "versionId": "ffc4a0fa-aec2-45a9-9e6f-b936e8d6b6ee",
+  "versionId": "54be0664-b5df-418d-a497-5a491becb265",
   "triggerCount": 1,
   "shared": [
     {
-      "createdAt": "2025-10-06T13:25:33.741Z",
       "updatedAt": "2025-10-06T13:25:33.741Z",
+      "createdAt": "2025-10-06T13:25:33.741Z",
       "role": "workflow:owner",
       "workflowId": "tbijdiaKB74Iaf6O",
       "projectId": "spKmbJLU4mvACXIB"
@@ -1198,8 +1198,8 @@
   ],
   "tags": [
     {
-      "createdAt": "2025-10-06T13:05:59.145Z",
       "updatedAt": "2025-10-06T13:05:59.145Z",
+      "createdAt": "2025-10-06T13:05:59.145Z",
       "id": "Fu9Wfx1UCGLuvAf0",
       "name": "test data"
     }
