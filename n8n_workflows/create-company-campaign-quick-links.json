@@ -1,38 +1,11 @@
 {
-  "updatedAt": "2025-11-13T06:15:23.710Z",
+  "updatedAt": "2025-11-13T06:27:58.113Z",
   "createdAt": "2025-11-13T06:08:40.998Z",
   "id": "eeZTmctM9IvDF2bH",
   "name": "Create company campaign quick links",
   "active": false,
   "isArchived": false,
   "nodes": [
-    {
-      "parameters": {
-        "operation": "text",
-        "options": {}
-      },
-      "type": "n8n-nodes-base.extractFromFile",
-      "typeVersion": 1,
-      "position": [
-        -592,
-        0
-      ],
-      "id": "6e7c28b6-2e59-4c8f-9fc2-b1c6540cbcaf",
-      "name": "Extract from File2"
-    },
-    {
-      "parameters": {
-        "jsCode": "// Function-Node (Run Once)\nconst workflowData = $getWorkflowStaticData('global');\nworkflowData.my_prompt = items[0].json;\nreturn items;"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        -384,
-        0
-      ],
-      "id": "ae8da16d-9512-429d-a3c3-ef63d764752d",
-      "name": "Save prompt"
-    },
     {
       "parameters": {
         "options": {}
@@ -66,41 +39,6 @@
         "postgres": {
           "id": "Hx2VFmUi5WO2K4QX",
           "name": "Postgres account 2"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "resource": "file",
-        "operation": "get",
-        "owner": {
-          "__rl": true,
-          "value": "Romanychlogin",
-          "mode": "name"
-        },
-        "repository": {
-          "__rl": true,
-          "value": "n8n_prompts",
-          "mode": "list",
-          "cachedResultName": "n8n_prompts",
-          "cachedResultUrl": "https://github.com/Romanychlogin/n8n_prompts"
-        },
-        "filePath": "campaign callouts.txt",
-        "additionalParameters": {}
-      },
-      "type": "n8n-nodes-base.github",
-      "typeVersion": 1.1,
-      "position": [
-        -800,
-        0
-      ],
-      "id": "2e7c6837-fc63-4608-9b0d-2120645399d8",
-      "name": "Get prompts",
-      "webhookId": "18bc9b96-2b02-4115-a38d-631eab23cca5",
-      "credentials": {
-        "githubApi": {
-          "id": "JQAFAcMNS9Ylyb0V",
-          "name": "GitHub account"
         }
       }
     },
@@ -202,8 +140,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        3616,
-        272
+        4480,
+        416
       ],
       "id": "3940250a-9bcf-4e66-a6bb-5e9472285996",
       "name": "Mark_workflow_passed_steps",
@@ -223,8 +161,8 @@
       "type": "n8n-nodes-base.stopAndError",
       "typeVersion": 1,
       "position": [
-        4448,
-        144
+        5312,
+        288
       ],
       "id": "42619ddb-b9c8-4731-88cf-f0042572d4fa",
       "name": "Stop and Error",
@@ -258,8 +196,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        3872,
-        304
+        4736,
+        448
       ],
       "id": "0a3f3afd-8ae2-4b7e-9ead-6be5aae2bc5e",
       "name": "check if termination is requested",
@@ -298,8 +236,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        4128,
-        304
+        4992,
+        448
       ],
       "id": "d6304452-dee5-4f62-8d6a-4dd98ba41b10",
       "name": "If1",
@@ -312,8 +250,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        3152,
-        96
+        4016,
+        240
       ],
       "id": "43812e71-103a-4bf6-93e3-b8490e2c1328",
       "name": "Get current step and tokens saved"
@@ -329,8 +267,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        1568,
-        -304
+        848,
+        -496
       ],
       "id": "b1fc50ad-df65-4bde-8ec5-849170287fe0",
       "name": "Mark_workflow_completed",
@@ -410,15 +348,166 @@
     },
     {
       "parameters": {
+        "jsCode": "\n\nreturn [{\n  json: \n {\n  \"model\": \"gpt-5-2025-08-07\",\n  \"input\": [\n    {\n      \"role\": \"developer\",\n      \"content\": [\n        {\n          \"type\": \"input_text\",\n          \"text\": \"Ты — генератор заголовков рекламных объявлений. Твоя задача по каждой пользовательской фразе создать один короткий заголовок, строго соблюдая правила.\"\n        }\n      ]\n    },\n    {\n      \"role\": \"user\",\n      \"content\": [\n        {\n          \"type\": \"input_text\",\n          \"text\": $json.my_prompt\n        }\n      ]\n    }\n  ],\n  \"text\": {\n    \"format\": {\n      \"type\": \"json_schema\",\n      \"name\": \"headers\",\n      \"strict\": true,\n      \"schema\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"headers\": {\n            \"type\": \"array\",\n            \"description\": \"List of header objects.\",\n            \"items\": {\n              \"type\": \"object\",\n              \"properties\": {\n                \"header\": {\n                  \"type\": \"string\",\n                  \"description\": \"A string up to 56 characters.\",\n                  \"minLength\": 0,\n                  \"maxLength\": 56\n                },\n                \"id\": {\n                  \"type\": \"string\",\n                  \"description\": \"Unique identifier for the header object.\",\n                  \"minLength\": 1\n                }\n              },\n              \"required\": [\n                \"header\",\n                \"id\"\n              ],\n              \"additionalProperties\": false\n            },\n            \"minItems\": 0\n          }\n        },\n        \"required\": [\n          \"headers\"\n        ],\n        \"additionalProperties\": false\n      }\n    },\n    \"verbosity\": \"low\"\n  },\n  \"reasoning\": {\n    \"effort\": \"low\",\n    \"summary\": \"detailed\"\n  },\n  \"tools\": [],\n  \"store\": false,\n  \"include\": [\n    \"reasoning.encrypted_content\",\n    \"web_search_call.action.sources\"\n  ]\n}\n\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1712,
+        48
+      ],
+      "id": "a982ddfe-fa08-430e-9822-b3ecdc5e5d02",
+      "name": "Set API JSON"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.openai.com/v1/responses",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "openAiApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{$json}}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1920,
+        32
+      ],
+      "id": "c30d39a6-833d-4b0a-a272-950d0abe1d48",
+      "name": "HTTP Request",
+      "retryOnFail": true,
+      "credentials": {
+        "openAiApi": {
+          "id": "m4NScyhZzV3hBcTr",
+          "name": "OpenAi Yads"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "создаем заголовок",
+        "height": 512,
+        "width": 800
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1456,
+        -176
+      ],
+      "id": "f9892a0a-f906-4d1c-a2b5-7472b2a9abbd",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "создаем текст",
+        "height": 448,
+        "width": 816
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        2432,
+        -240
+      ],
+      "id": "5a3215f8-e410-4b2d-9923-0ecdbaaa4a2d",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "content": "создаем ссылку",
+        "height": 448,
+        "width": 784
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        3328,
+        -272
+      ],
+      "id": "3b7a2491-ad95-4272-98b0-8e77964b41c9",
+      "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
+        "jsCode": "const workflowData = $getWorkflowStaticData('global');\nlet my_prompt = workflowData.my_prompt.data;\n\nfor (const item of $input.all()) {\n  item.json.my_prompt = my_prompt.replaceAll(\"{{company_description}}\", workflowData.company_description);\n}\n\nreturn $input.all();"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1520,
+        64
+      ],
+      "id": "2f2b5172-b528-4582-83ad-c76f56546f1b",
+      "name": "Set prompt"
+    },
+    {
+      "parameters": {
+        "jsCode": "\n\nreturn [{\n  json: \n {\n  \"model\": \"gpt-5-2025-08-07\",\n  \"input\": [\n    {\n      \"role\": \"developer\",\n      \"content\": [\n        {\n          \"type\": \"input_text\",\n          \"text\": \"Ты — генератор коротких рекламных текстов. Твоя задача — для каждого запроса пользователя и заголовка объявления к нему создать одну строку рекламного текста, соблюдая ограничения. Текст должен быть понятным и соответствовать правилам пунктуации.\"\n        }\n      ]\n    },\n    {\n      \"role\": \"user\",\n      \"content\": [\n        {\n          \"type\": \"input_text\",\n          \"text\": $json.my_prompt\n        }\n      ]\n    }\n  ],\n  \"text\": {\n    \"format\": {\n      \"type\": \"json_schema\",\n      \"name\": \"ad_texts\",\n      \"strict\": true,\n      \"schema\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"ad_texts\": {\n            \"type\": \"array\",\n            \"description\": \"List of ad text objects.\",\n            \"items\": {\n              \"type\": \"object\",\n              \"properties\": {\n                \"ad_text\": {\n                  \"type\": \"string\",\n                  \"description\": \"Ad text, up to 81 characters.\",\n                  \"minLength\": 0,\n                  \"maxLength\": 81\n                },\n                \"id\": {\n                  \"type\": \"string\",\n                  \"description\": \"Unique identifier for the ad text object.\",\n                  \"minLength\": 1\n                }\n              },\n              \"required\": [\n                \"ad_text\",\n                \"id\"\n              ],\n              \"additionalProperties\": false\n            },\n            \"minItems\": 0\n          }\n        },\n        \"required\": [\n          \"ad_texts\"\n        ],\n        \"additionalProperties\": false\n      }\n    },\n    \"verbosity\": \"medium\"\n  },\n  \"reasoning\": {\n    \"effort\": \"low\",\n    \"summary\": \"detailed\"\n  },\n  \"tools\": [],\n  \"store\": false,\n  \"include\": [\n    \"reasoning.encrypted_content\",\n    \"web_search_call.action.sources\"\n  ]\n}\n\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2784,
+        -32
+      ],
+      "id": "cd0088e3-37e1-41bc-9f40-f22bb3e8d8ae",
+      "name": "Set API JSON1"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.openai.com/v1/responses",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "openAiApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{$json}}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2960,
+        -32
+      ],
+      "id": "79c80ff8-865f-4313-8fa9-66a947721364",
+      "name": "HTTP Request1",
+      "retryOnFail": true,
+      "credentials": {
+        "openAiApi": {
+          "id": "m4NScyhZzV3hBcTr",
+          "name": "OpenAi Yads"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const workflowData = $getWorkflowStaticData('global');\nlet my_prompt = workflowData.my_prompt_text.data;\n\nfor (const item of $input.all()) {\n  item.json.my_prompt = my_prompt.replaceAll(\"{{company_description}}\", workflowData.company_description).replaceAll(\"{{key_words_ad_headers}}\", JSON.stringify($json.Items));\n}\n\nreturn $input.all();"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2544,
+        -16
+      ],
+      "id": "1376cb18-5d3e-4875-b51d-d14c7aa5a3b7",
+      "name": "Set prompt1"
+    },
+    {
+      "parameters": {
         "jsCode": "const urlEnum = $('string for service urls').last().json.urls ?? [];\n\nreturn [{\n  json:{\n  \"model\": \"gpt-5\",\n  \"input\": [\n    {\n      \"role\": \"developer\",\n      \"content\": [\n        {\n          \"type\": \"input_text\",\n          \"text\": \"Strictly follow provided instructions and response format\"\n        }\n      ]\n    },\n    {\n      \"role\": \"user\",\n      \"content\": [\n        {\n          \"type\": \"input_text\",\n          \"text\": $json.my_prompt\n        }\n      ]\n    }\n  ],\n  \"text\": {\n    \"format\": {\n      \"type\": \"json_schema\",\n      \"name\": \"url_strings\",\n      \"strict\": true,\n      \"schema\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"url_strings\": {\n            \"type\": \"array\",\n            \"description\": \"List of URL objects.\",\n            \"items\": {\n              \"type\": \"object\",\n              \"properties\": {\n                \"url_string\": {\n                  \"type\": \"string\",\n                  \"enum\": urlEnum,\n                  \"description\": \"A valid URL from the allowed list.\"\n                },\n                \"id\": {\n                  \"type\": \"string\",\n                  \"description\": \"Unique identifier for the URL object.\",\n                  \"minLength\": 1\n                }\n              },\n              \"required\": [\n                \"url_string\",\n                \"id\"\n              ],\n              \"additionalProperties\": false\n            },\n            \"minItems\": 0\n          }\n        },\n        \"required\": [\n          \"url_strings\"\n        ],\n        \"additionalProperties\": false\n      }\n    },\n    \"verbosity\": \"low\"\n  },\n  \"reasoning\": {\n    \"effort\": \"minimal\",\n    \"summary\": \"auto\"\n  },\n  \n  \"store\": false,\n  \"include\": [\n    \"reasoning.encrypted_content\",\n    \"web_search_call.action.sources\"\n  ]\n}\n}];"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1856,
-        0
+        3632,
+        -48
       ],
-      "id": "8e3b2d02-819e-45d0-b820-7221b62ace0b",
+      "id": "0d034cdd-b85a-45b0-b5fe-933eabbd5009",
       "name": "Set API JSON2"
     },
     {
@@ -435,10 +524,10 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        2192,
-        16
+        3824,
+        -16
       ],
-      "id": "660fd936-9d1a-4203-b79d-b1ca18c62c03",
+      "id": "f2d2afe3-3387-470e-b3ce-3bc94ac2a89c",
       "name": "HTTP Request2",
       "retryOnFail": true,
       "credentials": {
@@ -450,41 +539,231 @@
     },
     {
       "parameters": {
-        "jsCode": "const workflowData = $getWorkflowStaticData('global');\nlet my_prompt = workflowData.my_prompt.data;\n\nfor (const item of $input.all()) {\n  item.json.my_prompt = my_prompt.replaceAll(\"{{company_description}}\", workflowData.company_description_with_url);\n}\n\nreturn $input.all();"
+        "jsCode": "const workflowData = $getWorkflowStaticData('global');\nlet my_prompt = workflowData.my_prompt_url.data;\n\nfor (const item of $input.all()) {\n  item.json.my_prompt = my_prompt.replaceAll(\"{{company_description}}\", workflowData.company_description_with_url).replaceAll(\"{{key_word_header_ad_text}}\", JSON.stringify($json.Items));\n}\n\nreturn $input.all();"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1600,
-        16
+        3392,
+        -32
       ],
-      "id": "138056ca-c9cf-4a40-82c6-755bfa8a3e27",
+      "id": "4052a6b9-a5be-49b1-89ab-a40d2d8ef0b7",
       "name": "Set prompt2"
+    },
+    {
+      "parameters": {
+        "jsCode": "// 1) Читаем строку JSON из указанного поля\nlet raw = $input.first().json?.output?.[1]?.content?.[0]?.text;\n\n// Минимальная чистка и парсинг\nfunction stripCodeFences(s) {\n  if (typeof s !== 'string') return s;\n  let t = s.trim();\n  if (t.startsWith('```')) t = t.replace(/^```[a-zA-Z]*\\n?/, '').replace(/```$/, '').trim();\n  return t;\n}\nfunction parseJson(s) {\n  const t = stripCodeFences(String(s ?? ''));\n  try { return JSON.parse(t); } catch { return null; }\n}\n\nconst obj = parseJson(raw);\nif (!obj || !Array.isArray(obj.headers)) {\n  return [{ json: { Items: [], ItemsbyId: {} } }];\n}\n\n// 2) Прямой доступ к словарю ItemsbyId из указанной ноды\nconst sourceItemsById = $('Loop Over Items').last().json?.ItemsbyId ?? {};\n\n// 3) Собираем массив элементов { phrase, header, id }\nconst Items = [];\nfor (const h of obj.headers) {\n  if (!h || typeof h !== 'object') continue;\n  const id = String(h.id ?? '');\n  const header = String(h.header ?? '');\n  if (!id || !header) continue;\n\n  const phrase = String(sourceItemsById[id]?.phrase ?? '');\n  Items.push({ phrase, header, id });\n}\n\n// 4) Строим словарь по id -> объект\nconst ItemsbyId = Object.fromEntries(\n  Items.map(it => [it.id, it])\n);\n\n// 5) Возвращаем один элемент с полями Items и ItemsbyId\nreturn [{\n  json: {\n    Items,\n    ItemsbyId\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2128,
+        32
+      ],
+      "id": "9979798c-6f2d-43d8-ad36-d2809f769763",
+      "name": "keywords and headers"
+    },
+    {
+      "parameters": {
+        "jsCode": "// 1) Читаем строку JSON из указанного поля\nlet raw = $input.first().json?.output?.[1]?.content?.[0]?.text;\n\n// Минимальная чистка и парсинг\nfunction stripCodeFences(s) {\n  if (typeof s !== 'string') return s;\n  let t = s.trim();\n  if (t.startsWith('```')) t = t.replace(/^```[a-zA-Z]*\\n?/, '').replace(/```$/, '').trim();\n  return t;\n}\nfunction parseJson(s) {\n  const t = stripCodeFences(String(s ?? ''));\n  try { return JSON.parse(t); } catch { return null; }\n}\n\nconst obj = parseJson(raw);\nif (!obj || !Array.isArray(obj.ad_texts)) {\n  return [{ json: { Items: [], ItemsbyId: {}, note: 'ad_texts not found' } }];\n}\n\n// 2) Прямой доступ к словарю ItemsbyId из указанной ноды\nconst itemsById = $('keywords and headers').last().json?.ItemsbyId ?? {};\n\n// 3) Собираем выход\nconst Items = [];\nfor (const h of obj.ad_texts) {\n  if (!h || typeof h !== 'object') continue;\n\n  const id = String(h.id ?? '');\n  const ad_text = String(h.ad_text ?? '');\n  if (!id || !ad_text) continue;\n\n  const src = itemsById[id] ?? {};\n  const phrase = src?.phrase != null ? String(src.phrase) : '';\n  const header = src?.header != null ? String(src.header) : '';\n\n  Items.push({ phrase, header, ad_text, id });\n}\n\n// 4) Индекс по id -> объект\nconst ItemsbyId = Object.fromEntries(Items.map(o => [o.id, o]));\n\n// 5) Возврат\nreturn [{\n  json: {\n    Items,\n    ItemsbyId\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3168,
+        -32
+      ],
+      "id": "55fc3f7e-564c-455b-a824-337f6a498a59",
+      "name": "keywords headers and texts"
+    },
+    {
+      "parameters": {
+        "resource": "file",
+        "operation": "get",
+        "owner": {
+          "__rl": true,
+          "value": "Romanychlogin",
+          "mode": "name"
+        },
+        "repository": {
+          "__rl": true,
+          "value": "n8n_prompts",
+          "mode": "list",
+          "cachedResultName": "n8n_prompts",
+          "cachedResultUrl": "https://github.com/Romanychlogin/n8n_prompts"
+        },
+        "filePath": "ads_creation_header.txt",
+        "additionalParameters": {}
+      },
+      "type": "n8n-nodes-base.github",
+      "typeVersion": 1.1,
+      "position": [
+        -784,
+        176
+      ],
+      "id": "0a45728d-6b71-4258-ba24-96b6e65be91e",
+      "name": "Get a file",
+      "webhookId": "5651016b-6d62-4e04-a1c4-3c8416f0e683",
+      "credentials": {
+        "githubApi": {
+          "id": "JQAFAcMNS9Ylyb0V",
+          "name": "GitHub account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "text",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        -608,
+        176
+      ],
+      "id": "f5fcafc0-d3e5-4a98-966a-4be62809f7e4",
+      "name": "Extract from File1"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Function-Node (Run Once)\nconst workflowData = $getWorkflowStaticData('global');\nworkflowData.my_prompt = items[0].json;\nreturn items;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -464,
+        208
+      ],
+      "id": "93cc75e8-54b2-4fb4-87e2-f970adcfed89",
+      "name": "Code1"
+    },
+    {
+      "parameters": {
+        "resource": "file",
+        "operation": "get",
+        "owner": {
+          "__rl": true,
+          "value": "Romanychlogin",
+          "mode": "name"
+        },
+        "repository": {
+          "__rl": true,
+          "value": "n8n_prompts",
+          "mode": "list",
+          "cachedResultName": "n8n_prompts",
+          "cachedResultUrl": "https://github.com/Romanychlogin/n8n_prompts"
+        },
+        "filePath": "ad_creation_text.txt",
+        "additionalParameters": {}
+      },
+      "type": "n8n-nodes-base.github",
+      "typeVersion": 1.1,
+      "position": [
+        -816,
+        464
+      ],
+      "id": "fb649c9f-5251-47d0-bdc7-978b9a9e0aab",
+      "name": "Get a file1",
+      "webhookId": "4980f261-cdf4-401a-bfaf-8971867ad6d8",
+      "credentials": {
+        "githubApi": {
+          "id": "JQAFAcMNS9Ylyb0V",
+          "name": "GitHub account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "text",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        -656,
+        464
+      ],
+      "id": "6fdbe03f-fc18-4019-9630-78fa7e785b16",
+      "name": "Extract from File"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Function-Node (Run Once)\nconst workflowData = $getWorkflowStaticData('global');\nworkflowData.my_prompt_text = items[0].json;\nreturn items;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -512,
+        464
+      ],
+      "id": "b4443e33-fea2-46ef-89da-fa64e3cc62f6",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "resource": "file",
+        "operation": "get",
+        "owner": {
+          "__rl": true,
+          "value": "Romanychlogin",
+          "mode": "name"
+        },
+        "repository": {
+          "__rl": true,
+          "value": "n8n_prompts",
+          "mode": "list",
+          "cachedResultName": "n8n_prompts",
+          "cachedResultUrl": "https://github.com/Romanychlogin/n8n_prompts"
+        },
+        "filePath": "ad_creation_url.txt",
+        "additionalParameters": {}
+      },
+      "type": "n8n-nodes-base.github",
+      "typeVersion": 1.1,
+      "position": [
+        -800,
+        640
+      ],
+      "id": "7799f276-a192-47f0-9596-f3e647bc323d",
+      "name": "Get a file2",
+      "webhookId": "7f9ef4b6-b452-45c1-87d0-50bf224e0663",
+      "credentials": {
+        "githubApi": {
+          "id": "JQAFAcMNS9Ylyb0V",
+          "name": "GitHub account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "text",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        -640,
+        656
+      ],
+      "id": "fc1fb0c0-d090-4058-a404-c0177b84fc60",
+      "name": "Extract from File2"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Function-Node (Run Once)\nconst workflowData = $getWorkflowStaticData('global');\nworkflowData.my_prompt_url = items[0].json;\nreturn items;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -480,
+        656
+      ],
+      "id": "efad9809-fe7a-4eae-bb2d-61c61a84de99",
+      "name": "Code2"
     }
   ],
   "connections": {
-    "Extract from File2": {
-      "main": [
-        [
-          {
-            "node": "Save prompt",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Save prompt": {
-      "main": [
-        [
-          {
-            "node": "Services list",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Loop Over Items": {
       "main": [
         [
@@ -524,17 +803,6 @@
         ]
       ]
     },
-    "Get prompts": {
-      "main": [
-        [
-          {
-            "node": "Extract from File2",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "When Executed by Another Workflow": {
       "main": [
         [
@@ -550,7 +818,7 @@
       "main": [
         [
           {
-            "node": "Get prompts",
+            "node": "Get a file",
             "type": "main",
             "index": 0
           }
@@ -667,7 +935,73 @@
       "main": [
         [
           {
-            "node": "Set prompt2",
+            "node": "Set prompt",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set API JSON": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "keywords and headers",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set prompt": {
+      "main": [
+        [
+          {
+            "node": "Set API JSON",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set API JSON1": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request1": {
+      "main": [
+        [
+          {
+            "node": "keywords headers and texts",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set prompt1": {
+      "main": [
+        [
+          {
+            "node": "Set API JSON1",
             "type": "main",
             "index": 0
           }
@@ -685,6 +1019,39 @@
         ]
       ]
     },
+    "Set prompt2": {
+      "main": [
+        [
+          {
+            "node": "Set API JSON2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "keywords and headers": {
+      "main": [
+        [
+          {
+            "node": "Set prompt1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "keywords headers and texts": {
+      "main": [
+        [
+          {
+            "node": "Set prompt2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
     "HTTP Request2": {
       "main": [
         [
@@ -696,11 +1063,99 @@
         ]
       ]
     },
-    "Set prompt2": {
+    "Get a file": {
       "main": [
         [
           {
-            "node": "Set API JSON2",
+            "node": "Extract from File1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File1": {
+      "main": [
+        [
+          {
+            "node": "Code1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code1": {
+      "main": [
+        [
+          {
+            "node": "Get a file1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get a file1": {
+      "main": [
+        [
+          {
+            "node": "Extract from File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "Get a file2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get a file2": {
+      "main": [
+        [
+          {
+            "node": "Extract from File2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File2": {
+      "main": [
+        [
+          {
+            "node": "Code2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code2": {
+      "main": [
+        [
+          {
+            "node": "Services list",
             "type": "main",
             "index": 0
           }
@@ -733,7 +1188,7 @@
       }
     ]
   },
-  "versionId": "b7fe096b-0f92-498c-a38a-983cfe8c1f7f",
+  "versionId": "29af6971-014e-49b0-82f4-6dc76f634f06",
   "triggerCount": 0,
   "shared": [
     {
