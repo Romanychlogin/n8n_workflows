@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-13T14:16:53.268Z",
+  "updatedAt": "2025-11-13T14:28:12.270Z",
   "createdAt": "2025-11-13T14:02:21.120Z",
   "id": "TT7oOjUbWA85bxca",
   "name": "pefromance_test",
@@ -19,7 +19,7 @@
     },
     {
       "parameters": {
-        "jsCode": "// Function-Node (Run Once)\nconst workflowData = $getWorkflowStaticData('global');\nworkflowData.steps_passed = 0;\nworkflowData.tokens_used = 0;\n\n// создаём массив из 50 элементов\nconst arr = Array.from({ length: 10 }, () => ({ test: 1 }));\n\n// на выходе нужно вернуть массив объектов, каждый отдельным item\nreturn arr.map(o => ({ json: o }));"
+        "jsCode": "// Function-Node (Run Once)\nconst workflowData = $getWorkflowStaticData('global');\nworkflowData.steps_passed = 0;\nworkflowData.tokens_used = 0;\n\n// создаём массив из 50 элементов\nconst arr = Array.from({ length: 100 }, () => ({ test: 1 }));\n\n// на выходе нужно вернуть массив объектов, каждый отдельным item\nreturn arr.map(o => ({ json: o }));"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -33,9 +33,9 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "INSERT INTO business_processes_states (business_process_id, company_id,n8n_workflow_execution_id,n8n_workflow_root_execution_id, started)\nSELECT MAX(business_process_id), $2,$3,$4, NOW()\nFROM public.business_processes\nWHERE n8n_process_name = $1;",
+        "query": "INSERT INTO business_processes_states (business_process_id, company_id,n8n_workflow_execution_id,n8n_workflow_root_execution_id, started)\nSELECT MAX(business_process_id), 9,$2,0, NOW()\nFROM public.business_processes\nWHERE n8n_process_name = $1;",
         "options": {
-          "queryReplacement": "=[{{$workflow.name}},6,{{$execution.id}},0]"
+          "queryReplacement": "=[{{$workflow.name}},{{$execution.id}}]"
         }
       },
       "type": "n8n-nodes-base.postgres",
@@ -48,8 +48,8 @@
       "name": "Mark_workwlow_started",
       "credentials": {
         "postgres": {
-          "id": "Hx2VFmUi5WO2K4QX",
-          "name": "Postgres account 2"
+          "id": "4YkdFJcdTgzo9hkz",
+          "name": "PGvector"
         }
       }
     },
@@ -72,8 +72,8 @@
       "executeOnce": true,
       "credentials": {
         "postgres": {
-          "id": "Hx2VFmUi5WO2K4QX",
-          "name": "Postgres account 2"
+          "id": "4YkdFJcdTgzo9hkz",
+          "name": "PGvector"
         }
       }
     },
@@ -127,9 +127,9 @@
             },
             {
               "id": "4d328ab0-0c4e-4c0b-9ef9-4caf20ba0f99",
-              "name": "",
-              "value": "",
-              "type": "string"
+              "name": "root_execution_id",
+              "value": "={{ $execution.id }}",
+              "type": "number"
             }
           ]
         },
@@ -226,7 +226,7 @@
   "staticData": null,
   "meta": null,
   "pinData": {},
-  "versionId": "6d8416e5-18d4-40bc-937a-13c44f76ee01",
+  "versionId": "f0e690aa-3967-47c4-8b67-9add8a1f4d00",
   "triggerCount": 0,
   "shared": [
     {
@@ -237,6 +237,5 @@
       "projectId": "spKmbJLU4mvACXIB"
     }
   ],
-  "tags": [],
-  "file_name": "pefromance_test.json"
+  "tags": []
 }
