@@ -1,6 +1,6 @@
 {
+  "updatedAt": "2025-11-13T13:58:52.987Z",
   "createdAt": "2025-09-19T15:26:59.886Z",
-  "updatedAt": "2025-10-22T11:41:29.043Z",
   "id": "SptAKErjQeOJuESk",
   "name": "status bot",
   "active": true,
@@ -958,8 +958,8 @@
   "triggerCount": 3,
   "shared": [
     {
-      "createdAt": "2025-09-19T15:26:59.886Z",
       "updatedAt": "2025-09-19T15:26:59.886Z",
+      "createdAt": "2025-09-19T15:26:59.886Z",
       "role": "workflow:owner",
       "workflowId": "SptAKErjQeOJuESk",
       "projectId": "spKmbJLU4mvACXIB"
