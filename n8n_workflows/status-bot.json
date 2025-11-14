@@ -1,9 +1,9 @@
 {
-  "updatedAt": "2025-11-13T13:58:52.987Z",
+  "updatedAt": "2025-11-14T06:31:36.540Z",
   "createdAt": "2025-09-19T15:26:59.886Z",
   "id": "SptAKErjQeOJuESk",
   "name": "status bot",
-  "active": true,
+  "active": false,
   "isArchived": false,
   "nodes": [
     {
