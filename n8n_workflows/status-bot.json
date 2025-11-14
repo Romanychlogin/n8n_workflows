@@ -1,9 +1,9 @@
 {
-  "updatedAt": "2025-11-14T06:31:36.540Z",
+  "updatedAt": "2025-11-14T08:07:23.346Z",
   "createdAt": "2025-09-19T15:26:59.886Z",
   "id": "SptAKErjQeOJuESk",
   "name": "status bot",
-  "active": false,
+  "active": true,
   "isArchived": false,
   "nodes": [
     {
@@ -939,22 +939,22 @@
     "Schedule Trigger for incidents": [
       {
         "json": {
-          "timestamp": "2025-10-18T11:37:01.003+03:00",
-          "Readable date": "October 18th 2025, 11:37:01 am",
-          "Readable time": "11:37:01 am",
-          "Day of week": "Saturday",
+          "timestamp": "2025-11-14T09:31:03.003+03:00",
+          "Readable date": "November 14th 2025, 9:31:03 am",
+          "Readable time": "9:31:03 am",
+          "Day of week": "Friday",
           "Year": "2025",
-          "Month": "October",
-          "Day of month": "18",
-          "Hour": "11",
-          "Minute": "37",
-          "Second": "01",
+          "Month": "November",
+          "Day of month": "14",
+          "Hour": "09",
+          "Minute": "31",
+          "Second": "03",
           "Timezone": "Europe/Moscow (UTC+03:00)"
         }
       }
     ]
   },
-  "versionId": "93127d3a-9da9-4584-914c-0a6a30ff21d5",
+  "versionId": "c8243d5b-e439-4652-999e-5b5b09dad305",
   "triggerCount": 3,
   "shared": [
     {
