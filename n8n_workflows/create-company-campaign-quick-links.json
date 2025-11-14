@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-13T06:27:58.113Z",
+  "updatedAt": "2025-11-14T14:18:34.869Z",
   "createdAt": "2025-11-13T06:08:40.998Z",
   "id": "eeZTmctM9IvDF2bH",
   "name": "Create company campaign quick links",
@@ -31,7 +31,7 @@
       "typeVersion": 2.6,
       "position": [
         -176,
-        0
+        -32
       ],
       "id": "dd577b1f-8b69-43bd-9689-4fa483643573",
       "name": "Services list",
@@ -250,8 +250,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        4016,
-        240
+        3952,
+        -32
       ],
       "id": "43812e71-103a-4bf6-93e3-b8490e2c1328",
       "name": "Get current step and tokens saved"
@@ -354,7 +354,7 @@
       "typeVersion": 2,
       "position": [
         1712,
-        48
+        -32
       ],
       "id": "a982ddfe-fa08-430e-9822-b3ecdc5e5d02",
       "name": "Set API JSON"
@@ -374,7 +374,7 @@
       "typeVersion": 4.2,
       "position": [
         1920,
-        32
+        -32
       ],
       "id": "c30d39a6-833d-4b0a-a272-950d0abe1d48",
       "name": "HTTP Request",
@@ -389,14 +389,14 @@
     {
       "parameters": {
         "content": "создаем заголовок",
-        "height": 512,
+        "height": 448,
         "width": 800
       },
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        1456,
-        -176
+        1488,
+        -240
       ],
       "id": "f9892a0a-f906-4d1c-a2b5-7472b2a9abbd",
       "name": "Sticky Note1"
@@ -426,7 +426,7 @@
       "typeVersion": 1,
       "position": [
         3328,
-        -272
+        -240
       ],
       "id": "3b7a2491-ad95-4272-98b0-8e77964b41c9",
       "name": "Sticky Note3"
@@ -439,7 +439,7 @@
       "typeVersion": 2,
       "position": [
         1520,
-        64
+        -32
       ],
       "id": "2f2b5172-b528-4582-83ad-c76f56546f1b",
       "name": "Set prompt"
@@ -451,7 +451,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        2784,
+        2672,
         -32
       ],
       "id": "cd0088e3-37e1-41bc-9f40-f22bb3e8d8ae",
@@ -471,7 +471,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        2960,
+        2848,
         -32
       ],
       "id": "79c80ff8-865f-4313-8fa9-66a947721364",
@@ -491,8 +491,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        2544,
-        -16
+        2480,
+        -32
       ],
       "id": "1376cb18-5d3e-4875-b51d-d14c7aa5a3b7",
       "name": "Set prompt1"
@@ -504,8 +504,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        3632,
-        -48
+        3584,
+        -32
       ],
       "id": "0d034cdd-b85a-45b0-b5fe-933eabbd5009",
       "name": "Set API JSON2"
@@ -524,8 +524,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        3824,
-        -16
+        3776,
+        -32
       ],
       "id": "f2d2afe3-3387-470e-b3ce-3bc94ac2a89c",
       "name": "HTTP Request2",
@@ -558,7 +558,7 @@
       "typeVersion": 2,
       "position": [
         2128,
-        32
+        -32
       ],
       "id": "9979798c-6f2d-43d8-ad36-d2809f769763",
       "name": "keywords and headers"
@@ -570,7 +570,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        3168,
+        3056,
         -32
       ],
       "id": "55fc3f7e-564c-455b-a824-337f6a498a59",
@@ -592,13 +592,13 @@
           "cachedResultName": "n8n_prompts",
           "cachedResultUrl": "https://github.com/Romanychlogin/n8n_prompts"
         },
-        "filePath": "ads_creation_header.txt",
+        "filePath": "ad_creation_header.txt",
         "additionalParameters": {}
       },
       "type": "n8n-nodes-base.github",
       "typeVersion": 1.1,
       "position": [
-        -784,
+        -816,
         176
       ],
       "id": "0a45728d-6b71-4258-ba24-96b6e65be91e",
@@ -619,7 +619,7 @@
       "type": "n8n-nodes-base.extractFromFile",
       "typeVersion": 1,
       "position": [
-        -608,
+        -640,
         176
       ],
       "id": "f5fcafc0-d3e5-4a98-966a-4be62809f7e4",
@@ -633,7 +633,7 @@
       "typeVersion": 2,
       "position": [
         -464,
-        208
+        176
       ],
       "id": "93cc75e8-54b2-4fb4-87e2-f970adcfed89",
       "name": "Code1"
@@ -661,7 +661,7 @@
       "typeVersion": 1.1,
       "position": [
         -816,
-        464
+        400
       ],
       "id": "fb649c9f-5251-47d0-bdc7-978b9a9e0aab",
       "name": "Get a file1",
@@ -681,8 +681,8 @@
       "type": "n8n-nodes-base.extractFromFile",
       "typeVersion": 1,
       "position": [
-        -656,
-        464
+        -640,
+        400
       ],
       "id": "6fdbe03f-fc18-4019-9630-78fa7e785b16",
       "name": "Extract from File"
@@ -694,8 +694,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -512,
-        464
+        -464,
+        400
       ],
       "id": "b4443e33-fea2-46ef-89da-fa64e3cc62f6",
       "name": "Code"
@@ -722,8 +722,8 @@
       "type": "n8n-nodes-base.github",
       "typeVersion": 1.1,
       "position": [
-        -800,
-        640
+        -816,
+        624
       ],
       "id": "7799f276-a192-47f0-9596-f3e647bc323d",
       "name": "Get a file2",
@@ -744,7 +744,7 @@
       "typeVersion": 1,
       "position": [
         -640,
-        656
+        624
       ],
       "id": "fc1fb0c0-d090-4058-a404-c0177b84fc60",
       "name": "Extract from File2"
@@ -756,8 +756,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -480,
-        656
+        -464,
+        624
       ],
       "id": "efad9809-fe7a-4eae-bb2d-61c61a84de99",
       "name": "Code2"
@@ -1188,7 +1188,7 @@
       }
     ]
   },
-  "versionId": "29af6971-014e-49b0-82f4-6dc76f634f06",
+  "versionId": "38994170-708e-4697-a0c8-be15f8a89883",
   "triggerCount": 0,
   "shared": [
     {
