@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-13T06:08:02.258Z",
+  "updatedAt": "2025-11-14T11:49:26.023Z",
   "createdAt": "2025-11-13T06:04:28.068Z",
   "id": "dEZ5SU6WtbkZt5gj",
   "name": "Create company campaign callouts",
@@ -34,8 +34,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        1744,
-        -16
+        1472,
+        -32
       ],
       "id": "35c0d864-73b4-4df0-a6ef-30e40cac761f",
       "name": "HTTP Request",
@@ -54,8 +54,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1424,
-        -16
+        1280,
+        -32
       ],
       "id": "a2a6c8e3-b639-466e-b733-6b136296e32a",
       "name": "Set API JSON"
@@ -67,8 +67,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        2112,
-        -16
+        1680,
+        -32
       ],
       "id": "5feefccd-8ff8-46e3-b10a-0830a08cd720",
       "name": "Parse JSON"
@@ -107,7 +107,7 @@
       "typeVersion": 3,
       "position": [
         736,
-        0
+        -32
       ],
       "id": "703f7fd1-381d-4cbd-a791-fa111252f3c1",
       "name": "Loop Over Items"
@@ -252,7 +252,7 @@
       "typeVersion": 3.2,
       "position": [
         496,
-        -16
+        -32
       ],
       "id": "d09908e8-0015-4d22-99ce-f08f3f1a75da",
       "name": "Merge1"
@@ -268,8 +268,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        3200,
-        -16
+        2160,
+        -32
       ],
       "id": "76dcc300-0305-49d7-9885-4352104acb7d",
       "name": "Mark_workflow_passed_steps",
@@ -324,8 +324,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        3456,
-        16
+        2416,
+        -32
       ],
       "id": "d8c08037-8812-4ced-be7a-650eeffe8c58",
       "name": "check if termination is requested",
@@ -364,8 +364,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        3712,
-        16
+        2672,
+        48
       ],
       "id": "757085d5-968f-4555-a3f7-325849bd0dcc",
       "name": "If1",
@@ -378,8 +378,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        2736,
-        0
+        1920,
+        -32
       ],
       "id": "07bca46a-eaf4-4a02-9577-1e7931644131",
       "name": "Get current step and tokens saved"
@@ -654,7 +654,7 @@
       }
     ]
   },
-  "versionId": "a6528dfb-31b4-4e45-8680-41a3076009f8",
+  "versionId": "601ab50f-83af-441c-b279-6086e4bd734e",
   "triggerCount": 0,
   "shared": [
     {
