@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-14T17:08:50.129Z",
+  "updatedAt": "2025-11-14T17:11:07.788Z",
   "createdAt": "2025-09-25T13:33:58.106Z",
   "id": "0J5cvuaSz3IhDS99",
   "name": "campaign core update",
@@ -257,8 +257,7 @@
         -240
       ],
       "id": "ed207a6c-8ead-45ba-83a2-0719233fde5b",
-      "name": "Set variables",
-      "disabled": true
+      "name": "Set variables"
     },
     {
       "parameters": {
@@ -5138,7 +5137,7 @@
       }
     ]
   },
-  "versionId": "cf4094a5-9fb4-41bd-8c75-078e537f1cb8",
+  "versionId": "35beaf42-70de-4299-84d3-5966159e5e02",
   "triggerCount": 0,
   "shared": [
     {
