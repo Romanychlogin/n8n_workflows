@@ -314,7 +314,9 @@
   },
   "staticData": {
     "node:Schedule Trigger": {
-      "recurrenceRules": []
+      "recurrenceRules": [
+        12
+      ]
     }
   },
   "meta": {
