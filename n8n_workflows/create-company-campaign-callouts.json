@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-14T14:01:14.841Z",
+  "updatedAt": "2025-11-14T14:14:10.814Z",
   "createdAt": "2025-11-13T06:04:28.068Z",
   "id": "dEZ5SU6WtbkZt5gj",
   "name": "Create company campaign callouts",
@@ -645,7 +645,7 @@
         "json": {
           "id": "ezK8ihYnfxZNTIAc",
           "root_execution_id": 20076,
-          "company_id": 2,
+          "company_id": 1,
           "threshhold": "0.88",
           "company_name": "Первый визовый центр Курган",
           "services_description": "Визы:    http://krg45.visa-rf.ru/ АТЭС:    http://krg45.apec-first.ru/",
@@ -654,7 +654,7 @@
       }
     ]
   },
-  "versionId": "201befc0-2c58-43db-979f-261ea3a60965",
+  "versionId": "7046977d-9f10-424b-87c2-ca8b666c7a52",
   "triggerCount": 0,
   "shared": [
     {
