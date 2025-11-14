@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-14T16:58:49.964Z",
+  "updatedAt": "2025-11-14T17:08:50.129Z",
   "createdAt": "2025-09-25T13:33:58.106Z",
   "id": "0J5cvuaSz3IhDS99",
   "name": "campaign core update",
@@ -105,41 +105,6 @@
     },
     {
       "parameters": {
-        "conditions": {
-          "options": {
-            "caseSensitive": true,
-            "leftValue": "",
-            "typeValidation": "strict",
-            "version": 2
-          },
-          "conditions": [
-            {
-              "id": "e2626a1e-412c-4f6f-89a8-ca5da5106302",
-              "leftValue": "={{$json.finished}}",
-              "rightValue": "",
-              "operator": {
-                "type": "dateTime",
-                "operation": "notEmpty",
-                "singleValue": true
-              }
-            }
-          ],
-          "combinator": "and"
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.if",
-      "typeVersion": 2.2,
-      "position": [
-        848,
-        -320
-      ],
-      "id": "83f4c0a4-25e6-4317-b9f2-5d47b7b51625",
-      "name": "If SUB process  already executed",
-      "executeOnce": true
-    },
-    {
-      "parameters": {
         "workflowId": {
           "__rl": true,
           "value": "={{$json.id}}",
@@ -223,15 +188,21 @@
             },
             {
               "id": "fda82fe6-7e78-49d2-8130-43cb54ef5d8a",
-              "name": "yandex_report_dropbox_file_path",
-              "value": "={{ $('Set variables').item.json.yandex_report_dropbox_file_path }}",
-              "type": "string"
+              "name": "company_id",
+              "value": "={{ $('When Executed by Another Workflow').last().json.company_id }}",
+              "type": "number"
             },
             {
               "id": "da41f8d6-0b51-4e6c-91c3-96c8ca5d1659",
-              "name": "threshhold",
-              "value": "={{ $('Set variables').item.json.threshhold }}",
+              "name": "report_date",
+              "value": "={{ $('When Executed by Another Workflow').last().json.report_date }}",
               "type": "string"
+            },
+            {
+              "id": "d34d1a98-a2bf-401d-b5e5-8a202246641c",
+              "name": "campaign_yandex_id",
+              "value": "={{ $('When Executed by Another Workflow').last().json.campaign_yandex_id }}",
+              "type": "number"
             }
           ]
         },
@@ -845,8 +816,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        1440,
-        -384
+        1424,
+        -400
       ],
       "id": "3728d7ae-8855-4697-890d-b646d3584eef",
       "name": "get company_id from lust succeed report ",
@@ -860,7 +831,14 @@
     {
       "parameters": {
         "assignments": {
-          "assignments": []
+          "assignments": [
+            {
+              "id": "50db5cc8-9365-4eee-a030-132db1cfbd26",
+              "name": "company_id",
+              "value": "={{ $('When Executed by Another Workflow').last().json.company_id }}",
+              "type": "string"
+            }
+          ]
         },
         "includeOtherFields": true,
         "options": {}
@@ -868,8 +846,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        2192,
-        -288
+        2048,
+        -336
       ],
       "id": "3ed57cde-7bf2-46b5-97fa-dcf269af9ef0",
       "name": "company_record_id"
@@ -1398,40 +1376,6 @@
     },
     {
       "parameters": {
-        "conditions": {
-          "options": {
-            "caseSensitive": true,
-            "leftValue": "",
-            "typeValidation": "strict",
-            "version": 2
-          },
-          "conditions": [
-            {
-              "id": "d2f57e53-4fdb-4cda-ba54-625ed2e91e80",
-              "leftValue": "={{ $('Set variables').item.json.report_id }}",
-              "rightValue": "",
-              "operator": {
-                "type": "string",
-                "operation": "notEmpty",
-                "singleValue": true
-              }
-            }
-          ],
-          "combinator": "and"
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.if",
-      "typeVersion": 2.2,
-      "position": [
-        1856,
-        -320
-      ],
-      "id": "7ac1bcaf-e957-4501-b3c0-f6cc7de93ecd",
-      "name": "If report_id manually set"
-    },
-    {
-      "parameters": {
         "assignments": {
           "assignments": [
             {
@@ -1454,8 +1398,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        2064,
-        -400
+        1888,
+        -688
       ],
       "id": "90585baf-cb61-45e9-bdb3-3f55d0893e4b",
       "name": "override report_id"
@@ -2183,40 +2127,6 @@
       ],
       "id": "b184f539-2055-4746-9440-5d5af5966293",
       "name": "campaign core update finalization"
-    },
-    {
-      "parameters": {
-        "conditions": {
-          "options": {
-            "caseSensitive": true,
-            "leftValue": "",
-            "typeValidation": "strict",
-            "version": 2
-          },
-          "conditions": [
-            {
-              "id": "d2f57e53-4fdb-4cda-ba54-625ed2e91e80",
-              "leftValue": "={{ $('Set variables').item.json.company_id }}",
-              "rightValue": "",
-              "operator": {
-                "type": "string",
-                "operation": "notEmpty",
-                "singleValue": true
-              }
-            }
-          ],
-          "combinator": "and"
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.if",
-      "typeVersion": 2.2,
-      "position": [
-        416,
-        -224
-      ],
-      "id": "6f5732b6-cfe9-41d4-8dc2-d239bc8e01ad",
-      "name": "If company_id manually set"
     },
     {
       "parameters": {
@@ -3571,6 +3481,169 @@
       ],
       "id": "20818983-3a5d-4cb7-a22d-8474fef28751",
       "name": "ADV_campaign_data_load_API"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "15eb020b-bb6f-4c77-a103-718f49630cd6",
+              "name": "=root_execution_id",
+              "value": "={{ $execution.id }}",
+              "type": "number"
+            },
+            {
+              "id": "fda82fe6-7e78-49d2-8130-43cb54ef5d8a",
+              "name": "yandex_report_dropbox_file_path",
+              "value": "={{ $('Set variables').item.json.yandex_report_dropbox_file_path }}",
+              "type": "string"
+            },
+            {
+              "id": "da41f8d6-0b51-4e6c-91c3-96c8ca5d1659",
+              "name": "threshhold",
+              "value": "={{ $('Set variables').item.json.threshhold }}",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1136,
+        -624
+      ],
+      "id": "552fef62-eb84-4264-9d11-33c138589a35",
+      "name": "set input data for SUB11"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "d2f57e53-4fdb-4cda-ba54-625ed2e91e80",
+              "leftValue": "={{ $('Set variables').item.json.report_id }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1488,
+        -640
+      ],
+      "id": "91482443-1ae0-4d01-8bb0-72c28a0c86d7",
+      "name": "If report_id manually set"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "e2626a1e-412c-4f6f-89a8-ca5da5106302",
+              "leftValue": "={{$json.finished}}",
+              "rightValue": "",
+              "operator": {
+                "type": "dateTime",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        848,
+        -320
+      ],
+      "id": "83f4c0a4-25e6-4317-b9f2-5d47b7b51625",
+      "name": "If SUB process  already executed",
+      "executeOnce": true
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "d2f57e53-4fdb-4cda-ba54-625ed2e91e80",
+              "leftValue": "={{ $('Set variables').item.json.company_id }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        864,
+        -656
+      ],
+      "id": "4dcaa53e-3800-42de-8734-f7fa72d58cfd",
+      "name": "If company_id manually set",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "a0a010a7-ed2a-40cf-9911-361c9394f6a5",
+              "name": "result",
+              "value": "OK",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2912,
+        6448
+      ],
+      "id": "f791b979-8cea-4105-a92e-12d0edf5f610",
+      "name": "Set output"
     }
   ],
   "connections": {
@@ -3618,29 +3691,11 @@
         ]
       ]
     },
-    "If SUB process  already executed": {
-      "main": [
-        [
-          {
-            "node": "get company_id from lust succeed report ",
-            "type": "main",
-            "index": 0
-          }
-        ],
-        [
-          {
-            "node": "get workflow id by name",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Call SUB": {
       "main": [
         [
           {
-            "node": "If report_id manually set",
+            "node": "company_record_id",
             "type": "main",
             "index": 0
           }
@@ -3907,7 +3962,7 @@
       "main": [
         [
           {
-            "node": "If report_id manually set",
+            "node": "company_record_id",
             "type": "main",
             "index": 0
           }
@@ -4126,33 +4181,9 @@
         ]
       ]
     },
-    "If report_id manually set": {
-      "main": [
-        [
-          {
-            "node": "override report_id",
-            "type": "main",
-            "index": 0
-          }
-        ],
-        [
-          {
-            "node": "company_record_id",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "override report_id": {
       "main": [
-        [
-          {
-            "node": "company_record_id",
-            "type": "main",
-            "index": 0
-          }
-        ]
+        []
       ]
     },
     "Mark_workflow_passed_steps4": {
@@ -4467,24 +4498,6 @@
         [
           {
             "node": "Mark_workflow_completed",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "If company_id manually set": {
-      "main": [
-        [
-          {
-            "node": "Execute a SQL query",
-            "type": "main",
-            "index": 0
-          }
-        ],
-        [
-          {
-            "node": "get workflow id by name",
             "type": "main",
             "index": 0
           }
@@ -5069,7 +5082,36 @@
       "main": [
         [
           {
-            "node": "If company_id manually set",
+            "node": "Execute a SQL query",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If SUB process  already executed": {
+      "main": [
+        [
+          {
+            "node": "get company_id from lust succeed report ",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "get workflow id by name",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mark_workflow_completed": {
+      "main": [
+        [
+          {
+            "node": "Set output",
             "type": "main",
             "index": 0
           }
@@ -5096,7 +5138,7 @@
       }
     ]
   },
-  "versionId": "3be6d3e6-992b-4de7-8e69-ab80fe8562e8",
+  "versionId": "cf4094a5-9fb4-41bd-8c75-078e537f1cb8",
   "triggerCount": 0,
   "shared": [
     {
