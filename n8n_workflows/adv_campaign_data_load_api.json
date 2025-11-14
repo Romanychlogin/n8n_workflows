@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-13T12:12:27.749Z",
+  "updatedAt": "2025-11-14T16:54:12.880Z",
   "createdAt": "2025-10-22T11:44:28.248Z",
   "id": "4Fw159fAoZfSn72v",
   "name": "ADV_campaign_data_load_API",
@@ -536,7 +536,8 @@
           "value": {
             "company_id": "={{ $('When Executed by Another Workflow').last().json.company_id }}",
             "start_date": "={{ $('When Executed by Another Workflow').last().json.report_date }}",
-            "end_date": "={{ $('When Executed by Another Workflow').last().json.report_date }}"
+            "end_date": "={{ $('When Executed by Another Workflow').last().json.report_date }}",
+            "campaign_yandex_id": "={{ $('When Executed by Another Workflow').last().json.campaign_yandex_id }}"
           },
           "matchingColumns": [],
           "schema": [
@@ -596,6 +597,16 @@
               "type": "dateTime",
               "canBeUsedToMatch": true,
               "removed": true
+            },
+            {
+              "id": "campaign_yandex_id",
+              "displayName": "campaign_yandex_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": false
             }
           ],
           "attemptToConvertTypes": false,
@@ -920,7 +931,7 @@
       }
     ]
   },
-  "versionId": "94e77324-3077-41d9-9077-a8de41402a53",
+  "versionId": "e1bbb593-f9b0-4d3f-859c-f0d4a9839e65",
   "triggerCount": 0,
   "shared": [
     {
@@ -933,16 +944,16 @@
   ],
   "tags": [
     {
-      "updatedAt": "2025-10-22T11:44:26.850Z",
-      "createdAt": "2025-10-22T11:44:26.850Z",
-      "id": "TAPLdpwV5vPQJtDW",
-      "name": "API"
-    },
-    {
       "updatedAt": "2025-10-06T13:06:54.644Z",
       "createdAt": "2025-10-06T13:06:54.644Z",
       "id": "DBEf57wUDunVJUG6",
       "name": "campaign update"
+    },
+    {
+      "updatedAt": "2025-10-22T11:44:26.850Z",
+      "createdAt": "2025-10-22T11:44:26.850Z",
+      "id": "TAPLdpwV5vPQJtDW",
+      "name": "API"
     }
   ]
 }
