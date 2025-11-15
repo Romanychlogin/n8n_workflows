@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-08T05:51:03.644Z",
+  "updatedAt": "2025-11-15T18:40:21.017Z",
   "createdAt": "2025-11-05T13:50:52.126Z",
   "id": "MhWRad4Kq8hLA1E7",
   "name": "ADS add to list from report",
@@ -573,7 +573,7 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "update current_list set is_adv_processed=true where list_id=$3",
+        "query": "update current_list set is_adv_processed=true where list_id=$1",
         "options": {
           "queryReplacement": "={{ $('Loop Over Items2').last().json.list_id }}"
         }
@@ -605,11 +605,12 @@
           "conditions": [
             {
               "id": "2695d6f1-5c0e-414c-aa90-049fa9a2b691",
-              "leftValue": "={{$input.first().json.values().length}}",
+              "leftValue": "={{ $input.first().json }}",
               "rightValue": 1,
               "operator": {
-                "type": "number",
-                "operation": "gt"
+                "type": "object",
+                "operation": "empty",
+                "singleValue": true
               }
             }
           ],
@@ -1032,16 +1033,16 @@
     "When Executed by Another Workflow": [
       {
         "json": {
-          "id": "lBAh8kjoXRX0aGUF",
-          "root_execution_id": 179684,
+          "id": "MhWRad4Kq8hLA1E7",
+          "root_execution_id": 228152,
           "company_id": 1,
           "threshhold": "0.79",
-          "import_id": "4"
+          "import_id": 22
         }
       }
     ]
   },
-  "versionId": "80c0e169-9d94-4761-a7f6-a7c3cad98b43",
+  "versionId": "386dca78-60f3-4498-836d-5053aa778fcc",
   "triggerCount": 0,
   "shared": [
     {
