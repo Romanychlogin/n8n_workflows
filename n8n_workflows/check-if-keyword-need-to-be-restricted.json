@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-04T18:01:34.027Z",
+  "updatedAt": "2025-11-15T18:56:18.629Z",
   "createdAt": "2025-10-08T11:54:45.682Z",
   "id": "0JY4BXCUoUM4RzPE",
   "name": "Check if keyword need to be restricted",
@@ -141,47 +141,11 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        -1776,
-        -416
+        -1744,
+        -400
       ],
       "id": "4f582051-3ab2-454a-b889-f38f6f13f6a0",
       "name": "update ads_list",
-      "credentials": {
-        "postgres": {
-          "id": "Hx2VFmUi5WO2K4QX",
-          "name": "Postgres account 2"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "mode": "chooseBranch"
-      },
-      "type": "n8n-nodes-base.merge",
-      "typeVersion": 3.2,
-      "position": [
-        -1600,
-        -352
-      ],
-      "id": "c920aa78-3e8b-40da-8713-a0d8e6ed7974",
-      "name": "Merge"
-    },
-    {
-      "parameters": {
-        "operation": "executeQuery",
-        "query": "UPDATE public.current_ads_list AS a\nSET key_word = CASE\n                 WHEN left(btrim(a.key_word), 1) = '\"' AND right(btrim(a.key_word), 1) = '\"'\n                   THEN a.key_word                       -- уже в кавычках, не меняем\n                 ELSE '\"' || a.key_word || '\"'           -- добавляем кавычки\n               END,\n    update_required = CASE\n                        WHEN left(btrim(a.key_word), 1) = '\"' AND right(btrim(a.key_word), 1) = '\"'\n                          THEN a.update_required          -- уже в кавычках, оставляем как было\n                        ELSE true                         -- кавычки добавили → помечаем к обновлению\n                      END\nWHERE a.company_id = $1\n  AND lower(btrim(a.key_word, ' \"')) IN (\n        SELECT lower(btrim(value, ' \"'))\n        FROM jsonb_array_elements_text($2::jsonb)  AS t(value)\n      );\n",
-        "options": {
-          "queryReplacement": "={{ $('When Executed by Another Workflow').last().json.company_id }},{{JSON.stringify($json.ids)}}"
-        }
-      },
-      "type": "n8n-nodes-base.postgres",
-      "typeVersion": 2.6,
-      "position": [
-        -1776,
-        -240
-      ],
-      "id": "f118f564-a55c-4ba8-8c97-dcdcc04278e1",
-      "name": "update current_ads_list",
       "credentials": {
         "postgres": {
           "id": "Hx2VFmUi5WO2K4QX",
@@ -257,31 +221,9 @@
       "main": [
         [
           {
-            "node": "Merge",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Merge": {
-      "main": [
-        [
-          {
             "node": "Init total counter",
             "type": "main",
             "index": 0
-          }
-        ]
-      ]
-    },
-    "update current_ads_list": {
-      "main": [
-        [
-          {
-            "node": "Merge",
-            "type": "main",
-            "index": 1
           }
         ]
       ]
@@ -291,11 +233,6 @@
         [
           {
             "node": "update ads_list",
-            "type": "main",
-            "index": 0
-          },
-          {
-            "node": "update current_ads_list",
             "type": "main",
             "index": 0
           }
@@ -332,7 +269,7 @@
       }
     ]
   },
-  "versionId": "1d09c6fb-d8ba-4676-9481-cfd96db96708",
+  "versionId": "b918c3b9-7112-4097-8565-f2952f64dfc8",
   "triggerCount": 0,
   "shared": [
     {
