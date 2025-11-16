@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-15T18:56:18.629Z",
+  "updatedAt": "2025-11-16T06:41:23.452Z",
   "createdAt": "2025-10-08T11:54:45.682Z",
   "id": "0JY4BXCUoUM4RzPE",
   "name": "Check if keyword need to be restricted",
@@ -244,7 +244,8 @@
     "executionOrder": "v1",
     "callerPolicy": "workflowsFromSameOwner",
     "availableInMCP": false,
-    "errorWorkflow": "v2Z32ISEUzsFYnZw"
+    "errorWorkflow": "v2Z32ISEUzsFYnZw",
+    "saveDataSuccessExecution": "none"
   },
   "staticData": {
     "global": {
@@ -269,7 +270,7 @@
       }
     ]
   },
-  "versionId": "b918c3b9-7112-4097-8565-f2952f64dfc8",
+  "versionId": "545feb32-5d93-40c0-b2d6-b12c23ab1c44",
   "triggerCount": 0,
   "shared": [
     {
