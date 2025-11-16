@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-05T14:50:45.014Z",
+  "updatedAt": "2025-11-16T15:28:13.661Z",
   "createdAt": "2025-10-20T11:13:50.516Z",
   "id": "xNiuEqQOSNCSLvW5",
   "name": "ADV_campaign_analysis_AI",
@@ -63,7 +63,7 @@
           "mappingMode": "defineBelow",
           "value": {
             "resolution": "={{ $json.resolution}}",
-            "list_id": "={{ $('Loop Over Items2').last().json.phrase_id }}",
+            "list_id": "={{ $('reset first_item1').last().json.phrase_id }}",
             "ai_response_tokens": "=0",
             "ai_calls": "={{ $json.ai_calls }}",
             "embedding_calls": "={{ $json.embedding_calls }}",
@@ -982,7 +982,7 @@
         "operation": "executeQuery",
         "query": "INSERT INTO public.minus_words\n  (minus_word_embedding, minus_word,  company_id, comment, weight)\nVALUES\n  ($1::vector, $2, $3, $4, $5)\nON CONFLICT (company_id, minus_word) DO UPDATE\nSET weight = COALESCE(minus_words.weight, 0) + COALESCE(EXCLUDED.weight, 0)\nRETURNING id;",
         "options": {
-          "queryReplacement": "=[\n  { \"value\": \"={{'[' + $json.data[0].embedding.map(e => Number(e)).join(',') + ']'}}\" },\n  { \"value\": \"={{ $('Loop Over Items1').item.json.minus_word }}\" },\n  { \"value\": \"={{ $('When Executed by Another Workflow').last().json.company_id }}\" },\n  { \"value\": \"={{ 'added from the core update from the report:'+ $('When Executed by Another Workflow').last().json.import_id}}\" },\n  { \"value\": \"={{ $('Loop Over Items').last().json.ItemsbyId[$('Loop Over Items2').last().json.phrase_id].count_views }}\" }\n]"
+          "queryReplacement": "=[\n  { \"value\": \"={{'[' + $json.data[0].embedding.map(e => Number(e)).join(',') + ']'}}\" },\n  { \"value\": \"={{ $('Loop Over Items1').item.json.minus_word }}\" },\n  { \"value\": \"={{ $('When Executed by Another Workflow').last().json.company_id }}\" },\n  { \"value\": \"={{ 'added from the core update from the report:'+ $('When Executed by Another Workflow').last().json.import_id}}\" },\n  { \"value\": \"={{ $('Set prompt').last().json.ItemsbyId[ $('reset first_item').item.json.list_id].count_views }}\" }\n]"
         }
       },
       "type": "n8n-nodes-base.postgres",
@@ -1145,7 +1145,7 @@
         "operation": "executeQuery",
         "query": "INSERT INTO minus_words_origin(\n\tminus_word_id, list_id, origin_weight)\n\tVALUES ($1, $2, $3);",
         "options": {
-          "queryReplacement": "=[{{ $json.id }},{{ $('Loop Over Items2').last().json.phrase_id }},{{ $('Loop Over Items').last().json.ItemsbyId[$('Loop Over Items2').last().json.phrase_id].count_views }}]"
+          "queryReplacement": "=[{{ $json.id }},{{ $('reset first_item').item.json.list_id }},{{ $('Set prompt').last().json.ItemsbyId[ $('reset first_item').item.json.list_id].count_views }}]"
         }
       },
       "type": "n8n-nodes-base.postgres",
@@ -2319,15 +2319,15 @@
       {
         "json": {
           "id": "xNiuEqQOSNCSLvW5",
-          "root_execution_id": 142218,
+          "root_execution_id": 231936,
           "company_id": 1,
           "threshhold": "0.79",
-          "import_id": 7
+          "import_id": 27
         }
       }
     ]
   },
-  "versionId": "9dc3ae77-9df0-4e66-880e-d3e7944a2f6f",
+  "versionId": "7c9da1bc-7d90-4015-ba15-3ec028c2fcce",
   "triggerCount": 0,
   "shared": [
     {
