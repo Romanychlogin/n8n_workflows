@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-14T17:08:44.364Z",
+  "updatedAt": "2025-11-16T07:37:49.543Z",
   "createdAt": "2025-11-05T08:35:44.773Z",
   "id": "ijLeMF0Cr8fE2iv1",
   "name": "core_update_task_runner",
@@ -149,19 +149,6 @@
       ],
       "id": "9efebac5-fc13-4035-8675-02ac09ca128d",
       "name": "Loop Over Items"
-    },
-    {
-      "parameters": {
-        "options": {}
-      },
-      "type": "n8n-nodes-base.set",
-      "typeVersion": 3.4,
-      "position": [
-        -48,
-        128
-      ],
-      "id": "0d628d2c-cfc6-4e1d-9f34-b6a47f702607",
-      "name": "Set variables"
     }
   ],
   "connections": {
@@ -242,21 +229,10 @@
         ],
         [
           {
-            "node": "Set variables",
-            "type": "main",
-            "index": 0
-          },
-          {
             "node": "Merge",
             "type": "main",
             "index": 0
-          }
-        ]
-      ]
-    },
-    "Set variables": {
-      "main": [
-        [
+          },
           {
             "node": "Call 'campaign core update'",
             "type": "main",
@@ -279,7 +255,7 @@
     "templateCredsSetupCompleted": true
   },
   "pinData": {},
-  "versionId": "ee16e038-71b6-4873-8be8-ea7ece2fa4f1",
+  "versionId": "4c5ea98f-37e3-49db-af04-234e30833e4a",
   "triggerCount": 0,
   "shared": [
     {
