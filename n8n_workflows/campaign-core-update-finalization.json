@@ -1,6 +1,6 @@
 {
+  "updatedAt": "2025-11-16T07:08:36.809Z",
   "createdAt": "2025-10-16T07:25:00.123Z",
-  "updatedAt": "2025-10-24T07:40:37.315Z",
   "id": "sLocyhmCeTBxhA88",
   "name": "campaign core update finalization",
   "active": false,
@@ -101,29 +101,6 @@
           "name": "Postgres account 2"
         }
       }
-    },
-    {
-      "parameters": {
-        "operation": "executeQuery",
-        "query": "BEGIN;\n\nINSERT INTO public.ads_list (\n  group_name, key_word, ad_header, ad_text, group_id,\n  ad_url, company_id, service_id, report_id, update_required, campaign_id,list_id\n)\nSELECT\n  group_name, key_word, ad_header, ad_text, group_id,\n  ad_url, company_id, service_id, report_id, false, campaign_id,list_id\nFROM public.current_ads_list\nWHERE company_id = $1 AND report_id = $2;\n\nDELETE FROM public.current_ads_list\nWHERE company_id = $1 AND report_id = $2;\n\nCOMMIT;",
-        "options": {
-          "queryReplacement": "={{ $('When Executed by Another Workflow').item.json.company_id }},{{ $('When Executed by Another Workflow').item.json.import_id }}"
-        }
-      },
-      "type": "n8n-nodes-base.postgres",
-      "typeVersion": 2.6,
-      "position": [
-        -1904,
-        -400
-      ],
-      "id": "ded680fe-ca9d-418d-8c4b-311b0bb104a1",
-      "name": "move processed ads from temp table",
-      "credentials": {
-        "postgres": {
-          "id": "Hx2VFmUi5WO2K4QX",
-          "name": "Postgres account 2"
-        }
-      }
     }
   ],
   "connections": {
@@ -169,17 +146,6 @@
       "main": [
         [
           {
-            "node": "move processed ads from temp table",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "move processed ads from temp table": {
-      "main": [
-        [
-          {
             "node": "Init total counter",
             "type": "main",
             "index": 0
@@ -217,12 +183,12 @@
       }
     ]
   },
-  "versionId": "4fba2a88-2826-4269-afe1-d33a84fa76e1",
+  "versionId": "f31175f0-30c6-4f36-b66b-c0945ae2c415",
   "triggerCount": 0,
   "shared": [
     {
-      "createdAt": "2025-10-16T07:25:00.123Z",
       "updatedAt": "2025-10-16T07:25:00.123Z",
+      "createdAt": "2025-10-16T07:25:00.123Z",
       "role": "workflow:owner",
       "workflowId": "sLocyhmCeTBxhA88",
       "projectId": "spKmbJLU4mvACXIB"
@@ -230,8 +196,8 @@
   ],
   "tags": [
     {
-      "createdAt": "2025-10-08T11:53:55.048Z",
       "updatedAt": "2025-10-08T11:53:55.048Z",
+      "createdAt": "2025-10-08T11:53:55.048Z",
       "id": "bfaXXdoIW5NToPfb",
       "name": "post procesing"
     }
