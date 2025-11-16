@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-16T15:20:33.062Z",
+  "updatedAt": "2025-11-16T15:31:31.692Z",
   "createdAt": "2025-10-20T11:13:37.232Z",
   "id": "b9eGU4g5DID0kq2E",
   "name": "ADV_campaign_analysis_initial",
@@ -347,7 +347,7 @@
           "mappingMode": "defineBelow",
           "value": {
             "resolution": "={{ $json.resolution}}",
-            "list_id": "={{ $('Loop Over Items').last().json.list_id }}",
+            "list_id": "={{ $('Init calls counters').last().json.list_id }}",
             "ai_response_tokens": "={{ $json.total_tokens }}",
             "ai_calls": "={{ $json.ai_calls }}",
             "embedding_calls": "={{ $json.embedding_calls }}",
@@ -1305,13 +1305,13 @@
             {
               "id": "26a3b4cf-c374-4833-8b03-55dcf4df1097",
               "name": "args.company_id",
-              "value": "={{ $('Loop Over Items').last().json.company_id }}",
+              "value": "={{ $('Init calls counters').last().json.company_id }}",
               "type": "number"
             },
             {
               "id": "ec583710-a44c-47de-ba3f-ebbfaa229fb1",
               "name": "args.phrase",
-              "value": "={{ $('Loop Over Items').last().json.key_word }}",
+              "value": "={{ $('Init calls counters').last().json.key_word }}",
               "type": "string"
             },
             {
@@ -1724,13 +1724,13 @@
             {
               "id": "47944833-0d31-4a55-9872-7c281576da2a",
               "name": "key_word",
-              "value": "={{ $('Loop Over Items').last().json.key_word }}",
+              "value": "={{ $('Init calls counters').last().json.key_word }}",
               "type": "string"
             },
             {
               "id": "224cde67-d787-4cce-8db0-4ca43a3c4fbe",
               "name": "company_id",
-              "value": "={{ $('Loop Over Items').last().json.company_id }}",
+              "value": "={{ $('Init calls counters').last().json.company_id }}",
               "type": "string"
             }
           ]
@@ -3284,15 +3284,15 @@
       {
         "json": {
           "id": "b9eGU4g5DID0kq2E",
-          "root_execution_id": 224869,
+          "root_execution_id": 231936,
           "company_id": 1,
           "threshhold": "0.79",
-          "import_id": 21
+          "import_id": 27
         }
       }
     ]
   },
-  "versionId": "ef904fc9-2e20-4696-bbd1-74ec91ad901d",
+  "versionId": "4fd1dfcb-cd79-4aaa-81e7-9a39f82fbfdf",
   "triggerCount": 0,
   "shared": [
     {
