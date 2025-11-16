@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-16T07:08:51.627Z",
+  "updatedAt": "2025-11-16T07:10:29.774Z",
   "createdAt": "2025-09-25T13:33:58.106Z",
   "id": "0J5cvuaSz3IhDS99",
   "name": "campaign core update",
@@ -3448,7 +3448,9 @@
       "name": "ADS generate for yandex"
     },
     {
-      "parameters": {},
+      "parameters": {
+        "inputSource": "passthrough"
+      },
       "type": "n8n-nodes-base.executeWorkflowTrigger",
       "typeVersion": 1.1,
       "position": [
@@ -5121,7 +5123,11 @@
   "settings": {
     "executionOrder": "v1"
   },
-  "staticData": null,
+  "staticData": {
+    "global": {
+      "steps_passed": 0
+    }
+  },
   "meta": {
     "templateCredsSetupCompleted": true
   },
@@ -5137,7 +5143,7 @@
       }
     ]
   },
-  "versionId": "253387e7-8084-4181-b8fe-8a41dfe54588",
+  "versionId": "0daa1e1a-38dd-4550-8771-a21ab2f6047e",
   "triggerCount": 0,
   "shared": [
     {
