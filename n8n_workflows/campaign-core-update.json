@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-16T07:10:29.774Z",
+  "updatedAt": "2025-11-16T09:01:48.115Z",
   "createdAt": "2025-09-25T13:33:58.106Z",
   "id": "0J5cvuaSz3IhDS99",
   "name": "campaign core update",
@@ -5121,7 +5121,10 @@
     }
   },
   "settings": {
-    "executionOrder": "v1"
+    "executionOrder": "v1",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false,
+    "errorWorkflow": "v2Z32ISEUzsFYnZw"
   },
   "staticData": {
     "global": {
@@ -5143,7 +5146,7 @@
       }
     ]
   },
-  "versionId": "0daa1e1a-38dd-4550-8771-a21ab2f6047e",
+  "versionId": "b1eb1914-129a-41f0-bb66-d9c916b96e18",
   "triggerCount": 0,
   "shared": [
     {
