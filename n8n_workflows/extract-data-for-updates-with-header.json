@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-17T09:32:50.700Z",
+  "updatedAt": "2025-11-17T13:14:29.436Z",
   "createdAt": "2025-09-30T17:56:19.098Z",
   "id": "UUlsZU9GOCmdvDHg",
   "name": "extract data for updates with header",
@@ -286,7 +286,7 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "select c.*, ((ri.start_date AT TIME ZONE 'UTC')::date)::text as start_date,((ri.end_date AT TIME ZONE 'UTC')::date)::text as end_date from companies c, report_import ri where c.company_id=c.company_id and c.company_id=$1 and ri.import_id=$2",
+        "query": "select c.*, ((ri.start_date AT TIME ZONE 'UTC')::date)::text as start_date,((ri.end_date AT TIME ZONE 'UTC')::date)::text as end_date, ri.campaign_yandex_id from companies c, report_import ri where c.company_id=c.company_id and c.company_id=$1 and ri.import_id=$2",
         "options": {
           "queryReplacement": "={{ $('When Executed by Another Workflow').item.json.company_id }},{{ $('When Executed by Another Workflow').item.json.import_id }}"
         }
@@ -294,8 +294,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        -240,
-        -48
+        -224,
+        -32
       ],
       "id": "96c57c21-ef6a-4ed7-87d3-2594efbb56f3",
       "name": "select company data",
@@ -506,7 +506,7 @@
     },
     {
       "parameters": {
-        "command": "=node xlsx_apply_template.js \\\n  template.xlsx \\\n  target.xlsx \\\n  output.xlsx \\\n  12 1 1 \\\n  \"{{ $('Get high demand ads').last().json.campaign_id }}\" \\\n  \"{{$('When Executed by Another Workflow').first().json.minus_words}}\" \\\n  true"
+        "command": "=node xlsx_apply_template.js \\\n  template.xlsx \\\n  target.xlsx \\\n  output.xlsx \\\n  12 1 1 \\\n  \"{{ $('select company data').last().json.campaign_yandex_id }}\" \\\n  \"{{$('When Executed by Another Workflow').first().json.minus_words}}\" \\\n  true"
       },
       "type": "n8n-nodes-base.executeCommand",
       "typeVersion": 1,
@@ -1067,7 +1067,7 @@
       }
     ]
   },
-  "versionId": "1b9bf32f-2911-4fd4-aa7c-4f5efb64bb1d",
+  "versionId": "edb2c6b5-f3ca-4814-b267-d1ac10f89780",
   "triggerCount": 0,
   "shared": [
     {
