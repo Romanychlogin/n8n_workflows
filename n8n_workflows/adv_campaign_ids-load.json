@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-11T16:38:53.042Z",
+  "updatedAt": "2025-11-17T09:48:24.391Z",
   "createdAt": "2025-11-10T13:35:24.421Z",
   "id": "Wnsw79fmux6MqiZq",
   "name": "ADV_campaign_IDs load",
@@ -174,7 +174,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        2848,
+        3056,
         -304
       ],
       "id": "7beaa1a1-5f7b-48ec-81c4-2ddae9b33d61",
@@ -271,7 +271,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        3840,
+        4048,
         -96
       ],
       "id": "4648c3cf-eed1-4859-9beb-3470ce284e33",
@@ -288,7 +288,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        4784,
+        4992,
         -128
       ],
       "id": "d8296d69-da8c-4e04-9ffe-459ba0e5e52b",
@@ -328,7 +328,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        4192,
+        4400,
         -80
       ],
       "id": "c492db07-b5df-493b-8229-6959ba687aa2",
@@ -466,7 +466,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        4528,
+        4736,
         -96
       ],
       "id": "5ecfd689-1b3b-45de-9202-4401deeeacaf",
@@ -495,7 +495,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        3456,
+        3664,
         -304
       ],
       "id": "9898c20f-ffd6-4550-9b1e-c5014ec7fc30",
@@ -525,7 +525,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        3024,
+        3232,
         -96
       ],
       "id": "6a738735-2db5-4d16-b68f-30371cf09b7c",
@@ -578,7 +578,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        3232,
+        3440,
         -96
       ],
       "id": "aed603b5-ddfc-460e-80a6-0d28ddf9bdd5",
@@ -595,8 +595,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        3440,
-        -192
+        3792,
+        -176
       ],
       "id": "29d66b92-a44f-4d55-af31-0a4a738754ae",
       "name": "Execute a SQL query1",
@@ -606,6 +606,19 @@
           "name": "Postgres account 2"
         }
       }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nfor (const item of $input.all()) {\n  item.json['Фраза (с минус-словами)']=item.json['Фраза (с минус-словами)'].replace(/\\+/g, '');\n}\n\nreturn $input.all();"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2912,
+        -96
+      ],
+      "id": "31dfb6f2-acd4-47e5-b8c2-cc939a20be12",
+      "name": "Code in JavaScript1"
     }
   ],
   "connections": {
@@ -691,7 +704,7 @@
       "main": [
         [
           {
-            "node": "Execute a SQL query",
+            "node": "Code in JavaScript1",
             "type": "main",
             "index": 0
           }
@@ -875,6 +888,17 @@
           }
         ]
       ]
+    },
+    "Code in JavaScript1": {
+      "main": [
+        [
+          {
+            "node": "Execute a SQL query",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
@@ -907,7 +931,7 @@
       }
     ]
   },
-  "versionId": "9a9b91bc-abb9-479c-aaf4-fc512a8c469c",
+  "versionId": "9e89b3d4-90b6-4212-9690-f4dc8b6abafa",
   "triggerCount": 0,
   "shared": [
     {
