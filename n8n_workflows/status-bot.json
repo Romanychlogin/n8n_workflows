@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-14T08:07:23.346Z",
+  "updatedAt": "2025-11-17T16:35:30.054Z",
   "createdAt": "2025-09-19T15:26:59.886Z",
   "id": "SptAKErjQeOJuESk",
   "name": "status bot",
@@ -345,7 +345,7 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "SELECT\n  c.company_name,\n  bp.business_process_name,\n  bp.n8n_process_name,\n  bt.business_process_state_id,\n  bt.started,\n  bt.steps_total,\n  bt.steps_passed,\n  COALESCE(bt2.started - bt.started, now()- bt.started)                 AS execution_time,\n  now() - bt2.started               AS execution_time_nf,\n  bt2.steps_total                   AS steps_total_nf,\n  bt2.steps_passed                  AS steps_passed_nf,\n  CASE WHEN bt2.business_process_state_id IS NOT NULL THEN 1 ELSE 0 END AS nf_exists\nFROM business_processes_states AS bt\nJOIN business_processes       AS bp ON bt.business_process_id = bp.business_process_id\nJOIN companies                AS c  ON bt.company_id = c.company_id\nLEFT JOIN business_processes_states AS bt2\n       ON bt.n8n_workflow_execution_id = bt2.n8n_workflow_root_execution_id\nWHERE bt.finished IS NULL\n  AND bt.error_happened IS NULL\n  AND now() - bt.started > interval '5 minutes'\nORDER BY c.company_name, bt.started;",
+        "query": "SELECT\n  bt.business_process_state_id,\n  c.company_name,\n  bp.business_process_name,\n  bp.n8n_process_name,\n  bt.business_process_state_id,\n  bt.started,\n  bt.steps_total,\n  bt.steps_passed,\n  COALESCE(bt2.started - bt.started, now()- bt.started)                 AS execution_time,\n  now() - bt2.started               AS execution_time_nf,\n  bt2.steps_total                   AS steps_total_nf,\n  bt2.steps_passed                  AS steps_passed_nf,\n  CASE WHEN bt2.business_process_state_id IS NOT NULL THEN 1 ELSE 0 END AS nf_exists\nFROM business_processes_states AS bt\nJOIN business_processes       AS bp ON bt.business_process_id = bp.business_process_id\nJOIN companies                AS c  ON bt.company_id = c.company_id\nLEFT JOIN business_processes_states AS bt2\n       ON bt.n8n_workflow_execution_id = bt2.n8n_workflow_root_execution_id\nWHERE bt.finished IS NULL\n  AND bt2.finished is null \n  AND bt.error_happened IS NULL\n  AND now() - bt.started > interval '5 minutes'\nORDER BY c.company_name, bt.started;",
         "options": {}
       },
       "type": "n8n-nodes-base.postgres",
@@ -954,7 +954,7 @@
       }
     ]
   },
-  "versionId": "c8243d5b-e439-4652-999e-5b5b09dad305",
+  "versionId": "7e565b64-68cf-4851-a18e-b4fede8cd87a",
   "triggerCount": 3,
   "shared": [
     {
