@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-16T06:41:23.452Z",
+  "updatedAt": "2025-11-17T16:25:07.340Z",
   "createdAt": "2025-10-08T11:54:45.682Z",
   "id": "0JY4BXCUoUM4RzPE",
   "name": "Check if keyword need to be restricted",
@@ -110,7 +110,7 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "WITH grouped AS (\n  SELECT\n    rtrim(NULLIF(trim(split_part(used_keyword, ' -', 1)), '')) as used_keyword, \n\tSUM(count_convetions) as count_convetions,\n    SUM(count_views) AS views_total,\n    SUM(\n      CASE\n        WHEN resolution NOT IN ('same key', 'to add') OR resolution IS NULL\n          THEN count_views\n        ELSE 0\n      END\n    ) AS views_other\n  FROM current_list\n  WHERE company_id = $1\n  and used_keyword <> '''---autotargeting'\n  GROUP BY used_keyword\n)\nSELECT\n  used_keyword,--ads_header,\n  views_total,\n  views_other,\n  ROUND(views_other::numeric / NULLIF(views_total,0), 4) AS share_other\nFROM grouped\nWHERE views_total > 20\n  AND views_other::numeric / NULLIF(views_total, 0) >= 0.5\n  AND used_keyword NOT LIKE '\"%'\n  AND count_convetions =0\n  \nORDER BY share_other DESC, views_total DESC;",
+        "query": "WITH grouped AS (\n  SELECT\n    rtrim(NULLIF(trim(split_part(used_keyword, ' -', 1)), '')) as used_keyword, \n\tSUM(count_convetions) as count_convetions,\n    SUM(count_views) AS views_total,\n    SUM(\n      CASE\n        WHEN resolution NOT IN ('same key', 'to add') OR resolution IS NULL\n          THEN count_views\n        ELSE 0\n      END\n    ) AS views_other\n  FROM current_list\n  WHERE company_id = $1\n  and used_keyword <> '''---autotargeting'\n  GROUP BY used_keyword\n)\nSELECT\n  used_keyword,--ads_header,\n  views_total,\n  views_other,\n  ROUND(views_other::numeric / NULLIF(views_total,0), 4) AS share_other\nFROM grouped\nWHERE views_total > 50\n  AND views_other::numeric / NULLIF(views_total, 0) >= 0.8\n  AND used_keyword NOT LIKE '\"%'\n  AND count_convetions =0\n  \nORDER BY share_other DESC, views_total DESC;",
         "options": {
           "queryReplacement": "={{ $('When Executed by Another Workflow').item.json.company_id }}"
         }
@@ -270,7 +270,7 @@
       }
     ]
   },
-  "versionId": "545feb32-5d93-40c0-b2d6-b12c23ab1c44",
+  "versionId": "43b9262e-3fe5-4efe-a8d4-7ccc479d515c",
   "triggerCount": 0,
   "shared": [
     {
