@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-16T15:28:13.661Z",
+  "updatedAt": "2025-11-17T13:10:18.535Z",
   "createdAt": "2025-10-20T11:13:50.516Z",
   "id": "xNiuEqQOSNCSLvW5",
   "name": "ADV_campaign_analysis_AI",
@@ -1506,7 +1506,7 @@
           "conditions": [
             {
               "id": "0b8b9cb2-368a-4ef4-b4b4-560b030f71f4",
-              "leftValue": "={{ $json.non_matches }}",
+              "leftValue": "={{ $json.hits }}",
               "rightValue": "",
               "operator": {
                 "type": "array",
@@ -1527,54 +1527,6 @@
       ],
       "id": "8066472e-0f1e-42d4-96d4-35ea05aa22dc",
       "name": "If find own array is empty"
-    },
-    {
-      "parameters": {
-        "assignments": {
-          "assignments": [
-            {
-              "id": "2ecfdad0-84b8-42cc-9fcd-bef554d40bc7",
-              "name": "is_own_brand",
-              "value": true,
-              "type": "boolean"
-            }
-          ]
-        },
-        "includeOtherFields": true,
-        "options": {}
-      },
-      "type": "n8n-nodes-base.set",
-      "typeVersion": 3.4,
-      "position": [
-        5568,
-        -1184
-      ],
-      "id": "f597668f-5a75-4d3a-86fe-ea9207d77ff6",
-      "name": "Edit Fields"
-    },
-    {
-      "parameters": {
-        "assignments": {
-          "assignments": [
-            {
-              "id": "2ecfdad0-84b8-42cc-9fcd-bef554d40bc7",
-              "name": "is_own_brand",
-              "value": false,
-              "type": "boolean"
-            }
-          ]
-        },
-        "includeOtherFields": true,
-        "options": {}
-      },
-      "type": "n8n-nodes-base.set",
-      "typeVersion": 3.4,
-      "position": [
-        5568,
-        -992
-      ],
-      "id": "251b0c40-9676-4218-8c7d-04459a799f7c",
-      "name": "Edit Fields1"
     },
     {
       "parameters": {
@@ -1611,6 +1563,54 @@
       ],
       "id": "051a4c27-b912-4aa2-b426-0c4558f9f846",
       "name": "set input"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "2ecfdad0-84b8-42cc-9fcd-bef554d40bc7",
+              "name": "is_own_brand",
+              "value": true,
+              "type": "boolean"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        5568,
+        -992
+      ],
+      "id": "251b0c40-9676-4218-8c7d-04459a799f7c",
+      "name": "Set is_own_brand true"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "2ecfdad0-84b8-42cc-9fcd-bef554d40bc7",
+              "name": "is_own_brand",
+              "value": false,
+              "type": "boolean"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        5568,
+        -1184
+      ],
+      "id": "f597668f-5a75-4d3a-86fe-ea9207d77ff6",
+      "name": "Set is_own_brand false"
     }
   ],
   "connections": {
@@ -2237,14 +2237,14 @@
       "main": [
         [
           {
-            "node": "Edit Fields",
+            "node": "Set is_own_brand false",
             "type": "main",
             "index": 0
           }
         ],
         [
           {
-            "node": "Edit Fields1",
+            "node": "Set is_own_brand true",
             "type": "main",
             "index": 0
           }
@@ -2262,7 +2262,7 @@
         ]
       ]
     },
-    "Edit Fields": {
+    "Set is_own_brand true": {
       "main": [
         [
           {
@@ -2273,7 +2273,7 @@
         ]
       ]
     },
-    "Edit Fields1": {
+    "Set is_own_brand false": {
       "main": [
         [
           {
@@ -2327,7 +2327,7 @@
       }
     ]
   },
-  "versionId": "7c9da1bc-7d90-4015-ba15-3ec028c2fcce",
+  "versionId": "187815e1-2462-4eeb-ad14-4d82b83e7de6",
   "triggerCount": 0,
   "shared": [
     {
