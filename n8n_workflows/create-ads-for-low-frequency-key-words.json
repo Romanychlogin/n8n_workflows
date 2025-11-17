@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-07T16:29:33.492Z",
+  "updatedAt": "2025-11-17T13:32:18.260Z",
   "createdAt": "2025-11-06T13:56:02.796Z",
   "id": "Gi9vc9YfTegfpMjd",
   "name": "Create ads for low frequency key words",
@@ -494,8 +494,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        1056,
-        -768
+        1712,
+        -976
       ],
       "id": "9a135ac1-a5e8-4c5f-a298-c47977d7b6ef",
       "name": "Mark_workflow_completed",
@@ -847,6 +847,111 @@
       ],
       "id": "eea6dd8b-1549-4edb-bc72-1138869668fb",
       "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "select ag.* from ads_groups ag where company_id=$1 and is_own_brand=true and not exists \n(select 1 from ads_for_groups ads where ag.ads_group_id=ads.ads_group_id) \n",
+        "options": {
+          "queryReplacement": "={{ $('When Executed by Another Workflow').item.json.company_id }}"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        800,
+        -720
+      ],
+      "id": "dc75e21d-08af-4c11-81fb-d983b6a96b54",
+      "name": "get brand groups without ads",
+      "alwaysOutputData": true,
+      "credentials": {
+        "postgres": {
+          "id": "Hx2VFmUi5WO2K4QX",
+          "name": "Postgres account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "b13ec6fc-ce2d-48a1-a4c7-6ded529707ec",
+              "leftValue": "={{$input.first().json}}",
+              "rightValue": "",
+              "operator": {
+                "type": "object",
+                "operation": "empty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        992,
+        -720
+      ],
+      "id": "033ffe1f-15e3-4290-ac5d-2b035d4c0b00",
+      "name": "If empty2"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT *\nFROM ads_list\nWHERE is_own_brand = true\n  AND company_id=$1\nORDER BY count_clics DESC\nLIMIT 1;",
+        "options": {
+          "queryReplacement": "={{ $('When Executed by Another Workflow').item.json.company_id }}"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        1280,
+        -688
+      ],
+      "id": "7928767f-f59e-4796-bfd0-fcd986c44409",
+      "name": "Get AD example",
+      "alwaysOutputData": true,
+      "credentials": {
+        "postgres": {
+          "id": "Hx2VFmUi5WO2K4QX",
+          "name": "Postgres account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO public.ads_for_groups(\n\t ads_group_id, ad_header, ad_text, ad_url, is_active)\n\tVALUES ($1, $2, $3, $4, true);",
+        "options": {
+          "queryReplacement": "={{ [\n  $('get brand groups without ads').item.json.ads_group_id,\n  $json.ad_header,\n  $json.ad_text,\n  $json.ad_url\n]}}"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        1520,
+        -688
+      ],
+      "id": "c4a70d50-3b1f-4d95-bdfa-6368e246cda8",
+      "name": "update brand ads",
+      "credentials": {
+        "postgres": {
+          "id": "Hx2VFmUi5WO2K4QX",
+          "name": "Postgres account 2"
+        }
+      }
     }
   ],
   "connections": {
@@ -1159,7 +1264,7 @@
       "main": [
         [
           {
-            "node": "Mark_workflow_completed",
+            "node": "get brand groups without ads",
             "type": "main",
             "index": 0
           }
@@ -1312,7 +1417,7 @@
       "main": [
         [
           {
-            "node": "Mark_workflow_completed",
+            "node": "get brand groups without ads",
             "type": "main",
             "index": 0
           }
@@ -1325,6 +1430,57 @@
           },
           {
             "node": "Merge2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "get brand groups without ads": {
+      "main": [
+        [
+          {
+            "node": "If empty2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If empty2": {
+      "main": [
+        [
+          {
+            "node": "Mark_workflow_completed",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Get AD example",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get AD example": {
+      "main": [
+        [
+          {
+            "node": "update brand ads",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "update brand ads": {
+      "main": [
+        [
+          {
+            "node": "Mark_workflow_completed",
             "type": "main",
             "index": 0
           }
@@ -1529,7 +1685,7 @@
       }
     ]
   },
-  "versionId": "529d6e16-3e37-49c1-91d8-70abef332617",
+  "versionId": "c1fd4c84-38be-4287-8f4f-5bd0353659f4",
   "triggerCount": 0,
   "shared": [
     {
