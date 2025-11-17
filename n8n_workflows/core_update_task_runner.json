@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-16T07:37:49.543Z",
+  "updatedAt": "2025-11-17T17:06:54.151Z",
   "createdAt": "2025-11-05T08:35:44.773Z",
   "id": "ijLeMF0Cr8fE2iv1",
   "name": "core_update_task_runner",
@@ -28,7 +28,7 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "select ac.*, c.company_name, (select max(ri.end_date) from report_import ri where ri.company_id=c.company_id and ri.campaign_yandex_id=ac.campaign_yandex_id) max_imported from active_company_adv_campaigns ac, companies c where ac.company_id=c.company_id AND ac.is_active=true order by ac.company_id\n",
+        "query": "select ac.*, c.company_name, (select max(ri.end_date) from report_import ri where ri.company_id=c.company_id and ri.campaign_yandex_id=ac.campaign_yandex_id and ri.processed_date IS not null) max_imported from active_company_adv_campaigns ac, companies c where ac.company_id=c.company_id AND ac.is_active=true  order by ac.company_id\n",
         "options": {}
       },
       "type": "n8n-nodes-base.postgres",
@@ -255,7 +255,7 @@
     "templateCredsSetupCompleted": true
   },
   "pinData": {},
-  "versionId": "4c5ea98f-37e3-49db-af04-234e30833e4a",
+  "versionId": "92721ac5-609a-472d-af07-b72bdb59be06",
   "triggerCount": 0,
   "shared": [
     {
