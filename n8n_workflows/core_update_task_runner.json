@@ -1,9 +1,9 @@
 {
-  "updatedAt": "2025-11-17T17:06:54.151Z",
+  "updatedAt": "2025-11-17T19:29:58.955Z",
   "createdAt": "2025-11-05T08:35:44.773Z",
   "id": "ijLeMF0Cr8fE2iv1",
   "name": "core_update_task_runner",
-  "active": false,
+  "active": true,
   "isArchived": false,
   "nodes": [
     {
@@ -250,13 +250,17 @@
   "settings": {
     "executionOrder": "v1"
   },
-  "staticData": null,
+  "staticData": {
+    "node:Schedule Trigger": {
+      "recurrenceRules": []
+    }
+  },
   "meta": {
     "templateCredsSetupCompleted": true
   },
   "pinData": {},
   "versionId": "92721ac5-609a-472d-af07-b72bdb59be06",
-  "triggerCount": 0,
+  "triggerCount": 1,
   "shared": [
     {
       "updatedAt": "2025-11-05T08:35:44.773Z",
