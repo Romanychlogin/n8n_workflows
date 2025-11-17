@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-15T18:44:11.950Z",
+  "updatedAt": "2025-11-17T17:04:15.913Z",
   "createdAt": "2025-11-05T16:49:07.256Z",
   "id": "GE66xiztgKP0D3Za",
   "name": "ADS generate for yandex",
@@ -675,6 +675,7 @@
       "id": "cd7e03d5-4980-4ff1-8676-85ab3c165db2",
       "name": "get brand low demand to add",
       "executeOnce": true,
+      "alwaysOutputData": true,
       "credentials": {
         "postgres": {
           "id": "Hx2VFmUi5WO2K4QX",
@@ -1183,15 +1184,15 @@
       {
         "json": {
           "id": "GE66xiztgKP0D3Za",
-          "root_execution_id": 228449,
+          "root_execution_id": 236238,
           "company_id": 1,
           "threshhold": "0.79",
-          "import_id": 22
+          "import_id": 28
         }
       }
     ]
   },
-  "versionId": "f4294434-ccc6-45b4-9e88-04682c6a5e0b",
+  "versionId": "f1eb1acb-d6e0-4cce-bdb8-6c71ef49ed1f",
   "triggerCount": 0,
   "shared": [
     {
