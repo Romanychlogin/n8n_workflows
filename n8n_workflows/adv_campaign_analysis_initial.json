@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-17T13:08:52.227Z",
+  "updatedAt": "2025-11-17T13:10:54.106Z",
   "createdAt": "2025-10-20T11:13:37.232Z",
   "id": "b9eGU4g5DID0kq2E",
   "name": "ADV_campaign_analysis_initial",
@@ -1255,7 +1255,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        7152,
+        7184,
         -800
       ],
       "id": "0b64609f-741a-4e59-bc1e-e9e218abba39",
@@ -2316,54 +2316,6 @@
         "assignments": {
           "assignments": [
             {
-              "id": "2ecfdad0-84b8-42cc-9fcd-bef554d40bc7",
-              "name": "is_own_brand",
-              "value": false,
-              "type": "boolean"
-            }
-          ]
-        },
-        "includeOtherFields": true,
-        "options": {}
-      },
-      "type": "n8n-nodes-base.set",
-      "typeVersion": 3.4,
-      "position": [
-        6960,
-        -928
-      ],
-      "id": "6bb80a75-c1de-4d38-bf04-989cae060f1c",
-      "name": "Edit Fields"
-    },
-    {
-      "parameters": {
-        "assignments": {
-          "assignments": [
-            {
-              "id": "2ecfdad0-84b8-42cc-9fcd-bef554d40bc7",
-              "name": "is_own_brand",
-              "value": true,
-              "type": "boolean"
-            }
-          ]
-        },
-        "includeOtherFields": true,
-        "options": {}
-      },
-      "type": "n8n-nodes-base.set",
-      "typeVersion": 3.4,
-      "position": [
-        6960,
-        -736
-      ],
-      "id": "e85b1409-04ad-4518-b891-1b2ba53941bd",
-      "name": "Edit Fields1"
-    },
-    {
-      "parameters": {
-        "assignments": {
-          "assignments": [
-            {
               "id": "47944833-0d31-4a55-9872-7c281576da2a",
               "name": "key_word",
               "value": "={{ $('Loop Over Items').last().json.key_word }}",
@@ -2394,6 +2346,54 @@
       ],
       "id": "3a54eeaf-4704-4c23-9486-5caf29102b01",
       "name": "set input2"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "2ecfdad0-84b8-42cc-9fcd-bef554d40bc7",
+              "name": "is_own_brand",
+              "value": false,
+              "type": "boolean"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        6960,
+        -928
+      ],
+      "id": "6bb80a75-c1de-4d38-bf04-989cae060f1c",
+      "name": "Set is_own_brand false"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "2ecfdad0-84b8-42cc-9fcd-bef554d40bc7",
+              "name": "is_own_brand",
+              "value": true,
+              "type": "boolean"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        6960,
+        -736
+      ],
+      "id": "e85b1409-04ad-4518-b891-1b2ba53941bd",
+      "name": "Set is_own_brand true"
     }
   ],
   "connections": {
@@ -3202,36 +3202,14 @@
       "main": [
         [
           {
-            "node": "Edit Fields",
+            "node": "Set is_own_brand false",
             "type": "main",
             "index": 0
           }
         ],
         [
           {
-            "node": "Edit Fields1",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Edit Fields": {
-      "main": [
-        [
-          {
-            "node": "mark to add",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Edit Fields1": {
-      "main": [
-        [
-          {
-            "node": "mark to add",
+            "node": "Set is_own_brand true",
             "type": "main",
             "index": 0
           }
@@ -3243,6 +3221,28 @@
         [
           {
             "node": "Check VS own company name",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set is_own_brand false": {
+      "main": [
+        [
+          {
+            "node": "mark to add",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set is_own_brand true": {
+      "main": [
+        [
+          {
+            "node": "mark to add",
             "type": "main",
             "index": 0
           }
@@ -3292,7 +3292,7 @@
       }
     ]
   },
-  "versionId": "321aab8e-55b2-4f0b-b158-5be87f178e9b",
+  "versionId": "ea8fa213-cc79-4063-8450-11bf122b56c7",
   "triggerCount": 0,
   "shared": [
     {
