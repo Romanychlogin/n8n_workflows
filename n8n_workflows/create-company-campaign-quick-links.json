@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-14T14:18:34.869Z",
+  "updatedAt": "2025-11-17T17:00:00.487Z",
   "createdAt": "2025-11-13T06:08:40.998Z",
   "id": "eeZTmctM9IvDF2bH",
   "name": "Create company campaign quick links",
@@ -288,7 +288,7 @@
       "type": "n8n-nodes-base.merge",
       "typeVersion": 3.2,
       "position": [
-        1184,
+        1280,
         -32
       ],
       "id": "9cd7ff7a-9efb-45ab-8cee-75531905abcb",
@@ -486,7 +486,7 @@
     },
     {
       "parameters": {
-        "jsCode": "const workflowData = $getWorkflowStaticData('global');\nlet my_prompt = workflowData.my_prompt_text.data;\n\nfor (const item of $input.all()) {\n  item.json.my_prompt = my_prompt.replaceAll(\"{{company_description}}\", workflowData.company_description).replaceAll(\"{{key_words_ad_headers}}\", JSON.stringify($json.Items));\n}\n\nreturn $input.all();"
+        "jsCode": "const workflowData = $getWorkflowStaticData('global');\nlet my_prompt = workflowData.my_prompt_text.data;\n\nfor (const item of $input.all()) {\n  item.json.my_prompt = my_prompt.replaceAll(\"{{company_description}}\", workflowData.company_description).replaceAll(\"{{ad_headers}}\", JSON.stringify($json.Items));\n}\n\nreturn $input.all();"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -539,7 +539,7 @@
     },
     {
       "parameters": {
-        "jsCode": "const workflowData = $getWorkflowStaticData('global');\nlet my_prompt = workflowData.my_prompt_url.data;\n\nfor (const item of $input.all()) {\n  item.json.my_prompt = my_prompt.replaceAll(\"{{company_description}}\", workflowData.company_description_with_url).replaceAll(\"{{key_word_header_ad_text}}\", JSON.stringify($json.Items));\n}\n\nreturn $input.all();"
+        "jsCode": "const workflowData = $getWorkflowStaticData('global');\nlet my_prompt = workflowData.my_prompt_url.data;\n\nfor (const item of $input.all()) {\n  item.json.my_prompt = my_prompt.replaceAll(\"{{company_description}}\", workflowData.company_description_with_url).replaceAll(\"{{header_ad_text}}\", JSON.stringify($json.Items));\n}\n\nreturn $input.all();"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -549,32 +549,6 @@
       ],
       "id": "4052a6b9-a5be-49b1-89ab-a40d2d8ef0b7",
       "name": "Set prompt2"
-    },
-    {
-      "parameters": {
-        "jsCode": "// 1) Читаем строку JSON из указанного поля\nlet raw = $input.first().json?.output?.[1]?.content?.[0]?.text;\n\n// Минимальная чистка и парсинг\nfunction stripCodeFences(s) {\n  if (typeof s !== 'string') return s;\n  let t = s.trim();\n  if (t.startsWith('```')) t = t.replace(/^```[a-zA-Z]*\\n?/, '').replace(/```$/, '').trim();\n  return t;\n}\nfunction parseJson(s) {\n  const t = stripCodeFences(String(s ?? ''));\n  try { return JSON.parse(t); } catch { return null; }\n}\n\nconst obj = parseJson(raw);\nif (!obj || !Array.isArray(obj.headers)) {\n  return [{ json: { Items: [], ItemsbyId: {} } }];\n}\n\n// 2) Прямой доступ к словарю ItemsbyId из указанной ноды\nconst sourceItemsById = $('Loop Over Items').last().json?.ItemsbyId ?? {};\n\n// 3) Собираем массив элементов { phrase, header, id }\nconst Items = [];\nfor (const h of obj.headers) {\n  if (!h || typeof h !== 'object') continue;\n  const id = String(h.id ?? '');\n  const header = String(h.header ?? '');\n  if (!id || !header) continue;\n\n  const phrase = String(sourceItemsById[id]?.phrase ?? '');\n  Items.push({ phrase, header, id });\n}\n\n// 4) Строим словарь по id -> объект\nconst ItemsbyId = Object.fromEntries(\n  Items.map(it => [it.id, it])\n);\n\n// 5) Возвращаем один элемент с полями Items и ItemsbyId\nreturn [{\n  json: {\n    Items,\n    ItemsbyId\n  }\n}];"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        2128,
-        -32
-      ],
-      "id": "9979798c-6f2d-43d8-ad36-d2809f769763",
-      "name": "keywords and headers"
-    },
-    {
-      "parameters": {
-        "jsCode": "// 1) Читаем строку JSON из указанного поля\nlet raw = $input.first().json?.output?.[1]?.content?.[0]?.text;\n\n// Минимальная чистка и парсинг\nfunction stripCodeFences(s) {\n  if (typeof s !== 'string') return s;\n  let t = s.trim();\n  if (t.startsWith('```')) t = t.replace(/^```[a-zA-Z]*\\n?/, '').replace(/```$/, '').trim();\n  return t;\n}\nfunction parseJson(s) {\n  const t = stripCodeFences(String(s ?? ''));\n  try { return JSON.parse(t); } catch { return null; }\n}\n\nconst obj = parseJson(raw);\nif (!obj || !Array.isArray(obj.ad_texts)) {\n  return [{ json: { Items: [], ItemsbyId: {}, note: 'ad_texts not found' } }];\n}\n\n// 2) Прямой доступ к словарю ItemsbyId из указанной ноды\nconst itemsById = $('keywords and headers').last().json?.ItemsbyId ?? {};\n\n// 3) Собираем выход\nconst Items = [];\nfor (const h of obj.ad_texts) {\n  if (!h || typeof h !== 'object') continue;\n\n  const id = String(h.id ?? '');\n  const ad_text = String(h.ad_text ?? '');\n  if (!id || !ad_text) continue;\n\n  const src = itemsById[id] ?? {};\n  const phrase = src?.phrase != null ? String(src.phrase) : '';\n  const header = src?.header != null ? String(src.header) : '';\n\n  Items.push({ phrase, header, ad_text, id });\n}\n\n// 4) Индекс по id -> объект\nconst ItemsbyId = Object.fromEntries(Items.map(o => [o.id, o]));\n\n// 5) Возврат\nreturn [{\n  json: {\n    Items,\n    ItemsbyId\n  }\n}];"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        3056,
-        -32
-      ],
-      "id": "55fc3f7e-564c-455b-a824-337f6a498a59",
-      "name": "keywords headers and texts"
     },
     {
       "parameters": {
@@ -592,7 +566,7 @@
           "cachedResultName": "n8n_prompts",
           "cachedResultUrl": "https://github.com/Romanychlogin/n8n_prompts"
         },
-        "filePath": "ad_creation_header.txt",
+        "filePath": "ad_creation_header_ql.txt",
         "additionalParameters": {}
       },
       "type": "n8n-nodes-base.github",
@@ -654,7 +628,7 @@
           "cachedResultName": "n8n_prompts",
           "cachedResultUrl": "https://github.com/Romanychlogin/n8n_prompts"
         },
-        "filePath": "ad_creation_text.txt",
+        "filePath": "ad_creation_text_ql.txt",
         "additionalParameters": {}
       },
       "type": "n8n-nodes-base.github",
@@ -716,7 +690,7 @@
           "cachedResultName": "n8n_prompts",
           "cachedResultUrl": "https://github.com/Romanychlogin/n8n_prompts"
         },
-        "filePath": "ad_creation_url.txt",
+        "filePath": "ad_creation_url_ql.txt",
         "additionalParameters": {}
       },
       "type": "n8n-nodes-base.github",
@@ -761,6 +735,45 @@
       ],
       "id": "efad9809-fe7a-4eae-bb2d-61c61a84de99",
       "name": "Code2"
+    },
+    {
+      "parameters": {
+        "jsCode": "// 1) Читаем строку JSON из указанного поля\nlet raw = $input.first().json?.output?.[1]?.content?.[0]?.text;\n\n// Минимальная чистка и парсинг\nfunction stripCodeFences(s) {\n  if (typeof s !== 'string') return s;\n  let t = s.trim();\n  if (t.startsWith('```')) t = t.replace(/^```[a-zA-Z]*\\n?/, '').replace(/```$/, '').trim();\n  return t;\n}\nfunction parseJson(s) {\n  const t = stripCodeFences(String(s ?? ''));\n  try { return JSON.parse(t); } catch { return null; }\n}\n\nconst obj = parseJson(raw);\nif (!obj || !Array.isArray(obj.headers)) {\n  return [{ json: { Items: [], ItemsbyId: {} } }];\n}\n\n\n// 3) Собираем массив элементов { phrase, header, id }\nlet index=0;\nconst Items = [];\nfor (const h of obj.headers) {\n  if (!h || typeof h !== 'object') continue;\n  const header = String(h.header ?? '');\n  if ( !header) continue;\n  Items.push({header,id:index});\n  index++;\n}\nconst ItemsbyId = Object.fromEntries(\n  Items.map(it => [it.id, it])\n);\n\n// 5) Возвращаем один элемент с полями Items и ItemsbyId\nreturn [{\n  json: {\n    Items,ItemsbyId\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2128,
+        -32
+      ],
+      "id": "9979798c-6f2d-43d8-ad36-d2809f769763",
+      "name": "headers"
+    },
+    {
+      "parameters": {
+        "jsCode": "// 1) Читаем строку JSON из указанного поля\nlet raw = $input.first().json?.output?.[1]?.content?.[0]?.text;\n\n// Минимальная чистка и парсинг\nfunction stripCodeFences(s) {\n  if (typeof s !== 'string') return s;\n  let t = s.trim();\n  if (t.startsWith('```')) t = t.replace(/^```[a-zA-Z]*\\n?/, '').replace(/```$/, '').trim();\n  return t;\n}\nfunction parseJson(s) {\n  const t = stripCodeFences(String(s ?? ''));\n  try { return JSON.parse(t); } catch { return null; }\n}\n\nconst obj = parseJson(raw);\nif (!obj || !Array.isArray(obj.ad_texts)) {\n  return [{ json: { Items: [], ItemsbyId: {}, note: 'ad_texts not found' } }];\n}\n\n// 2) Прямой доступ к словарю ItemsbyId из указанной ноды\nconst itemsById = $('headers').last().json?.ItemsbyId ?? {};\n\n// 3) Собираем выход\nconst Items = [];\nfor (const h of obj.ad_texts) {\n  if (!h || typeof h !== 'object') continue;\n\n  const id = String(h.id ?? '');\n  const ad_text = String(h.ad_text ?? '');\n  if (!id || !ad_text) continue;\n\n  const src = itemsById[id] ?? {};\n  \n  const header = src?.header != null ? String(src.header) : '';\n\n  Items.push({ header, ad_text, id });\n}\n\n// 4) Индекс по id -> объект\nconst ItemsbyId = Object.fromEntries(Items.map(o => [o.id, o]));\n\n// 5) Возврат\nreturn [{\n  json: {\n    Items,\n    ItemsbyId\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3056,
+        -32
+      ],
+      "id": "55fc3f7e-564c-455b-a824-337f6a498a59",
+      "name": "headers and texts"
+    },
+    {
+      "parameters": {
+        "jsCode": "// 1) Берём строку JSON из указанного поля\nlet raw = $input.first().json?.output?.[1]?.content?.[0]?.text;\n\n// Удаляем ```...``` и парсим JSON\nfunction stripCodeFences(s) {\n  if (typeof s !== 'string') return s;\n  let t = s.trim();\n  if (t.startsWith('```')) t = t.replace(/^```[a-zA-Z]*\\n?/, '').replace(/```$/, '').trim();\n  return t;\n}\nfunction safeParseJSON(x) {\n  if (x == null) return null;\n  if (typeof x === 'object') return x;\n  const s = stripCodeFences(String(x));\n  try { return JSON.parse(s); } catch {\n    const m = s.match(/{[\\s\\S]*}/);\n    if (m) { try { return JSON.parse(m[0]); } catch {} }\n    return null;\n  }\n}\n\nconst obj = safeParseJSON(raw);\n\n// === ГЛАВНОЕ ИЗМЕНЕНИЕ: используем url_strings вместо phrases ===\nif (!obj || !Array.isArray(obj.url_strings)) {\n  return [{ json: { note: 'url_strings not found', Items: [], count: 0 } }];\n}\n\n// 2) Источник мапы по id из другой ноды (если есть)\nconst itemsById = $('headers and texts').last().json?.ItemsbyId ?? {};\nconst utm_string='?utm_source=yandex&utm_medium=cpc&utm_campaign={campaign_id}&utm_content={ad_id}&utm_term={keyword}.{device_type}.{region_name}&block={position_type}.{position}.{source}';\n// 3) Формируем выходные элементы\nconst out = [];\nfor (const it of obj.url_strings) {\n  if (!it || typeof it !== 'object') continue;\n\n  let ad_url  = typeof it.url_string === 'string' && it.url_string.trim() ? it.url_string.trim() : null;\n  const ad_id = typeof it.id === 'string' && it.id.trim() ? it.id.trim() : null;\n  ad_url = ad_url + utm_string;\n  if (!ad_url || !ad_id) continue;\n\n  const src = itemsById[ad_id] ?? {};\n  const ad_header = src?.header ?? '';\n  const ad_text   = src?.ad_text ?? '';\n  \n\n  out.push({\n    json: { ad_id, ad_url, ad_header, ad_text }\n  });\n}\n\nreturn out;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        4208,
+        32
+      ],
+      "id": "3ba85a09-7f36-4b0e-865a-52503ff694ba",
+      "name": "Separate output items"
     }
   ],
   "connections": {
@@ -902,7 +915,7 @@
       "main": [
         [
           {
-            "node": "Mark_workflow_passed_steps",
+            "node": "Separate output items",
             "type": "main",
             "index": 0
           }
@@ -957,7 +970,7 @@
       "main": [
         [
           {
-            "node": "keywords and headers",
+            "node": "headers",
             "type": "main",
             "index": 0
           }
@@ -990,7 +1003,7 @@
       "main": [
         [
           {
-            "node": "keywords headers and texts",
+            "node": "headers and texts",
             "type": "main",
             "index": 0
           }
@@ -1024,28 +1037,6 @@
         [
           {
             "node": "Set API JSON2",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "keywords and headers": {
-      "main": [
-        [
-          {
-            "node": "Set prompt1",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "keywords headers and texts": {
-      "main": [
-        [
-          {
-            "node": "Set prompt2",
             "type": "main",
             "index": 0
           }
@@ -1161,6 +1152,39 @@
           }
         ]
       ]
+    },
+    "headers": {
+      "main": [
+        [
+          {
+            "node": "Set prompt1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "headers and texts": {
+      "main": [
+        [
+          {
+            "node": "Set prompt2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Separate output items": {
+      "main": [
+        [
+          {
+            "node": "Mark_workflow_passed_steps",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
@@ -1188,7 +1212,7 @@
       }
     ]
   },
-  "versionId": "38994170-708e-4697-a0c8-be15f8a89883",
+  "versionId": "2cceda7e-07eb-40d0-92e3-0217ea157b30",
   "triggerCount": 0,
   "shared": [
     {
