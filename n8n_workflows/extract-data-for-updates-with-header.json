@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-17T13:14:29.436Z",
+  "updatedAt": "2025-11-17T15:18:28.940Z",
   "createdAt": "2025-09-30T17:56:19.098Z",
   "id": "UUlsZU9GOCmdvDHg",
   "name": "extract data for updates with header",
@@ -261,13 +261,13 @@
             {
               "id": "a747f119-5c77-4a74-9553-2bf36105b7f9",
               "name": "minus_words",
-              "value": "",
+              "value": "={{ $json.group_minus_words}}",
               "type": "string"
             },
             {
               "id": "13ebe78e-0360-4c8a-b98c-c9d8875ab5de",
               "name": "age_limit",
-              "value": "6",
+              "value": "",
               "type": "string"
             }
           ]
@@ -604,7 +604,7 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "SELECT '-' as add_adv,ad.*, cs.service_bid,regexp_replace(\n    cs.service_name,\n    '[^a-zA-Zа-яА-ЯёЁ ]',\n    '',\n    'g'\n) AS cleaned_service_name\nFROM ads_list ad, company_services cs \nWHERE cs.service_id=ad.service_id and  ad.is_hi_demand=true and ad.company_id = $1 AND ad.to_upload_ad=true\n  order by service_name,count_clics desc;",
+        "query": "SELECT\n  '-' AS add_adv,\n  ad.*,\n  cs.service_bid,\n  regexp_replace(\n    cs.service_name,\n    '[^a-zA-Zа-яА-ЯёЁ ]',\n    '',\n    'g'\n  ) AS cleaned_service_name,\n  gm.group_minus_words\nFROM ads_list ad\nJOIN company_services cs\n  ON cs.service_id = ad.service_id\n\n-- минус-слова по группе (может не найтись → NULL)\nLEFT JOIN LATERAL (\n  SELECT\n    string_agg(\n      mw.minus_word,\n      ', ' ORDER BY mw.weight\n    ) AS group_minus_words\n  FROM ads_list al\n  JOIN current_list cl\n    ON replace(al.key_word, '\"', '') = lower(\n         regexp_replace(\n           cl.used_keyword,\n           E'\\\\+|-.+$',   -- убрать все '+' и всё после первого '-'\n           '',\n           'g'\n         )\n       )\n  JOIN minus_words_origin org\n    ON org.list_id = cl.list_id\n  JOIN minus_words mw\n    ON org.minus_word_id = mw.id\n  WHERE al.company_id = ad.company_id\n    AND al.key_word   = ad.key_word\n    AND al.report_id  = ad.report_id\n) gm ON TRUE\n\nWHERE ad.is_hi_demand = TRUE\n  AND ad.company_id   = $1\n  AND ad.to_upload_ad = TRUE\nORDER BY cs.service_name, ad.count_clics DESC;",
         "options": {
           "queryReplacement": "={{ $json.company_id }}"
         }
@@ -1067,7 +1067,7 @@
       }
     ]
   },
-  "versionId": "edb2c6b5-f3ca-4814-b267-d1ac10f89780",
+  "versionId": "a93deea6-82bd-44df-8c40-dc171a777fe5",
   "triggerCount": 0,
   "shared": [
     {
