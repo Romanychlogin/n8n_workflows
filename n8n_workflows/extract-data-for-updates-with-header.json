@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-17T15:18:28.940Z",
+  "updatedAt": "2025-11-17T16:16:20.462Z",
   "createdAt": "2025-09-30T17:56:19.098Z",
   "id": "UUlsZU9GOCmdvDHg",
   "name": "extract data for updates with header",
@@ -17,7 +17,7 @@
       "type": "n8n-nodes-base.convertToFile",
       "typeVersion": 1.1,
       "position": [
-        1760,
+        1968,
         -80
       ],
       "id": "f01b45d2-eae8-43cf-826b-8e9fc600423b",
@@ -32,7 +32,7 @@
       "type": "n8n-nodes-base.dropbox",
       "typeVersion": 1,
       "position": [
-        3072,
+        3280,
         -48
       ],
       "id": "b481d235-879e-4fb6-8731-744f3bc50137",
@@ -277,7 +277,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        1552,
+        1760,
         -32
       ],
       "id": "53b9c994-d82d-4051-b03a-357724c272e3",
@@ -347,7 +347,7 @@
       "type": "n8n-nodes-base.merge",
       "typeVersion": 3.2,
       "position": [
-        2224,
+        2432,
         -48
       ],
       "id": "9aa4f336-7e95-4bdf-9fee-405847ce75b2",
@@ -402,7 +402,7 @@
       "type": "n8n-nodes-base.readWriteFile",
       "typeVersion": 1,
       "position": [
-        1968,
+        2176,
         -80
       ],
       "id": "ac2619a8-f9bb-4862-a2ed-ac37f73009d6",
@@ -435,7 +435,7 @@
       "type": "n8n-nodes-base.readWriteFile",
       "typeVersion": 1,
       "position": [
-        2640,
+        2848,
         -48
       ],
       "id": "67ba370d-0684-4fe6-8a84-a2a35e0f5ac0",
@@ -478,7 +478,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        3568,
+        3776,
         -48
       ],
       "id": "fd0c474e-3c85-49da-8b04-974c678d19c7",
@@ -498,7 +498,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        3344,
+        3552,
         -48
       ],
       "id": "ce44d4a7-1ea3-4902-b717-bc24301b7400",
@@ -511,7 +511,7 @@
       "type": "n8n-nodes-base.executeCommand",
       "typeVersion": 1,
       "position": [
-        2432,
+        2640,
         -48
       ],
       "id": "f6e7cc99-94ef-42fb-b65f-795c421487f9",
@@ -604,7 +604,7 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "SELECT\n  '-' AS add_adv,\n  ad.*,\n  cs.service_bid,\n  regexp_replace(\n    cs.service_name,\n    '[^a-zA-Zа-яА-ЯёЁ ]',\n    '',\n    'g'\n  ) AS cleaned_service_name,\n  gm.group_minus_words\nFROM ads_list ad\nJOIN company_services cs\n  ON cs.service_id = ad.service_id\n\n-- минус-слова по группе (может не найтись → NULL)\nLEFT JOIN LATERAL (\n  SELECT\n    string_agg(\n      mw.minus_word,\n      ', ' ORDER BY mw.weight\n    ) AS group_minus_words\n  FROM ads_list al\n  JOIN current_list cl\n    ON replace(al.key_word, '\"', '') = lower(\n         regexp_replace(\n           cl.used_keyword,\n           E'\\\\+|-.+$',   -- убрать все '+' и всё после первого '-'\n           '',\n           'g'\n         )\n       )\n  JOIN minus_words_origin org\n    ON org.list_id = cl.list_id\n  JOIN minus_words mw\n    ON org.minus_word_id = mw.id\n  WHERE al.company_id = ad.company_id\n    AND al.key_word   = ad.key_word\n    AND al.report_id  = ad.report_id\n) gm ON TRUE\n\nWHERE ad.is_hi_demand = TRUE\n  AND ad.company_id   = $1\n  AND ad.to_upload_ad = TRUE\nORDER BY cs.service_name, ad.count_clics DESC;",
+        "query": "SELECT\n  '-' AS add_adv,\n  ad.*,\n  cs.service_bid,\n  regexp_replace(\n    cs.service_name,\n    '[^a-zA-Zа-яА-ЯёЁ ]',\n    '',\n    'g'\n  ) AS cleaned_service_name,\n  gm.group_minus_words\nFROM ads_list ad\nJOIN company_services cs\n  ON cs.service_id = ad.service_id\n\n-- минус-слова по группе (может не найтись → NULL)\nLEFT JOIN LATERAL (\n  SELECT\n    string_agg(\n      mw.minus_word,\n      ', ' ORDER BY mw.weight desc\n    ) AS group_minus_words\n  FROM ads_list al\n  JOIN current_list cl\n    ON replace(al.key_word, '\"', '') = lower(\n         regexp_replace(\n           cl.used_keyword,\n           E'\\\\+|-.+$',   -- убрать все '+' и всё после первого '-'\n           '',\n           'g'\n         )\n       )\n  JOIN minus_words_origin org\n    ON org.list_id = cl.list_id\n  JOIN minus_words mw\n    ON org.minus_word_id = mw.id\n  WHERE al.company_id = ad.company_id\n    AND al.key_word   = ad.key_word\n    AND al.report_id  = ad.report_id\n) gm ON TRUE\n\nWHERE ad.is_hi_demand = TRUE\n  AND ad.company_id   = $1\n  AND ad.to_upload_ad = TRUE\nORDER BY cs.service_name, ad.count_clics DESC;",
         "options": {
           "queryReplacement": "={{ $json.company_id }}"
         }
@@ -643,7 +643,7 @@
       "type": "n8n-nodes-base.merge",
       "typeVersion": 3.2,
       "position": [
-        1360,
+        1568,
         32
       ],
       "id": "1499ca4e-aecb-4086-99d6-a7cc58149494",
@@ -660,7 +660,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        816,
+        1024,
         208
       ],
       "id": "c0ee0885-fed5-4d94-9d85-b54e08708aa8",
@@ -684,7 +684,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        944,
+        1152,
         112
       ],
       "id": "162c3a74-a3af-470b-b9be-d386f7ee41ca",
@@ -724,11 +724,24 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        688,
+        896,
         368
       ],
       "id": "72c67d6b-5388-486a-a41c-647b535a3cd0",
       "name": "If not empty"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nfunction takeByComma(str, maxLen = 4096) {\n  if (str == null) return '';\n  str = String(str);\n\n  // Если строка и так короче лимита — возвращаем как есть\n  if (str.length <= maxLen) return str;\n\n  const parts = str.split(',');\n  let result = '';\n\n  for (const part of parts) {\n    const phrase = part;            // при необходимости можно .trim()\n    const sep = result === '' ? '' : ',';  // запятая между фразами\n    const candidate = result + sep + phrase;\n\n    if (candidate.length > maxLen) {\n      // Если даже первая фраза длиннее лимита — обрезаем её \"как есть\"\n      if (!result) {\n        return phrase.slice(0, maxLen);\n      }\n      break;\n    }\n\n    result = candidate;\n  }\n\n  return result;\n}\n\n\n\nfor (const item of $input.all()) {\n  item.json.group_minus_words = takeByComma(item.json.group_minus_words,4096);\n}\n\nreturn $input.all();"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        864,
+        32
+      ],
+      "id": "3be7f105-af4d-4fed-a6e0-8529cc92b775",
+      "name": "Restrict minus words length"
     }
   ],
   "connections": {
@@ -978,7 +991,7 @@
             "index": 0
           },
           {
-            "node": "Merge2",
+            "node": "Restrict minus words length",
             "type": "main",
             "index": 0
           }
@@ -1035,6 +1048,17 @@
           }
         ]
       ]
+    },
+    "Restrict minus words length": {
+      "main": [
+        [
+          {
+            "node": "Merge2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
@@ -1067,7 +1091,7 @@
       }
     ]
   },
-  "versionId": "a93deea6-82bd-44df-8c40-dc171a777fe5",
+  "versionId": "dea10949-19c4-4d1f-a613-d87fd96b5c83",
   "triggerCount": 0,
   "shared": [
     {
