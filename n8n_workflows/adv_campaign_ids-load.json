@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-17T09:48:24.391Z",
+  "updatedAt": "2025-11-18T17:42:37.490Z",
   "createdAt": "2025-11-10T13:35:24.421Z",
   "id": "Wnsw79fmux6MqiZq",
   "name": "ADV_campaign_IDs load",
@@ -23,15 +23,16 @@
     },
     {
       "parameters": {
+        "operation": "xlsx",
         "options": {
-          "delimiter": ";"
+          "range": "13"
         }
       },
       "type": "n8n-nodes-base.extractFromFile",
       "typeVersion": 1,
       "position": [
-        560,
-        -192
+        416,
+        -208
       ],
       "id": "cd588057-f36b-40cd-9aa8-1972300a490b",
       "name": "Extract from File"
@@ -174,8 +175,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        3056,
-        -304
+        3120,
+        -480
       ],
       "id": "7beaa1a1-5f7b-48ec-81c4-2ddae9b33d61",
       "name": "Mark_workflow_completed",
@@ -186,19 +187,6 @@
           "name": "PGvector"
         }
       }
-    },
-    {
-      "parameters": {
-        "jsCode": "// Вход: Binary -> data (CSV)\n// Настройка: \"Binary property\": data\nconst bin = items[0].binary.data;\nconst buf = Buffer.from(bin.data, 'base64');\nconst text = buf.toString('utf-8'); // или cp1251 при необходимости\n\nconst lines = text.split(/\\r?\\n/);\n// Здесь укажи число служебных строк, например 4\nconst start = 8; \nconst trimmed = lines.slice(start).join('\\n');\n\nreturn [\n  {\n    binary: {\n      data: {\n        data: Buffer.from(trimmed, 'utf-8').toString('base64'),\n        fileName: 'cleaned.csv',\n        mimeType: 'text/csv',\n      }\n    }\n  }\n];"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        272,
-        -192
-      ],
-      "id": "b87896ed-de9e-4e77-b94e-56e1374830f4",
-      "name": "header cut"
     },
     {
       "parameters": {
@@ -495,8 +483,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        3664,
-        -304
+        3536,
+        -544
       ],
       "id": "9898c20f-ffd6-4550-9b1e-c5014ec7fc30",
       "name": "company_id_report_id"
@@ -619,6 +607,88 @@
       ],
       "id": "31dfb6f2-acd4-47e5-b8c2-cc939a20be12",
       "name": "Code in JavaScript1"
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "path": "=/{{ $('get campaign ID').item.json.campaign_id }}_autotargeting_bids.xlsx",
+        "binaryData": true
+      },
+      "type": "n8n-nodes-base.dropbox",
+      "typeVersion": 1,
+      "position": [
+        1648,
+        -592
+      ],
+      "id": "2250179e-5f1f-4256-aa2c-3cc3ddbee1c2",
+      "name": "Upload a file",
+      "credentials": {
+        "dropboxOAuth2Api": {
+          "id": "AugpA5e12rWISfZ5",
+          "name": "Dropbox OAuth"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "xlsx",
+        "options": {
+          "fileName": "output2.xlsx",
+          "headerRow": false
+        }
+      },
+      "type": "n8n-nodes-base.convertToFile",
+      "typeVersion": 1.1,
+      "position": [
+        1344,
+        -592
+      ],
+      "id": "4754e472-1d94-4fde-b9b5-4d5f0dee389a",
+      "name": "Convert to File1"
+    },
+    {
+      "parameters": {
+        "operation": "xlsx",
+        "options": {
+          "headerRow": false,
+          "includeEmptyCells": false
+        }
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        528,
+        -560
+      ],
+      "id": "4cfb1e05-a9c2-410b-99d9-44c846fbabc0",
+      "name": "Extract from File1"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Новая ставка (ставь нужное значение)\nconst NEW_BID = 1; // пример\n\n// Строка заголовков в Excel = 14-я строка → индекс 13 (0-based)\nconst HEADER_ROW_INDEX = 8;\n\nconst items = $input.all();\n\n// 1) Берём строку заголовка как массив\nconst headerRow = items[HEADER_ROW_INDEX].json.row;\n\nif (!Array.isArray(headerRow)) {\n  throw new Error('Ожидаю, что в строке заголовка будет массив json.row, но его нет');\n}\n\n// 2) Находим индексы нужных колонок\nconst phraseIdx = headerRow.indexOf('Фраза (с минус-словами)');\nconst bidIdx    = headerRow.indexOf('Ставка');\n\nif (phraseIdx === -1 || bidIdx === -1) {\n  throw new Error(\n    'Не найдены столбцы \"Фраза (с минус-словами)\" или \"Ставка\" в строке заголовка. ' +\n    'Проверь точное совпадение текста и номер строки HEADER_ROW_INDEX.'\n  );\n}\n\n// 3) Идём по строкам ниже заголовка и правим ставку\nfor (let i = HEADER_ROW_INDEX + 1; i < items.length; i++) {\n  const row = items[i].json.row;\n  if (!Array.isArray(row)) continue;\n\n  const phrase = (row[phraseIdx] ?? '').toString().trim();\n\n  if (phrase === '---autotargeting') {\n    // если строка короче, расширим до нужного индекса\n    while (row.length <= bidIdx) {\n      row.push('');\n    }\n    row[bidIdx] = NEW_BID;\n  }\n}\n\nreturn items;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        896,
+        -624
+      ],
+      "id": "f511e9e1-a79b-446c-88ae-a1d20f819f6c",
+      "name": "set autotargeting bids"
+    },
+    {
+      "parameters": {
+        "mode": "chooseBranch",
+        "useDataOfInput": 2
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        2848,
+        -464
+      ],
+      "id": "41944b4a-77da-4c33-aea4-3d5204cbfca2",
+      "name": "Merge1"
     }
   ],
   "connections": {
@@ -648,9 +718,9 @@
       "main": [
         [
           {
-            "node": "Mark_workflow_completed",
+            "node": "Merge1",
             "type": "main",
-            "index": 0
+            "index": 1
           }
         ],
         [
@@ -683,17 +753,6 @@
           },
           {
             "node": "report import record",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "header cut": {
-      "main": [
-        [
-          {
-            "node": "Extract from File",
             "type": "main",
             "index": 0
           }
@@ -826,12 +885,17 @@
       "main": [
         [
           {
-            "node": "header cut",
+            "node": "get client id",
             "type": "main",
             "index": 0
           },
           {
-            "node": "get client id",
+            "node": "Extract from File",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Extract from File1",
             "type": "main",
             "index": 0
           }
@@ -899,6 +963,61 @@
           }
         ]
       ]
+    },
+    "Convert to File1": {
+      "main": [
+        [
+          {
+            "node": "Upload a file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File1": {
+      "main": [
+        [
+          {
+            "node": "set autotargeting bids",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "set autotargeting bids": {
+      "main": [
+        [
+          {
+            "node": "Convert to File1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Upload a file": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge1": {
+      "main": [
+        [
+          {
+            "node": "Mark_workflow_completed",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
@@ -925,13 +1044,13 @@
         "json": {
           "id": "4f5WJ06ItW520O75",
           "root_execution_id": 32924,
-          "yandex_report_dropbox_file_path": "https://www.dropbox.com/scl/fi/y5ta5w9gd7ux4ml4mi5bc/704708210.csv?rlkey=s1prv35zb1r8dypxvi0lywd1d&dl=1",
+          "yandex_report_dropbox_file_path": "https://www.dropbox.com/scl/fi/l6if8byviqxdfddl4h78e/704708210.xlsx?rlkey=lcraj7j9zgzcz1erjkvxihj40&dl=1",
           "threshhold": "0.88"
         }
       }
     ]
   },
-  "versionId": "9e89b3d4-90b6-4212-9690-f4dc8b6abafa",
+  "versionId": "5b0bd96a-f3d5-4563-9cf0-956be8a3657b",
   "triggerCount": 0,
   "shared": [
     {
