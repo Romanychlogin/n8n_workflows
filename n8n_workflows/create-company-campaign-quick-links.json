@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-17T17:43:46.473Z",
+  "updatedAt": "2025-11-18T08:00:31.793Z",
   "createdAt": "2025-11-13T06:08:40.998Z",
   "id": "eeZTmctM9IvDF2bH",
   "name": "Create company campaign quick links",
@@ -22,7 +22,7 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "select cs.service_name,cs.service_description,c.company_name from companies c, company_services cs where c.company_id=cs.company_id and c.company_id=$1",
+        "query": "select cs.service_name,cs.service_description,c.company_name,cs.service_id from companies c, company_services cs where c.company_id=cs.company_id and c.company_id=$1",
         "options": {
           "queryReplacement": "{{$('When Executed by Another Workflow').first().json.company_id}}"
         }
@@ -348,7 +348,7 @@
     },
     {
       "parameters": {
-        "jsCode": "\n\nreturn [{\n  json: \n {\n  \"model\": \"gpt-5-2025-08-07\",\n  \"input\": [\n    {\n      \"role\": \"developer\",\n      \"content\": [\n        {\n          \"type\": \"input_text\",\n          \"text\": \"Ты — генератор заголовков рекламных объявлений. Твоя задача создать 8 коротких заголовков, строго соблюдая правила.\"\n        }\n      ]\n    },\n    {\n      \"role\": \"user\",\n      \"content\": [\n        {\n          \"type\": \"input_text\",\n          \"text\": $json.my_prompt\n        }\n      ]\n    }\n  ],\n  \"text\": {\n    \"format\": {\n      \"type\": \"json_schema\",\n      \"name\": \"headers\",\n      \"strict\": true,\n      \"schema\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"headers\": {\n            \"type\": \"array\",\n            \"description\": \"List of header objects.\",\n            \"items\": {\n              \"type\": \"object\",\n              \"properties\": {\n                \"header\": {\n                  \"type\": \"string\",\n                  \"description\": \"A string up to 56 characters.\",\n                  \"minLength\": 0,\n                  \"maxLength\": 30\n                }\n              },\n              \"required\": [\n                \"header\"\n              ],\n              \"additionalProperties\": false\n            },\n            \"minItems\": 0\n          }\n        },\n        \"required\": [\n          \"headers\"\n        ],\n        \"additionalProperties\": false\n      }\n    },\n    \"verbosity\": \"medium\"\n  },\n  \"reasoning\": {\n    \"effort\": \"medium,\n    \"summary\": \"detailed\"\n  },\n  \"tools\": [],\n  \"store\": false,\n  \"include\": [\n    \"reasoning.encrypted_content\",\n    \"web_search_call.action.sources\"\n  ]\n}\n\n}];"
+        "jsCode": "\n\nreturn [{\n  json: \n {\n  \"model\": \"gpt-5-2025-08-07\",\n  \"input\": [\n    {\n      \"role\": \"developer\",\n      \"content\": [\n        {\n          \"type\": \"input_text\",\n          \"text\": \"Ты — генератор заголовков рекламных объявлений. Твоя задача создать 8 коротких заголовков, строго соблюдая правила.\"\n        }\n      ]\n    },\n    {\n      \"role\": \"user\",\n      \"content\": [\n        {\n          \"type\": \"input_text\",\n          \"text\": $json.my_prompt\n        }\n      ]\n    }\n  ],\n  \"text\": {\n    \"format\": {\n      \"type\": \"json_schema\",\n      \"name\": \"headers\",\n      \"strict\": true,\n      \"schema\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"headers\": {\n            \"type\": \"array\",\n            \"description\": \"List of header objects.\",\n            \"items\": {\n              \"type\": \"object\",\n              \"properties\": {\n                \"header\": {\n                  \"type\": \"string\",\n                  \"description\": \"A string up to 56 characters.\",\n                  \"minLength\": 0,\n                  \"maxLength\": 30\n                }\n              },\n              \"required\": [\n                \"header\"\n              ],\n              \"additionalProperties\": false\n            },\n            \"minItems\": 0\n          }\n        },\n        \"required\": [\n          \"headers\"\n        ],\n        \"additionalProperties\": false\n      }\n    },\n    \"verbosity\": \"medium\"\n  },\n  \"reasoning\": {\n    \"effort\": \"medium\",\n    \"summary\": \"detailed\"\n  },\n  \"tools\": [],\n  \"store\": false,\n  \"include\": [\n    \"reasoning.encrypted_content\",\n    \"web_search_call.action.sources\"\n  ]\n}\n\n}];"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -1212,7 +1212,7 @@
       }
     ]
   },
-  "versionId": "063ff2bf-db63-48b1-ac51-ffd4e6cf5c09",
+  "versionId": "a3056434-54ce-47b7-ae9b-140f1854db51",
   "triggerCount": 0,
   "shared": [
     {
