@@ -1,0 +1,1114 @@
+{
+  "updatedAt": "2025-11-18T12:48:42.735Z",
+  "createdAt": "2025-11-18T12:48:42.735Z",
+  "id": "lOHMa6IJ0lnCkzu7",
+  "name": "extract data for autotargeting bids rewrite",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "operation": "xlsx",
+        "options": {
+          "fileName": "output.xlsx",
+          "headerRow": false
+        }
+      },
+      "type": "n8n-nodes-base.convertToFile",
+      "typeVersion": 1.1,
+      "position": [
+        1968,
+        -80
+      ],
+      "id": "c0ffc709-dfa8-402b-8c6c-75aa158ead63",
+      "name": "Convert to File"
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "path": "=/output_id{{ $('select company data').last().json.company_id }}_camp_{{ $('Get high demand ads').last().json.campaign_id }}_{{ $('select company data').last().json.start_date }}_{{ $('select company data').last().json.end_date }}.xlsx",
+        "binaryData": true
+      },
+      "type": "n8n-nodes-base.dropbox",
+      "typeVersion": 1,
+      "position": [
+        3280,
+        -48
+      ],
+      "id": "59342fd1-c42c-4156-b96a-1419aa559aeb",
+      "name": "Upload a file",
+      "credentials": {
+        "dropboxOAuth2Api": {
+          "id": "AugpA5e12rWISfZ5",
+          "name": "Dropbox OAuth"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "e22ad154-2123-49fe-9e5a-c7fe836825f8",
+              "name": "add_adv",
+              "value": "={{ $json.add_adv }}",
+              "type": "string"
+            },
+            {
+              "id": "4262c0ff-c141-4fde-aebe-187481d9d0df",
+              "name": "ADV_type",
+              "value": "Текстово-графическое",
+              "type": "string"
+            },
+            {
+              "id": "a11661b9-dc1c-4750-b93f-ba5b74836562",
+              "name": "mob",
+              "value": "-",
+              "type": "string"
+            },
+            {
+              "id": "e1100e5c-4c72-456e-b2ec-55f0f536bff1",
+              "name": "group_uid",
+              "value": "={{ $json.group_yandex_id }}",
+              "type": "string"
+            },
+            {
+              "id": "d9b1b21a-f230-41db-af85-b9bbcb554ee4",
+              "name": "group_name",
+              "value": "={{ $json.group_name }}",
+              "type": "string"
+            },
+            {
+              "id": "c0cb504d-2b55-4c1f-a628-80b7a369a078",
+              "name": "group_id",
+              "value": "=",
+              "type": "string"
+            },
+            {
+              "id": "5c643aae-d54d-4ad8-aee2-f5114f35f078",
+              "name": "id_phrase",
+              "value": "=  {{ $json.key_word_yandex_id }}",
+              "type": "string"
+            },
+            {
+              "id": "1df69495-ac3c-4f36-ac5d-5a014914feb0",
+              "name": "key_words",
+              "value": "={{ $json.key_word }}",
+              "type": "string"
+            },
+            {
+              "id": "4455b796-76dd-4789-b04d-51f793ae70f1",
+              "name": "id_adv",
+              "value": "={{ $json.ads_yandex_id }}",
+              "type": "string"
+            },
+            {
+              "id": "b308d9ca-9676-4837-a7b0-3512c73bf481",
+              "name": "ad_header",
+              "value": "={{ $json.ad_header }}",
+              "type": "string"
+            },
+            {
+              "id": "559ee132-e1dd-444b-9f9e-d87e5e8b1974",
+              "name": "ad_header2",
+              "value": "={{$json.cleaned_service_name}}",
+              "type": "string"
+            },
+            {
+              "id": "04f85c2c-a0b8-4ff8-9715-8ca7c329976e",
+              "name": "ad_text",
+              "value": "={{ $json.ad_text }}",
+              "type": "string"
+            },
+            {
+              "id": "4219b151-e444-4094-81c0-519c5352de8e",
+              "name": "empty_1",
+              "value": "",
+              "type": "string"
+            },
+            {
+              "id": "f18d9f2a-05a4-4294-be69-17504b51bacc",
+              "name": "empty_2",
+              "value": "",
+              "type": "string"
+            },
+            {
+              "id": "a312e417-8674-4cc4-84c2-efc3b997c5cc",
+              "name": "empty_3",
+              "value": "",
+              "type": "string"
+            },
+            {
+              "id": "61c57fa1-7755-4bf4-b39f-3369363114f6",
+              "name": "ad_url",
+              "value": "={{ $json.ad_url }}",
+              "type": "string"
+            },
+            {
+              "id": "e3a249d0-8ec2-4d1e-91c6-32affb8b0734",
+              "name": " display_url",
+              "value": "",
+              "type": "string"
+            },
+            {
+              "id": "c060b10e-692d-4334-8efa-6f7caf10a9f7",
+              "name": "company_id",
+              "value": "={{ $('select company data').item.json.yandex_id }}",
+              "type": "string"
+            },
+            {
+              "id": "8fe20bbd-a870-40f5-9798-4546e9ad1d5e",
+              "name": "empty_4",
+              "value": "",
+              "type": "string"
+            },
+            {
+              "id": "886783a2-ee5e-43c6-93ff-2e5c4f96fb8f",
+              "name": "region",
+              "value": "={{ $('select company data').first().json.yandex_region }}",
+              "type": "string"
+            },
+            {
+              "id": "c62dd54c-0098-4a3b-8d48-69e150b13099",
+              "name": "auto_bid",
+              "value": "={{ $json.service_bid}}",
+              "type": "string"
+            },
+            {
+              "id": "e7a8750e-09ea-46b6-8d5a-c38e3e4e46ca",
+              "name": "bid",
+              "value": "={{ $json.service_bid}}",
+              "type": "string"
+            },
+            {
+              "id": "709b74a4-3b63-4de3-a770-ec0a222fa1ca",
+              "name": "any_bid",
+              "value": "",
+              "type": "string"
+            },
+            {
+              "id": "a6323208-755b-448d-b758-6ac2468b219c",
+              "name": "status_adv",
+              "value": "",
+              "type": "string"
+            },
+            {
+              "id": "6544b633-314b-4bbd-9c03-cfdf0f3f6a42",
+              "name": "status_phrase",
+              "value": "",
+              "type": "string"
+            },
+            {
+              "id": "6cf0d95e-3466-40a9-a087-c391edbcb689",
+              "name": "ql_header",
+              "value": "={{ $('Get quick links').last().json.link_headers_text }}",
+              "type": "string"
+            },
+            {
+              "id": "6fa5a4f7-6748-4308-947d-3ca9fff0d683",
+              "name": "ql_descr",
+              "value": "={{ $('Get quick links').last().json.link_descriptions_text }}",
+              "type": "string"
+            },
+            {
+              "id": "68076cc7-a932-4ade-9fea-2bce6a746e1e",
+              "name": "ql_url",
+              "value": "={{ $('Get quick links').last().json.link_urls_text }}",
+              "type": "string"
+            },
+            {
+              "id": "cf064340-5dcd-42ef-9bc1-daf936498182",
+              "name": "var1",
+              "value": "",
+              "type": "string"
+            },
+            {
+              "id": "70d673fa-5cb1-4572-b854-7d71fc66bbf9",
+              "name": "var2",
+              "value": "",
+              "type": "string"
+            },
+            {
+              "id": "8b33703f-dae2-4a13-8d3a-09a3747b6948",
+              "name": "marks",
+              "value": "",
+              "type": "string"
+            },
+            {
+              "id": "22514bdb-a687-4d6c-9d0b-26cf805f0ea9",
+              "name": "picture",
+              "value": "",
+              "type": "string"
+            },
+            {
+              "id": "05563fba-5435-4de8-aacb-325389522cd4",
+              "name": "creativity",
+              "value": "",
+              "type": "string"
+            },
+            {
+              "id": "c0549447-7497-418f-8330-3b49fb95408f",
+              "name": "moderation",
+              "value": "",
+              "type": "string"
+            },
+            {
+              "id": "aa74e979-1aed-47b6-b889-90869a6c810e",
+              "name": "callouts",
+              "value": "={{ $('Get callouts').last().json.link_callout_text }}",
+              "type": "string"
+            },
+            {
+              "id": "a747f119-5c77-4a74-9553-2bf36105b7f9",
+              "name": "minus_words",
+              "value": "={{ $json.group_minus_words}}",
+              "type": "string"
+            },
+            {
+              "id": "13ebe78e-0360-4c8a-b98c-c9d8875ab5de",
+              "name": "age_limit",
+              "value": "",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1760,
+        -32
+      ],
+      "id": "7e2bbce0-2b1a-44ed-a41e-47eaf68efe30",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "select c.*, ((ri.start_date AT TIME ZONE 'UTC')::date)::text as start_date,((ri.end_date AT TIME ZONE 'UTC')::date)::text as end_date, ri.campaign_yandex_id from companies c, report_import ri where c.company_id=c.company_id and c.company_id=$1 and ri.import_id=$2",
+        "options": {
+          "queryReplacement": "={{ $('When Executed by Another Workflow').item.json.company_id }},{{ $('When Executed by Another Workflow').item.json.import_id }}"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -224,
+        -32
+      ],
+      "id": "26f50a78-7da1-4a80-95d5-0109159cf7c8",
+      "name": "select company data",
+      "credentials": {
+        "postgres": {
+          "id": "Hx2VFmUi5WO2K4QX",
+          "name": "Postgres account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "inputSource": "passthrough"
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -1008,
+        16
+      ],
+      "id": "a91ef931-5041-49cf-824a-65c7b1d61387",
+      "name": "When Executed by Another Workflow"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO business_processes_states (business_process_id, company_id,n8n_workflow_execution_id,n8n_workflow_root_execution_id, started)\nSELECT MAX(business_process_id), $2,$3,$4, NOW()\nFROM public.business_processes\nWHERE n8n_process_name = $1;",
+        "options": {
+          "queryReplacement": "=[{{$workflow.name}},{{$json.company_id}},{{$execution.id}},{{ $('When Executed by Another Workflow').item.json.root_execution_id }}]"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -528,
+        -32
+      ],
+      "id": "82efcf3e-c464-48c4-b1db-695f5d3461c4",
+      "name": "Mark_workwlow_started",
+      "credentials": {
+        "postgres": {
+          "id": "4YkdFJcdTgzo9hkz",
+          "name": "PGvector"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        2432,
+        -48
+      ],
+      "id": "a23998ce-af72-4728-96ba-245a8a67608c",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "280083b6-06ad-4a7b-9901-0b620e166437",
+              "name": "path",
+              "value": "https://www.dropbox.com/scl/fi/u8qppd514in2neu7fkjnd/702142188_example.xlsx?rlkey=1rt8hutw556avhy5ahqtvj7w8&dl=1",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        672,
+        896
+      ],
+      "id": "a099b0fe-fa58-4eef-ac70-a0060ecb09e3",
+      "name": "set template path"
+    },
+    {
+      "parameters": {
+        "url": "={{$json.path}}",
+        "responseFormat": "file",
+        "options": {}
+      },
+      "id": "da7cc9ca-300f-4aa0-a912-b9a5ba191e0a",
+      "name": "Download File",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 2,
+      "position": [
+        1024,
+        880
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "write",
+        "fileName": "target.xlsx",
+        "options": {
+          "append": false
+        }
+      },
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1,
+      "position": [
+        2176,
+        -80
+      ],
+      "id": "1cc5ae57-8775-4f56-9bfe-ee6e83fbcb4d",
+      "name": "Read/Write Files from Disk"
+    },
+    {
+      "parameters": {
+        "operation": "write",
+        "fileName": "template.xlsx",
+        "options": {
+          "append": false
+        }
+      },
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1,
+      "position": [
+        1296,
+        880
+      ],
+      "id": "9ec729bd-7492-4fac-8c46-cd87649be1f4",
+      "name": "Read/Write Files from Disk1"
+    },
+    {
+      "parameters": {
+        "fileSelector": "=output.xlsx",
+        "options": {
+          "dataPropertyName": "data"
+        }
+      },
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1,
+      "position": [
+        2848,
+        -48
+      ],
+      "id": "5047636d-b86f-43dd-a092-62adec814d81",
+      "name": "Read/Write Files from Disk2"
+    },
+    {
+      "parameters": {
+        "command": "if [ ! -f package.json ]; then npm init -y >/dev/null 2>&1; fi\nif [ ! -d node_modules/exceljs ]; then npm i exceljs >/dev/null 2>&1; fi"
+      },
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        -64,
+        1024
+      ],
+      "id": "31429017-7445-4864-8180-1539345bd267",
+      "name": "Set package"
+    },
+    {
+      "parameters": {
+        "command": "cat > xlsx_apply_template.js <<'EOF'\nconst ExcelJS = require('exceljs');\n\n/*\nЗапуск:\nnode xlsx_apply_template.js \\\n  /data/in/template.xlsx \\\n  /data/in/target.xlsx \\\n  /data/out/output_with_header.xlsx \\\n  12 1 1 \\\n  \"СТРОКА_ДЛЯ_E8\" \\\n  \"СТРОКА_ДЛЯ_E9\" \\\n  false\n\nАргументы:\n 2: templatePath\n 3: targetPath\n 4: outPath\n 5: HEADER_ROWS (по умолчанию 12 → данные начнутся со строки 13)\n 6: templateSheetIndex (1-based)\n 7: targetSheetIndex   (1-based)\n 8: e8Value (string)\n 9: e9Value (string)\n10: CLEAR_BELOW (\"true\"/\"false\"; по умолчанию false)\n*/\n\nconst templatePath = process.argv[2];\nconst targetPath   = process.argv[3];\nconst outPath      = process.argv[4];\nconst HEADER_ROWS  = parseInt(process.argv[5] || '12', 10);\nconst templateSheetIndex = parseInt(process.argv[6] || '1', 10);\nconst targetSheetIndex   = parseInt(process.argv[7] || '1', 10);\nconst e8Value     = process.argv[8] || '';\nconst e9Value     = process.argv[9] || '';\nconst CLEAR_BELOW = String(process.argv[10] || 'false').toLowerCase() === 'true';\n\n(async () => {\n  const wbTpl = new ExcelJS.Workbook();\n  await wbTpl.xlsx.readFile(templatePath);\n  const wsTpl = wbTpl.getWorksheet(templateSheetIndex);\n  if (!wsTpl) throw new Error('Template worksheet not found');\n\n  const wbSrc = new ExcelJS.Workbook();\n  await wbSrc.xlsx.readFile(targetPath);\n  const wsSrc = wbSrc.getWorksheet(targetSheetIndex);\n  if (!wsSrc) throw new Error('Target worksheet not found');\n\n  const startRow = HEADER_ROWS + 1;\n\n  if (CLEAR_BELOW) {\n    const toDelete = Math.max(0, (wsTpl.rowCount || 0) - HEADER_ROWS);\n    if (toDelete > 0) wsTpl.spliceRows(startRow, toDelete);\n  }\n\n// стало:\nconst maxRow = wsSrc.rowCount || 0;\n\n// находим самый правый непустой столбец, проходя по всем строкам\nlet maxCol = 0;\nwsSrc.eachRow({ includeEmpty: true }, (row) => {\n  // ищем последнюю непустую ячейку в строке\n  // exceljs хранит массив row._cells; безопасно проверить value\n  for (let i = row.cellCount; i >= 1; i--) {\n    const cell = row.getCell(i);\n    if (cell && cell.value !== null && cell.value !== undefined && cell.value !== '') {\n      if (i > maxCol) maxCol = i;\n      break;\n    }\n  }\n});\n\n  for (let r = 1; r <= maxRow; r++) {\n    const srcRow = wsSrc.getRow(r);\n    const dstRow = wsTpl.getRow(startRow + r - 1);\n    for (let c = 1; c <= maxCol; c++) {\n      const srcCell = srcRow.getCell(c);\n      const dstCell = dstRow.getCell(c);\n      dstCell.value = srcCell.value;\n      if (srcCell.numFmt) dstCell.numFmt = srcCell.numFmt;\n    }\n    if (dstRow.commit) dstRow.commit();\n  }\n\n  // Устанавливаем E8 и E9 после вставки\n  wsTpl.getCell('E8').value = e8Value;\n  wsTpl.getCell('E9').value = e9Value;\n\n  await wbTpl.xlsx.writeFile(outPath);\n  process.stdout.write(outPath);\n})().catch(e => { console.error(e); process.exit(1); });\nEOF"
+      },
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        384,
+        1072
+      ],
+      "id": "997e727a-aa1d-4870-9973-d2c824deb430",
+      "name": "set script"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "update business_processes_states set finished=NOW(),tokens_used=0,steps_passed=1,steps_total=1 where business_process_id=(select MAX(business_process_id) from business_processes where n8n_process_name=$1) and n8n_workflow_execution_id=$2",
+        "options": {
+          "queryReplacement": "=[{{$workflow.name}},{{$execution.id}}]"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        3776,
+        -48
+      ],
+      "id": "849e7918-1544-4205-9eeb-681477ec40d9",
+      "name": "Mark_workflow_completed",
+      "executeOnce": true,
+      "credentials": {
+        "postgres": {
+          "id": "4YkdFJcdTgzo9hkz",
+          "name": "PGvector"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Function-Node (Run Once)\nconst workflowData = $getWorkflowStaticData('global');\nworkflowData.steps_passed = 0;\nworkflowData.tokens_used = 0;\nworkflowData.step = 0;\nreturn $input.all();\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3552,
+        -48
+      ],
+      "id": "17485696-5113-46dc-8e26-3e75af8c1bda",
+      "name": "Init total counter"
+    },
+    {
+      "parameters": {
+        "command": "=node xlsx_apply_template.js \\\n  template.xlsx \\\n  target.xlsx \\\n  output.xlsx \\\n  12 1 1 \\\n  \"{{ $('select company data').last().json.campaign_yandex_id }}\" \\\n  \"{{$('When Executed by Another Workflow').first().json.minus_words}}\" \\\n  true"
+      },
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        2640,
+        -48
+      ],
+      "id": "525d6f44-249b-4bef-b7bf-a86fa1221135",
+      "name": "Merge file header"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "8a620429-eda9-44aa-ae9e-488adbdae407",
+              "leftValue": "={{ $json.stdout }}",
+              "rightValue": "1",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -304,
+        848
+      ],
+      "id": "d16ea521-6d53-4ae9-85ff-3c0e784bfd47",
+      "name": "If script already created"
+    },
+    {
+      "parameters": {
+        "command": "[ -f \"xlsx_apply_template.js\" ] && echo 1 || echo 0"
+      },
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        -640,
+        832
+      ],
+      "id": "9831c778-66b2-49fe-a554-da9ea8e36cae",
+      "name": "check if script exists"
+    },
+    {
+      "parameters": {
+        "content": "Используется локальный JS script чтобы использовать подключаемую библиотеку и не разбираться с правами. Скрипт деплоится на машину и пересоздается после каджого редиплоя"
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -704,
+        992
+      ],
+      "id": "34e3fa80-8841-4935-a1a6-9ef0e6ce24d0",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT\n  '-' AS add_adv,\n  /* key_word с заглавной первой буквой */\n  CASE\n    WHEN al.key_word IS NULL OR al.key_word = '' THEN al.key_word\n    ELSE UPPER(SUBSTR(al.key_word, 1, 1)) || SUBSTR(al.key_word, 2)\n  END AS key_word,\n  al.company_id,\n  al.service_id,\n  al.report_id,\n  al.campaign_id,\n  ag.group_name,\n  ag.group_yandex_id,\n\n  /* ad_header: замена #...# на max_kw + заглавная первая буква */\n  CASE\n    WHEN rep.hdr IS NULL OR rep.hdr = '' THEN rep.hdr\n    ELSE UPPER(SUBSTR(rep.hdr, 1, 1)) || SUBSTR(rep.hdr, 2)\n  END AS ad_header,\n\n  /* ad_text: замена #...# на max_kw + заглавная первая буква */\n  CASE\n    WHEN rep.txt IS NULL OR rep.txt = '' THEN rep.txt\n    ELSE UPPER(SUBSTR(rep.txt, 1, 1)) || SUBSTR(rep.txt, 2)\n  END AS ad_text,\n\n  ads.ad_url,\n  cs.service_bid\nFROM ads_list         al\nJOIN ads_groups       ag  ON ag.ads_group_id  = al.ads_group_id\nJOIN ads_for_groups   ads ON ads.ads_group_id = ag.ads_group_id\nJOIN company_services cs  ON cs.service_id    = al.service_id\n\n/* берём key_word с максимальным count_views в рамках группы и компании */\nCROSS JOIN LATERAL (\n  SELECT replace(al2.key_word, '\"', '') AS max_kw\n  FROM ads_list al2\n  WHERE al2.ads_group_id = ag.ads_group_id\n    AND al2.company_id   = al.company_id\n  ORDER BY COALESCE(al2.count_views, 0) DESC, al2.key_word\n  LIMIT 1\n) kw\n\n/* предварительно формируем строки после замены #...# */\nCROSS JOIN LATERAL (\n  SELECT\n    regexp_replace(ads.ad_header, '#[^#]*#', '#' || kw.max_kw || '#', 'g') AS hdr,\n    regexp_replace(ads.ad_text,   '#[^#]*#', '#' || kw.max_kw || '#', 'g') AS txt\n) rep\n\nWHERE\n  al.is_own_brand   = FALSE\n  AND al.to_upload_ad = TRUE\n  AND al.is_hi_demand = FALSE\n  AND al.company_id  = $1;",
+        "options": {
+          "queryReplacement": "={{ $('When Executed by Another Workflow').item.json.company_id }}"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        96,
+        176
+      ],
+      "id": "7c634cc5-c387-4349-a180-e5e18d3a633c",
+      "name": "Get low demand ads",
+      "alwaysOutputData": true,
+      "credentials": {
+        "postgres": {
+          "id": "Hx2VFmUi5WO2K4QX",
+          "name": "Postgres account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT\n  '-' AS add_adv,\n  ad.*,\n  cs.service_bid,\n  regexp_replace(\n    cs.service_name,\n    '[^a-zA-Zа-яА-ЯёЁ ]',\n    '',\n    'g'\n  ) AS cleaned_service_name,\n  gm.group_minus_words\nFROM ads_list ad\nJOIN company_services cs\n  ON cs.service_id = ad.service_id\n\n-- минус-слова по группе (может не найтись → NULL)\nLEFT JOIN LATERAL (\n  SELECT\n    string_agg(\n      mw.minus_word,\n      ', ' ORDER BY mw.weight desc\n    ) AS group_minus_words\n  FROM ads_list al\n  JOIN current_list cl\n    ON replace(al.key_word, '\"', '') = lower(\n         regexp_replace(\n           cl.used_keyword,\n           E'\\\\+|-.+$',   -- убрать все '+' и всё после первого '-'\n           '',\n           'g'\n         )\n       )\n  JOIN minus_words_origin org\n    ON org.list_id = cl.list_id\n  JOIN minus_words mw\n    ON org.minus_word_id = mw.id\n  WHERE al.company_id = ad.company_id\n    AND al.key_word   = ad.key_word\n    AND al.report_id  = ad.report_id\n) gm ON TRUE\n\nWHERE ad.is_hi_demand = TRUE\n  AND ad.company_id   = $1\n  AND ad.to_upload_ad = TRUE\nORDER BY cs.service_name, ad.count_clics DESC;",
+        "options": {
+          "queryReplacement": "={{ $json.company_id }}"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        128,
+        -48
+      ],
+      "id": "69de47fb-4200-44a5-92a0-8492166a1831",
+      "name": "Get high demand ads",
+      "alwaysOutputData": true,
+      "credentials": {
+        "postgres": {
+          "id": "Hx2VFmUi5WO2K4QX",
+          "name": "Postgres account 2"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        544,
+        64
+      ],
+      "id": "4eeabedd-e8ee-461a-b635-260d57d2013c",
+      "name": "append"
+    },
+    {
+      "parameters": {
+        "mode": "chooseBranch"
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        1568,
+        32
+      ],
+      "id": "35f3c88a-8fae-406a-88f4-6a8ec59cb74d",
+      "name": "Merge2"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT\n  string_agg(NULLIF(btrim(ql.link_header), ''),      '||' ORDER BY link_id) AS link_headers_text,\n  string_agg(NULLIF(btrim(ql.link_description), ''), '||' ORDER BY link_id) AS link_descriptions_text,\n  string_agg(NULLIF(btrim(ql.link_url), ''),         '||' ORDER BY link_id) AS link_urls_text\nFROM public.adv_campaign_quick_links ql  where ql.campaign_id=$1;",
+        "options": {
+          "queryReplacement": "={{ $json.campaign_id }}"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        1024,
+        208
+      ],
+      "id": "aabe3bb9-ab35-498c-8979-d8fadf8dfb63",
+      "name": "Get quick links",
+      "executeOnce": true,
+      "credentials": {
+        "postgres": {
+          "id": "Hx2VFmUi5WO2K4QX",
+          "name": "Postgres account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT\n  string_agg(NULLIF(btrim(ql.callout_text), ''),      '||' ORDER BY callout_id) AS link_callout_text\n  \nFROM adv_campaign_callouts ql  where ql.campaign_id=$1;",
+        "options": {
+          "queryReplacement": "={{ $('If not empty').item.json.campaign_id }}"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        1152,
+        112
+      ],
+      "id": "16a632b0-58bd-4d65-8f96-ac760e1802f3",
+      "name": "Get callouts",
+      "executeOnce": true,
+      "credentials": {
+        "postgres": {
+          "id": "Hx2VFmUi5WO2K4QX",
+          "name": "Postgres account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "7dac2a7c-779d-4edd-ac14-6fad98dfb988",
+              "leftValue": "={{ $input.first().json.values().length }}",
+              "rightValue": 1,
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        896,
+        368
+      ],
+      "id": "5cc784ac-a6d6-4d14-8876-568c5907346b",
+      "name": "If not empty"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nfunction takeByComma(str, maxLen = 4096) {\n  if (str == null) return '';\n  str = String(str);\n\n  // Если строка и так короче лимита — возвращаем как есть\n  if (str.length <= maxLen) return str;\n\n  const parts = str.split(',');\n  let result = '';\n\n  for (const part of parts) {\n    const phrase = part;            // при необходимости можно .trim()\n    const sep = result === '' ? '' : ',';  // запятая между фразами\n    const candidate = result + sep + phrase;\n\n    if (candidate.length > maxLen) {\n      // Если даже первая фраза длиннее лимита — обрезаем её \"как есть\"\n      if (!result) {\n        return phrase.slice(0, maxLen);\n      }\n      break;\n    }\n\n    result = candidate;\n  }\n\n  return result;\n}\n\n\n\nfor (const item of $input.all()) {\n  item.json.group_minus_words = takeByComma(item.json.group_minus_words,4096);\n}\n\nreturn $input.all();"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        864,
+        32
+      ],
+      "id": "2b208f1f-3ecb-4560-aadc-39856dc99f27",
+      "name": "Restrict minus words length"
+    }
+  ],
+  "connections": {
+    "Convert to File": {
+      "main": [
+        [
+          {
+            "node": "Read/Write Files from Disk",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Convert to File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "select company data": {
+      "main": [
+        [
+          {
+            "node": "Get high demand ads",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Get low demand ads",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "check if script exists",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Mark_workwlow_started",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mark_workwlow_started": {
+      "main": [
+        [
+          {
+            "node": "select company data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Merge file header",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download File": {
+      "main": [
+        [
+          {
+            "node": "Read/Write Files from Disk1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "set template path": {
+      "main": [
+        [
+          {
+            "node": "Download File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read/Write Files from Disk": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read/Write Files from Disk1": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Read/Write Files from Disk2": {
+      "main": [
+        [
+          {
+            "node": "Upload a file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Init total counter": {
+      "main": [
+        [
+          {
+            "node": "Mark_workflow_completed",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Upload a file": {
+      "main": [
+        [
+          {
+            "node": "Init total counter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge file header": {
+      "main": [
+        [
+          {
+            "node": "Read/Write Files from Disk2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set package": {
+      "main": [
+        [
+          {
+            "node": "set script",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "set script": {
+      "main": [
+        [
+          {
+            "node": "set template path",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If script already created": {
+      "main": [
+        [
+          {
+            "node": "set template path",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Set package",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "check if script exists": {
+      "main": [
+        [
+          {
+            "node": "If script already created",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get high demand ads": {
+      "main": [
+        [
+          {
+            "node": "append",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get low demand ads": {
+      "main": [
+        [
+          {
+            "node": "append",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "append": {
+      "main": [
+        [
+          {
+            "node": "If not empty",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Restrict minus words length",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge2": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get quick links": {
+      "main": [
+        [
+          {
+            "node": "Get callouts",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get callouts": {
+      "main": [
+        [
+          {
+            "node": "Merge2",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "If not empty": {
+      "main": [
+        [
+          {
+            "node": "Get quick links",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Merge2",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Restrict minus words length": {
+      "main": [
+        [
+          {
+            "node": "Merge2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false,
+    "errorWorkflow": "v2Z32ISEUzsFYnZw"
+  },
+  "staticData": {
+    "global": {
+      "steps_passed": 0,
+      "tokens_used": 0,
+      "step": 0
+    }
+  },
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {
+    "When Executed by Another Workflow": [
+      {
+        "json": {
+          "id": "UUlsZU9GOCmdvDHg",
+          "root_execution_id": 231936,
+          "company_id": 1,
+          "threshhold": "0.79",
+          "import_id": "28",
+          "minus_words": "-2025 -ютуб -смотреть -сарапул -тагил -омск -илимск -владикавказ -удэ -челябинск -тюмени -череповец -нефтеюганск -смоленск -томск -кирове -киселевск -кисловодск -ковров -уфа -дзержинск -тула -норильск -одесса -армавир -орск -оскол -пенза -бобруйс -владивосток -нефтекамск -невинномысск -стерлитамак -тольятти -чита -усть -сургут -октябрьская -сызрани -сыктывкар -таганрог -тобольска -якутск -могилеве -арзамас -мура -елец -каменск -минск -твери -тамбов -саранск -вк -хасавюрт -димитровград -рязани -ачинск -мытищи -балаково -набережные -калуг -назрани -нальчик -находка -барнаул -батайск -беларуси -алматы -шахт -воронеж -астрахани -волхова -иркутск -йошкар -казани -новороссийск -калининград -новосибирск -питере -петрозаводск -петербург -украина -грозный -новотроицк -архангельск -ярославле -перми -новокуйбышевск -новомосковск -ухта -сахалинск -ижевск -ангарск -амур -альметьевск -братск -хабаровск -прокопьевск -иваново -златоуст -орела -гомеле -новокузнецк -зеленодольск -новгород -псков -салават -днепропетровск -днр -новочебоксарск -гатчине -ялте -новочеркасск -абакан -новошахтинск -севастополе -брянск -дону -вологда -пятигорск -геленджик -миасс -северодвинск -соликамск -нижнекамск -боровичи -междуреченск -северск -краснодарский -самар -вакансии -сочи -рыбинск -край -дятьково -красноярск -глазова -спб -2018 -бобруйске -крыму -кузнецк -самарская -липецк -дербент -белгород -волжском -волгодонск -нижневартовск -магнитогорск -майкоп -великая -ставрополь -симферополь -белоруссия -екатеринбург -кузнецкая -челнах -белорусский -березники -бесплатно -волгоград -бийск -благовещенск -мурома -камчатская -камышин -ульяновск -кострома -копейск -ростов -курган -черкесск -уссурийск -канск -улан -муром -кемерово -уральская -краснодар -курск -киев -чебоксар -кирова -комсомольск -элиста -мурманск -оренбург -кызыл -ленинск -ногинску -рубцовск -нижне -владимир -первоуральск -махачкала -самому -самостоятельно -можно -добавить -как добавить -чтобы -владус -сервера -программирование нормальных -все -нормальных -нужно -сысоев -сдавать -8 класс -крафт -обновить -куда -сервер -шейдеры -скачать -почему -можно ли -выучить -леня -сервера майнкрафт -поменять -что нужно -сдавать программиста -как поменять -презентацию компьютере -модели роблокс -7 класс -майн -поставить -что нужно сдавать -нужно сдавать -может -владус леня -текстур -roblox script -паки -а -информатика 8 -изменить -со -пользоваться -как изменить -информатика 8 класс -обновить роблокс -сохранить -плейс -сысоев программирование -сысоев программирование нормальных -шейдеры майнкрафт -как поставить -скопировать -робототехника дополнительное образование -вещи -текстур паки -com -как сохранить -дельта -1.21 -число -зайти -сколько можно -как скопировать -находится -нубик -паки майнкрафт -как найти -игра скретч -плейс роблокс -9 класс -как пользоваться -саратов робототехника дополнительное -r34 -айди -построить -нормальных сысоев -плейс роблокс студио -программирование нормальных сысоев -forge -свою -вставить -счисления -использовать -коды роблокс -быстро -пароль -надо -текстур паки майнкрафт -нпс -как зайти -нужно сдавать программиста -значит -категории -игры скретч -где найти -что значит -постройки -a -сборка -how -сборки -обучение категории -получить -пак -d -как вернуть -портал -вернуть -владус роблокс -кружок робототехники -категорию -лайт -how to -системы счисления -зарабатывает -рп -свой -посмотреть -персонажа роблокс -как писать -получить дополнительное -когда -лаунчер -зарплата -зелья -донат -скрафтить -интерфейс -сколько зарабатывает -скул -плагин -зарабатывает программист -простые -сколько зарабатывает программист -объекты -скул саратов -rfr -как построить -25 -roblox r34 -настроить -выдать -нпс роблокс -объект -make -получить дополнительное образование -сборка майнкрафт -анимации роблокс -школьник может -где находится -как быстро -нубик майнкрафте -добавили -как посмотреть -executor -как вставить -0 -секс -плк -училище -шаг -айпи -vn -обучение категорию -это -плагины -школьник может получить -tlauncher -команда чтобы -может получить -может получить дополнительное -класс число -нуб -отключить -название -кабан -8 класс число -сгенерировать -сборки майнкрафт -зелье -персонажа роблокс студио -майнкрафт 1.21 -как скрафтить -зелья майнкрафте -как правильно -включи -двоичную -класс информатика -десятичной системы счисления -как закрепить -категории саратов -слайдами -закрепить -ноль -информатика 7 -studio com -бедрок -действие роблокс -сгту -десятичной -16 -как отключить -информатика 7 класс -системы счисления двоичную -ресурс -интерфейс роблокс -дельта роблокс -игрока -армия -как использовать -десятичной системы -что добавили -рб -1 часть -майне -счисления двоичную -5000 63 -сейчас -можно выучить -сколько можно выучить -раст -добыть -200 c -200 -0 200 c -0 200 -63 0 200 -задонатить роблокс -63 0 -программист училище -63 -5000 63 0 -а 5000 63 -а 5000 -биметаллический а 5000 -биметаллический а -биметаллический -термометр биметаллический а -термометр биметаллический -роблоксы -войс -сохранить игру -как сохранить игру -термометр -эффекты -вводить коды -чемпионат -как настроить -delta -зарплата программиста -задонатить -батл роблокс -батл -кабан фиксплей -кабан фиксплей роблокс -лицо -фиксплей -как обновить -фиксплей роблокс -старый интерфейс -микроконтроллеров -заработать -что можно -4 класс -roblox scripts -компьютере со -красивые -настройки -ферма -добавили майнкрафт -сохранить игру роблокс -how to make -донат роблокс -что добавили майнкрафт -старый интерфейс роблокс -sololearn -крафтится -клавиши -корабль -копировать -хэллоуин -to make -со слайдами -пе -компьютере со слайдами -сиды -перевод -уроки c -инвентаря -scratching -пошагово -ресурс пак -нужна -шаг школа -c winforms -курсов робототехнике синем -проекты скретч -парт -1 21 -скрч -seed -использует -робототехнике синем -леня роблоксе -как выложить -ките -футболка -киберспорта -быть -ивент -сервер майнкрафт -ти -кружок робототехники детей -winforms -опыта -как заработать -робототехнике синем ките -курсов робототехнике -нулями -синем -оружие -синем ките -опубликовать -строить -режим -уроки c winforms -fps -выложить -стал -что это -горячие клавиши -серии -горячие -простые игры скретч -олимпиада информатике -комплект -зарабатывать -gui -схемы скретч -во -ласка -простые игры -gg -car -как крафтится -студия лайт -фанпей -значит ошибка -писать код -кел -милс кел -милс -scratches -д -меч -ли разработчик -такое -хентай -куда вводить -top it school -что значит ошибка -top it -x -стоит обучение -лаунчер майнкрафт -картинки роблокс -брукхейвен -как вернуть старый -дисциплины -как обновить роблокс -куда можно -другу -девочек -не работает -вернуть старый -задачник -как строить -художник -войны скретч -новые серии -модельки роблокс -звездные войны -roblox vn обновить -грокаем алгоритмы -грокаем -звездные войны скретч -макс -викторина -леня майнкрафт -владус леня майнкрафт -надо сдавать программиста -искать -надо сдавать -что надо сдавать -что надо -рецепты -всего -софт майн -понять -азы -софт -одежду -ерокс -горячие клавиши роблокс -где как -автошкола -модель роблокс -как школьник может -где как школьник -2.0 -добавить роблокс -деньги -как добавить роблокс -клавиши роблокс -4 лет -фиксики -вырастить -секции детей -материалы -9 12 -категорию саратове -можно научиться -другом -интерфейса -on -модельки роблокс студио -учебная практика -научиться писать -скейч -учимся -роблокс телефоне -vn обновить -иероглифы -китайские иероглифы нуля -нфт -китайские иероглифы -китайские -перевод русский -плагины роблокс -войны -кодить -как школьник -чтобы выдать -восьмеричная -звездные -владус леня роблоксе -скрейч -спавн -режимы -айти скул -create roblox com -roblox com models -роблоксе телефоне -ошибка 280 -куда вводить коды -как майнкрафте -категория -стал помощником -1 космический -программирования микроконтроллеров -презентация современные технологии -11 класс -как задонатить роблокс -презентация современные -отменить действие -com models -то -аксессуар -оржевского -свою игру -как добыть -промокоды роблокс -shirt -добавить свою -280 -нет -ошибки -инженер -трудовом -wiki -executor роблокс -делать красивые -правильно делать -как правильно делать -админ -сид -космический -как работать -нем -атернос -пандора -выучиться -десятичную -делаю -shop -выдать себе -космический бой скретч -трудовом обучении -как добавить свою -вернуть старый интерфейс -вводить коды роблокс -бой -космический бой -бой скретч -ли изучать -как отменить -делать анимации -что означает -пандора роблокс -сгу -как копировать -ли разработчик роблокса -солярис -где можно -могут -топ айти -которая -выдавать -программирование плк -pack -умер -себе -меню -ретро -как задонатить -плей -означает -включи мультик -1 космический бой -колледж -райм -ерокс роблокс -деревню -max -12 лет танцы -лет танцы -лет танцы саратове -выучить нуля -можно выучить нуля -язык сколько можно -condo -мобильному монтажу -scripts roblox -creator -танцы саратове -курс мобильному монтажу -вип -курс мобильному -terrains in roblox -for terrains in -for terrains -seed for terrains -seed for -что сдавать -другу роблокс -r6 -объекты роблокс -1 урок -эффекты роблокс студио -знакомство -sbw -гугл -1 16 -1 16 5 -16 5 -были -марио -голова -игорь -эффекты роблокс -огэ -фанпей роблокс -фото роблокс -особняк -как выдавать -как выдать -нужен -cheat -кормить -чем кормить -3d модели роблокс -топ айти скул -свой плейс роблокс -свой плейс -презентации компьютере -как создать -отменить действие роблокс -шитья -панель -hd -ошибку -501 -инжекторы -торт -цифры -урок цифры -как научиться писать -как опубликовать -academy -где школьник может -хэллоуинский -где школьник -пк -запустить -одеть -как одеть -npc -курсы монтажу -курсы монтажу проектированию -монтажу проектированию -монтажу проектированию программированию -проектированию программированию -проектированию программированию опс -программированию опс -опс -пас -схематика -медный -нфт батл -нфт батл роблокс -анимацию роблокс -мод роблокс -дельта тг -букв -анкету -вузы -кинг саратов -быстро выучить -кинг -кибер кинг -цена курсов робототехнике -цена курсов -айди анимацию -креатор -ру -другом роблокс -категорию саратов -использует роблокс -1с -трудовом обучении использование -обучении использование -использование -использование программы -объекты программирование -3д объекты -27 -умер ли разработчик -умер ли -как можно -как копировать роблокс -копировать роблокс -поменять язык -оружием -практика создание сайта -куда можно записать -практика создание -учебная практика создание -можно записать -with -копировать роблокс студио -майнкрафте 1.21 -связанную роблоксом роблокс -связанную роблоксом -связанную -forge связанную роблоксом -forge связанную -studio forge связанную -studio forge -надписью studio forge -надписью studio -работать роблокс -надписью -картинку надписью studio -картинку надписью -сгенерировать картинку надписью -сгенерировать картинку -можешь сгенерировать картинку -можешь сгенерировать -можешь -как делать красивые -саратов кружок -no -базе -учиться веб -кружки робототехники -75 -добавить аксессуар -как добавить аксессуар -почему майнкрафт -начинающих нуля -большая горная -как поменять шрифт -сейчас саратове -скф мтуси чемпионат -скф мтуси -скф -будет -студио телефон -что чемпионат -аксессуар роблокс -сайт роблокс -студио официальный сайт -сокровищ -мультик роблокс -нем были -милс кел роблокс -картинку роблокс -тур -раскраска -нем были бесконечные -кройки -кройки шитья -9 классе -студио официальный -класс информатики -r34 roblox -admin -парт роблокс -может ли -icpc -все зелья майнкрафте -т лаунчер -класс ответы -ресурспаки -t shirt -бизнес нуля -александр -команды майнкрафте -солярис саратов -опс саратов -как легко -саратове можно -как наложить -серверов -одном -зафризить -ит скул саратов -ит скул -бэкенд -включи мультик ласка -были бесконечные -учи ру -нуб майнкрафте -нуля чтобы -задания -какой пароль -мультик ласка -поменять шрифт роблоксе -все зелья -как зафризить объект -как соединить -где саратове можно -медный голем -корабль нуля -пишут -коды ретро -как заполнить -пвп -со слайдами пошагово -обучают -как отменить действие -отжиматься -мм2 -корп -корп 3 -слайдами пошагово -мм2 роблокс -корабль нуля чтобы -майна -как приручить -выучить язык -как зафризить -ул 310а -мальчик -категории саратове -чтобы доплыть сокровищ -скачать roblox studio -8 класс информатика -были бесконечные роблоксы -скачать roblox -сохранение -соединить -что означает ошибка -строим корабль -которые -живет -дронов -строим корабль нуля -сохранение инвентаря -как вырастить -соревнования -как понять -презентацию компьютере со -отдать ребенка -магазин роблокс -скиллбокс -игра 1 космический -программированию 5 месяцев -нуля чтобы доплыть -команды роблокс -игра 1 -зафризить объект -майнкрафт сервера -строим -ивент роблокс -обсидиан -1 21 8 -34 -отдать -означает ошибка -чтобы доплыть -рэш -delta executor -узнать -энд -краситель майнкрафт -краситель -английский нуля -юбилейный детей -роблокс строим корабль -сохранение инвентаря майнкрафт -фиксплей роблокс строим -наложить -добавить аксессуар роблокс -лягушки -redeem -45 -пета пета -пета -мультик ласка скретч -построй -ките юбилейный -ти шортс -бесконечные -все вещи -синем ките юбилейный -энгельс -ласка скретч -майнкрафт 1.19 -обновить роблокс чтобы -обновление -прохождение -инвентаря майнкрафт -дискорд -бесконечные роблоксы -шрифт роблоксе -i -чемпионат программистов -мтуси чемпионат школьников -эвейд -my -мтуси чемпионат -мтуси -поменять шрифт -21 8 -весь -чтобы нем -чтобы нем были -войс чат -код роблоксе -5 месяцев -маенкравт -delta executor роблокс -кого -постройка -скретч фиксики -писать программы -можно учиться -олимпиада школьников -что чемпионат программистов -is -1.19 -приручить -scrach -коды игре -3d услуги -роблох -maker -чемпионат программистов сейчас -2023 -скулбой -язык роблокс студио -любую игру -как скопировать плейс -голем -тлаунчер -свой пароль -мальчиков -любую -саратов 3d услуги -скопировать любую игру -сысоева -блэк -блэк раша -3d max -блэк раша нуля -scratch beat -beat -раша -ооп -зафризить объект роблокс -скопировать плейс -шортс -кел роблокс -раша нуля -скопировать любую -доплыть -скопировать плейс роблокс -доплыть сокровищ -как скопировать любую -постройки майнкрафт -выдать меч -чтобы выдать меч -комплект постельного -рэш информатика -оружия -разработки использует роблокс -что такое -разработки использует -ролики -blox -код разработки использует -фантом -код разработки -15 лет -какой код разработки -проект скретч -roblox studio fps -studio fps -златопольского программированию -гайд -critical error -textscaled -роблокс дельта -critical -studio critical error -studio critical -developer -рэш информатика 7 -барбоскины -роблокс барбоскины -плагин майнкрафт -раст майнкрафт -находится textscaled -обсидиан майнкрафт -алеся -какое образование -текстур пак -владус роблоксе -урока -310а -связаться -чего нужен -кальмара майнкрафт -roblox script fe -студио лайт -глобальные -script fe -поиск -geometry dash -где взять -флачюской -логин -скретч флачюской -большая горная ул -игорь гниденко -портал обучения -трезубец майнкрафт -игорь гниденко программист -скретч стал помощником -зачарование -заходить -uncopylocked -узорчатая -картошка -как зарегистрироваться -узорчатая ваза -ui -пета роблокса -пета пета роблокса -меня -портал обучения информатике -какого возраста -деревня -ул 310а корп -очень -учи -счисления информатика -крафтятся -501 роблокс -гниденко -пружину роблокс -пружину -азимов -клуб робототехники -детей 5 -сделать пружину роблокс -сделать пружину -узорчатая ваза майнкрафт -семена -как сделать пружину -3b -квинка -игры скретч 3b -кальмара -майнкрафт алекс -плавные анимации -борьба -camera -фирма -нужно ли -лестница -интересно оформить презентацию -алеся кутузова -интересно оформить -армии -сервер майнкрафта -как интересно оформить -как интересно -гниденко программист -игроку -счисления информатика 8 -гниденко программист саратов -корейский -клип -ехать -высоте -алеся кутузова веб -какой высоте -программированию автошкола -кутузова -земли -кутузова веб -школа программированию автошкола -script fe animation -fe -roblox font -плавные анимации роблокс -заставить -roblox font documentation -кутузова веб дизайн -делать плавные -font -font documentation -режиме -documentation -плейстейшен -игра кальмара майнкрафт -fe animation -игра кальмара -шейдер -вверх -программирование ответы -сервер игра кальмара -сервер игра -делать анимации роблокс -знакомство со -уклоном -курсы кройки -your -курсы кройки шитья -саратове 27 29 -как заставить -как сделать рнг -сделать рнг -владус роблокс новые -27 29 -27 29 октября -29 -29 октября -сделать рнг игру -рнг -рнг игру -крафты -корп 3 саратов -вставить картинку презентацию -алекс -что ошибка -новичков -вставить картинку -как зайти другу -3d car roblox -телевизор -инжектор -файл не -index -пола -отжиматься пола нуля -кнопки -3d car -зайти другу -отзывы -что сдавать программиста -отжиматься пола -пола нуля -энгельсе -взять -download -как быстро выучить -можно зарабатывать -304 -особенности -создание игры марио -делать плавные анимации -как вставить картинку -как выдать себе -команда чтобы выдать -горная ул 310а -как посмотреть сколько -explorer -посмотреть сколько -зайти другу роблокс -студио находится textscaled -евгений -model shop -studio model shop -горная ул -studio model -который -волосы -горная -310а корп 3 -как запустить -рельсы -ваза -как скопировать игру -скопировать игру -рпг -скопировать игру роблокс -гравюра -тулбокс -трезубец -силы -программа дисциплины -плк начинающих -объекта -clo 3d -книт -плавные -алексей -ц -clo -системе clo 3d -системе clo -обучение системе clo -обучение системе -рамка -гутара нуля -гутара -системы счисления информатика -ножа -обучения информатике -лица -код роблоксе брукхейвен -щит -roblox executor -ваза майнкрафт -сердце -против -роблоксе брукхейвен -озы программирования изучения -озы программирования -жители -игры марио -подробно -вставлять -топ ит скул -озы -как делать плавные -коды армия -брать -ретро студио -ретро студио роблокс -зарегистрироваться -scratch wiki -свою картинку -310а корп -добавили майнкрафт 1.19 -ресурсы -изучение сербского -армия роблокса -соревнования программированию -основные языки -экзамены -границей -ресурс пак майнкрафт -9 класс саратов -пак майнкрафт -мяч -изучение сербского языка -animation pack роблокс -animation pack -sports animation pack -sports animation -halloween -adidas sports animation -adidas sports -файл роблокс -невидимости -как подключить -adidas -решать -koshatnik0124 -анимацию adidas sports -исправить -анимацию adidas -леня владус -курсы школьников -подключить -зелье невидимости -айди анимацию adidas -майнкрафте рецепты -сербского -сербского языка -построить майнкрафте -как исправить -сербского языка нуля -belly -belly button -зачем нужна -button -ада -скретч новые серии -б -починить -крошка -крошка картошка -как увеличить -степик -мини -белья roblox -белья -jump -make a -задачник златопольского -постельного белья roblox -постельного белья -постельного -задачник златопольского программированию -увеличить -златопольского -змейка скретч -игра как -змейка -kjrc -комплект постельного белья -было -меч роблокс -выдать меч роблокс -там -хентаи -хентаи майнкрафт алекс -авиатор -ролики скретча -детей 4 лет -сони плейстейшен -детей 4 -вазу -277 -wanderlust -wanderlust studio -limit -5 саратов -owen уроки -owen -pressure -limit 25 -сцена -ночное -head -arduino -out -после -tween -нулем -пинг -армии роблокса -mimo -apk -tween service -анархия -nft -9 класса -как форма активного -робайт gg -робайт -папа -studio condo -чем кормить нюхача -кормить нюхача -камеру -авто -аддон -изменение -одном месте -лайт копия -форма активного -крипте нуля -как пользоваться роблокс -как изучить -пользоваться роблокс -кормить нюхача майнкрафт -geometry -roblox game copier -game copier -copier -сони -добавлять -нюхача -майнкрафт сони плейстейшен -292 -студия лайт копия -ошибка 292 -сгенерировать резервные -сгенерировать резервные коды -резервные -нюхача майнкрафт -резервные коды -каменные"
+        }
+      }
+    ]
+  },
+  "versionId": "cedf0e0e-da8c-4f2a-a2eb-e204b1447bd5",
+  "triggerCount": 0,
+  "shared": [
+    {
+      "updatedAt": "2025-11-18T12:48:42.735Z",
+      "createdAt": "2025-11-18T12:48:42.735Z",
+      "role": "workflow:owner",
+      "workflowId": "lOHMa6IJ0lnCkzu7",
+      "projectId": "spKmbJLU4mvACXIB"
+    }
+  ],
+  "tags": [
+    {
+      "updatedAt": "2025-10-06T13:06:54.644Z",
+      "createdAt": "2025-10-06T13:06:54.644Z",
+      "id": "DBEf57wUDunVJUG6",
+      "name": "campaign update"
+    }
+  ],
+  "file_name": "extract-data-for-autotargeting-bids-rewrite.json"
+}
