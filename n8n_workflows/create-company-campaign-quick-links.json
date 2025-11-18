@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-18T08:00:31.793Z",
+  "updatedAt": "2025-11-18T17:45:04.660Z",
   "createdAt": "2025-11-13T06:08:40.998Z",
   "id": "eeZTmctM9IvDF2bH",
   "name": "Create company campaign quick links",
@@ -245,7 +245,7 @@
     },
     {
       "parameters": {
-        "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nconst workflowData = $getWorkflowStaticData('global');\nworkflowData.steps_passed = workflowData.steps_passed+1; // update steps counter\n//set used tokens here!!!!\nlet step_tokens_used = toNumber($('HTTP Request').last().json.usage.total_tokens,0);\n //set used tokens here!!!!\nworkflowData.tokens_used += step_tokens_used;\n\nfor (const item of $input.all()) {\n  item.json.steps_passed = workflowData.steps_passed;\n  item.json.tokens_used = workflowData.tokens_used\n}\n\nreturn $input.all();"
+        "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nfunction toNumber(x, def = 0) {\n  const n = Number(x);\n  return Number.isFinite(n) ? n : def;\n}\nconst workflowData = $getWorkflowStaticData('global');\nworkflowData.steps_passed = workflowData.steps_passed+1; // update steps counter\n//set used tokens here!!!!\nlet step_tokens_used = toNumber($('HTTP Request').last().json.usage.total_tokens,0);\n //set used tokens here!!!!\nworkflowData.tokens_used += step_tokens_used;\n\nfor (const item of $input.all()) {\n  item.json.steps_passed = workflowData.steps_passed;\n  item.json.tokens_used = workflowData.tokens_used\n}\n\nreturn $input.all();"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -770,7 +770,7 @@
       "typeVersion": 2,
       "position": [
         4208,
-        32
+        -32
       ],
       "id": "3ba85a09-7f36-4b0e-865a-52503ff694ba",
       "name": "Separate output items"
@@ -1212,7 +1212,7 @@
       }
     ]
   },
-  "versionId": "a3056434-54ce-47b7-ae9b-140f1854db51",
+  "versionId": "91e13f8b-339d-4704-bb83-81f343071c2d",
   "triggerCount": 0,
   "shared": [
     {
