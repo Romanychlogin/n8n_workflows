@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-19T17:24:25.567Z",
+  "updatedAt": "2025-11-19T18:22:55.774Z",
   "createdAt": "2025-11-19T17:19:31.386Z",
   "id": "JUfn8q0IjV4Ya5Cw",
   "name": "company_content_from_site",
@@ -140,36 +140,6 @@
     },
     {
       "parameters": {
-        "content": "создаем текст",
-        "height": 448,
-        "width": 816
-      },
-      "type": "n8n-nodes-base.stickyNote",
-      "typeVersion": 1,
-      "position": [
-        1600,
-        272
-      ],
-      "id": "3ed84b39-6e7b-4895-98f7-91cf90dff77e",
-      "name": "Sticky Note2"
-    },
-    {
-      "parameters": {
-        "content": "создаем ссылку",
-        "height": 448,
-        "width": 784
-      },
-      "type": "n8n-nodes-base.stickyNote",
-      "typeVersion": 1,
-      "position": [
-        2448,
-        224
-      ],
-      "id": "4840b411-859a-4c45-8db7-44e5f154e864",
-      "name": "Sticky Note3"
-    },
-    {
-      "parameters": {
         "jsCode": "const workflowData = $getWorkflowStaticData('global');\nlet my_prompt = workflowData.my_prompt.data;\n\nfor (const item of $input.all()) {\n  item.json.my_prompt = my_prompt.replaceAll(\"{{company_description}}\", workflowData.company_description).replaceAll(\"{{key_words}}\", JSON.stringify($json.items));\n}\n\nreturn $input.all();"
       },
       "type": "n8n-nodes-base.code",
@@ -180,112 +150,6 @@
       ],
       "id": "53152a65-ec73-42b5-8fda-cb9dcc11880c",
       "name": "Set prompt"
-    },
-    {
-      "parameters": {
-        "jsCode": "\n\nreturn [{\n  json: \n {\n  \"model\": \"gpt-5-2025-08-07\",\n  \"input\": [\n    {\n      \"role\": \"developer\",\n      \"content\": [\n        {\n          \"type\": \"input_text\",\n          \"text\": \"Ты — генератор коротких рекламных текстов. Твоя задача — для каждого запроса пользователя и заголовка объявления к нему создать одну строку рекламного текста, соблюдая ограничения. Текст должен быть понятным и соответствовать правилам пунктуации.\"\n        }\n      ]\n    },\n    {\n      \"role\": \"user\",\n      \"content\": [\n        {\n          \"type\": \"input_text\",\n          \"text\": $json.my_prompt\n        }\n      ]\n    }\n  ],\n  \"text\": {\n    \"format\": {\n      \"type\": \"json_schema\",\n      \"name\": \"ad_texts\",\n      \"strict\": true,\n      \"schema\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"ad_texts\": {\n            \"type\": \"array\",\n            \"description\": \"List of ad text objects.\",\n            \"items\": {\n              \"type\": \"object\",\n              \"properties\": {\n                \"ad_text\": {\n                  \"type\": \"string\",\n                  \"description\": \"Ad text, up to 81 characters.\",\n                  \"minLength\": 0,\n                  \"maxLength\": 81\n                },\n                \"id\": {\n                  \"type\": \"string\",\n                  \"description\": \"Unique identifier for the ad text object.\",\n                  \"minLength\": 1\n                }\n              },\n              \"required\": [\n                \"ad_text\",\n                \"id\"\n              ],\n              \"additionalProperties\": false\n            },\n            \"minItems\": 0\n          }\n        },\n        \"required\": [\n          \"ad_texts\"\n        ],\n        \"additionalProperties\": false\n      }\n    },\n    \"verbosity\": \"medium\"\n  },\n  \"reasoning\": {\n    \"effort\": \"low\",\n    \"summary\": \"detailed\"\n  },\n  \"tools\": [],\n  \"store\": false,\n  \"include\": [\n    \"reasoning.encrypted_content\",\n    \"web_search_call.action.sources\"\n  ]\n}\n\n}];"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        1920,
-        448
-      ],
-      "id": "592712ef-ef02-457f-be42-e305c33b0c9a",
-      "name": "Set API JSON1"
-    },
-    {
-      "parameters": {
-        "method": "POST",
-        "url": "https://api.openai.com/v1/responses",
-        "authentication": "predefinedCredentialType",
-        "nodeCredentialType": "openAiApi",
-        "sendBody": true,
-        "specifyBody": "json",
-        "jsonBody": "={{$json}}",
-        "options": {}
-      },
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.2,
-      "position": [
-        2096,
-        448
-      ],
-      "id": "e5584b9c-4141-4a5f-ab0c-8a0265d57db2",
-      "name": "HTTP Request1",
-      "retryOnFail": true,
-      "credentials": {
-        "openAiApi": {
-          "id": "m4NScyhZzV3hBcTr",
-          "name": "OpenAi Yads"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "jsCode": "const workflowData = $getWorkflowStaticData('global');\nlet my_prompt = workflowData.my_prompt_text.data;\n\nfor (const item of $input.all()) {\n  item.json.my_prompt = my_prompt.replaceAll(\"{{company_description}}\", workflowData.company_description).replaceAll(\"{{key_words_ad_headers}}\", JSON.stringify($json.Items));\n}\n\nreturn $input.all();"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        1680,
-        464
-      ],
-      "id": "d4befadb-dc20-4b9c-8ddc-9bf591d096a6",
-      "name": "Set prompt1"
-    },
-    {
-      "parameters": {
-        "jsCode": "const urlEnum = $('string for service urls').last().json.urls ?? [];\n\nreturn [{\n  json:{\n  \"model\": \"gpt-5\",\n  \"input\": [\n    {\n      \"role\": \"developer\",\n      \"content\": [\n        {\n          \"type\": \"input_text\",\n          \"text\": \"Strictly follow provided instructions and response format\"\n        }\n      ]\n    },\n    {\n      \"role\": \"user\",\n      \"content\": [\n        {\n          \"type\": \"input_text\",\n          \"text\": $json.my_prompt\n        }\n      ]\n    }\n  ],\n  \"text\": {\n    \"format\": {\n      \"type\": \"json_schema\",\n      \"name\": \"url_strings\",\n      \"strict\": true,\n      \"schema\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"url_strings\": {\n            \"type\": \"array\",\n            \"description\": \"List of URL objects.\",\n            \"items\": {\n              \"type\": \"object\",\n              \"properties\": {\n                \"url_string\": {\n                  \"type\": \"string\",\n                  \"enum\": urlEnum,\n                  \"description\": \"A valid URL from the allowed list.\"\n                },\n                \"id\": {\n                  \"type\": \"string\",\n                  \"description\": \"Unique identifier for the URL object.\",\n                  \"minLength\": 1\n                }\n              },\n              \"required\": [\n                \"url_string\",\n                \"id\"\n              ],\n              \"additionalProperties\": false\n            },\n            \"minItems\": 0\n          }\n        },\n        \"required\": [\n          \"url_strings\"\n        ],\n        \"additionalProperties\": false\n      }\n    },\n    \"verbosity\": \"low\"\n  },\n  \"reasoning\": {\n    \"effort\": \"minimal\",\n    \"summary\": \"auto\"\n  },\n  \n  \"store\": false,\n  \"include\": [\n    \"reasoning.encrypted_content\",\n    \"web_search_call.action.sources\"\n  ]\n}\n}];"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        2768,
-        432
-      ],
-      "id": "b0bded6e-2111-4893-90f2-1e5d5801cda6",
-      "name": "Set API JSON2"
-    },
-    {
-      "parameters": {
-        "method": "POST",
-        "url": "https://api.openai.com/v1/responses",
-        "authentication": "predefinedCredentialType",
-        "nodeCredentialType": "openAiApi",
-        "sendBody": true,
-        "specifyBody": "json",
-        "jsonBody": "={{$json}}",
-        "options": {}
-      },
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.2,
-      "position": [
-        3056,
-        416
-      ],
-      "id": "f6846862-ed23-4f5d-a08c-fdfeb088e2dc",
-      "name": "HTTP Request2",
-      "retryOnFail": true,
-      "credentials": {
-        "openAiApi": {
-          "id": "m4NScyhZzV3hBcTr",
-          "name": "OpenAi Yads"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "jsCode": "const workflowData = $getWorkflowStaticData('global');\nlet my_prompt = workflowData.my_prompt_url.data;\n\nfor (const item of $input.all()) {\n  item.json.my_prompt = my_prompt.replaceAll(\"{{company_description}}\", workflowData.company_description_with_url).replaceAll(\"{{key_word_header_ad_text}}\", JSON.stringify($json.Items));\n}\n\nreturn $input.all();"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        2528,
-        448
-      ],
-      "id": "dd82db41-4b01-419a-bca9-120528f10dee",
-      "name": "Set prompt2"
     },
     {
       "parameters": {
@@ -341,7 +205,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        864,
+        1248,
         -80
       ],
       "id": "4d6c8b6e-4fe1-48ae-8d8b-2ea2fc4e9cc1",
@@ -365,8 +229,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        320,
-        528
+        240,
+        288
       ],
       "id": "b6e1e05a-929b-43f9-8cf0-aecabd8c3188",
       "name": "reset first_item"
@@ -435,92 +299,6 @@
     },
     {
       "parameters": {
-        "conditions": {
-          "options": {
-            "caseSensitive": true,
-            "leftValue": "",
-            "typeValidation": "strict",
-            "version": 2
-          },
-          "conditions": [
-            {
-              "id": "fa13510a-3a56-4cd5-8b80-3e4fe626ce0b",
-              "leftValue": "={{ $json.to_terminate }}",
-              "rightValue": true,
-              "operator": {
-                "type": "boolean",
-                "operation": "equals"
-              }
-            }
-          ],
-          "combinator": "and"
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.if",
-      "typeVersion": 2.2,
-      "position": [
-        2096,
-        1264
-      ],
-      "id": "ceab2b01-4272-467a-8b10-c30ee2b44e09",
-      "name": "If"
-    },
-    {
-      "parameters": {
-        "errorMessage": "Process terminated by user"
-      },
-      "type": "n8n-nodes-base.stopAndError",
-      "typeVersion": 1,
-      "position": [
-        2288,
-        1264
-      ],
-      "id": "cd46546b-ba37-475e-a439-a25c8b520449",
-      "name": "Stop and Error"
-    },
-    {
-      "parameters": {
-        "operation": "select",
-        "schema": {
-          "__rl": true,
-          "mode": "list",
-          "value": "public"
-        },
-        "table": {
-          "__rl": true,
-          "value": "business_processes_states",
-          "mode": "list",
-          "cachedResultName": "business_processes_states"
-        },
-        "returnAll": true,
-        "where": {
-          "values": [
-            {
-              "column": "n8n_workflow_execution_id",
-              "value": "={{ $execution.id }}"
-            }
-          ]
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.postgres",
-      "typeVersion": 2.6,
-      "position": [
-        1872,
-        1280
-      ],
-      "id": "8116d38b-5300-49d8-b3e9-4074ee896d1d",
-      "name": "check if termination is requested",
-      "credentials": {
-        "postgres": {
-          "id": "4YkdFJcdTgzo9hkz",
-          "name": "PGvector"
-        }
-      }
-    },
-    {
-      "parameters": {
         "content": "обновить все запоосы, добавить report id"
       },
       "type": "n8n-nodes-base.stickyNote",
@@ -558,7 +336,7 @@
     },
     {
       "parameters": {
-        "jsCode": "\n\n// 1) Собираем и чистим массив URL'ов\nlet urls = [];\nfor (const { json } of $input.all()) {\n  const v = json?.service_url;\n  if (v == null) continue;\n  const s = String(v).trim();\n  if (s) urls.push(s);\n}\n\n\n\n\n\n// 4) Возвращаем и массив, и строку\nreturn [{ json: { urls,  count: urls.length } }];"
+        "jsCode": "// 1) Собираем и чистим массив URL'ов\nlet urls = [];\nfor (const { json } of $input.all()) {\n  const v = json?.service_url;\n  if (v == null) continue;\n  const s = String(v).trim();\n  if (s) urls.push(s);\n}\n\n// 2) Превращаем каждый URL в отдельный выходной item\n// при необходимости можно добавить index\nreturn urls.map((url, index) => ({\n  json: {\n    service_url: url,\n    index,          // можно удалить, если не нужен\n  },\n}));"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -584,47 +362,6 @@
     },
     {
       "parameters": {
-        "jsCode": "// 1) Читаем строку JSON из указанного поля\nlet raw = $input.first().json?.output?.[1]?.content?.[0]?.text;\n\n// Минимальная чистка и парсинг\nfunction stripCodeFences(s) {\n  if (typeof s !== 'string') return s;\n  let t = s.trim();\n  if (t.startsWith('```')) t = t.replace(/^```[a-zA-Z]*\\n?/, '').replace(/```$/, '').trim();\n  return t;\n}\nfunction parseJson(s) {\n  const t = stripCodeFences(String(s ?? ''));\n  try { return JSON.parse(t); } catch { return null; }\n}\n\nconst obj = parseJson(raw);\nif (!obj || !Array.isArray(obj.ad_texts)) {\n  return [{ json: { Items: [], ItemsbyId: {}, note: 'ad_texts not found' } }];\n}\n\n// 2) Прямой доступ к словарю ItemsbyId из указанной ноды\nconst itemsById = $('keywords and headers').last().json?.ItemsbyId ?? {};\n\n// 3) Собираем выход\nconst Items = [];\nfor (const h of obj.ad_texts) {\n  if (!h || typeof h !== 'object') continue;\n\n  const id = String(h.id ?? '');\n  const ad_text = String(h.ad_text ?? '');\n  if (!id || !ad_text) continue;\n\n  const src = itemsById[id] ?? {};\n  const phrase = src?.phrase != null ? String(src.phrase) : '';\n  const header = src?.header != null ? String(src.header) : '';\n\n  Items.push({ phrase, header, ad_text, id });\n}\n\n// 4) Индекс по id -> объект\nconst ItemsbyId = Object.fromEntries(Items.map(o => [o.id, o]));\n\n// 5) Возврат\nreturn [{\n  json: {\n    Items,\n    ItemsbyId\n  }\n}];"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        2304,
-        448
-      ],
-      "id": "2214b1ec-aba4-4dcc-ae90-443106796b6d",
-      "name": "keywords headers and texts"
-    },
-    {
-      "parameters": {
-        "jsCode": "// 1) Берём строку JSON из указанного поля\nlet raw = $input.first().json?.output?.[1]?.content?.[0]?.text;\n\n// Удаляем ```...``` и парсим JSON\nfunction stripCodeFences(s) {\n  if (typeof s !== 'string') return s;\n  let t = s.trim();\n  if (t.startsWith('```')) t = t.replace(/^```[a-zA-Z]*\\n?/, '').replace(/```$/, '').trim();\n  return t;\n}\nfunction safeParseJSON(x) {\n  if (x == null) return null;\n  if (typeof x === 'object') return x;\n  const s = stripCodeFences(String(x));\n  try { return JSON.parse(s); } catch {\n    const m = s.match(/{[\\s\\S]*}/);\n    if (m) { try { return JSON.parse(m[0]); } catch {} }\n    return null;\n  }\n}\n\nconst obj = safeParseJSON(raw);\n\n// === ГЛАВНОЕ ИЗМЕНЕНИЕ: используем url_strings вместо phrases ===\nif (!obj || !Array.isArray(obj.url_strings)) {\n  return [{ json: { note: 'url_strings not found', Items: [], count: 0 } }];\n}\n\n// 2) Источник мапы по id из другой ноды (если есть)\nconst itemsById = $('keywords headers and texts').last().json?.ItemsbyId ?? {};\nconst utm_string='?utm_source=yandex&utm_medium=cpc&utm_campaign={campaign_id}&utm_content={ad_id}&utm_term={keyword}.{device_type}.{region_name}&block={position_type}.{position}.{source}';\n// 3) Формируем выходные элементы\nconst out = [];\nfor (const it of obj.url_strings) {\n  if (!it || typeof it !== 'object') continue;\n\n  let ad_url  = typeof it.url_string === 'string' && it.url_string.trim() ? it.url_string.trim() : null;\n  const ad_id = typeof it.id === 'string' && it.id.trim() ? it.id.trim() : null;\n  ad_url = ad_url + utm_string;\n  if (!ad_url || !ad_id) continue;\n\n  const src = itemsById[ad_id] ?? {};\n  const ad_header = src?.header ?? '';\n  const ad_text   = src?.ad_text ?? '';\n  const key_word  = src?.phrase ?? '';\n\n  out.push({\n    json: { ad_id, ad_url, ad_header, ad_text, key_word }\n  });\n}\n\nreturn out;"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        3696,
-        448
-      ],
-      "id": "da419c9b-5efb-4ddb-bd97-f735a83c2bd3",
-      "name": "Separate output items"
-    },
-    {
-      "parameters": {
-        "options": {
-          "reset": "={{ $json.is_first2 }}"
-        }
-      },
-      "type": "n8n-nodes-base.splitInBatches",
-      "typeVersion": 3,
-      "position": [
-        304,
-        1152
-      ],
-      "id": "d6af2d43-3178-4996-9829-9107ea0a9b23",
-      "name": "Loop Over Items2"
-    },
-    {
-      "parameters": {
         "assignments": {
           "assignments": [
             {
@@ -641,85 +378,11 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        3792,
-        864
+        3200,
+        816
       ],
       "id": "5db7c944-3dbe-40a0-9714-8f528cb77aac",
       "name": "set first_item"
-    },
-    {
-      "parameters": {
-        "assignments": {
-          "assignments": [
-            {
-              "id": "ebafa31d-edf7-41c0-a06e-e884ad9595ea",
-              "name": "is_first2",
-              "value": "=false",
-              "type": "boolean"
-            }
-          ]
-        },
-        "includeOtherFields": true,
-        "options": {}
-      },
-      "type": "n8n-nodes-base.set",
-      "typeVersion": 3.4,
-      "position": [
-        592,
-        1296
-      ],
-      "id": "1def0abe-b231-4760-abaf-8a9af7c83504",
-      "name": "reset first_item1"
-    },
-    {
-      "parameters": {
-        "jsCode": "function normalizeText(text) {\n  if (text == null) return text;\n  let s = String(text);\n\n  // --- Dashes → ASCII hyphen-minus (-)\n  s = s\n    .replace(/\\u2014/g, \"-\") // em dash\n    .replace(/\\u2013/g, \"-\") // en dash\n    .replace(/\\u2012/g, \"-\") // figure dash\n    .replace(/\\u2015/g, \"-\") // horizontal bar\n    .replace(/\\u2212/g, \"-\"); // minus sign\n\n  // --- Special spaces → regular space\n  s = s\n    .replace(/\\u00A0/g, \" \") // no-break space\n    .replace(/\\u2009/g, \" \") // thin space\n    .replace(/\\u200A/g, \" \") // hair space\n    .replace(/\\u2007/g, \" \") // figure space\n    .replace(/\\u2008/g, \" \"); // punctuation space\n\n  // --- Collapse any whitespace runs to a single space\n  s = s.replace(/\\s+/g, \" \");\n  s = s.replace(/[^0-9A-Za-zА-Яа-яЁё.,;:!?'\"«»()[\\]{}\\u2026\\u2014\\u2013\\-#\\s]+/g, '');\n  return s;\n}\n// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nfor (const item of $input.all()) {\n  item.json.ad_header=normalizeText(item.json.ad_header);\n  item.json.ad_text=normalizeText(item.json.ad_text);  \n}\n\nreturn $input.all();"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        800,
-        1296
-      ],
-      "id": "862feabb-50a1-4be1-a0a9-fd0becfd8eb0",
-      "name": "Normalize texts"
-    },
-    {
-      "parameters": {
-        "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nconst workflowData = $getWorkflowStaticData('global');\nworkflowData.steps_passed++; // update steps counter\nfor (const item of $input.all()) {\n  item.json.steps_passed = workflowData.steps_passed;\n}\n\n\nreturn $input.all();"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        1408,
-        1296
-      ],
-      "id": "72152632-418f-4f6a-b852-f6db9f042aff",
-      "name": "Get current step saved"
-    },
-    {
-      "parameters": {
-        "operation": "executeQuery",
-        "query": "update business_processes_states set steps_passed=$2 where n8n_workflow_execution_id=$1",
-        "options": {
-          "queryReplacement": "=[{{$execution.id}},{{$json.steps_passed}}]"
-        }
-      },
-      "type": "n8n-nodes-base.postgres",
-      "typeVersion": 2.6,
-      "position": [
-        1664,
-        1280
-      ],
-      "id": "2b8f2dcd-b122-4b54-882a-ae5097bb9641",
-      "name": "Mark_workflow_passed_steps1",
-      "executeOnce": true,
-      "credentials": {
-        "postgres": {
-          "id": "4YkdFJcdTgzo9hkz",
-          "name": "PGvector"
-        }
-      }
     },
     {
       "parameters": {
@@ -728,8 +391,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        3248,
-        448
+        1488,
+        512
       ],
       "id": "99d078bb-3394-4bfa-a69b-b0afbcdcf860",
       "name": "update calls counters2"
@@ -745,8 +408,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        3392,
-        592
+        1632,
+        656
       ],
       "id": "758f89cc-a0aa-488c-99e2-00e7b6e4714d",
       "name": "Save_tokens_usage",
@@ -765,34 +428,11 @@
       "type": "n8n-nodes-base.merge",
       "typeVersion": 3.2,
       "position": [
-        3520,
-        448
+        1760,
+        512
       ],
       "id": "413c3cc2-935a-49bb-91ad-cbbb89157938",
       "name": "Merge1"
-    },
-    {
-      "parameters": {
-        "operation": "executeQuery",
-        "query": "update ads_list set ad_header=$2, ad_text=$3, ad_url=$4,add_to_hi_demand=false,to_upload_ad=true,group_name=$2 where ad_id=$1\nreturning ad_id,ad_text,ad_url",
-        "options": {
-          "queryReplacement": "={{ [\n  $('Loop Over Items2').last().json.ad_id,\n  $('Loop Over Items2').last().json.ad_header,\n  $('Loop Over Items2').last().json.ad_text,\n  $('Loop Over Items2').last().json.ad_url\n]}}"
-        }
-      },
-      "type": "n8n-nodes-base.postgres",
-      "typeVersion": 2.6,
-      "position": [
-        1104,
-        1296
-      ],
-      "id": "9c58fa71-21de-470a-aed5-96bf7ac0616d",
-      "name": "update ads",
-      "credentials": {
-        "postgres": {
-          "id": "Hx2VFmUi5WO2K4QX",
-          "name": "Postgres account 2"
-        }
-      }
     },
     {
       "parameters": {
@@ -843,6 +483,32 @@
       ],
       "id": "f6e2903d-2419-42fd-8e29-f3ba71695721",
       "name": "Merge2"
+    },
+    {
+      "parameters": {
+        "url": "=https://r.jina.ai/{{ $json.service_url }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Accept",
+              "value": "application/json"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 30000
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        448,
+        416
+      ],
+      "id": "48fa6805-b0f8-4146-a7af-f402d52cbc2b",
+      "name": "HTTP Request3",
+      "executeOnce": true
     }
   ],
   "connections": {
@@ -919,77 +585,11 @@
         ]
       ]
     },
-    "Set API JSON1": {
-      "main": [
-        [
-          {
-            "node": "HTTP Request1",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Set prompt1": {
-      "main": [
-        [
-          {
-            "node": "Set API JSON1",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "HTTP Request": {
       "main": [
         [
           {
             "node": "keywords and headers",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Set API JSON2": {
-      "main": [
-        [
-          {
-            "node": "HTTP Request2",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Set prompt2": {
-      "main": [
-        [
-          {
-            "node": "Set API JSON2",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "HTTP Request1": {
-      "main": [
-        [
-          {
-            "node": "keywords headers and texts",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "HTTP Request2": {
-      "main": [
-        [
-          {
-            "node": "update calls counters2",
             "type": "main",
             "index": 0
           }
@@ -1034,7 +634,7 @@
       "main": [
         [
           {
-            "node": "Set prompt",
+            "node": "HTTP Request3",
             "type": "main",
             "index": 0
           }
@@ -1068,35 +668,6 @@
         ]
       ]
     },
-    "If": {
-      "main": [
-        [
-          {
-            "node": "Stop and Error",
-            "type": "main",
-            "index": 0
-          }
-        ],
-        [
-          {
-            "node": "Loop Over Items2",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "check if termination is requested": {
-      "main": [
-        [
-          {
-            "node": "If",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "get service urls": {
       "main": [
         [
@@ -1110,49 +681,14 @@
     },
     "string for service urls": {
       "main": [
-        [
-          {
-            "node": "set first_item1",
-            "type": "main",
-            "index": 0
-          }
-        ]
+        []
       ]
     },
     "keywords and headers": {
       "main": [
         [
           {
-            "node": "Set prompt1",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "keywords headers and texts": {
-      "main": [
-        [
-          {
-            "node": "Set prompt2",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Loop Over Items2": {
-      "main": [
-        [
-          {
-            "node": "Loop Over Items",
-            "type": "main",
-            "index": 0
-          }
-        ],
-        [
-          {
-            "node": "reset first_item1",
+            "node": "update calls counters2",
             "type": "main",
             "index": 0
           }
@@ -1163,62 +699,7 @@
       "main": [
         [
           {
-            "node": "Loop Over Items2",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Separate output items": {
-      "main": [
-        [
-          {
-            "node": "set first_item",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "reset first_item1": {
-      "main": [
-        [
-          {
-            "node": "Normalize texts",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Normalize texts": {
-      "main": [
-        [
-          {
-            "node": "update ads",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Get current step saved": {
-      "main": [
-        [
-          {
-            "node": "Mark_workflow_passed_steps1",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Mark_workflow_passed_steps1": {
-      "main": [
-        [
-          {
-            "node": "check if termination is requested",
+            "node": "Loop Over Items",
             "type": "main",
             "index": 0
           }
@@ -1256,18 +737,7 @@
       "main": [
         [
           {
-            "node": "Separate output items",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "update ads": {
-      "main": [
-        [
-          {
-            "node": "Get current step saved",
+            "node": "set first_item",
             "type": "main",
             "index": 0
           }
@@ -1301,6 +771,17 @@
         [
           {
             "node": "Loop Over Items1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request3": {
+      "main": [
+        [
+          {
+            "node": "Set prompt",
             "type": "main",
             "index": 0
           }
@@ -1347,7 +828,7 @@
       }
     ]
   },
-  "versionId": "0ac6f5f0-024e-4736-ad88-8bf890549409",
+  "versionId": "a30984cb-1af4-421d-a9cc-9add3a9c94b6",
   "triggerCount": 0,
   "shared": [
     {
