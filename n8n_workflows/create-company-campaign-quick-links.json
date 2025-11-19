@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-19T13:49:11.166Z",
+  "updatedAt": "2025-11-19T14:02:14.107Z",
   "createdAt": "2025-11-13T06:08:40.998Z",
   "id": "eeZTmctM9IvDF2bH",
   "name": "Create company campaign quick links",
@@ -1155,13 +1155,7 @@
     },
     "headers": {
       "main": [
-        [
-          {
-            "node": "Set prompt1",
-            "type": "main",
-            "index": 0
-          }
-        ]
+        []
       ]
     },
     "headers and texts": {
@@ -1212,7 +1206,7 @@
       }
     ]
   },
-  "versionId": "348f5c7b-8ea6-4a87-b49c-4eda709a594c",
+  "versionId": "45b2e3de-9a47-498a-8e73-1660ac4f8de4",
   "triggerCount": 0,
   "shared": [
     {
