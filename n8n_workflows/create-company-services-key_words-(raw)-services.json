@@ -1,6 +1,6 @@
 {
+  "updatedAt": "2025-11-19T14:43:41.458Z",
   "createdAt": "2025-09-12T09:29:48.196Z",
-  "updatedAt": "2025-11-01T10:42:20.987Z",
   "id": "JpsCGfUrbdGhD8ix",
   "name": "Create company services key_words (raw) services",
   "active": false,
@@ -270,7 +270,7 @@
         "operation": "executeQuery",
         "query": "select cs.service_name,cs.service_description,c.company_name from companies c, company_services cs where c.company_id=cs.company_id and c.company_id=$1",
         "options": {
-          "queryReplacement": "{{$('When Executed by Another Workflow').first().json.company_id}}"
+          "queryReplacement": "={{$('When Executed by Another Workflow').first().json.company_id}}"
         }
       },
       "type": "n8n-nodes-base.postgres",
@@ -834,12 +834,12 @@
       }
     ]
   },
-  "versionId": "8a9a8054-55af-468a-bf4e-1aae39a7bad1",
+  "versionId": "9551906d-56ee-4f89-bef1-a441f3c3154b",
   "triggerCount": 0,
   "shared": [
     {
-      "createdAt": "2025-09-12T09:29:48.196Z",
       "updatedAt": "2025-09-12T09:29:48.196Z",
+      "createdAt": "2025-09-12T09:29:48.196Z",
       "role": "workflow:owner",
       "workflowId": "JpsCGfUrbdGhD8ix",
       "projectId": "spKmbJLU4mvACXIB"
@@ -847,8 +847,8 @@
   ],
   "tags": [
     {
-      "createdAt": "2025-10-17T09:03:18.269Z",
       "updatedAt": "2025-10-17T09:03:18.269Z",
+      "createdAt": "2025-10-17T09:03:18.269Z",
       "id": "S7zerj1h6Ro25pTA",
       "name": "client creation"
     }
