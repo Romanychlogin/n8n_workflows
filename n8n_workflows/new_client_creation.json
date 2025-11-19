@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-19T16:58:55.787Z",
+  "updatedAt": "2025-11-19T17:03:45.840Z",
   "createdAt": "2025-10-22T11:42:51.794Z",
   "id": "EgFFe1spvxMBXwgw",
   "name": "New_client_creation",
@@ -648,7 +648,7 @@
         "operation": "executeQuery",
         "query": "SELECT id\nFROM workflow_entity\nWHERE name = $1\nORDER BY id DESC\nLIMIT 1;",
         "options": {
-          "queryReplacement": "={{ $('ADS headers and texts creation services for updates').item.json.workflow_name }}"
+          "queryReplacement": "={{ $('company_minus_words_from_base').item.json.workflow_name }}"
         }
       },
       "type": "n8n-nodes-base.postgres",
@@ -679,20 +679,8 @@
             {
               "id": "fda82fe6-7e78-49d2-8130-43cb54ef5d8a",
               "name": "company_id",
-              "value": "={{ $('company_record_id').item.json.company_id }}",
+              "value": "={{ $('Insert new company').item.json.company_id }}",
               "type": "number"
-            },
-            {
-              "id": "da41f8d6-0b51-4e6c-91c3-96c8ca5d1659",
-              "name": "threshhold",
-              "value": "={{ $('Set variables').item.json.threshhold }}",
-              "type": "string"
-            },
-            {
-              "id": "242e22ab-d73d-4b1f-b148-3cd44943fe6f",
-              "name": "import_id",
-              "value": "={{ $('company_record_id').item.json.report_id }}",
-              "type": "string"
             }
           ]
         },
@@ -770,29 +758,6 @@
           "name": "PGvector"
         }
       }
-    },
-    {
-      "parameters": {
-        "assignments": {
-          "assignments": [
-            {
-              "id": "99e6bb89-0b33-4e72-b5be-2e118b69afa2",
-              "name": "workflow_name",
-              "value": "ADS headers and texts creation services for updates",
-              "type": "string"
-            }
-          ]
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.set",
-      "typeVersion": 3.4,
-      "position": [
-        448,
-        2496
-      ],
-      "id": "3f792c3c-f35d-4a89-951b-b10c00be7301",
-      "name": "ADS headers and texts creation services for updates"
     },
     {
       "parameters": {
@@ -2116,19 +2081,7 @@
             {
               "id": "fda82fe6-7e78-49d2-8130-43cb54ef5d8a",
               "name": "company_id",
-              "value": "={{ $('company_record_id').item.json.company_id }}",
-              "type": "number"
-            },
-            {
-              "id": "da41f8d6-0b51-4e6c-91c3-96c8ca5d1659",
-              "name": "threshhold",
-              "value": "={{ $('Set variables').item.json.threshhold }}",
-              "type": "string"
-            },
-            {
-              "id": "6e3154c1-d961-4edb-8615-648bfee279e1",
-              "name": "import_id",
-              "value": "={{ $('company_record_id').item.json.report_id }}",
+              "value": "={{ $('Insert new company').item.json.company_id }}",
               "type": "number"
             }
           ]
@@ -2871,6 +2824,29 @@
       ],
       "id": "f5cbeb6c-fb92-4ef9-8f9a-868dee25eefb",
       "name": "Create company services key_words (raw) services"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "99e6bb89-0b33-4e72-b5be-2e118b69afa2",
+              "name": "workflow_name",
+              "value": "company_minus_words_from_base",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        448,
+        2496
+      ],
+      "id": "3f792c3c-f35d-4a89-951b-b10c00be7301",
+      "name": "company_minus_words_from_base"
     }
   ],
   "connections": {
@@ -3186,17 +3162,6 @@
         [
           {
             "node": "minus words post processing",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "ADS headers and texts creation services for updates": {
-      "main": [
-        [
-          {
-            "node": "Execute a SQL query2",
             "type": "main",
             "index": 0
           }
@@ -3788,7 +3753,7 @@
       "main": [
         [
           {
-            "node": "ADS headers and texts creation services for updates",
+            "node": "company_minus_words_from_base",
             "type": "main",
             "index": 0
           }
@@ -4094,6 +4059,17 @@
           }
         ]
       ]
+    },
+    "company_minus_words_from_base": {
+      "main": [
+        [
+          {
+            "node": "Execute a SQL query2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
@@ -4117,7 +4093,7 @@
       }
     ]
   },
-  "versionId": "d8ab37ad-1413-46a0-8bb6-4c73e4ca84a2",
+  "versionId": "da0d015c-da4c-45e6-ba55-67a04a62e03c",
   "triggerCount": 0,
   "shared": [
     {
