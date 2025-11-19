@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-18T18:02:38.345Z",
+  "updatedAt": "2025-11-19T14:34:54.081Z",
   "createdAt": "2025-10-22T11:42:51.794Z",
   "id": "EgFFe1spvxMBXwgw",
   "name": "New_client_creation",
@@ -193,7 +193,7 @@
         "operation": "executeQuery",
         "query": "SELECT id\nFROM workflow_entity\nWHERE name = $1\nORDER BY id DESC\nLIMIT 1;",
         "options": {
-          "queryReplacement": "={{ $('ADV_campaign_data_load').item.json.workflow_name }}"
+          "queryReplacement": "={{ $('company services').item.json.workflow_name }}"
         }
       },
       "type": "n8n-nodes-base.postgres",
@@ -460,7 +460,7 @@
         "operation": "executeQuery",
         "query": "update business_processes_states set  tokens_used_type=$3,company_id=$4, tokens_used=tokens_used+(select bps.tokens_used from business_processes bp1,business_processes_states bps,business_processes_states bps2 where bp1.n8n_process_name=$2 and bp1.business_process_id=bps.business_process_id and  bps.n8n_workflow_root_execution_id=bps2.n8n_workflow_execution_id  and bps.finished is not null and bps2.n8n_workflow_execution_id=$1 order by bps2.business_process_state_id desc LIMIT 1) where n8n_workflow_execution_id=$1;\n",
         "options": {
-          "queryReplacement": "=[{{$execution.id}},{{$('ADV_campaign_data_load').item.json.workflow_name}},{{ 'gpt-5' }},{{ $('company_record_id').item.json.company_id }}]"
+          "queryReplacement": "=[{{$execution.id}},{{$('company services').item.json.workflow_name}},{{ 'gpt-5' }},{{ $('company_record_id').item.json.company_id }}]"
         }
       },
       "type": "n8n-nodes-base.postgres",
@@ -514,7 +514,7 @@
         "operation": "executeQuery",
         "query": "update business_processes_states set  tokens_used_type=$3, tokens_used=tokens_used+(select bps.tokens_used from business_processes bp1,business_processes_states bps,business_processes_states bps2 where bp1.n8n_process_name=$2 and bp1.business_process_id=bps.business_process_id and  bps.n8n_workflow_root_execution_id=bps2.n8n_workflow_execution_id  and bps.finished is not null and bps2.n8n_workflow_execution_id=$1 order by bps2.business_process_state_id desc LIMIT 1) where n8n_workflow_execution_id=$1;\n",
         "options": {
-          "queryReplacement": "=[{{$execution.id}},{{$('ADV_campaign_data_load').item.json.workflow_name}},{{ 'gpt-5' }}]"
+          "queryReplacement": "=[{{$execution.id}},{{$('company services').item.json.workflow_name}},{{ 'gpt-5' }}]"
         }
       },
       "type": "n8n-nodes-base.postgres",
@@ -556,29 +556,6 @@
           "name": "PGvector"
         }
       }
-    },
-    {
-      "parameters": {
-        "assignments": {
-          "assignments": [
-            {
-              "id": "99e6bb89-0b33-4e72-b5be-2e118b69afa2",
-              "name": "workflow_name",
-              "value": "company services",
-              "type": "string"
-            }
-          ]
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.set",
-      "typeVersion": 3.4,
-      "position": [
-        176,
-        -240
-      ],
-      "id": "7e0165dd-fa53-4199-91e8-7fdfd2e5957c",
-      "name": "ADV_campaign_data_load"
     },
     {
       "parameters": {
@@ -787,7 +764,7 @@
         "operation": "executeQuery",
         "query": "update business_processes_states set  tokens_used_type=$3, tokens_used=tokens_used+(select bps.tokens_used from business_processes bp1,business_processes_states bps,business_processes_states bps2 where bp1.n8n_process_name=$2 and bp1.business_process_id=bps.business_process_id and  bps.n8n_workflow_root_execution_id=bps2.n8n_workflow_execution_id  and bps.finished is not null and bps2.n8n_workflow_execution_id=$1 order by bps2.business_process_state_id desc LIMIT 1) where n8n_workflow_execution_id=$1;\n",
         "options": {
-          "queryReplacement": "=[{{$execution.id}},{{$('ADV_campaign_data_load').item.json.workflow_name}},{{ 'gpt-5' }}]"
+          "queryReplacement": "=[{{$execution.id}},{{$('company services').item.json.workflow_name}},{{ 'gpt-5' }}]"
         }
       },
       "type": "n8n-nodes-base.postgres",
@@ -1036,7 +1013,7 @@
         "operation": "executeQuery",
         "query": "update business_processes_states set  tokens_used_type=$3, tokens_used=tokens_used+(select bps.tokens_used from business_processes bp1,business_processes_states bps,business_processes_states bps2 where bp1.n8n_process_name=$2 and bp1.business_process_id=bps.business_process_id and  bps.n8n_workflow_root_execution_id=bps2.n8n_workflow_execution_id  and bps.finished is not null and bps2.n8n_workflow_execution_id=$1 order by bps2.business_process_state_id desc LIMIT 1) where n8n_workflow_execution_id=$1;\n",
         "options": {
-          "queryReplacement": "=[{{$execution.id}},{{$('ADV_campaign_data_load').item.json.workflow_name}},{{ 'gpt-5' }}]"
+          "queryReplacement": "=[{{$execution.id}},{{$('company services').item.json.workflow_name}},{{ 'gpt-5' }}]"
         }
       },
       "type": "n8n-nodes-base.postgres",
@@ -1262,7 +1239,7 @@
         "operation": "executeQuery",
         "query": "update business_processes_states set  tokens_used_type=$3, tokens_used=tokens_used+(select bps.tokens_used from business_processes bp1,business_processes_states bps,business_processes_states bps2 where bp1.n8n_process_name=$2 and bp1.business_process_id=bps.business_process_id and  bps.n8n_workflow_root_execution_id=bps2.n8n_workflow_execution_id  and bps.finished is not null and bps2.n8n_workflow_execution_id=$1 order by bps2.business_process_state_id desc LIMIT 1) where n8n_workflow_execution_id=$1;\n",
         "options": {
-          "queryReplacement": "=[{{$execution.id}},{{$('ADV_campaign_data_load').item.json.workflow_name}},{{ 'gpt-5' }}]"
+          "queryReplacement": "=[{{$execution.id}},{{$('company services').item.json.workflow_name}},{{ 'gpt-5' }}]"
         }
       },
       "type": "n8n-nodes-base.postgres",
@@ -1535,7 +1512,7 @@
         "operation": "executeQuery",
         "query": "update business_processes_states set  tokens_used_type=$3, tokens_used=tokens_used+(select bps.tokens_used from business_processes bp1,business_processes_states bps,business_processes_states bps2 where bp1.n8n_process_name=$2 and bp1.business_process_id=bps.business_process_id and  bps.n8n_workflow_root_execution_id=bps2.n8n_workflow_execution_id  and bps.finished is not null and bps2.n8n_workflow_execution_id=$1 order by bps2.business_process_state_id desc LIMIT 1) where n8n_workflow_execution_id=$1;\n",
         "options": {
-          "queryReplacement": "=[{{$execution.id}},{{$('ADV_campaign_data_load').item.json.workflow_name}},{{ 'gpt-5' }}]"
+          "queryReplacement": "=[{{$execution.id}},{{$('company services').item.json.workflow_name}},{{ 'gpt-5' }}]"
         }
       },
       "type": "n8n-nodes-base.postgres",
@@ -1784,7 +1761,7 @@
         "operation": "executeQuery",
         "query": "update business_processes_states set  tokens_used_type=$3, tokens_used=tokens_used+(select bps.tokens_used from business_processes bp1,business_processes_states bps,business_processes_states bps2 where bp1.n8n_process_name=$2 and bp1.business_process_id=bps.business_process_id and  bps.n8n_workflow_root_execution_id=bps2.n8n_workflow_execution_id  and bps.finished is not null and bps2.n8n_workflow_execution_id=$1 order by bps2.business_process_state_id desc LIMIT 1) where n8n_workflow_execution_id=$1;\n",
         "options": {
-          "queryReplacement": "=[{{$execution.id}},{{$('ADV_campaign_data_load').item.json.workflow_name}},{{ 'gpt-5' }}]"
+          "queryReplacement": "=[{{$execution.id}},{{$('company services').item.json.workflow_name}},{{ 'gpt-5' }}]"
         }
       },
       "type": "n8n-nodes-base.postgres",
@@ -2010,7 +1987,7 @@
         "operation": "executeQuery",
         "query": "update business_processes_states set  tokens_used_type=$3, tokens_used=tokens_used+(select bps.tokens_used from business_processes bp1,business_processes_states bps,business_processes_states bps2 where bp1.n8n_process_name=$2 and bp1.business_process_id=bps.business_process_id and  bps.n8n_workflow_root_execution_id=bps2.n8n_workflow_execution_id  and bps.finished is not null and bps2.n8n_workflow_execution_id=$1 order by bps2.business_process_state_id desc LIMIT 1) where n8n_workflow_execution_id=$1;\n",
         "options": {
-          "queryReplacement": "=[{{$execution.id}},{{$('ADV_campaign_data_load').item.json.workflow_name}},{{ 'gpt-5' }}]"
+          "queryReplacement": "=[{{$execution.id}},{{$('company services').item.json.workflow_name}},{{ 'gpt-5' }}]"
         }
       },
       "type": "n8n-nodes-base.postgres",
@@ -2259,7 +2236,7 @@
         "operation": "executeQuery",
         "query": "update business_processes_states set  tokens_used_type=$3, tokens_used=tokens_used+(select bps.tokens_used from business_processes bp1,business_processes_states bps,business_processes_states bps2 where bp1.n8n_process_name=$2 and bp1.business_process_id=bps.business_process_id and  bps.n8n_workflow_root_execution_id=bps2.n8n_workflow_execution_id  and bps.finished is not null and bps2.n8n_workflow_execution_id=$1 order by bps2.business_process_state_id desc LIMIT 1) where n8n_workflow_execution_id=$1;\n",
         "options": {
-          "queryReplacement": "=[{{$execution.id}},{{$('ADV_campaign_data_load').item.json.workflow_name}},{{ 'gpt-5' }}]"
+          "queryReplacement": "=[{{$execution.id}},{{$('company services').item.json.workflow_name}},{{ 'gpt-5' }}]"
         }
       },
       "type": "n8n-nodes-base.postgres",
@@ -2583,7 +2560,7 @@
         "operation": "executeQuery",
         "query": "update business_processes_states set  tokens_used_type=$3, tokens_used=tokens_used+(select bps.tokens_used from business_processes bp1,business_processes_states bps,business_processes_states bps2 where bp1.n8n_process_name=$2 and bp1.business_process_id=bps.business_process_id and  bps.n8n_workflow_root_execution_id=bps2.n8n_workflow_execution_id  and bps.finished is not null and bps2.n8n_workflow_execution_id=$1 order by bps2.business_process_state_id desc LIMIT 1) where n8n_workflow_execution_id=$1;\n",
         "options": {
-          "queryReplacement": "=[{{$execution.id}},{{$('ADV_campaign_data_load').item.json.workflow_name}},{{ 'gpt-5' }}]"
+          "queryReplacement": "=[{{$execution.id}},{{$('company services').item.json.workflow_name}},{{ 'gpt-5' }}]"
         }
       },
       "type": "n8n-nodes-base.postgres",
@@ -2832,7 +2809,7 @@
         "operation": "executeQuery",
         "query": "update business_processes_states set  tokens_used_type=$3, tokens_used=tokens_used+(select bps.tokens_used from business_processes bp1,business_processes_states bps,business_processes_states bps2 where bp1.n8n_process_name=$2 and bp1.business_process_id=bps.business_process_id and  bps.n8n_workflow_root_execution_id=bps2.n8n_workflow_execution_id  and bps.finished is not null and bps2.n8n_workflow_execution_id=$1 order by bps2.business_process_state_id desc LIMIT 1) where n8n_workflow_execution_id=$1;\n",
         "options": {
-          "queryReplacement": "=[{{$execution.id}},{{$('ADV_campaign_data_load').item.json.workflow_name}},{{ 'gpt-5' }}]"
+          "queryReplacement": "=[{{$execution.id}},{{$('company services').item.json.workflow_name}},{{ 'gpt-5' }}]"
         }
       },
       "type": "n8n-nodes-base.postgres",
@@ -2907,6 +2884,29 @@
       ],
       "id": "4605e344-ed2f-4e83-8863-095bc92aced7",
       "name": "When Executed by Another Workflow"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "99e6bb89-0b33-4e72-b5be-2e118b69afa2",
+              "name": "workflow_name",
+              "value": "company services",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        176,
+        -240
+      ],
+      "id": "7e0165dd-fa53-4199-91e8-7fdfd2e5957c",
+      "name": "company services"
     }
   ],
   "connections": {
@@ -2987,7 +2987,7 @@
       "main": [
         [
           {
-            "node": "ADV_campaign_data_load",
+            "node": "company services",
             "type": "main",
             "index": 0
           }
@@ -3127,17 +3127,6 @@
         [
           {
             "node": "update workflow tokens usage",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "ADV_campaign_data_load": {
-      "main": [
-        [
-          {
-            "node": "Execute a SQL query",
             "type": "main",
             "index": 0
           }
@@ -4130,6 +4119,17 @@
           }
         ]
       ]
+    },
+    "company services": {
+      "main": [
+        [
+          {
+            "node": "Execute a SQL query",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
@@ -4153,7 +4153,7 @@
       }
     ]
   },
-  "versionId": "edb3e9af-bfd1-4be2-a544-56065adf1bfa",
+  "versionId": "1adbb91b-8a6c-44b4-a52b-8494049e076c",
   "triggerCount": 0,
   "shared": [
     {
