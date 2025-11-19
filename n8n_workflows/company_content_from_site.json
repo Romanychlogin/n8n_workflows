@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-19T18:22:55.774Z",
+  "updatedAt": "2025-11-19T19:19:42.908Z",
   "createdAt": "2025-11-19T17:19:31.386Z",
   "id": "JUfn8q0IjV4Ya5Cw",
   "name": "company_content_from_site",
@@ -16,7 +16,7 @@
       "typeVersion": 3,
       "position": [
         48,
-        48
+        128
       ],
       "id": "69af4b3f-fc72-4fd4-94e8-732368c52981",
       "name": "Loop Over Items"
@@ -37,7 +37,7 @@
           "cachedResultName": "n8n_prompts",
           "cachedResultUrl": "https://github.com/Romanychlogin/n8n_prompts"
         },
-        "filePath": "ad_creation_header.txt",
+        "filePath": "clear_content.txt",
         "additionalParameters": {}
       },
       "type": "n8n-nodes-base.github",
@@ -85,7 +85,7 @@
     },
     {
       "parameters": {
-        "jsCode": "\n\nreturn [{\n  json: \n {\n  \"model\": \"gpt-5-2025-08-07\",\n  \"input\": [\n    {\n      \"role\": \"developer\",\n      \"content\": [\n        {\n          \"type\": \"input_text\",\n          \"text\": \"Ты — генератор заголовков рекламных объявлений. Твоя задача по каждой пользовательской фразе создать один короткий заголовок, строго соблюдая правила.\"\n        }\n      ]\n    },\n    {\n      \"role\": \"user\",\n      \"content\": [\n        {\n          \"type\": \"input_text\",\n          \"text\": $json.my_prompt\n        }\n      ]\n    }\n  ],\n  \"text\": {\n    \"format\": {\n      \"type\": \"json_schema\",\n      \"name\": \"headers\",\n      \"strict\": true,\n      \"schema\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"headers\": {\n            \"type\": \"array\",\n            \"description\": \"List of header objects.\",\n            \"items\": {\n              \"type\": \"object\",\n              \"properties\": {\n                \"header\": {\n                  \"type\": \"string\",\n                  \"description\": \"A string up to 56 characters.\",\n                  \"minLength\": 0,\n                  \"maxLength\": 56\n                },\n                \"id\": {\n                  \"type\": \"string\",\n                  \"description\": \"Unique identifier for the header object.\",\n                  \"minLength\": 1\n                }\n              },\n              \"required\": [\n                \"header\",\n                \"id\"\n              ],\n              \"additionalProperties\": false\n            },\n            \"minItems\": 0\n          }\n        },\n        \"required\": [\n          \"headers\"\n        ],\n        \"additionalProperties\": false\n      }\n    },\n    \"verbosity\": \"low\"\n  },\n  \"reasoning\": {\n    \"effort\": \"low\",\n    \"summary\": \"detailed\"\n  },\n  \"tools\": [],\n  \"store\": false,\n  \"include\": [\n    \"reasoning.encrypted_content\",\n    \"web_search_call.action.sources\"\n  ]\n}\n\n}];"
+        "jsCode": "\n\nreturn [{\n  json: \n {\n  \"model\": \"gpt-5.1-2025-11-13\",\n  \"input\": [\n    {\n      \"role\": \"user\",\n      \"content\": [\n        {\n          \"type\": \"input_text\",\n          \"text\": \"Очисти этот текст от ссылок и служебных слов .\"\n        }\n      ]\n    }\n  ],\n  \"text\": {\n    \"format\": {\n      \"type\": \"json_schema\",\n      \"name\": \"text_answer\",\n      \"strict\": true,\n      \"schema\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"user_content\": {\n            \"type\": \"string\",\n            \"description\": \"The text answer provided by the user\"\n          }\n        },\n        \"required\": [\n          \"user_content\"\n        ],\n        \"additionalProperties\": false\n      }\n    },\n    \"verbosity\": \"medium\"\n  },\n  \"reasoning\": {\n    \"effort\": \"minimal\",\n    \"summary\": \"auto\"\n  },\n  \"tools\": [],\n  \"store\": false,\n  \"include\": [\n    \"reasoning.encrypted_content\",\n    \"web_search_call.action.sources\"\n  ]\n}\n\n}];"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -125,22 +125,7 @@
     },
     {
       "parameters": {
-        "content": "создаем заголовок",
-        "height": 512,
-        "width": 800
-      },
-      "type": "n8n-nodes-base.stickyNote",
-      "typeVersion": 1,
-      "position": [
-        624,
-        288
-      ],
-      "id": "d220347e-c460-4ded-9f36-4020af7d9a5c",
-      "name": "Sticky Note1"
-    },
-    {
-      "parameters": {
-        "jsCode": "const workflowData = $getWorkflowStaticData('global');\nlet my_prompt = workflowData.my_prompt.data;\n\nfor (const item of $input.all()) {\n  item.json.my_prompt = my_prompt.replaceAll(\"{{company_description}}\", workflowData.company_description).replaceAll(\"{{key_words}}\", JSON.stringify($json.items));\n}\n\nreturn $input.all();"
+        "jsCode": "const workflowData = $getWorkflowStaticData('global');\nlet my_prompt = workflowData.my_prompt.data;\n\nfor (const item of $input.all()) {\n  item.json.my_prompt = my_prompt.replaceAll(\"{{user_content}}\", $input.first().json.data.content);\n}\n\nreturn $input.all();"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -205,7 +190,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        1248,
+        1024,
         -80
       ],
       "id": "4d6c8b6e-4fe1-48ae-8d8b-2ea2fc4e9cc1",
@@ -349,49 +334,12 @@
     },
     {
       "parameters": {
-        "jsCode": "// 1) Читаем строку JSON из указанного поля\nlet raw = $input.first().json?.output?.[1]?.content?.[0]?.text;\n\n// Минимальная чистка и парсинг\nfunction stripCodeFences(s) {\n  if (typeof s !== 'string') return s;\n  let t = s.trim();\n  if (t.startsWith('```')) t = t.replace(/^```[a-zA-Z]*\\n?/, '').replace(/```$/, '').trim();\n  return t;\n}\nfunction parseJson(s) {\n  const t = stripCodeFences(String(s ?? ''));\n  try { return JSON.parse(t); } catch { return null; }\n}\n\nconst obj = parseJson(raw);\nif (!obj || !Array.isArray(obj.headers)) {\n  return [{ json: { Items: [], ItemsbyId: {} } }];\n}\n\n// 2) Прямой доступ к словарю ItemsbyId из указанной ноды\nconst sourceItemsById = $('Loop Over Items').last().json?.ItemsbyId ?? {};\n\n// 3) Собираем массив элементов { phrase, header, id }\nconst Items = [];\nfor (const h of obj.headers) {\n  if (!h || typeof h !== 'object') continue;\n  const id = String(h.id ?? '');\n  const header = String(h.header ?? '');\n  if (!id || !header) continue;\n\n  const phrase = String(sourceItemsById[id]?.phrase ?? '');\n  Items.push({ phrase, header, id });\n}\n\n// 4) Строим словарь по id -> объект\nconst ItemsbyId = Object.fromEntries(\n  Items.map(it => [it.id, it])\n);\n\n// 5) Возвращаем один элемент с полями Items и ItemsbyId\nreturn [{\n  json: {\n    Items,\n    ItemsbyId\n  }\n}];"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        1264,
-        512
-      ],
-      "id": "b9de9f33-96e4-4cc2-bca1-0b61b49b780a",
-      "name": "keywords and headers"
-    },
-    {
-      "parameters": {
-        "assignments": {
-          "assignments": [
-            {
-              "id": "ebafa31d-edf7-41c0-a06e-e884ad9595ea",
-              "name": "is_first2",
-              "value": "=true",
-              "type": "boolean"
-            }
-          ]
-        },
-        "includeOtherFields": true,
-        "options": {}
-      },
-      "type": "n8n-nodes-base.set",
-      "typeVersion": 3.4,
-      "position": [
-        3200,
-        816
-      ],
-      "id": "5db7c944-3dbe-40a0-9714-8f528cb77aac",
-      "name": "set first_item"
-    },
-    {
-      "parameters": {
         "jsCode": "const workflowData = $getWorkflowStaticData('global');\n\nfunction toNumber(x, def = 0) {\n  const n = Number(x);\n  return Number.isFinite(n) ? n : def;\n}\n\nworkflowData.ai_calls = toNumber(workflowData.ai_calls, 0) +1;\n\nlet step_tokens_used = toNumber($('HTTP Request').first().json.usage.total_tokens+$('HTTP Request1').first().json.usage.total_tokens+$('HTTP Request2').first().json.usage.total_tokens,0);\n\n //set used tokens here!!!!\nworkflowData.tokens_used += step_tokens_used;\nfor (const item of $input.all()) {\n  item.json.tokens_used = workflowData.tokens_used;\n}\n\n\n\nreturn $input.all();\n"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1488,
+        1328,
         512
       ],
       "id": "99d078bb-3394-4bfa-a69b-b0afbcdcf860",
@@ -408,8 +356,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        1632,
-        656
+        1776,
+        688
       ],
       "id": "758f89cc-a0aa-488c-99e2-00e7b6e4714d",
       "name": "Save_tokens_usage",
@@ -428,8 +376,8 @@
       "type": "n8n-nodes-base.merge",
       "typeVersion": 3.2,
       "position": [
-        1760,
-        512
+        2208,
+        672
       ],
       "id": "413c3cc2-935a-49bb-91ad-cbbb89157938",
       "name": "Merge1"
@@ -509,6 +457,76 @@
       "id": "48fa6805-b0f8-4146-a7af-f402d52cbc2b",
       "name": "HTTP Request3",
       "executeOnce": true
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "cMcY26oqQV5mNCvI",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/cMcY26oqQV5mNCvI",
+          "cachedResultName": "create content records for the  key word"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {}
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.3,
+      "position": [
+        2832,
+        688
+      ],
+      "id": "7da8afbe-3a16-4752-8458-5c0cbe6a68ec",
+      "name": "Call 'create content records for the  key word'"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "ab5decf6-1908-4ae2-a486-c4a264e19e22",
+              "name": "company_id",
+              "value": "",
+              "type": "string"
+            },
+            {
+              "id": "e27fa9f4-010b-44e7-a7a4-5f2ce8835da4",
+              "name": "key_word",
+              "value": "",
+              "type": "string"
+            },
+            {
+              "id": "294cf1a4-7a28-4a54-99d7-e1eb31373655",
+              "name": "report_id",
+              "value": "0",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2416,
+        672
+      ],
+      "id": "c634a907-b6d8-4acc-9072-66500d94eaca",
+      "name": "set input"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.stopAndError",
+      "typeVersion": 1,
+      "position": [
+        2624,
+        672
+      ],
+      "id": "8f36acae-f56d-49d3-8fbc-4e3e929910a1",
+      "name": "Stop and Error"
     }
   ],
   "connections": {
@@ -589,7 +607,7 @@
       "main": [
         [
           {
-            "node": "keywords and headers",
+            "node": "update calls counters2",
             "type": "main",
             "index": 0
           }
@@ -643,7 +661,13 @@
     },
     "set first_item1": {
       "main": [
-        []
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
       ]
     },
     "When Executed by Another Workflow": {
@@ -681,25 +705,9 @@
     },
     "string for service urls": {
       "main": [
-        []
-      ]
-    },
-    "keywords and headers": {
-      "main": [
         [
           {
-            "node": "update calls counters2",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "set first_item": {
-      "main": [
-        [
-          {
-            "node": "Loop Over Items",
+            "node": "set first_item1",
             "type": "main",
             "index": 0
           }
@@ -737,7 +745,7 @@
       "main": [
         [
           {
-            "node": "set first_item",
+            "node": "set input",
             "type": "main",
             "index": 0
           }
@@ -787,6 +795,28 @@
           }
         ]
       ]
+    },
+    "Call 'create content records for the  key word'": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "set input": {
+      "main": [
+        [
+          {
+            "node": "Stop and Error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
@@ -828,7 +858,7 @@
       }
     ]
   },
-  "versionId": "a30984cb-1af4-421d-a9cc-9add3a9c94b6",
+  "versionId": "6a597dc9-c072-4c36-82b7-7fadea7a4e7f",
   "triggerCount": 0,
   "shared": [
     {
