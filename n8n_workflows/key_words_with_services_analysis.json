@@ -1,6 +1,6 @@
 {
+  "updatedAt": "2025-11-19T17:08:26.706Z",
   "createdAt": "2025-09-15T10:20:29.723Z",
-  "updatedAt": "2025-11-01T18:11:24.772Z",
   "id": "AEZDBlqe199xBn5u",
   "name": "key_words_with_services_analysis",
   "active": false,
@@ -1363,20 +1363,17 @@
           "id": "ezK8ihYnfxZNTIAc",
           "root_execution_id": 20076,
           "company_id": 2,
-          "threshhold": "0.88",
-          "company_name": "Первый визовый центр Курган",
-          "services_description": "Визы:    http://krg45.visa-rf.ru/ АТЭС:    http://krg45.apec-first.ru/",
-          "user_content_dropbox_folder": "/Test_content_folder_for_Kurgan"
+          "is_initial": "false"
         }
       }
     ]
   },
-  "versionId": "dfe0d7c4-56d0-47b2-9a02-a94f3b100eb4",
+  "versionId": "fd8cbdfb-b66a-44cd-939b-8fde4de9acf6",
   "triggerCount": 0,
   "shared": [
     {
-      "createdAt": "2025-09-15T10:20:29.723Z",
       "updatedAt": "2025-09-15T10:20:29.723Z",
+      "createdAt": "2025-09-15T10:20:29.723Z",
       "role": "workflow:owner",
       "workflowId": "AEZDBlqe199xBn5u",
       "projectId": "spKmbJLU4mvACXIB"
@@ -1384,8 +1381,8 @@
   ],
   "tags": [
     {
-      "createdAt": "2025-10-17T09:03:18.269Z",
       "updatedAt": "2025-10-17T09:03:18.269Z",
+      "createdAt": "2025-10-17T09:03:18.269Z",
       "id": "S7zerj1h6Ro25pTA",
       "name": "client creation"
     }
