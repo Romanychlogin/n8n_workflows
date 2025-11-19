@@ -1,6 +1,6 @@
 {
+  "updatedAt": "2025-11-19T17:00:05.716Z",
   "createdAt": "2025-09-10T14:56:27.610Z",
-  "updatedAt": "2025-11-01T10:30:45.935Z",
   "id": "5Se0CY4jTtS5g7n3",
   "name": "company services",
   "active": false,
@@ -411,8 +411,8 @@
       "type": "n8n-nodes-base.stopAndError",
       "typeVersion": 1,
       "position": [
-        5040,
-        -192
+        5296,
+        16
       ],
       "id": "7705ff83-9613-4400-b432-a3d8fbb96566",
       "name": "Stop and Error"
@@ -1361,12 +1361,12 @@
       }
     ]
   },
-  "versionId": "d9da6f91-0875-4308-b229-89271b9f7749",
+  "versionId": "087eacb6-c6d9-42a9-aba0-fd675a927597",
   "triggerCount": 0,
   "shared": [
     {
-      "createdAt": "2025-09-10T14:56:27.610Z",
       "updatedAt": "2025-09-10T14:56:27.610Z",
+      "createdAt": "2025-09-10T14:56:27.610Z",
       "role": "workflow:owner",
       "workflowId": "5Se0CY4jTtS5g7n3",
       "projectId": "spKmbJLU4mvACXIB"
@@ -1374,8 +1374,8 @@
   ],
   "tags": [
     {
-      "createdAt": "2025-10-17T09:03:18.269Z",
       "updatedAt": "2025-10-17T09:03:18.269Z",
+      "createdAt": "2025-10-17T09:03:18.269Z",
       "id": "S7zerj1h6Ro25pTA",
       "name": "client creation"
     }
