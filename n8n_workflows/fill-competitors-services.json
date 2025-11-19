@@ -1,6 +1,6 @@
 {
+  "updatedAt": "2025-11-19T14:38:59.470Z",
   "createdAt": "2025-09-10T17:26:44.235Z",
-  "updatedAt": "2025-11-01T10:35:42.033Z",
   "id": "gOiXkFb3LETVri46",
   "name": "Fill competitors services",
   "active": false,
@@ -255,7 +255,7 @@
         "operation": "executeQuery",
         "query": "select cs.service_name,cs.service_description,c.company_name from companies c, company_services cs where c.company_id=cs.company_id and c.company_id=$1",
         "options": {
-          "queryReplacement": "{{$json.company_name}}"
+          "queryReplacement": "{{$json.company_id}}"
         }
       },
       "type": "n8n-nodes-base.postgres",
@@ -554,12 +554,12 @@
       }
     ]
   },
-  "versionId": "dde026dd-f3d7-47d4-bab5-bb976dbf83b9",
+  "versionId": "4e025eec-4b4e-444c-a867-b6c104632639",
   "triggerCount": 0,
   "shared": [
     {
-      "createdAt": "2025-09-10T17:26:44.235Z",
       "updatedAt": "2025-09-10T17:26:44.235Z",
+      "createdAt": "2025-09-10T17:26:44.235Z",
       "role": "workflow:owner",
       "workflowId": "gOiXkFb3LETVri46",
       "projectId": "spKmbJLU4mvACXIB"
@@ -567,8 +567,8 @@
   ],
   "tags": [
     {
-      "createdAt": "2025-10-17T09:03:18.269Z",
       "updatedAt": "2025-10-17T09:03:18.269Z",
+      "createdAt": "2025-10-17T09:03:18.269Z",
       "id": "S7zerj1h6Ro25pTA",
       "name": "client creation"
     }
