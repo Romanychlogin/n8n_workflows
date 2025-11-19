@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-19T21:31:13.155Z",
+  "updatedAt": "2025-11-19T22:11:08.283Z",
   "createdAt": "2025-11-13T06:08:40.998Z",
   "id": "eeZTmctM9IvDF2bH",
   "name": "Create company campaign quick links",
@@ -433,7 +433,7 @@
     },
     {
       "parameters": {
-        "jsCode": "const workflowData = $getWorkflowStaticData('global');\nlet my_prompt = workflowData.my_prompt.data;\n\nfor (const item of $input.all()) {\n  item.json.my_prompt = my_prompt.replaceAll(\"{{service_description}}\", workflowData.company_description);\n}\n\nreturn $input.all();"
+        "jsCode": "const workflowData = $getWorkflowStaticData('global');\nlet my_prompt = workflowData.my_prompt.data;\n\nfor (const item of $input.all()) {\n    item.json.my_prompt = my_prompt.replaceAll(\n        \"${input.first().json.service_description}\",\n        item.json.service_description\n    );\n}\n\nreturn $input.all();"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -1206,7 +1206,7 @@
       }
     ]
   },
-  "versionId": "c99248b1-d975-4ace-beb3-732028136c45",
+  "versionId": "5728ee72-b0e6-42ea-9260-5a13c6b85b71",
   "triggerCount": 0,
   "shared": [
     {
