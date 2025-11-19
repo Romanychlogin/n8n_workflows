@@ -1,6 +1,6 @@
 {
+  "updatedAt": "2025-11-19T14:42:14.450Z",
   "createdAt": "2025-09-12T08:55:43.434Z",
-  "updatedAt": "2025-11-01T10:36:08.475Z",
   "id": "rm2JX4uSi4LmMkZN",
   "name": "Create competitors variants",
   "active": false,
@@ -503,7 +503,7 @@
       "typeVersion": 2.2,
       "position": [
         3984,
-        -544
+        160
       ],
       "id": "dcc72f56-6de0-42ef-8ae9-b84524e80160",
       "name": "If1"
@@ -835,12 +835,12 @@
       }
     ]
   },
-  "versionId": "732d6f95-0107-445f-9001-185d432cad0a",
+  "versionId": "313ed1ee-46d2-4355-b6ce-4f708b7c2fe3",
   "triggerCount": 0,
   "shared": [
     {
-      "createdAt": "2025-09-12T08:55:43.434Z",
       "updatedAt": "2025-09-12T08:55:43.434Z",
+      "createdAt": "2025-09-12T08:55:43.434Z",
       "role": "workflow:owner",
       "workflowId": "rm2JX4uSi4LmMkZN",
       "projectId": "spKmbJLU4mvACXIB"
@@ -848,8 +848,8 @@
   ],
   "tags": [
     {
-      "createdAt": "2025-10-17T09:03:18.269Z",
       "updatedAt": "2025-10-17T09:03:18.269Z",
+      "createdAt": "2025-10-17T09:03:18.269Z",
       "id": "S7zerj1h6Ro25pTA",
       "name": "client creation"
     }
