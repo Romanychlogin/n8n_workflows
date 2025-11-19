@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-19T09:08:40.723Z",
+  "updatedAt": "2025-11-19T14:37:37.035Z",
   "createdAt": "2025-11-05T13:50:52.126Z",
   "id": "MhWRad4Kq8hLA1E7",
   "name": "ADS add to list from report",
@@ -550,9 +550,9 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "UPDATE public.ads_list\n\tSET count_views=count_views+$2, count_clics=count_clics+$3, count_convetions=count_convetions+$4\n\tWHERE lower(translate(key_word, '\"', '')) = lower(translate($1, '\"', ''))",
+        "query": "UPDATE public.ads_list\n\tSET count_views=count_views+$2, count_clics=count_clics+$3, count_convetions=count_convetions+$4, cost=cost+$5\n\tWHERE lower(translate(key_word, '\"', '')) = lower(translate($1, '\"', ''))",
         "options": {
-          "queryReplacement": "={{$json.key_word}},{{$json.count_views}},{{$json.count_clics}},{{$json.count_convetions}}"
+          "queryReplacement": "={{$json.key_word}},{{$json.count_views}},{{$json.count_clics}},{{$json.count_convetions}},{{$json.cost}}"
         }
       },
       "type": "n8n-nodes-base.postgres",
@@ -1042,7 +1042,7 @@
       }
     ]
   },
-  "versionId": "0d0a0853-7277-4e3d-828d-c4b1f96c4922",
+  "versionId": "7048d9a8-60c4-40e3-b61b-a698da8a243c",
   "triggerCount": 0,
   "shared": [
     {
