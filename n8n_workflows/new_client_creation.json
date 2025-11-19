@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-19T14:42:52.980Z",
+  "updatedAt": "2025-11-19T16:58:55.787Z",
   "createdAt": "2025-10-22T11:42:51.794Z",
   "id": "EgFFe1spvxMBXwgw",
   "name": "New_client_creation",
@@ -2085,7 +2085,7 @@
         "operation": "executeQuery",
         "query": "SELECT id\nFROM workflow_entity\nWHERE name = $1\nORDER BY id DESC\nLIMIT 1;",
         "options": {
-          "queryReplacement": "={{ $('ADV_campaign_analysis_AI').item.json.workflow_name }}"
+          "queryReplacement": "={{ $('Create company services key_words (raw) services').item.json.workflow_name }}"
         }
       },
       "type": "n8n-nodes-base.postgres",
@@ -2207,29 +2207,6 @@
           "name": "PGvector"
         }
       }
-    },
-    {
-      "parameters": {
-        "assignments": {
-          "assignments": [
-            {
-              "id": "99e6bb89-0b33-4e72-b5be-2e118b69afa2",
-              "name": "workflow_name",
-              "value": "ADV_campaign_analysis_AI",
-              "type": "string"
-            }
-          ]
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.set",
-      "typeVersion": 3.4,
-      "position": [
-        432,
-        1888
-      ],
-      "id": "f5cbeb6c-fb92-4ef9-8f9a-868dee25eefb",
-      "name": "ADV_campaign_analysis_AI"
     },
     {
       "parameters": {
@@ -2871,6 +2848,29 @@
       ],
       "id": "265e4bc0-528f-4f3e-969a-ce3f55c5521e",
       "name": "insert competitors names embeddings"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "99e6bb89-0b33-4e72-b5be-2e118b69afa2",
+              "name": "workflow_name",
+              "value": "Create company services key_words (raw) services",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        432,
+        1888
+      ],
+      "id": "f5cbeb6c-fb92-4ef9-8f9a-868dee25eefb",
+      "name": "Create company services key_words (raw) services"
     }
   ],
   "connections": {
@@ -3795,17 +3795,6 @@
         ]
       ]
     },
-    "ADV_campaign_analysis_AI": {
-      "main": [
-        [
-          {
-            "node": "Execute a SQL query8",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "minus words post processing": {
       "main": [
         [
@@ -4011,7 +4000,7 @@
       "main": [
         [
           {
-            "node": "ADV_campaign_analysis_AI",
+            "node": "Create company services key_words (raw) services",
             "type": "main",
             "index": 0
           }
@@ -4094,6 +4083,17 @@
           }
         ]
       ]
+    },
+    "Create company services key_words (raw) services": {
+      "main": [
+        [
+          {
+            "node": "Execute a SQL query8",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
@@ -4117,7 +4117,7 @@
       }
     ]
   },
-  "versionId": "d2168f20-6231-4d58-aea3-0647f07f604f",
+  "versionId": "d8ab37ad-1413-46a0-8bb6-4c73e4ca84a2",
   "triggerCount": 0,
   "shared": [
     {
