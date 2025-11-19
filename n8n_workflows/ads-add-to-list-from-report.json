@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-16T09:21:45.601Z",
+  "updatedAt": "2025-11-19T09:08:40.723Z",
   "createdAt": "2025-11-05T13:50:52.126Z",
   "id": "MhWRad4Kq8hLA1E7",
   "name": "ADS add to list from report",
@@ -527,9 +527,9 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "INSERT INTO public.ads_list (\n  key_word, company_id, service_id, report_id, campaign_id, list_id,\n  is_own_brand, count_views, count_clics, count_convetions\n)\nVALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)\nON CONFLICT (company_id, replace(key_word, '\"', '')) DO UPDATE\nSET\n  count_views      = ads_list.count_views      + EXCLUDED.count_views,\n  count_clics      = ads_list.count_clics      + EXCLUDED.count_clics,\n  count_convetions = ads_list.count_convetions + EXCLUDED.count_convetions\nRETURNING key_word;",
+        "query": "INSERT INTO public.ads_list (\n  key_word, company_id, service_id, report_id, campaign_id, list_id,\n  is_own_brand, count_views, count_clics, count_convetions, cost\n)\nVALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11)\nON CONFLICT (company_id, replace(key_word, '\"', '')) DO UPDATE\nSET\n  count_views      = ads_list.count_views      + EXCLUDED.count_views,\n  count_clics      = ads_list.count_clics      + EXCLUDED.count_clics,\n  count_convetions = ads_list.count_convetions + EXCLUDED.count_convetions,\n  cost = ads_list.cost + EXCLUDED.cost\nRETURNING key_word;",
         "options": {
-          "queryReplacement": "={{ $json.key_word }},{{ $json.company_id }},{{ $json.service_id }},{{ $json.report_id }},{{ $json.campaign_id }},{{ $json.list_id }},{{ $json.is_own_brand }},{{ $json.count_views }},{{ $json.count_clics }},{{ $json.count_convetions }}"
+          "queryReplacement": "={{ $json.key_word }},{{ $json.company_id }},{{ $json.service_id }},{{ $json.report_id }},{{ $json.campaign_id }},{{ $json.list_id }},{{ $json.is_own_brand }},{{ $json.count_views }},{{ $json.count_clics }},{{ $json.count_convetions }},{{ $json.cost}}"
         }
       },
       "type": "n8n-nodes-base.postgres",
@@ -1042,7 +1042,7 @@
       }
     ]
   },
-  "versionId": "d5ab8d1e-dff8-4256-99ab-7f841b41cdc2",
+  "versionId": "0d0a0853-7277-4e3d-828d-c4b1f96c4922",
   "triggerCount": 0,
   "shared": [
     {
