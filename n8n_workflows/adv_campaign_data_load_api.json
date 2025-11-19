@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-14T17:21:38.465Z",
+  "updatedAt": "2025-11-19T09:07:05.265Z",
   "createdAt": "2025-10-22T11:44:28.248Z",
   "id": "4Fw159fAoZfSn72v",
   "name": "ADV_campaign_data_load_API",
@@ -72,7 +72,8 @@
             "company_id": "={{ $json.company_id }}",
             "report_id": "={{ $json.import_id }}",
             "group_yandex_id": "={{ $json.AdGroupId }}",
-            "ads_yandex_id": "={{ $json.AdId }}"
+            "ads_yandex_id": "={{ $json.AdId }}",
+            "cost": "={{ $json.Cost }}"
           },
           "matchingColumns": [
             "id"
@@ -294,6 +295,16 @@
             {
               "id": "ads_yandex_id",
               "displayName": "ads_yandex_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "cost",
+              "displayName": "cost",
               "required": false,
               "defaultMatch": false,
               "display": true,
@@ -973,15 +984,15 @@
       {
         "json": {
           "id": "4Fw159fAoZfSn72v",
-          "root_execution_id": 224859,
+          "root_execution_id": 238481,
           "company_id": 1,
-          "report_date": "2025-11-09",
+          "report_date": "2025-11-17",
           "campaign_yandex_id": 704708210
         }
       }
     ]
   },
-  "versionId": "bb63e433-c56b-4a72-8cc4-dfee3ef2f121",
+  "versionId": "f9b74622-6f7f-424b-9ca7-f2922111a40a",
   "triggerCount": 0,
   "shared": [
     {
@@ -994,16 +1005,16 @@
   ],
   "tags": [
     {
-      "updatedAt": "2025-10-22T11:44:26.850Z",
-      "createdAt": "2025-10-22T11:44:26.850Z",
-      "id": "TAPLdpwV5vPQJtDW",
-      "name": "API"
-    },
-    {
       "updatedAt": "2025-10-06T13:06:54.644Z",
       "createdAt": "2025-10-06T13:06:54.644Z",
       "id": "DBEf57wUDunVJUG6",
       "name": "campaign update"
+    },
+    {
+      "updatedAt": "2025-10-22T11:44:26.850Z",
+      "createdAt": "2025-10-22T11:44:26.850Z",
+      "id": "TAPLdpwV5vPQJtDW",
+      "name": "API"
     }
   ]
 }
