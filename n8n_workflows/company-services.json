@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-20T16:17:59.800Z",
+  "updatedAt": "2025-11-20T18:47:43.594Z",
   "createdAt": "2025-09-10T14:56:27.610Z",
   "id": "5Se0CY4jTtS5g7n3",
   "name": "company services",
@@ -348,8 +348,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1424,
-        -224
+        1392,
+        -128
       ],
       "id": "9b692ab7-941a-414a-8127-93630973a8d0",
       "name": "Set prompt"
@@ -592,8 +592,8 @@
       "type": "n8n-nodes-base.splitInBatches",
       "typeVersion": 3,
       "position": [
-        704,
-        240
+        736,
+        176
       ],
       "id": "f5fed606-03d5-41ce-8c09-3d4ee1ee24ea",
       "name": "Loop Over Items1"
@@ -734,13 +734,13 @@
     },
     {
       "parameters": {
-        "jsCode": "// Берём все входные элементы\nconst items = $input.all();\n\n// Имя файла из узла \"Switch\"\n// Аккуратно забираем имя файла из ноды \"Switch\"\n\n\nconst fileName = String($json.name).trim();\nconst \n// Собираем содержимое из входа (json.data), приводим к строке и фильтруем пустое\nconst contents = $input.first().json['data Оформление виз']$input.first().json['data Оформление виз'].txt\n// Если нечего добавлять — просто вернём текущее состояние\nconst block = contents.length ? `${fileName}\\n${contents.join('\\n')}` : '';\n\n// Глобальное хранилище\nconst workflowData = $getWorkflowStaticData('global');\n\n// Инициализируем, если не было\nif (typeof workflowData.UserContent !== 'string') {\n  workflowData.UserContent = '';\n}\n\n// Дописываем по правилу: \\n + Название файла + \\n + содержимое\nif (block) {\n  workflowData.UserContent += (workflowData.UserContent ? '\\n' : '') + block;\n}\n\n// Можно вернуть текущее значение для отладки/передачи дальше\nreturn [\n  {\n    json: {\n      fileName,\n      appended: Boolean(block),\n      length: workflowData.UserContent.length,\n      preview_tail: workflowData.UserContent.slice(-500) // последние 500 символов для проверки\n    }\n  }\n];"
+        "jsCode": "// Берём все входные элементы\nconst items = $input.all();\n\n// Имя файла из узла \"Switch\"\n// Аккуратно забираем имя файла из ноды \"Switch\"\n\n\nconst fileName = String($json.name).trim();\n\nlet filename_clear = fileName;\nlet extension = '';\nconst dotIndex = fileName.lastIndexOf('.');\nif (dotIndex !== -1) {\n  filename_clear  = fileName.slice(0, dotIndex);\n  extension = fileName.slice(dotIndex + 1);\n}\n\nconst root = $input.first().json;\nconst key  = 'data ' + filename_clear;\nconst contents =\n  root[key] && Object.prototype.hasOwnProperty.call(root[key], extension)\n    ? root[key][extension]\n    : undefined;\n// Если нечего добавлять — просто вернём текущее состояние\nconst block = contents.length ? `${filename_clear}\\n${contents}` : '';\n\n// Глобальное хранилище\nconst workflowData = $getWorkflowStaticData('global');\n\n// Инициализируем, если не было\nif (typeof workflowData.UserContent !== 'string') {\n  workflowData.UserContent = '';\n}\n\n// Дописываем по правилу: \\n + Название файла + \\n + содержимое\nif (block) {\n  workflowData.UserContent += (workflowData.UserContent ? '\\n' : '') + block;\n}\n\n// Можно вернуть текущее значение для отладки/передачи дальше\nreturn [\n  {\n    json: {\n      fileName,\n      appended: Boolean(block),\n      length: workflowData.UserContent.length,\n      preview_tail: workflowData.UserContent.slice(-500), // последние 500 символов для проверки\n      filename_clear\n    }\n  }\n];"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        2000,
-        288
+        2032,
+        368
       ],
       "id": "d8823a8e-43da-41d2-821d-549400ca9ce9",
       "name": "Code in JavaScript"
@@ -964,24 +964,11 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1360,
-        -496
+        2992,
+        -96
       ],
       "id": "33d60465-75de-4acf-831b-3e05b23fba0c",
       "name": "Code in JavaScript1"
-    },
-    {
-      "parameters": {
-        "jsCode": "// Берём все входные элементы\nconst items = $input.all();\n\n// Имя файла из узла \"Switch\"\n// Аккуратно забираем имя файла из ноды \"Switch\"\n\n\nconst fileName = String($json.name).trim();\n\n// Собираем содержимое из входа (json.data), приводим к строке и фильтруем пустое\nconst contents = $input.first().json['data Оформление виз']$input.first().json['data Оформление виз'].txt\n// Если нечего добавлять — просто вернём текущее состояние\nconst block = contents.length ? `${fileName}\\n${contents.join('\\n')}` : '';\n\n// Глобальное хранилище\nconst workflowData = $getWorkflowStaticData('global');\n\n// Инициализируем, если не было\nif (typeof workflowData.UserContent !== 'string') {\n  workflowData.UserContent = '';\n}\n\n// Дописываем по правилу: \\n + Название файла + \\n + содержимое\nif (block) {\n  workflowData.UserContent += (workflowData.UserContent ? '\\n' : '') + block;\n}\n\n// Можно вернуть текущее значение для отладки/передачи дальше\nreturn [\n  {\n    json: {\n      fileName,\n      appended: Boolean(block),\n      length: workflowData.UserContent.length,\n      preview_tail: workflowData.UserContent.slice(-500) // последние 500 символов для проверки\n    }\n  }\n];"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        1824,
-        336
-      ],
-      "id": "4b1f01f0-0801-4dad-8f91-a03721c4edf6",
-      "name": "Code in JavaScript2"
     }
   ],
   "connections": {
@@ -1042,7 +1029,13 @@
     },
     "Loop Over Items": {
       "main": [
-        [],
+        [
+          {
+            "node": "Code in JavaScript1",
+            "type": "main",
+            "index": 0
+          }
+        ],
         [
           {
             "node": "Edit Fields",
@@ -1201,7 +1194,7 @@
       "main": [
         [
           {
-            "node": "Code in JavaScript1",
+            "node": "Set prompt",
             "type": "main",
             "index": 0
           }
@@ -1255,7 +1248,7 @@
       "main": [
         [
           {
-            "node": "Code in JavaScript2",
+            "node": "Code in JavaScript",
             "type": "main",
             "index": 0
           }
@@ -1394,11 +1387,11 @@
         ]
       ]
     },
-    "Code in JavaScript2": {
+    "Code in JavaScript1": {
       "main": [
         [
           {
-            "node": "Loop Over Items1",
+            "node": "Call 'create content records for the  key word'",
             "type": "main",
             "index": 0
           }
@@ -1431,7 +1424,7 @@
       }
     ]
   },
-  "versionId": "1ff55645-89c0-438c-8bec-37e3318c87ad",
+  "versionId": "f8d9cacd-150c-409f-a8b6-aade29ed6da2",
   "triggerCount": 0,
   "shared": [
     {
