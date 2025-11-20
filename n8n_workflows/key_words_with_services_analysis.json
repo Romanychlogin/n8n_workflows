@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-20T05:57:39.517Z",
+  "updatedAt": "2025-11-20T12:46:25.333Z",
   "createdAt": "2025-09-15T10:20:29.723Z",
   "id": "AEZDBlqe199xBn5u",
   "name": "key_words_with_services_analysis",
@@ -15,8 +15,8 @@
       "type": "n8n-nodes-base.splitInBatches",
       "typeVersion": 3,
       "position": [
-        960,
-        -32
+        976,
+        -48
       ],
       "id": "2c5ad17c-0cd1-493e-98e1-3a09ec97c9b5",
       "name": "Loop Over Items"
@@ -352,8 +352,8 @@
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1.2,
       "position": [
-        2016,
-        -144
+        2464,
+        -48
       ],
       "id": "164f64e6-2677-4461-bcfb-934df3bc2f3b",
       "name": "Find competitors mentions"
@@ -424,8 +424,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        2240,
-        -80
+        3040,
+        336
       ],
       "id": "42f52d0b-a87b-4280-9c94-13857eac4171",
       "name": "If competitors not found"
@@ -678,8 +678,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        464,
-        -64
+        496,
+        -96
       ],
       "id": "f84080d7-02cd-4549-b12f-3b219a5f96b1",
       "name": "Get not processes keys",
@@ -819,8 +819,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        1120,
-        -48
+        1168,
+        -16
       ],
       "id": "3ddc9ed9-9c3b-4a79-a59e-05ec5821c26d",
       "name": "reset first_item1"
@@ -979,8 +979,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        864,
-        -432
+        1104,
+        -848
       ],
       "id": "59789248-57ad-4eaa-91e4-f77777ad2b02",
       "name": "Mark_workflow_completed",
@@ -991,6 +991,134 @@
           "name": "PGvector"
         }
       }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "select cs.service_name,cs.service_description,cs.service_id from companies c, company_services cs where c.company_id=cs.company_id and c.company_id=$1",
+        "options": {
+          "queryReplacement": "={{$('When Executed by Another Workflow').last().json.company_id}}"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        592,
+        -320
+      ],
+      "id": "826ac64e-6915-4750-9957-f3e180e46638",
+      "name": "Services list1",
+      "credentials": {
+        "postgres": {
+          "id": "Hx2VFmUi5WO2K4QX",
+          "name": "Postgres account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {
+          "reset": "={{ $json.is_first }}"
+        }
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        816,
+        -336
+      ],
+      "id": "e4e1d55d-3d39-4434-a30a-0b6a728a597e",
+      "name": "Loop Over services1"
+    },
+    {
+      "parameters": {
+        "operation": "select",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "key_words",
+          "mode": "list",
+          "cachedResultName": "key_words"
+        },
+        "returnAll": true,
+        "where": {
+          "values": [
+            {
+              "column": "company_id",
+              "value": "={{$('When Executed by Another Workflow').last().json.company_id}}"
+            },
+            {
+              "column": "service_id",
+              "value": "={{ $json.service_id }}"
+            },
+            {
+              "column": "is_relevant",
+              "condition": "IS NULL"
+            }
+          ]
+        },
+        "sort": {
+          "values": [
+            {
+              "column": "key_word_id"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        1136,
+        -352
+      ],
+      "id": "8eb35c84-5712-4ef2-9cf4-5118c0493ecf",
+      "name": "Get not processes keys1",
+      "alwaysOutputData": true,
+      "credentials": {
+        "postgres": {
+          "id": "Hx2VFmUi5WO2K4QX",
+          "name": "Postgres account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "ad593e56-742a-4e5a-a72d-7c3410093a54",
+              "leftValue": "={{$json}}",
+              "rightValue": "",
+              "operator": {
+                "type": "object",
+                "operation": "empty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1296,
+        -320
+      ],
+      "id": "7c54ed6c-564a-435b-a7ae-cff16bef66cf",
+      "name": "If no records1"
     }
   ],
   "connections": {
@@ -1014,13 +1142,7 @@
     },
     "update": {
       "main": [
-        [
-          {
-            "node": "Loop Over Items",
-            "type": "main",
-            "index": 0
-          }
-        ]
+        []
       ]
     },
     "Обработка ответа AI": {
@@ -1144,7 +1266,7 @@
       "main": [
         [
           {
-            "node": "Mark_workflow_completed",
+            "node": "Services list1",
             "type": "main",
             "index": 0
           }
@@ -1162,7 +1284,7 @@
       "main": [
         [
           {
-            "node": "create prompt",
+            "node": "Loop Over Items",
             "type": "main",
             "index": 0
           }
@@ -1361,6 +1483,57 @@
           }
         ]
       ]
+    },
+    "Services list1": {
+      "main": [
+        [
+          {
+            "node": "Loop Over services1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get not processes keys1": {
+      "main": [
+        [
+          {
+            "node": "If no records1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over services1": {
+      "main": [
+        [
+          {
+            "node": "Mark_workflow_completed",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Get not processes keys1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If no records1": {
+      "main": [
+        [
+          {
+            "node": "Loop Over services1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
@@ -1388,7 +1561,7 @@
       }
     ]
   },
-  "versionId": "95c7c5e0-6e7e-4c96-bbfc-09eafb5c1854",
+  "versionId": "af100c65-2343-4591-b051-411de9671821",
   "triggerCount": 0,
   "shared": [
     {
