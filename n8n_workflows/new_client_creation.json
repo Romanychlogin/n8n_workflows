@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-19T17:03:45.840Z",
+  "updatedAt": "2025-11-20T12:10:29.606Z",
   "createdAt": "2025-10-22T11:42:51.794Z",
   "id": "EgFFe1spvxMBXwgw",
   "name": "New_client_creation",
@@ -862,7 +862,7 @@
         "operation": "executeQuery",
         "query": "SELECT id\nFROM workflow_entity\nWHERE name = $1\nORDER BY id DESC\nLIMIT 1;",
         "options": {
-          "queryReplacement": "={{ $('minus words post processing').item.json.workflow_name }}"
+          "queryReplacement": "={{ $('Create company name variants').item.json.workflow_name }}"
         }
       },
       "type": "n8n-nodes-base.postgres",
@@ -893,20 +893,8 @@
             {
               "id": "fda82fe6-7e78-49d2-8130-43cb54ef5d8a",
               "name": "company_id",
-              "value": "={{ $('company_record_id').item.json.company_id }}",
+              "value": "={{ $('Insert new company').item.json.company_id }}",
               "type": "number"
-            },
-            {
-              "id": "da41f8d6-0b51-4e6c-91c3-96c8ca5d1659",
-              "name": "threshhold",
-              "value": "={{ $('Set variables').item.json.threshhold }}",
-              "type": "string"
-            },
-            {
-              "id": "242e22ab-d73d-4b1f-b148-3cd44943fe6f",
-              "name": "import_id",
-              "value": "={{ $('company_record_id').item.json.report_id }}",
-              "type": "string"
             }
           ]
         },
@@ -2168,29 +2156,6 @@
             {
               "id": "99e6bb89-0b33-4e72-b5be-2e118b69afa2",
               "name": "workflow_name",
-              "value": "minus words post processing",
-              "type": "string"
-            }
-          ]
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.set",
-      "typeVersion": 3.4,
-      "position": [
-        448,
-        3104
-      ],
-      "id": "d1edbdf0-2675-487b-9bc3-e64e70e3910b",
-      "name": "minus words post processing"
-    },
-    {
-      "parameters": {
-        "assignments": {
-          "assignments": [
-            {
-              "id": "99e6bb89-0b33-4e72-b5be-2e118b69afa2",
-              "name": "workflow_name",
               "value": "minus words vs content review",
               "type": "string"
             }
@@ -2310,7 +2275,7 @@
         "operation": "executeQuery",
         "query": "SELECT id\nFROM workflow_entity\nWHERE name = $1\nORDER BY id DESC\nLIMIT 1;",
         "options": {
-          "queryReplacement": "={{ $('extract data for updates with header').item.json.workflow_name }}"
+          "queryReplacement": "={{ $('company_content_from_description').item.json.workflow_name }}"
         }
       },
       "type": "n8n-nodes-base.postgres",
@@ -2341,26 +2306,8 @@
             {
               "id": "fda82fe6-7e78-49d2-8130-43cb54ef5d8a",
               "name": "company_id",
-              "value": "={{ $('company_record_id').item.json.company_id }}",
+              "value": "={{ $('Insert new company').item.json.company_id }}",
               "type": "number"
-            },
-            {
-              "id": "da41f8d6-0b51-4e6c-91c3-96c8ca5d1659",
-              "name": "threshhold",
-              "value": "={{ $('Set variables').item.json.threshhold }}",
-              "type": "string"
-            },
-            {
-              "id": "242e22ab-d73d-4b1f-b148-3cd44943fe6f",
-              "name": "import_id",
-              "value": "={{ $('company_record_id').item.json.report_id }}",
-              "type": "string"
-            },
-            {
-              "id": "f48771b4-4bf8-4ff4-8481-3d863668dd08",
-              "name": "minus_words",
-              "value": "={{ $('Call SUB3').item.json.minus_words }",
-              "type": "string"
             }
           ]
         },
@@ -2438,29 +2385,6 @@
           "name": "PGvector"
         }
       }
-    },
-    {
-      "parameters": {
-        "assignments": {
-          "assignments": [
-            {
-              "id": "99e6bb89-0b33-4e72-b5be-2e118b69afa2",
-              "name": "workflow_name",
-              "value": "extract data for updates with header",
-              "type": "string"
-            }
-          ]
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.set",
-      "typeVersion": 3.4,
-      "position": [
-        448,
-        3616
-      ],
-      "id": "e9a568a2-e6ea-4241-8a19-de38cfda38c7",
-      "name": "extract data for updates with header"
     },
     {
       "parameters": {
@@ -2847,6 +2771,52 @@
       ],
       "id": "3f792c3c-f35d-4a89-951b-b10c00be7301",
       "name": "company_minus_words_from_base"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "99e6bb89-0b33-4e72-b5be-2e118b69afa2",
+              "name": "workflow_name",
+              "value": "Create company name variants",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        448,
+        3104
+      ],
+      "id": "d1edbdf0-2675-487b-9bc3-e64e70e3910b",
+      "name": "Create company name variants"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "99e6bb89-0b33-4e72-b5be-2e118b69afa2",
+              "name": "workflow_name",
+              "value": "company_content_from_description",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        448,
+        3616
+      ],
+      "id": "e9a568a2-e6ea-4241-8a19-de38cfda38c7",
+      "name": "company_content_from_description"
     }
   ],
   "connections": {
@@ -3161,7 +3131,7 @@
       "main": [
         [
           {
-            "node": "minus words post processing",
+            "node": "Create company name variants",
             "type": "main",
             "index": 0
           }
@@ -3446,7 +3416,7 @@
       "main": [
         [
           {
-            "node": "extract data for updates with header",
+            "node": "company_content_from_description",
             "type": "main",
             "index": 0
           }
@@ -3760,17 +3730,6 @@
         ]
       ]
     },
-    "minus words post processing": {
-      "main": [
-        [
-          {
-            "node": "Execute a SQL query3",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "minus words vs content review": {
       "main": [
         [
@@ -3860,17 +3819,6 @@
         [
           {
             "node": "If SUB process  already executed9",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "extract data for updates with header": {
-      "main": [
-        [
-          {
-            "node": "Execute a SQL query9",
             "type": "main",
             "index": 0
           }
@@ -4070,6 +4018,28 @@
           }
         ]
       ]
+    },
+    "Create company name variants": {
+      "main": [
+        [
+          {
+            "node": "Execute a SQL query3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "company_content_from_description": {
+      "main": [
+        [
+          {
+            "node": "Execute a SQL query9",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
@@ -4093,7 +4063,7 @@
       }
     ]
   },
-  "versionId": "da0d015c-da4c-45e6-ba55-67a04a62e03c",
+  "versionId": "6c71ac1f-734b-49ec-8461-07a4d510d0a2",
   "triggerCount": 0,
   "shared": [
     {
