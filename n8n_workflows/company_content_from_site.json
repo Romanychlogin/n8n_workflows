@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-20T11:20:16.114Z",
+  "updatedAt": "2025-11-20T11:27:47.750Z",
   "createdAt": "2025-11-19T17:19:31.386Z",
   "id": "JUfn8q0IjV4Ya5Cw",
   "name": "company_content_from_site",
@@ -90,7 +90,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1056,
+        1264,
         528
       ],
       "id": "9e413126-b145-425d-a2f7-9aa74daf7d54",
@@ -110,7 +110,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        1264,
+        1472,
         512
       ],
       "id": "40a8e14b-32f7-419e-a544-5121607e3ec9",
@@ -130,7 +130,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        864,
+        1072,
         544
       ],
       "id": "53152a65-ec73-42b5-8fda-cb9dcc11880c",
@@ -190,7 +190,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        1232,
+        1440,
         -80
       ],
       "id": "4d6c8b6e-4fe1-48ae-8d8b-2ea2fc4e9cc1",
@@ -214,8 +214,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        448,
-        288
+        496,
+        512
       ],
       "id": "b6e1e05a-929b-43f9-8cf0-aecabd8c3188",
       "name": "reset first_item"
@@ -267,7 +267,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        928,
+        1136,
         -768
       ],
       "id": "edeb082c-dc8f-47a7-902c-ee5fe029340a",
@@ -304,7 +304,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        704,
+        912,
         -144
       ],
       "id": "fd6d99ee-bd07-49b1-83cc-f06c20d5c89b",
@@ -324,7 +324,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        896,
+        1104,
         -96
       ],
       "id": "b4408fa1-b25c-4d2e-be8e-11da16cda6b2",
@@ -337,7 +337,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1536,
+        1744,
         512
       ],
       "id": "99d078bb-3394-4bfa-a69b-b0afbcdcf860",
@@ -354,7 +354,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        1984,
+        2192,
         688
       ],
       "id": "758f89cc-a0aa-488c-99e2-00e7b6e4714d",
@@ -374,7 +374,7 @@
       "type": "n8n-nodes-base.merge",
       "typeVersion": 3.2,
       "position": [
-        2416,
+        2624,
         672
       ],
       "id": "413c3cc2-935a-49bb-91ad-cbbb89157938",
@@ -432,42 +432,6 @@
     },
     {
       "parameters": {
-        "url": "=https://rу.jina.ai/{{ $json.service_url }}",
-        "authentication": "genericCredentialType",
-        "genericAuthType": "httpBearerAuth",
-        "sendHeaders": true,
-        "headerParameters": {
-          "parameters": [
-            {
-              "name": "Accept",
-              "value": "application/json"
-            }
-          ]
-        },
-        "options": {
-          "timeout": 30000
-        }
-      },
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.3,
-      "position": [
-        656,
-        416
-      ],
-      "id": "48fa6805-b0f8-4146-a7af-f402d52cbc2b",
-      "name": "HTTP Request3",
-      "executeOnce": false,
-      "retryOnFail": true,
-      "credentials": {
-        "httpBearerAuth": {
-          "id": "ZwzkfrwpmTuGhirJ",
-          "name": "Jina API"
-        }
-      },
-      "onError": "continueRegularOutput"
-    },
-    {
-      "parameters": {
         "workflowId": {
           "__rl": true,
           "value": "cMcY26oqQV5mNCvI",
@@ -484,7 +448,7 @@
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1.3,
       "position": [
-        736,
+        944,
         1008
       ],
       "id": "7da8afbe-3a16-4752-8458-5c0cbe6a68ec",
@@ -590,7 +554,7 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "select * from companies where compamy_id=$1",
+        "query": "select * from companies where company_id=$1",
         "options": {
           "queryReplacement": "={{ $('When Executed by Another Workflow').item.json.company_id }}"
         }
@@ -707,7 +671,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        1680,
+        1888,
         992
       ],
       "id": "53f4c72a-d3d3-41f1-b002-33a4713d970c",
@@ -720,7 +684,7 @@
       "type": "n8n-nodes-base.stopAndError",
       "typeVersion": 1,
       "position": [
-        1872,
+        2080,
         992
       ],
       "id": "373ae998-eaf2-40e2-a2e7-e26faced4cce",
@@ -754,7 +718,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        1456,
+        1664,
         1008
       ],
       "id": "27ea5e94-e1f0-4356-9a3a-e786e87a9749",
@@ -773,7 +737,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        992,
+        1200,
         1024
       ],
       "id": "1b75b395-8fa2-4ff7-b321-e11c59c6c59c",
@@ -790,7 +754,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        1248,
+        1456,
         1008
       ],
       "id": "abc6908c-6ba9-48c6-9edd-2f0665d25a09",
@@ -802,6 +766,89 @@
           "name": "PGvector"
         }
       }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "20f8b170-2400-407c-a2c2-dea53fa2069c",
+              "leftValue": "={{ $json.error.name }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "exists",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        832,
+        272
+      ],
+      "id": "801fa5b2-027f-4bde-87fc-c63583afd740",
+      "name": "If1"
+    },
+    {
+      "parameters": {
+        "url": "=https://r.jina.ai/{{ $json.service_url }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBearerAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Accept",
+              "value": "application/json"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 30000
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        656,
+        528
+      ],
+      "id": "48fa6805-b0f8-4146-a7af-f402d52cbc2b",
+      "name": "Call jina",
+      "executeOnce": false,
+      "retryOnFail": true,
+      "credentials": {
+        "httpBearerAuth": {
+          "id": "ZwzkfrwpmTuGhirJ",
+          "name": "Jina API"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "content": "Тех долг\nДобавить fallback https://chatgpt.com/s/t_691efb28a59c8191bbda9061ecd272cf\n"
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1280,
+        256
+      ],
+      "id": "947840be-fb95-47a1-bcd8-425b3c6b672a",
+      "name": "Sticky Note1"
     }
   ],
   "connections": {
@@ -927,7 +974,7 @@
       "main": [
         [
           {
-            "node": "HTTP Request3",
+            "node": "Call jina",
             "type": "main",
             "index": 0
           }
@@ -1054,17 +1101,6 @@
         [
           {
             "node": "Loop Over Items1",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "HTTP Request3": {
-      "main": [
-        [
-          {
-            "node": "Set prompt",
             "type": "main",
             "index": 0
           }
@@ -1227,6 +1263,35 @@
           }
         ]
       ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Set prompt",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Call jina": {
+      "main": [
+        [
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
@@ -1268,7 +1333,7 @@
       }
     ]
   },
-  "versionId": "9e0ac439-5cec-4ece-8d39-4ad9811b2479",
+  "versionId": "9fa9658f-e568-4a6f-9f8b-eb1a7bcfd03a",
   "triggerCount": 0,
   "shared": [
     {
