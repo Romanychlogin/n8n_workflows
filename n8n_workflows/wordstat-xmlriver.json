@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-20T05:57:46.348Z",
+  "updatedAt": "2025-11-20T16:18:09.282Z",
   "createdAt": "2025-09-03T13:10:38.957Z",
   "id": "t4Ep016fMXc6Cyhm",
   "name": "Wordstat xmlriver",
@@ -163,8 +163,8 @@
       "type": "n8n-nodes-base.splitInBatches",
       "typeVersion": 3,
       "position": [
-        -304,
-        -32
+        -288,
+        -64
       ],
       "id": "d7194125-517d-44ed-8709-bff4fc87a597",
       "name": "Loop Over Items"
@@ -638,8 +638,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        1120,
-        272
+        1024,
+        320
       ],
       "id": "0e4cdda1-314b-4676-b4d0-4bfc5605f90d",
       "name": "Mark parsed",
@@ -883,7 +883,7 @@
     "templateCredsSetupCompleted": true
   },
   "pinData": {},
-  "versionId": "d3e25011-5dd2-473c-b549-ddf0a310a110",
+  "versionId": "6692e1cd-63f3-4866-ad5c-9a9da6ee210d",
   "triggerCount": 0,
   "shared": [
     {
