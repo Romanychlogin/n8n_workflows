@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-20T12:46:25.333Z",
+  "updatedAt": "2025-11-20T13:49:21.157Z",
   "createdAt": "2025-09-15T10:20:29.723Z",
   "id": "AEZDBlqe199xBn5u",
   "name": "key_words_with_services_analysis",
@@ -145,8 +145,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        5296,
-        176
+        4144,
+        -336
       ],
       "id": "af8350a7-f4b9-46a6-af55-bd16e036abf0",
       "name": "update",
@@ -185,8 +185,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        3568,
-        -128
+        3408,
+        -384
       ],
       "id": "092ae491-640d-4cf2-b925-bf1d3a7612ef",
       "name": "Обработка ответа AI"
@@ -215,8 +215,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        4208,
-        -256
+        3712,
+        -480
       ],
       "id": "34f06163-bb73-4f48-9e83-e622c8ef9e54",
       "name": "Edit Fields"
@@ -245,8 +245,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        4160,
-        -16
+        3760,
+        -320
       ],
       "id": "3dac86f7-da13-4ef0-acde-a75599a54cd4",
       "name": "Edit Fields1"
@@ -293,13 +293,13 @@
     },
     {
       "parameters": {
-        "jsCode": "\n\nreturn [{\n  json: \n {\n  \"model\": \"gpt-5\",\n  \"input\": [\n    {\n      \"role\": \"developer\",\n      \"content\": [\n        {\n          \"type\": \"input_text\",\n          \"text\": \"# Role and Objective\\n- You are a search query analysis assistant. Your role is to identify and filter out irrelevant queries for client's services. Validate each input phrase and respond with a structured JSON object.\\n\"\n        }\n      ]\n    },\n    {\n      \"role\": \"user\",\n      \"content\": [\n        {\n          \"type\": \"input_text\",\n          \"text\": $json.my_prompt\n        }\n      ]\n    }\n  ],\n  \"text\": {\n    \"format\": {\n      \"type\": \"json_schema\",\n      \"name\": \"phrase_and_minus_words\",\n      \"strict\": true,\n      \"schema\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"is_correct_phrase\": {\n            \"type\": \"boolean\",\n            \"description\": \"Indicates if the phrase is correct.\"\n          }\n        },\n        \"required\": [\n          \"is_correct_phrase\"\n        ],\n        \"additionalProperties\": false\n      }\n    },\n    \"verbosity\": \"low\"\n  },\n  \"reasoning\": {\n    \"effort\": \"low\",\n    \"summary\": \"auto\"\n  },\n  \"tools\": [],\n  \"store\": false,\n  \"include\": [\n    \"reasoning.encrypted_content\",\n    \"web_search_call.action.sources\"\n  ]\n}\n\n}];"
+        "jsCode": "\n\nreturn [{\n  json: \n {\n  \"model\": \"gpt-5.1-2025-11-13\",\n  \"input\": [\n    {\n      \"role\": \"developer\",\n      \"content\": [\n        {\n          \"type\": \"input_text\",\n          \"text\": \"Strictly follow provided instructions\"\n        }\n      ]\n    },\n    {\n      \"role\": \"user\",\n      \"content\": [\n        {\n          \"type\": \"input_text\",\n          \"text\": $json.my_prompt\n        }\n      ]\n    }\n  ],\n  \"text\": {\n    \"format\": {\n      \"type\": \"json_schema\",\n      \"name\": \"key_words_resolutions\",\n      \"strict\": true,\n      \"schema\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"key_words_resolutions\": {\n            \"type\": \"array\",\n            \"description\": \"A list of keyword resolution results.\",\n            \"items\": {\n              \"type\": \"object\",\n              \"properties\": {\n                \"key_word_id\": {\n                  \"type\": \"string\",\n                  \"description\": \"The identifier for the keyword.\"\n                },\n                \"is_correct_phrase\": {\n                  \"type\": \"boolean\",\n                  \"description\": \"Whether the phrase is correct for the given keyword.\"\n                }\n              },\n              \"required\": [\n                \"key_word_id\",\n                \"is_correct_phrase\"\n              ],\n              \"additionalProperties\": false\n            }\n          }\n        },\n        \"required\": [\n          \"key_words_resolutions\"\n        ],\n        \"additionalProperties\": false\n      }\n    },\n    \"verbosity\": \"low\"\n  },\n  \"reasoning\": {\n    \"effort\": \"low\",\n    \"summary\": \"auto\"\n  },\n  \"tools\": [],\n  \"store\": false,\n  \"include\": [\n    \"reasoning.encrypted_content\",\n    \"web_search_call.action.sources\"\n  ]\n}\n\n}];"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        3056,
-        -112
+        1728,
+        -336
       ],
       "id": "9d4e32ae-1474-4e3f-b58e-e4aa913ddf1f",
       "name": "Set API JSON"
@@ -318,8 +318,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        3360,
-        -128
+        1984,
+        -336
       ],
       "id": "3bcda075-a5c3-4b9c-9415-c60a7f32a907",
       "name": "HTTP Request",
@@ -432,13 +432,13 @@
     },
     {
       "parameters": {
-        "jsCode": "const workflowData = $getWorkflowStaticData('global');\nlet my_prompt = workflowData.my_prompt.data;\n\n\n $json.my_prompt = my_prompt.replaceAll(\"{{company_name}}\", $('set variables').first().json.company_name).replaceAll(\"{{service_description}}\", $('Loop Over services').first().json.service_name +' ' + $('Loop Over services').first().json.service_description).replaceAll(\"{{key_word}}\",$('Loop Over Items').first().json.key_word);\n\n\nreturn $input.all();"
+        "jsCode": "const workflowData = $getWorkflowStaticData('global');\nlet my_prompt = workflowData.my_prompt.data;\n\n\n $json.my_prompt = my_prompt.replaceAll(\"{{company_name}}\", $('set variables').first().json.company_name).replaceAll(\"{{service_description}}\", $('Loop Over services1').first().json.service_name +' ' + $('Loop Over services1').first().json.service_description).replaceAll(\"{{key_words}}\",JSON.stringify($json.items));\n\n\nreturn $input.all();"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        2816,
-        -112
+        1456,
+        -336
       ],
       "id": "d942de31-ded4-4797-92fd-5ae54ef01f1f",
       "name": "create prompt"
@@ -995,7 +995,7 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "select cs.service_name,cs.service_description,cs.service_id from companies c, company_services cs where c.company_id=cs.company_id and c.company_id=$1",
+        "query": "select cs.service_name,cs.service_description,cs.service_id,c.company_name from companies c, company_services cs where c.company_id=cs.company_id and c.company_id=$1",
         "options": {
           "queryReplacement": "={{$('When Executed by Another Workflow').last().json.company_id}}"
         }
@@ -1024,8 +1024,8 @@
       "type": "n8n-nodes-base.splitInBatches",
       "typeVersion": 3,
       "position": [
-        816,
-        -336
+        864,
+        -640
       ],
       "id": "e4e1d55d-3d39-4434-a30a-0b6a728a597e",
       "name": "Loop Over services1"
@@ -1073,8 +1073,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        1136,
-        -352
+        1184,
+        -656
       ],
       "id": "8eb35c84-5712-4ef2-9cf4-5118c0493ecf",
       "name": "Get not processes keys1",
@@ -1114,11 +1114,150 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        1296,
-        -320
+        1344,
+        -624
       ],
       "id": "7c54ed6c-564a-435b-a7ae-cff16bef66cf",
       "name": "If no records1"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Максимальный размер группы\nconst BATCH_SIZE = 100; // можно поменять при необходимости\n\nconst inputItems = $input.all();\n\n// 1) Собираем только нужные поля из входных элементов\nconst flat = inputItems.map(({ json }) => ({\n  key_word: json.key_word,\n  key_word_id: json.key_word_id,\n}));\n\n// 2) Разбиваем на батчи по BATCH_SIZE\nconst output = [];\nfor (let i = 0; i < flat.length; i += BATCH_SIZE) {\n  const batch = flat.slice(i, i + BATCH_SIZE);\n\n  output.push({\n    json: {\n      items: batch,\n      batch_index: output.length,      // индекс батча (0,1,2,... при желании можно удалить)\n      batch_size: batch.length,        // размер текущего батча\n      total_items: flat.length,        // общее число элементов (для контроля)\n    },\n  });\n}\n\nreturn output;\n\n\n\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1696,
+        -592
+      ],
+      "id": "702be62d-9d61-4148-a052-e5895bffdcb1",
+      "name": "Slice  into batches strings"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "ebafa31d-edf7-41c0-a06e-e884ad9595ea",
+              "name": "is_first",
+              "value": "=true",
+              "type": "boolean"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1856,
+        -592
+      ],
+      "id": "bd32a372-f9f2-4391-90e3-d21db5be6a2d",
+      "name": "set first_item1"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "ebafa31d-edf7-41c0-a06e-e884ad9595ea",
+              "name": "is_first",
+              "value": "=false",
+              "type": "boolean"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1232,
+        -336
+      ],
+      "id": "d2652530-168c-42cc-a7a5-a871ec1c9c35",
+      "name": "reset first_item"
+    },
+    {
+      "parameters": {
+        "options": {
+          "reset": "={{ $json.is_first }}"
+        }
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        976,
+        -352
+      ],
+      "id": "da0312f8-0861-4cd0-a709-0bf9a93e9826",
+      "name": "Loop Over Items1"
+    },
+    {
+      "parameters": {
+        "jsCode": "const workflowData = $getWorkflowStaticData('global');\n\nfunction toNumber(x, def = 0) {\n  const n = Number(x);\n  return Number.isFinite(n) ? n : def;\n}\n\nworkflowData.ai_calls = toNumber(workflowData.ai_calls, 0) +1;\n\nlet step_tokens_used = toNumber($input.first().json.usage.total_tokens,0);\n\n //set used tokens here!!!!\nworkflowData.tokens_used += step_tokens_used;\nfor (const item of $input.all()) {\n  item.json.tokens_used = workflowData.tokens_used;\n}\n\n\n\nreturn $input.all();\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2288,
+        -400
+      ],
+      "id": "b8adf8c7-75bc-4fce-8fd3-b57dc10d252b",
+      "name": "update calls counters2"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Берём текст из указанного поля\nconst raw = $input.first().json?.output?.[1]?.content?.[0]?.text;\n\nif (!raw) {\n  return [];\n}\n\nlet data;\n\n// Если это строка — парсим JSON, если уже объект — используем как есть\nif (typeof raw === 'string') {\n  try {\n    data = JSON.parse(raw);\n  } catch (e) {\n    throw new Error('Не удалось распарсить JSON в output[1].content[0].text: ' + e.message);\n  }\n} else {\n  data = raw;\n}\n\n// Ожидаем, что внутри есть поле key_words_resolutions — массив объектов\nconst list = data?.key_words_resolutions;\n\nif (!Array.isArray(list)) {\n  return [];\n}\n\n// Формируем набор выходных items с нужными полями\nreturn list.map(entry => ({\n  json: {\n    key_word_id: String(entry.key_word_id ?? ''),\n    is_correct_phrase: Boolean(entry.is_correct_phrase),\n  },\n}));"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2768,
+        -416
+      ],
+      "id": "8c99e4fb-d966-4037-a3e5-8d1061f02a6a",
+      "name": "Separate output items"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "update business_processes_states set tokens_used=$3,tokens_used_type=$4 where business_process_id=(select MAX(business_process_id) from business_processes where n8n_process_name=$1) and n8n_workflow_execution_id=$2",
+        "options": {
+          "queryReplacement": "=[{{$workflow.name}},{{$execution.id}},{{$json.tokens_used}},{{ 'gpt-5' }}]"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        2464,
+        -304
+      ],
+      "id": "1868809c-0648-4c6a-a0d7-996f78fc8118",
+      "name": "Save_tokens_usage",
+      "executeOnce": true,
+      "credentials": {
+        "postgres": {
+          "id": "4YkdFJcdTgzo9hkz",
+          "name": "PGvector"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "chooseBranch"
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        2608,
+        -432
+      ],
+      "id": "ac33d5c5-2b6f-4a16-ab14-828bb76ca102",
+      "name": "Merge1"
     }
   ],
   "connections": {
@@ -1142,7 +1281,13 @@
     },
     "update": {
       "main": [
-        []
+        [
+          {
+            "node": "Loop Over Items1",
+            "type": "main",
+            "index": 0
+          }
+        ]
       ]
     },
     "Обработка ответа AI": {
@@ -1233,7 +1378,7 @@
       "main": [
         [
           {
-            "node": "Обработка ответа AI",
+            "node": "update calls counters2",
             "type": "main",
             "index": 0
           }
@@ -1532,6 +1677,102 @@
             "type": "main",
             "index": 0
           }
+        ],
+        [
+          {
+            "node": "Slice  into batches strings",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Slice  into batches strings": {
+      "main": [
+        [
+          {
+            "node": "set first_item1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "set first_item1": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items1": {
+      "main": [
+        [
+          {
+            "node": "Loop Over services1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "reset first_item",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "reset first_item": {
+      "main": [
+        [
+          {
+            "node": "create prompt",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "update calls counters2": {
+      "main": [
+        [
+          {
+            "node": "Save_tokens_usage",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Save_tokens_usage": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge1": {
+      "main": [
+        [
+          {
+            "node": "Separate output items",
+            "type": "main",
+            "index": 0
+          }
         ]
       ]
     }
@@ -1561,7 +1802,7 @@
       }
     ]
   },
-  "versionId": "af100c65-2343-4591-b051-411de9671821",
+  "versionId": "797448cb-fe9c-4a7b-8df4-3e1e16b8d293",
   "triggerCount": 0,
   "shared": [
     {
