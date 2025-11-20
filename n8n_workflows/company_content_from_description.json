@@ -1,26 +1,11 @@
 {
-  "updatedAt": "2025-11-20T12:09:45.708Z",
+  "updatedAt": "2025-11-20T12:36:09.739Z",
   "createdAt": "2025-11-20T11:41:31.353Z",
   "id": "9SR6e3tSCmL7sWPt",
   "name": "company_content_from_description",
   "active": false,
   "isArchived": false,
   "nodes": [
-    {
-      "parameters": {
-        "options": {
-          "reset": "={{ $json.is_first }}"
-        }
-      },
-      "type": "n8n-nodes-base.splitInBatches",
-      "typeVersion": 3,
-      "position": [
-        256,
-        128
-      ],
-      "id": "17ab53b2-a94d-4898-b8e9-6dddd8747896",
-      "name": "Loop Over Items"
-    },
     {
       "parameters": {
         "resource": "file",
@@ -85,143 +70,6 @@
     },
     {
       "parameters": {
-        "jsCode": "\n\nreturn [{\n  json: \n {\n  \"model\": \"gpt-5.1-2025-11-13\",\n  \"input\": [\n    {\n      \"role\": \"developer\",\n      \"content\": [\n        {\n          \"type\": \"input_text\",\n          \"text\": \"Ты — парсер веб-страниц. На входе HTML целой страницы (с динамическим контентом).Верни только основной осмысленный текст страницы (статья / описание / контент), без меню, футера, рекламы, навигации, форм логина, cookie-баннеров и т.п.Формат ответа: чистый текст или markdown, без пояснений.\"\n        }\n      ]\n    },\n    {\n      \"role\": \"user\",\n      \"content\": [\n        {\n          \"type\": \"input_text\",\n          \"text\": $json.my_prompt\n        }\n      ]\n    }\n  ],\n  \"text\": {\n    \"format\": {\n      \"type\": \"json_schema\",\n      \"name\": \"text_answer\",\n      \"strict\": true,\n      \"schema\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"user_content\": {\n            \"type\": \"string\",\n            \"description\": \"The text answer provided by the user\"\n          }\n        },\n        \"required\": [\n          \"user_content\"\n        ],\n        \"additionalProperties\": false\n      }\n    },\n    \"verbosity\": \"medium\"\n  },\n  \"reasoning\": {\n    \"effort\": \"none\",\n    \"summary\": \"auto\"\n  },\n  \"tools\": [],\n  \"store\": false,\n  \"include\": [\n    \"reasoning.encrypted_content\",\n    \"web_search_call.action.sources\"\n  ]\n}\n\n}];"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        1264,
-        528
-      ],
-      "id": "8a07181d-3808-4e3a-9940-c00c9481ac3d",
-      "name": "Set API JSON"
-    },
-    {
-      "parameters": {
-        "method": "POST",
-        "url": "https://api.openai.com/v1/responses",
-        "authentication": "predefinedCredentialType",
-        "nodeCredentialType": "openAiApi",
-        "sendBody": true,
-        "specifyBody": "json",
-        "jsonBody": "={{$json}}",
-        "options": {}
-      },
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.2,
-      "position": [
-        1472,
-        512
-      ],
-      "id": "61d487de-e01e-4b74-aa8a-0779df7713a0",
-      "name": "HTTP Request",
-      "retryOnFail": true,
-      "credentials": {
-        "openAiApi": {
-          "id": "m4NScyhZzV3hBcTr",
-          "name": "OpenAi Yads"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "jsCode": "const workflowData = $getWorkflowStaticData('global');\nlet my_prompt = workflowData.my_prompt.data;\n\nfor (const item of $input.all()) {\n  item.json.my_prompt = my_prompt.replaceAll(\"{{user_content}}\",$input.first().json.data.title + $input.first().json.data.description + $input.first().json.data.content);\n}\n\nreturn $input.all();"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        1072,
-        544
-      ],
-      "id": "e6b693d8-b9c6-4609-8552-0f235cf4391f",
-      "name": "Set prompt"
-    },
-    {
-      "parameters": {
-        "operation": "executeQuery",
-        "query": "select cs.service_name,c.company_name,cs.service_description,service_description_with_url,cs.service_url,cs.service_id from companies c, company_services cs where c.company_id=cs.company_id and c.company_id=$1",
-        "options": {
-          "queryReplacement": "={{ $('When Executed by Another Workflow').item.json.company_id }}"
-        }
-      },
-      "type": "n8n-nodes-base.postgres",
-      "typeVersion": 2.6,
-      "position": [
-        -672,
-        320
-      ],
-      "id": "fea4c957-4153-4b89-b691-8a6a749ac90c",
-      "name": "Services list",
-      "credentials": {
-        "postgres": {
-          "id": "Hx2VFmUi5WO2K4QX",
-          "name": "Postgres account 2"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "options": {}
-      },
-      "type": "n8n-nodes-base.splitInBatches",
-      "typeVersion": 3,
-      "position": [
-        496,
-        -224
-      ],
-      "id": "299170b3-62f9-42cd-9d0e-e4dac4e30014",
-      "name": "Loop Over Items1"
-    },
-    {
-      "parameters": {
-        "assignments": {
-          "assignments": [
-            {
-              "id": "ebafa31d-edf7-41c0-a06e-e884ad9595ea",
-              "name": "is_first",
-              "value": "=true",
-              "type": "boolean"
-            }
-          ]
-        },
-        "includeOtherFields": true,
-        "options": {}
-      },
-      "type": "n8n-nodes-base.set",
-      "typeVersion": 3.4,
-      "position": [
-        1440,
-        -80
-      ],
-      "id": "a8363f95-86bf-4040-8223-c18bab1a2d33",
-      "name": "set first_item1"
-    },
-    {
-      "parameters": {
-        "assignments": {
-          "assignments": [
-            {
-              "id": "ebafa31d-edf7-41c0-a06e-e884ad9595ea",
-              "name": "is_first",
-              "value": "=false",
-              "type": "boolean"
-            }
-          ]
-        },
-        "includeOtherFields": true,
-        "options": {}
-      },
-      "type": "n8n-nodes-base.set",
-      "typeVersion": 3.4,
-      "position": [
-        496,
-        512
-      ],
-      "id": "65f342f8-bab7-4136-803f-01211b388ca6",
-      "name": "reset first_item"
-    },
-    {
-      "parameters": {
         "inputSource": "passthrough"
       },
       "type": "n8n-nodes-base.executeWorkflowTrigger",
@@ -267,135 +115,11 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        1136,
-        -768
+        -16,
+        -544
       ],
       "id": "7a108b2e-729f-4bd8-a505-a52b9f9308a9",
       "name": "Mark_workflow_completed",
-      "executeOnce": true,
-      "credentials": {
-        "postgres": {
-          "id": "4YkdFJcdTgzo9hkz",
-          "name": "PGvector"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "content": "обновить все запоосы, добавить report id"
-      },
-      "type": "n8n-nodes-base.stickyNote",
-      "typeVersion": 1,
-      "position": [
-        -576,
-        464
-      ],
-      "id": "e17f966b-4fd2-47ad-a0ce-5df5a45e7385",
-      "name": "Sticky Note"
-    },
-    {
-      "parameters": {
-        "operation": "executeQuery",
-        "query": "select * from service_urls where service_id=$1",
-        "options": {
-          "queryReplacement": "={{ $json.service_id }}"
-        }
-      },
-      "type": "n8n-nodes-base.postgres",
-      "typeVersion": 2.6,
-      "position": [
-        912,
-        -144
-      ],
-      "id": "d8390783-7e3c-435c-89ff-c8fc94994029",
-      "name": "get service urls",
-      "executeOnce": true,
-      "credentials": {
-        "postgres": {
-          "id": "Hx2VFmUi5WO2K4QX",
-          "name": "Postgres account 2"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "jsCode": "// 1) Собираем и чистим массив URL'ов\nlet urls = [];\nfor (const { json } of $input.all()) {\n  const v = json?.service_url;\n  if (v == null) continue;\n  const s = String(v).trim();\n  if (s) urls.push(s);\n}\n\n// 2) Превращаем каждый URL в отдельный выходной item\n// при необходимости можно добавить index\nreturn urls.map((url, index) => ({\n  json: {\n    service_url: url,\n    index,          // можно удалить, если не нужен\n  },\n}));"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        1104,
-        -96
-      ],
-      "id": "230ee813-f963-4631-ae46-b465a3375d08",
-      "name": "string for service urls"
-    },
-    {
-      "parameters": {
-        "jsCode": "const workflowData = $getWorkflowStaticData('global');\n\nfunction toNumber(x, def = 0) {\n  const n = Number(x);\n  return Number.isFinite(n) ? n : def;\n}\n\nworkflowData.ai_calls = toNumber(workflowData.ai_calls, 0) +1;\n\nlet step_tokens_used = toNumber($('HTTP Request').first().json.usage.total_tokens);\n\n //set used tokens here!!!!\nworkflowData.tokens_used += step_tokens_used;\nfor (const item of $input.all()) {\n  item.json.tokens_used = workflowData.tokens_used;\n  item.json.key_word=JSON.parse(item.json.output[0].content[0].text).user_content;\n}\n\n\n\nreturn $input.all();\n"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        1744,
-        512
-      ],
-      "id": "2e6e5666-1fb3-41fe-b4c8-842fc8fa643d",
-      "name": "update calls counters2"
-    },
-    {
-      "parameters": {
-        "operation": "executeQuery",
-        "query": "update business_processes_states set tokens_used=$2,tokens_used_type=$3 where  n8n_workflow_execution_id=$1",
-        "options": {
-          "queryReplacement": "=[{{$execution.id}},{{$json.tokens_used}},{{ 'gpt-5' }}]"
-        }
-      },
-      "type": "n8n-nodes-base.postgres",
-      "typeVersion": 2.6,
-      "position": [
-        2192,
-        688
-      ],
-      "id": "0d6659b5-55f8-4b12-84ce-1e0dd9c3898d",
-      "name": "Save_tokens_usage",
-      "executeOnce": true,
-      "credentials": {
-        "postgres": {
-          "id": "4YkdFJcdTgzo9hkz",
-          "name": "PGvector"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "mode": "chooseBranch"
-      },
-      "type": "n8n-nodes-base.merge",
-      "typeVersion": 3.2,
-      "position": [
-        2624,
-        672
-      ],
-      "id": "8b4661a5-ffbc-42d8-b12c-6c75e5cd57b7",
-      "name": "Merge1"
-    },
-    {
-      "parameters": {
-        "operation": "executeQuery",
-        "query": "update business_processes_states set steps_total=$3 where business_process_id=(select MAX(business_process_id) from business_processes where n8n_process_name=$1) and n8n_workflow_execution_id=$2",
-        "options": {
-          "queryReplacement": "=[{{$workflow.name}},{{$execution.id}},{{$json.total}}]"
-        }
-      },
-      "type": "n8n-nodes-base.postgres",
-      "typeVersion": 2.6,
-      "position": [
-        -144,
-        320
-      ],
-      "id": "79055ed1-5b50-47dc-8515-2f49e620844e",
-      "name": "Mark_workflow_total_steps1",
       "executeOnce": true,
       "credentials": {
         "postgres": {
@@ -411,88 +135,16 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        48,
-        160
+        -640,
+        -80
       ],
       "id": "1c352f5a-5d95-4955-ae4f-c34261adc28e",
       "name": "Init total counter1"
     },
     {
       "parameters": {
-        "mode": "chooseBranch"
-      },
-      "type": "n8n-nodes-base.merge",
-      "typeVersion": 3.2,
-      "position": [
-        160,
-        -224
-      ],
-      "id": "1b600baf-365b-427a-8381-84e34b75f194",
-      "name": "Merge2"
-    },
-    {
-      "parameters": {
-        "workflowId": {
-          "__rl": true,
-          "value": "cMcY26oqQV5mNCvI",
-          "mode": "list",
-          "cachedResultUrl": "/workflow/cMcY26oqQV5mNCvI",
-          "cachedResultName": "create content records for the  key word"
-        },
-        "workflowInputs": {
-          "mappingMode": "defineBelow",
-          "value": {}
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.executeWorkflow",
-      "typeVersion": 1.3,
-      "position": [
-        944,
-        1008
-      ],
-      "id": "7ecc135b-d495-4307-86d0-0b57549445ac",
-      "name": "Call 'create content records for the  key word'"
-    },
-    {
-      "parameters": {
-        "assignments": {
-          "assignments": [
-            {
-              "id": "ab5decf6-1908-4ae2-a486-c4a264e19e22",
-              "name": "company_id",
-              "value": "={{ $('When Executed by Another Workflow').item.json.company_id }}",
-              "type": "string"
-            },
-            {
-              "id": "e27fa9f4-010b-44e7-a7a4-5f2ce8835da4",
-              "name": "key_word",
-              "value": "={{ $json.key_word }}",
-              "type": "string"
-            },
-            {
-              "id": "294cf1a4-7a28-4a54-99d7-e1eb31373655",
-              "name": "report_id",
-              "value": "0",
-              "type": "string"
-            }
-          ]
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.set",
-      "typeVersion": 3.4,
-      "position": [
-        464,
-        1008
-      ],
-      "id": "4ef42ac9-f935-4213-98ea-1cc1444258df",
-      "name": "set input"
-    },
-    {
-      "parameters": {
         "operation": "executeQuery",
-        "query": "select * from companies where company_id=$1",
+        "query": "select * from company_services where company_id=$1",
         "options": {
           "queryReplacement": "={{ $('When Executed by Another Workflow').item.json.company_id }}"
         }
@@ -514,300 +166,78 @@
     },
     {
       "parameters": {
-        "conditions": {
-          "options": {
-            "caseSensitive": true,
-            "leftValue": "",
-            "typeValidation": "strict",
-            "version": 2
-          },
-          "conditions": [
-            {
-              "id": "1984c976-e70c-4c3c-9659-f0301941d186",
-              "leftValue": "={{ $now.company_type }}",
-              "rightValue": "franchise",
-              "operator": {
-                "type": "string",
-                "operation": "equals",
-                "name": "filter.operator.equals"
-              }
-            }
-          ],
-          "combinator": "and"
+        "workflowId": {
+          "__rl": true,
+          "value": "cMcY26oqQV5mNCvI",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/cMcY26oqQV5mNCvI",
+          "cachedResultName": "create content records for the  key word"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {}
         },
         "options": {}
       },
-      "type": "n8n-nodes-base.if",
-      "typeVersion": 2.2,
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.3,
       "position": [
-        -1360,
-        176
+        48,
+        -80
       ],
-      "id": "99f664e7-643e-4285-8e98-af5f34f9a494",
-      "name": "If franchise"
+      "id": "87a63d26-c44c-46eb-a820-ccb4aff1f1e8",
+      "name": "Call 'create content records for the  key word'1"
     },
     {
       "parameters": {
-        "jsCode": "const workflowData = $getWorkflowStaticData('global');\n\nfor (const item of $input.all()) {\n  workflowData.my_prompt.data =workflowData.my_prompt.data +'\\n'+ workflowData.my_prompt_addon.data.replaceAll(\"{{franchise_location}}\", $input.first().json.company_location);\n}\n\nreturn $input.all();"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        -1024,
-        144
-      ],
-      "id": "5e928e06-822f-451e-a092-c63780057185",
-      "name": "Set addon"
-    },
-    {
-      "parameters": {
-        "operation": "executeQuery",
-        "query": "select count(service_url_id) as total from service_urls sr, company_services cs \nwhere sr.service_id=cs.service_id \nand cs.is_active=true\nand cs.company_id=$1",
-        "options": {
-          "queryReplacement": "={{ $('When Executed by Another Workflow').item.json.company_id }}"
-        }
-      },
-      "type": "n8n-nodes-base.postgres",
-      "typeVersion": 2.6,
-      "position": [
-        -368,
-        368
-      ],
-      "id": "a3cb2f7a-9cbf-4a24-b934-001955c98282",
-      "name": "Get total steps",
-      "credentials": {
-        "postgres": {
-          "id": "Hx2VFmUi5WO2K4QX",
-          "name": "Postgres account 2"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "conditions": {
-          "options": {
-            "caseSensitive": true,
-            "leftValue": "",
-            "typeValidation": "strict",
-            "version": 2
-          },
-          "conditions": [
+        "assignments": {
+          "assignments": [
             {
-              "id": "fa13510a-3a56-4cd5-8b80-3e4fe626ce0b",
-              "leftValue": "={{ $json.to_terminate }}",
-              "rightValue": true,
-              "operator": {
-                "type": "boolean",
-                "operation": "equals"
-              }
-            }
-          ],
-          "combinator": "and"
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.if",
-      "typeVersion": 2.2,
-      "position": [
-        1888,
-        992
-      ],
-      "id": "8546fd9e-715a-4ca7-afd8-6bd5270e579c",
-      "name": "If"
-    },
-    {
-      "parameters": {
-        "errorMessage": "Process terminated by user"
-      },
-      "type": "n8n-nodes-base.stopAndError",
-      "typeVersion": 1,
-      "position": [
-        2080,
-        992
-      ],
-      "id": "285f8e92-2495-407e-a140-21f6a9975145",
-      "name": "Stop and Error"
-    },
-    {
-      "parameters": {
-        "operation": "select",
-        "schema": {
-          "__rl": true,
-          "mode": "list",
-          "value": "public"
-        },
-        "table": {
-          "__rl": true,
-          "value": "business_processes_states",
-          "mode": "list",
-          "cachedResultName": "business_processes_states"
-        },
-        "returnAll": true,
-        "where": {
-          "values": [
+              "id": "ab5decf6-1908-4ae2-a486-c4a264e19e22",
+              "name": "company_id",
+              "value": "={{ $('When Executed by Another Workflow').item.json.company_id }}",
+              "type": "string"
+            },
             {
-              "column": "n8n_workflow_execution_id",
-              "value": "={{ $execution.id }}"
+              "id": "e27fa9f4-010b-44e7-a7a4-5f2ce8835da4",
+              "name": "key_word",
+              "value": "={{ $json.service_name }} + {{ $json.service_description }}",
+              "type": "string"
+            },
+            {
+              "id": "294cf1a4-7a28-4a54-99d7-e1eb31373655",
+              "name": "report_id",
+              "value": "0",
+              "type": "string"
             }
           ]
         },
         "options": {}
       },
-      "type": "n8n-nodes-base.postgres",
-      "typeVersion": 2.6,
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
       "position": [
-        1664,
-        1008
+        -192,
+        -64
       ],
-      "id": "81e9a374-b608-4cd3-8f5d-30795104fbd1",
-      "name": "check if termination is requested",
-      "credentials": {
-        "postgres": {
-          "id": "4YkdFJcdTgzo9hkz",
-          "name": "PGvector"
-        }
-      }
+      "id": "a8fc60af-f8e0-402e-be6d-dd84d1b750b4",
+      "name": "set input1"
     },
     {
       "parameters": {
-        "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nconst workflowData = $getWorkflowStaticData('global');\nworkflowData.steps_passed++; // update steps counter\nfor (const item of $input.all()) {\n  item.json.steps_passed = workflowData.steps_passed;\n}\n\n\nreturn $input.all();"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        1200,
-        1024
-      ],
-      "id": "4f3611dd-b350-4590-a18d-cae3a1e48165",
-      "name": "Get current step saved"
-    },
-    {
-      "parameters": {
-        "operation": "executeQuery",
-        "query": "update business_processes_states set steps_passed=$2 where n8n_workflow_execution_id=$1",
-        "options": {
-          "queryReplacement": "=[{{$execution.id}},{{$json.steps_passed}}]"
-        }
-      },
-      "type": "n8n-nodes-base.postgres",
-      "typeVersion": 2.6,
-      "position": [
-        1456,
-        1008
-      ],
-      "id": "5d6580c5-a35b-4192-a6be-60eee37b168d",
-      "name": "Mark_workflow_passed_steps1",
-      "executeOnce": true,
-      "credentials": {
-        "postgres": {
-          "id": "4YkdFJcdTgzo9hkz",
-          "name": "PGvector"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "conditions": {
-          "options": {
-            "caseSensitive": true,
-            "leftValue": "",
-            "typeValidation": "strict",
-            "version": 2
-          },
-          "conditions": [
-            {
-              "id": "20f8b170-2400-407c-a2c2-dea53fa2069c",
-              "leftValue": "={{ $json.error.name }}",
-              "rightValue": "",
-              "operator": {
-                "type": "string",
-                "operation": "exists",
-                "singleValue": true
-              }
-            }
-          ],
-          "combinator": "and"
-        },
         "options": {}
       },
-      "type": "n8n-nodes-base.if",
-      "typeVersion": 2.2,
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
       "position": [
-        832,
-        272
+        -432,
+        -80
       ],
-      "id": "9e63502a-7b39-4488-a6db-1122f33dd95b",
-      "name": "If1"
-    },
-    {
-      "parameters": {
-        "url": "=https://r.jina.ai/{{ $json.service_url }}",
-        "authentication": "genericCredentialType",
-        "genericAuthType": "httpBearerAuth",
-        "sendHeaders": true,
-        "headerParameters": {
-          "parameters": [
-            {
-              "name": "Accept",
-              "value": "application/json"
-            }
-          ]
-        },
-        "options": {
-          "timeout": 30000
-        }
-      },
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.3,
-      "position": [
-        656,
-        528
-      ],
-      "id": "d274676b-ed5b-4831-b0b3-f20338f8ee13",
-      "name": "Call jina",
-      "executeOnce": false,
-      "retryOnFail": true,
-      "credentials": {
-        "httpBearerAuth": {
-          "id": "ZwzkfrwpmTuGhirJ",
-          "name": "Jina API"
-        }
-      },
-      "onError": "continueRegularOutput"
-    },
-    {
-      "parameters": {
-        "content": "Тех долг\nДобавить fallback https://chatgpt.com/s/t_691efb28a59c8191bbda9061ecd272cf\n"
-      },
-      "type": "n8n-nodes-base.stickyNote",
-      "typeVersion": 1,
-      "position": [
-        1280,
-        256
-      ],
-      "id": "e7fb050f-b67f-4106-9e13-b857be91cf08",
-      "name": "Sticky Note1"
+      "id": "d0efab8b-df91-459e-8085-628bb3d8e272",
+      "name": "Loop Over Items"
     }
   ],
   "connections": {
-    "Loop Over Items": {
-      "main": [
-        [
-          {
-            "node": "Loop Over Items1",
-            "type": "main",
-            "index": 0
-          }
-        ],
-        [
-          {
-            "node": "reset first_item",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Get a file": {
       "main": [
         [
@@ -841,95 +271,6 @@
         ]
       ]
     },
-    "Set API JSON": {
-      "main": [
-        [
-          {
-            "node": "HTTP Request",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Set prompt": {
-      "main": [
-        [
-          {
-            "node": "Set API JSON",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "HTTP Request": {
-      "main": [
-        [
-          {
-            "node": "update calls counters2",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Services list": {
-      "main": [
-        [
-          {
-            "node": "Merge2",
-            "type": "main",
-            "index": 0
-          },
-          {
-            "node": "Get total steps",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Loop Over Items1": {
-      "main": [
-        [
-          {
-            "node": "Mark_workflow_completed",
-            "type": "main",
-            "index": 0
-          }
-        ],
-        [
-          {
-            "node": "get service urls",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "reset first_item": {
-      "main": [
-        [
-          {
-            "node": "Call jina",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "set first_item1": {
-      "main": [
-        [
-          {
-            "node": "Loop Over Items",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "When Executed by Another Workflow": {
       "main": [
         [
@@ -952,115 +293,11 @@
         ]
       ]
     },
-    "get service urls": {
-      "main": [
-        [
-          {
-            "node": "string for service urls",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "string for service urls": {
-      "main": [
-        [
-          {
-            "node": "set first_item1",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "update calls counters2": {
-      "main": [
-        [
-          {
-            "node": "Save_tokens_usage",
-            "type": "main",
-            "index": 0
-          },
-          {
-            "node": "Merge1",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Save_tokens_usage": {
-      "main": [
-        [
-          {
-            "node": "Merge1",
-            "type": "main",
-            "index": 1
-          }
-        ]
-      ]
-    },
-    "Merge1": {
-      "main": [
-        [
-          {
-            "node": "set input",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Mark_workflow_total_steps1": {
-      "main": [
-        [
-          {
-            "node": "Init total counter1",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Init total counter1": {
       "main": [
         [
           {
-            "node": "Merge2",
-            "type": "main",
-            "index": 1
-          }
-        ]
-      ]
-    },
-    "Merge2": {
-      "main": [
-        [
-          {
-            "node": "Loop Over Items1",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Call 'create content records for the  key word'": {
-      "main": [
-        [
-          {
-            "node": "Get current step saved",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "set input": {
-      "main": [
-        [
-          {
-            "node": "Call 'create content records for the  key word'",
+            "node": "Loop Over Items",
             "type": "main",
             "index": 0
           }
@@ -1071,105 +308,25 @@
       "main": [
         [
           {
-            "node": "If franchise",
+            "node": "Init total counter1",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "If franchise": {
+    "set input1": {
       "main": [
         [
           {
-            "node": "Set addon",
-            "type": "main",
-            "index": 0
-          }
-        ],
-        [
-          {
-            "node": "Services list",
+            "node": "Call 'create content records for the  key word'1",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Set addon": {
-      "main": [
-        [
-          {
-            "node": "Services list",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Get total steps": {
-      "main": [
-        [
-          {
-            "node": "Mark_workflow_total_steps1",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "If": {
-      "main": [
-        [
-          {
-            "node": "Stop and Error",
-            "type": "main",
-            "index": 0
-          }
-        ],
-        [
-          {
-            "node": "Loop Over Items",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "check if termination is requested": {
-      "main": [
-        [
-          {
-            "node": "If",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Get current step saved": {
-      "main": [
-        [
-          {
-            "node": "Mark_workflow_passed_steps1",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Mark_workflow_passed_steps1": {
-      "main": [
-        [
-          {
-            "node": "check if termination is requested",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "If1": {
+    "Call 'create content records for the  key word'1": {
       "main": [
         [
           {
@@ -1177,21 +334,21 @@
             "type": "main",
             "index": 0
           }
-        ],
-        [
-          {
-            "node": "Set prompt",
-            "type": "main",
-            "index": 0
-          }
         ]
       ]
     },
-    "Call jina": {
+    "Loop Over Items": {
       "main": [
         [
           {
-            "node": "If1",
+            "node": "Mark_workflow_completed",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "set input1",
             "type": "main",
             "index": 0
           }
@@ -1238,7 +395,7 @@
       }
     ]
   },
-  "versionId": "30bcf94e-f9ae-4c5c-b3d9-dd0e3ab538a4",
+  "versionId": "5697ad0b-bd81-44d1-84d8-941ada56fa02",
   "triggerCount": 0,
   "shared": [
     {
