@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-20T16:39:13.470Z",
+  "updatedAt": "2025-11-20T16:43:15.427Z",
   "createdAt": "2025-11-13T06:08:40.998Z",
   "id": "eeZTmctM9IvDF2bH",
   "name": "Create company campaign quick links",
@@ -539,7 +539,7 @@
     },
     {
       "parameters": {
-        "jsCode": "const workflowData = $getWorkflowStaticData('global');\nlet my_prompt = workflowData.my_prompt_url.data;\n\nfor (const item of $input.all()) {\n  item.json.my_prompt = my_prompt.replaceAll(\"{{service_description}}\", workflowData.company_description_with_url).replaceAll(\"{{header_ad_text}}\", JSON.stringify($json.Items));\n}\n\nreturn $input.all();"
+        "jsCode": "const workflowData = $getWorkflowStaticData('global');\nlet my_prompt = workflowData.my_prompt_url.data;\n\nfor (const item of $input.all()) {\n  item.json.my_prompt = item.json.my_prompt = my_prompt.replaceAll(\"{{service_description}}\", $('Merge').first().json.company_name + ' ' + $('Merge').first().json.service_name + ' ' + $('Merge').first().json.service_description_with_url).replaceAll(\"{{header_ad_text}}\", JSON.stringify($json.Items));\n}\n\nreturn $input.all();"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -769,8 +769,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        4208,
-        -32
+        4224,
+        192
       ],
       "id": "3ba85a09-7f36-4b0e-865a-52503ff694ba",
       "name": "Separate output items"
@@ -1179,7 +1179,7 @@
       "main": [
         [
           {
-            "node": "Mark_workflow_passed_steps",
+            "node": "Loop Over Items",
             "type": "main",
             "index": 0
           }
@@ -1447,7 +1447,7 @@
       }
     ]
   },
-  "versionId": "8709a2e4-fbec-4bc9-a9f8-1c6fd67b5ccc",
+  "versionId": "29de5c37-c13e-413d-9470-1bbb02f98bce",
   "triggerCount": 0,
   "shared": [
     {
