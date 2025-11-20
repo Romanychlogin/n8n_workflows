@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-03T18:12:20.057Z",
+  "updatedAt": "2025-11-20T15:07:38.734Z",
   "createdAt": "2025-11-03T10:14:25.998Z",
   "id": "0eNPm5Ccv1vMf2CV",
   "name": "competitors vs content review",
@@ -717,7 +717,7 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "SELECT\n  v.canonical_name,\n  v.name_text,\n  v.competitor_id,\n  ct.phrase,\n  ct.content_id,\n  ct.report_id,\n  1 - (v.embedding <=> ct.phrase_embedding) AS similarity\nFROM company_content ct\nCROSS JOIN LATERAL (\n  SELECT v.name_text, v.competitor_id, v.embedding,e.canonical_name\n  FROM competitor_name_variants v JOIN competitor_entities e USING (competitor_id)\n  WHERE e.company_id = $1\n  ORDER BY v.embedding <=> ct.phrase_embedding\n  LIMIT 50                           -- подберите k экспериментально\n) v\nWHERE ct.company_id = $1\n  AND 1 - (v.embedding <=> ct.phrase_embedding) > $2\n  AND ct.report_id<>0 -- не включаем в анализ изначальный контент \n  AND ct.phrase_embedding IS NOT NULL;",
+        "query": "SELECT\n  v.canonical_name,\n  v.name_text,\n  v.competitor_id,\n  ct.phrase,\n  ct.content_id,\n  ct.report_id,\n  1 - (v.embedding <=> ct.phrase_embedding) AS similarity\nFROM company_content ct\nCROSS JOIN LATERAL (\n  SELECT v.name_text, v.competitor_id, v.embedding,e.canonical_name\n  FROM competitor_name_variants v JOIN competitor_entities e USING (competitor_id)\n  WHERE e.company_id = $1\n  ORDER BY v.embedding <=> ct.phrase_embedding\n  LIMIT 50                           -- подберите k экспериментально\n) v\nWHERE ct.company_id = $1\n  AND 1 - (v.embedding <=> ct.phrase_embedding) > $2\n  AND ct.phrase_embedding IS NOT NULL;",
         "options": {
           "queryReplacement": "={{ $('When Executed by Another Workflow').item.json.company_id }},{{$json.threshold  }}"
         }
@@ -1358,7 +1358,7 @@
       }
     ]
   },
-  "versionId": "34312579-f1de-42db-91fd-c7ebe3f16267",
+  "versionId": "fe892638-34bf-4441-945c-af95f02faaab",
   "triggerCount": 0,
   "shared": [
     {
