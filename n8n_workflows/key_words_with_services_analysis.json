@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-19T17:08:26.706Z",
+  "updatedAt": "2025-11-20T05:57:39.517Z",
   "createdAt": "2025-09-15T10:20:29.723Z",
   "id": "AEZDBlqe199xBn5u",
   "name": "key_words_with_services_analysis",
@@ -259,8 +259,8 @@
       "type": "n8n-nodes-base.extractFromFile",
       "typeVersion": 1,
       "position": [
-        48,
-        -320
+        -624,
+        16
       ],
       "id": "9d8263a5-839a-4aa9-b995-2ab07ebfb009",
       "name": "Extract from File1"
@@ -272,8 +272,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        256,
-        -320
+        -416,
+        16
       ],
       "id": "ed57f512-0ea6-4629-9610-65367a8314d5",
       "name": "Code1"
@@ -361,15 +361,15 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "select cs.service_name,cs.service_description,cs.service_id from companies c, company_services cs where c.company_id=cs.company_id and c.company_name=$1",
+        "query": "select cs.service_name,cs.service_description,cs.service_id from companies c, company_services cs where c.company_id=cs.company_id and c.company_id=$1",
         "options": {
-          "queryReplacement": "{{$json.company_name}}"
+          "queryReplacement": "={{$('When Executed by Another Workflow').last().json.company_id}}"
         }
       },
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        16,
+        -128,
         -48
       ],
       "id": "1d2328c0-62b2-4b7c-a8d5-0b6c2617ac50",
@@ -390,8 +390,8 @@
       "type": "n8n-nodes-base.splitInBatches",
       "typeVersion": 3,
       "position": [
-        224,
-        -48
+        240,
+        -176
       ],
       "id": "7bc94ac0-69f3-4c05-8ebe-fdd7ddefae00",
       "name": "Loop Over services"
@@ -445,41 +445,6 @@
     },
     {
       "parameters": {
-        "assignments": {
-          "assignments": [
-            {
-              "id": "5b3485a2-cb50-486a-932c-fc27de0a25da",
-              "name": "company_name",
-              "value": "Первый визовый центр Курган",
-              "type": "string"
-            },
-            {
-              "id": "f74ac992-90a4-4403-a75e-17656de76902",
-              "name": "company_id",
-              "value": 2,
-              "type": "number"
-            },
-            {
-              "id": "172a851e-fdc7-4f3c-b095-88687e8a392a",
-              "name": "threshhold",
-              "value": 0.88,
-              "type": "number"
-            }
-          ]
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.set",
-      "typeVersion": 3.4,
-      "position": [
-        -224,
-        -48
-      ],
-      "id": "9e926677-2b92-431c-972a-632b37d3fe04",
-      "name": "set variables"
-    },
-    {
-      "parameters": {
         "workflowId": {
           "__rl": true,
           "value": "rmq06a0YRFizRgV1",
@@ -495,7 +460,7 @@
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1.2,
       "position": [
-        1296,
+        1360,
         -48
       ],
       "id": "db488fdf-bb67-461a-b89f-b61668ce355b",
@@ -529,7 +494,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        1472,
+        1536,
         -48
       ],
       "id": "5785052d-33b3-4af1-be99-5d06f4eb17f7",
@@ -658,8 +623,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        2864,
-        144
+        2496,
+        128
       ],
       "id": "6a9b1d3e-fefc-4c1b-9a5b-b14606db9057",
       "name": "Mark non relevant",
@@ -689,7 +654,7 @@
           "values": [
             {
               "column": "company_id",
-              "value": "={{$('set variables').item.json.company_id}}"
+              "value": "={{$('When Executed by Another Workflow').last().json.company_id}}"
             },
             {
               "column": "service_id",
@@ -748,8 +713,8 @@
       "type": "n8n-nodes-base.github",
       "typeVersion": 1.1,
       "position": [
-        -160,
-        -320
+        -832,
+        16
       ],
       "id": "86f6ad29-3b2b-455b-8703-61e42d1a66c5",
       "name": "Non first run option",
@@ -769,8 +734,8 @@
       "type": "n8n-nodes-base.extractFromFile",
       "typeVersion": 1,
       "position": [
-        48,
-        -496
+        -624,
+        -160
       ],
       "id": "bd682dcd-cb27-432d-b066-39be4d8f6614",
       "name": "Extract from File"
@@ -782,8 +747,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        256,
-        -496
+        -416,
+        -160
       ],
       "id": "ba50b723-ffc7-4989-b3e2-c05901dc6cc0",
       "name": "Code"
@@ -823,8 +788,8 @@
       "type": "n8n-nodes-base.github",
       "typeVersion": 1.1,
       "position": [
-        -160,
-        -496
+        -832,
+        -160
       ],
       "id": "9f81dcd1-334c-4291-9c3f-0a341b508c06",
       "name": "First run option",
@@ -879,7 +844,7 @@
       "typeVersion": 3.4,
       "position": [
         816,
-        -128
+        -112
       ],
       "id": "882fb72c-f697-47f0-9799-8c9d2a4c47c7",
       "name": "set first_item"
@@ -938,7 +903,7 @@
       "type": "n8n-nodes-base.executeWorkflowTrigger",
       "typeVersion": 1.1,
       "position": [
-        -1008,
+        -1536,
         -64
       ],
       "id": "8ee8db45-28f8-49e2-bf5c-c62d2857581e",
@@ -955,7 +920,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        -736,
+        -1264,
         -48
       ],
       "id": "d79c64c4-b28b-4ebb-9fd8-003bc6c8c14c",
@@ -974,33 +939,58 @@
           "options": {
             "caseSensitive": true,
             "leftValue": "",
-            "typeValidation": "strict",
+            "typeValidation": "loose",
             "version": 2
           },
           "conditions": [
             {
               "id": "defb96b1-f082-425a-8a5e-bf574855bbf8",
-              "leftValue": "",
+              "leftValue": "={{ $json.is_initial }}",
               "rightValue": "",
               "operator": {
-                "type": "string",
-                "operation": "equals",
-                "name": "filter.operator.equals"
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
               }
             }
           ],
           "combinator": "and"
         },
+        "looseTypeValidation": true,
         "options": {}
       },
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        -528,
+        -1056,
         -48
       ],
       "id": "c66fc86b-a640-46b5-a25e-8a0f229ad5d1",
-      "name": "If"
+      "name": "If initial"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "update business_processes_states set finished=NOW() where  n8n_workflow_execution_id=$1",
+        "options": {
+          "queryReplacement": "={{$execution.id}}"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        864,
+        -432
+      ],
+      "id": "59789248-57ad-4eaa-91e4-f77777ad2b02",
+      "name": "Mark_workflow_completed",
+      "executeOnce": true,
+      "credentials": {
+        "postgres": {
+          "id": "4YkdFJcdTgzo9hkz",
+          "name": "PGvector"
+        }
+      }
     }
   ],
   "connections": {
@@ -1086,7 +1076,13 @@
     },
     "Code1": {
       "main": [
-        []
+        [
+          {
+            "node": "Services list",
+            "type": "main",
+            "index": 0
+          }
+        ]
       ]
     },
     "Code2": {
@@ -1146,7 +1142,13 @@
     },
     "Loop Over services": {
       "main": [
-        [],
+        [
+          {
+            "node": "Mark_workflow_completed",
+            "type": "main",
+            "index": 0
+          }
+        ],
         [
           {
             "node": "Get not processes keys",
@@ -1179,17 +1181,6 @@
         [
           {
             "node": "Set API JSON",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "set variables": {
-      "main": [
-        [
-          {
-            "node": "Services list",
             "type": "main",
             "index": 0
           }
@@ -1335,7 +1326,36 @@
       "main": [
         [
           {
-            "node": "If",
+            "node": "If initial",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If initial": {
+      "main": [
+        [
+          {
+            "node": "First run option",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Non first run option",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "Services list",
             "type": "main",
             "index": 0
           }
@@ -1368,7 +1388,7 @@
       }
     ]
   },
-  "versionId": "fd8cbdfb-b66a-44cd-939b-8fde4de9acf6",
+  "versionId": "95c7c5e0-6e7e-4c96-bbfc-09eafb5c1854",
   "triggerCount": 0,
   "shared": [
     {
