@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-20T13:49:21.157Z",
+  "updatedAt": "2025-11-20T14:14:46.865Z",
   "createdAt": "2025-09-15T10:20:29.723Z",
   "id": "AEZDBlqe199xBn5u",
   "name": "key_words_with_services_analysis",
@@ -38,7 +38,6 @@
         "columns": {
           "mappingMode": "defineBelow",
           "value": {
-            "ai_response_tokens": "={{ $json.total_tokens }}",
             "key_word_id": "={{ $('Loop Over Items').item.json.key_word_id }}",
             "is_relevant": "={{ $json.is_relevant }}"
           },
@@ -134,7 +133,7 @@
               "display": true,
               "type": "number",
               "canBeUsedToMatch": true,
-              "removed": false
+              "removed": true
             }
           ],
           "attemptToConvertTypes": false,
@@ -169,7 +168,7 @@
           "conditions": [
             {
               "id": "60fdafa4-2c5e-4917-978b-dbc1a116f516",
-              "leftValue": "={{ JSON.parse($json.output[1].content[0].text).is_correct_phrase }}",
+              "leftValue": "={{ $json.is_correct_phrase }}",
               "rightValue": "true_phrase",
               "operator": {
                 "type": "boolean",
@@ -185,7 +184,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        3408,
+        3536,
         -384
       ],
       "id": "092ae491-640d-4cf2-b925-bf1d3a7612ef",
@@ -755,19 +754,6 @@
     },
     {
       "parameters": {
-        "content": "Manual route please!!!"
-      },
-      "type": "n8n-nodes-base.stickyNote",
-      "typeVersion": 1,
-      "position": [
-        -560,
-        -432
-      ],
-      "id": "fb97ef7b-89a6-4675-9670-d6b41b221d77",
-      "name": "Sticky Note"
-    },
-    {
-      "parameters": {
         "resource": "file",
         "operation": "get",
         "owner": {
@@ -882,19 +868,6 @@
       ],
       "id": "11832d88-21d7-4d4b-b240-2b5c43bacd7a",
       "name": "If no records"
-    },
-    {
-      "parameters": {
-        "content": "remove wordstat_processed"
-      },
-      "type": "n8n-nodes-base.stickyNote",
-      "typeVersion": 1,
-      "position": [
-        416,
-        208
-      ],
-      "id": "ab7a9be0-a042-4dce-892c-4111df748b45",
-      "name": "Sticky Note1"
     },
     {
       "parameters": {
@@ -1216,8 +1189,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        2768,
-        -416
+        2800,
+        -432
       ],
       "id": "8c99e4fb-d966-4037-a3e5-8d1061f02a6a",
       "name": "Separate output items"
@@ -1258,6 +1231,82 @@
       ],
       "id": "ac33d5c5-2b6f-4a16-ab14-828bb76ca102",
       "name": "Merge1"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "ebafa31d-edf7-41c0-a06e-e884ad9595ea",
+              "name": "is_first2",
+              "value": "=true",
+              "type": "boolean"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        3008,
+        -432
+      ],
+      "id": "0464e182-5ca6-43f5-8cdd-4070b362ee80",
+      "name": "set first_item2"
+    },
+    {
+      "parameters": {
+        "options": {
+          "reset": "={{ $json.is_first2 }}"
+        }
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        3184,
+        -304
+      ],
+      "id": "460ca0b2-9829-450c-a50f-ffd54a11c749",
+      "name": "Loop Over Items2"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "ebafa31d-edf7-41c0-a06e-e884ad9595ea",
+              "name": "is_first2",
+              "value": "=false",
+              "type": "boolean"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        3376,
+        -384
+      ],
+      "id": "af4bc2de-061c-4c4e-aefd-d33e18a9a83d",
+      "name": "reset first_item2"
+    },
+    {
+      "parameters": {
+        "content": "remove wordstat_processed"
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        416,
+        208
+      ],
+      "id": "ab7a9be0-a042-4dce-892c-4111df748b45",
+      "name": "Sticky Note1"
     }
   ],
   "connections": {
@@ -1283,7 +1332,7 @@
       "main": [
         [
           {
-            "node": "Loop Over Items1",
+            "node": "Loop Over Items2",
             "type": "main",
             "index": 0
           }
@@ -1775,6 +1824,57 @@
           }
         ]
       ]
+    },
+    "Separate output items": {
+      "main": [
+        [
+          {
+            "node": "set first_item2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "set first_item2": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items2": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "reset first_item2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "reset first_item2": {
+      "main": [
+        [
+          {
+            "node": "Обработка ответа AI",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
@@ -1802,7 +1902,7 @@
       }
     ]
   },
-  "versionId": "797448cb-fe9c-4a7b-8df4-3e1e16b8d293",
+  "versionId": "48a34788-d57f-479f-81d0-1d7934b2ac23",
   "triggerCount": 0,
   "shared": [
     {
