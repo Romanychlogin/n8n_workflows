@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-19T17:00:05.716Z",
+  "updatedAt": "2025-11-20T14:27:45.098Z",
   "createdAt": "2025-09-10T14:56:27.610Z",
   "id": "5Se0CY4jTtS5g7n3",
   "name": "company services",
@@ -234,7 +234,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        4144,
+        4352,
         160
       ],
       "id": "62a64ba7-b2d8-4b5e-99e7-6cffd28f874c",
@@ -307,7 +307,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        3344,
+        3552,
         -160
       ],
       "id": "6506b2bc-0455-4b8d-a494-7947c1fdd87c",
@@ -378,7 +378,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        4544,
+        4752,
         128
       ],
       "id": "141a0bca-e21d-4acf-bfcc-3b96d11e0938",
@@ -398,7 +398,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        4320,
+        4528,
         128
       ],
       "id": "18e87029-f008-4df2-a7ea-e6af7def0e6f",
@@ -411,7 +411,7 @@
       "type": "n8n-nodes-base.stopAndError",
       "typeVersion": 1,
       "position": [
-        5296,
+        5504,
         16
       ],
       "id": "7705ff83-9613-4400-b432-a3d8fbb96566",
@@ -445,7 +445,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        4800,
+        5008,
         160
       ],
       "id": "46b21f50-e94b-4649-ad8e-0f3fa02af708",
@@ -484,7 +484,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        4976,
+        5184,
         192
       ],
       "id": "3ef8876e-950c-439a-a9c1-b0f504058731",
@@ -768,7 +768,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        3776,
+        3984,
         160
       ],
       "id": "8dd9d8eb-f8c4-443e-a4d1-d976f8805f0c",
@@ -788,7 +788,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        3600,
+        3808,
         160
       ],
       "id": "5cee08e4-34d6-4871-b2ce-2ca5dc82e82e",
@@ -801,7 +801,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        3440,
+        3648,
         160
       ],
       "id": "eedec487-dca0-40b7-8d70-3b1b8e3cd2e8",
@@ -825,7 +825,7 @@
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1.3,
       "position": [
-        3248,
+        3456,
         176
       ],
       "id": "9a249ccf-9df4-401c-9c35-a96ea9237c8c",
@@ -848,7 +848,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        3040,
+        3248,
         176
       ],
       "id": "22a38405-4970-4198-9158-869edd82b844",
@@ -861,7 +861,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        3936,
+        4144,
         176
       ],
       "id": "96085421-d4c5-4af0-90dc-c96a027c56d8",
@@ -928,6 +928,43 @@
       ],
       "id": "89f06aa9-1fdd-496b-b665-8c3fa90b4353",
       "name": "Code"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "cMcY26oqQV5mNCvI",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/cMcY26oqQV5mNCvI",
+          "cachedResultName": "create content records for the  key word"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {}
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.3,
+      "position": [
+        3216,
+        -96
+      ],
+      "id": "4b2fff80-50f6-4209-9433-8af7c94517a9",
+      "name": "Call 'create content records for the  key word'"
+    },
+    {
+      "parameters": {
+        "jsCode": "const workflowData = $getWorkflowStaticData('global');\n\nitem=[];\nitem.push(json:{key_word:workflowData.UserContent,company_id:$('When Executed by Another Workflow').item.json.company_id,report_id:0})\n\nreturn item;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1360,
+        -496
+      ],
+      "id": "33d60465-75de-4acf-831b-3e05b23fba0c",
+      "name": "Code in JavaScript1"
     }
   ],
   "connections": {
@@ -988,13 +1025,7 @@
     },
     "Loop Over Items": {
       "main": [
-        [
-          {
-            "node": "Mark_workflow_completed",
-            "type": "main",
-            "index": 0
-          }
-        ],
+        [],
         [
           {
             "node": "Edit Fields",
@@ -1153,7 +1184,7 @@
       "main": [
         [
           {
-            "node": "Set prompt",
+            "node": "Code in JavaScript1",
             "type": "main",
             "index": 0
           }
@@ -1334,6 +1365,17 @@
           }
         ]
       ]
+    },
+    "Call 'create content records for the  key word'": {
+      "main": [
+        [
+          {
+            "node": "Mark_workflow_completed",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
@@ -1361,7 +1403,7 @@
       }
     ]
   },
-  "versionId": "087eacb6-c6d9-42a9-aba0-fd675a927597",
+  "versionId": "b0495d5d-61d1-48cb-b560-c96c4755b00d",
   "triggerCount": 0,
   "shared": [
     {
