@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-19T19:30:37.703Z",
+  "updatedAt": "2025-11-20T11:08:13.482Z",
   "createdAt": "2025-11-19T17:19:31.386Z",
   "id": "JUfn8q0IjV4Ya5Cw",
   "name": "company_content_from_site",
@@ -43,8 +43,8 @@
       "type": "n8n-nodes-base.github",
       "typeVersion": 1.1,
       "position": [
-        -1104,
-        -448
+        -1392,
+        -432
       ],
       "id": "f8642b33-8374-4a5b-a538-ea30e598ffc4",
       "name": "Get a file",
@@ -64,8 +64,8 @@
       "type": "n8n-nodes-base.extractFromFile",
       "typeVersion": 1,
       "position": [
-        -928,
-        -448
+        -1216,
+        -432
       ],
       "id": "76801e61-4ef5-4d8a-ac53-8299ba22817e",
       "name": "Extract from File1"
@@ -77,15 +77,15 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -784,
-        -416
+        -1072,
+        -400
       ],
       "id": "cd4384a7-9d90-4919-b9a5-44475f84b53a",
       "name": "Code1"
     },
     {
       "parameters": {
-        "jsCode": "\n\nreturn [{\n  json: \n {\n  \"model\": \"gpt-5.1-2025-11-13\",\n  \"input\": [\n    {\n      \"role\": \"user\",\n      \"content\": [\n        {\n          \"type\": \"input_text\",\n          \"text\": $json.my_prompt\n        }\n      ]\n    }\n  ],\n  \"text\": {\n    \"format\": {\n      \"type\": \"json_schema\",\n      \"name\": \"text_answer\",\n      \"strict\": true,\n      \"schema\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"user_content\": {\n            \"type\": \"string\",\n            \"description\": \"The text answer provided by the user\"\n          }\n        },\n        \"required\": [\n          \"user_content\"\n        ],\n        \"additionalProperties\": false\n      }\n    },\n    \"verbosity\": \"medium\"\n  },\n  \"reasoning\": {\n    \"effort\": \"none\",\n    \"summary\": \"auto\"\n  },\n  \"tools\": [],\n  \"store\": false,\n  \"include\": [\n    \"reasoning.encrypted_content\",\n    \"web_search_call.action.sources\"\n  ]\n}\n\n}];"
+        "jsCode": "\n\nreturn [{\n  json: \n {\n  \"model\": \"gpt-5.1-2025-11-13\",\n  \"input\": [\n    {\n      \"role\": \"developer\",\n      \"content\": [\n        {\n          \"type\": \"input_text\",\n          \"text\": \"Ты — парсер веб-страниц. На входе HTML целой страницы (с динамическим контентом).Верни только основной осмысленный текст страницы (статья / описание / контент), без меню, футера, рекламы, навигации, форм логина, cookie-баннеров и т.п.Формат ответа: чистый текст или markdown, без пояснений.\"\n        }\n      ]\n    },\n    {\n      \"role\": \"user\",\n      \"content\": [\n        {\n          \"type\": \"input_text\",\n          \"text\": $json.my_prompt\n        }\n      ]\n    }\n  ],\n  \"text\": {\n    \"format\": {\n      \"type\": \"json_schema\",\n      \"name\": \"text_answer\",\n      \"strict\": true,\n      \"schema\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"user_content\": {\n            \"type\": \"string\",\n            \"description\": \"The text answer provided by the user\"\n          }\n        },\n        \"required\": [\n          \"user_content\"\n        ],\n        \"additionalProperties\": false\n      }\n    },\n    \"verbosity\": \"medium\"\n  },\n  \"reasoning\": {\n    \"effort\": \"none\",\n    \"summary\": \"auto\"\n  },\n  \"tools\": [],\n  \"store\": false,\n  \"include\": [\n    \"reasoning.encrypted_content\",\n    \"web_search_call.action.sources\"\n  ]\n}\n\n}];"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -125,7 +125,7 @@
     },
     {
       "parameters": {
-        "jsCode": "const workflowData = $getWorkflowStaticData('global');\nlet my_prompt = workflowData.my_prompt.data;\n\nfor (const item of $input.all()) {\n  item.json.my_prompt = my_prompt.replaceAll(\"{{user_content}}\", $input.first().json.data.content);\n}\n\nreturn $input.all();"
+        "jsCode": "const workflowData = $getWorkflowStaticData('global');\nlet my_prompt = workflowData.my_prompt.data;\n\nfor (const item of $input.all()) {\n  item.json.my_prompt = my_prompt.replaceAll(\"{{user_content}}\",$input.first().json.data.title + $input.first().json.data.description + $input.first().json.data.content);\n}\n\nreturn $input.all();"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -147,8 +147,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        -544,
-        -240
+        -672,
+        320
       ],
       "id": "8f5aaec0-9954-4daa-8b4f-7ed0d8c80b4d",
       "name": "Services list",
@@ -393,8 +393,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        -352,
-        -32
+        -320,
+        288
       ],
       "id": "7368657e-5e94-4373-b5ae-5f82ca940b97",
       "name": "Mark_workflow_total_steps1",
@@ -413,8 +413,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -176,
-        -48
+        -160,
+        160
       ],
       "id": "9b645feb-31f1-47c7-9abe-10a7ae18b449",
       "name": "Init total counter1"
@@ -435,6 +435,8 @@
     {
       "parameters": {
         "url": "=https://r.jina.ai/{{ $json.service_url }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBearerAuth",
         "sendHeaders": true,
         "headerParameters": {
           "parameters": [
@@ -456,7 +458,13 @@
       ],
       "id": "48fa6805-b0f8-4146-a7af-f402d52cbc2b",
       "name": "HTTP Request3",
-      "executeOnce": false
+      "executeOnce": false,
+      "credentials": {
+        "httpBearerAuth": {
+          "id": "ZwzkfrwpmTuGhirJ",
+          "name": "Jina API"
+        }
+      }
     },
     {
       "parameters": {
@@ -516,6 +524,138 @@
       ],
       "id": "c634a907-b6d8-4acc-9072-66500d94eaca",
       "name": "set input"
+    },
+    {
+      "parameters": {
+        "resource": "file",
+        "operation": "get",
+        "owner": {
+          "__rl": true,
+          "value": "Romanychlogin",
+          "mode": "name"
+        },
+        "repository": {
+          "__rl": true,
+          "value": "n8n_prompts",
+          "mode": "list",
+          "cachedResultName": "n8n_prompts",
+          "cachedResultUrl": "https://github.com/Romanychlogin/n8n_prompts"
+        },
+        "filePath": "clear_content_franchise_addon.txt",
+        "additionalParameters": {}
+      },
+      "type": "n8n-nodes-base.github",
+      "typeVersion": 1.1,
+      "position": [
+        -1376,
+        -144
+      ],
+      "id": "b401264a-0b3e-4bc5-b0f7-8dc877c97d35",
+      "name": "Get a file1",
+      "webhookId": "136425e8-5625-41e8-9318-bfabcaae0515",
+      "credentials": {
+        "githubApi": {
+          "id": "JQAFAcMNS9Ylyb0V",
+          "name": "GitHub account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "text",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        -1200,
+        -144
+      ],
+      "id": "b9e85b65-d2cf-4b79-bca5-fdead535aa55",
+      "name": "Extract from File"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Function-Node (Run Once)\nconst workflowData = $getWorkflowStaticData('global');\nworkflowData.my_prompt_addon = items[0].json;\nreturn items;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1056,
+        -112
+      ],
+      "id": "73e9b765-8423-4f36-9797-41e4d9325b7f",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "select * from companies where compamy_id=$1",
+        "options": {
+          "queryReplacement": "={{ $('When Executed by Another Workflow').item.json.company_id }}"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -848,
+        -112
+      ],
+      "id": "e8a913d3-1253-4408-9ea2-2765f80ee384",
+      "name": "Company data",
+      "credentials": {
+        "postgres": {
+          "id": "Hx2VFmUi5WO2K4QX",
+          "name": "Postgres account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "1984c976-e70c-4c3c-9659-f0301941d186",
+              "leftValue": "={{ $now.company_type }}",
+              "rightValue": "franchise",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -1360,
+        176
+      ],
+      "id": "58de8cc1-0bbe-4213-98cf-8a30e256d6c4",
+      "name": "If franchise"
+    },
+    {
+      "parameters": {
+        "jsCode": "const workflowData = $getWorkflowStaticData('global');\n\nfor (const item of $input.all()) {\n  workflowData.my_prompt.data =workflowData.my_prompt.data +'\\n'+ workflowData.my_prompt_addon.data.replaceAll(\"{{franchise_location}}\", $input.first().json.company_location);\n}\n\nreturn $input.all();"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1024,
+        144
+      ],
+      "id": "671799c8-a426-41bd-941b-74255971e111",
+      "name": "Set addon"
     }
   ],
   "connections": {
@@ -563,7 +703,7 @@
       "main": [
         [
           {
-            "node": "Services list",
+            "node": "Get a file1",
             "type": "main",
             "index": 0
           }
@@ -806,6 +946,79 @@
           }
         ]
       ]
+    },
+    "Get a file1": {
+      "main": [
+        [
+          {
+            "node": "Extract from File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "Company data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Company data": {
+      "main": [
+        [
+          {
+            "node": "If franchise",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If franchise": {
+      "main": [
+        [
+          {
+            "node": "Set addon",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Services list",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set addon": {
+      "main": [
+        [
+          {
+            "node": "Services list",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
@@ -847,7 +1060,7 @@
       }
     ]
   },
-  "versionId": "b6a37c8a-5f07-4d33-b46b-8c0d3a095a44",
+  "versionId": "d90a5ff4-b2d9-4c63-a037-e178288f1278",
   "triggerCount": 0,
   "shared": [
     {
