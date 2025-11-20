@@ -1,0 +1,1261 @@
+{
+  "updatedAt": "2025-11-20T12:09:45.708Z",
+  "createdAt": "2025-11-20T11:41:31.353Z",
+  "id": "9SR6e3tSCmL7sWPt",
+  "name": "company_content_from_description",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "options": {
+          "reset": "={{ $json.is_first }}"
+        }
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        256,
+        128
+      ],
+      "id": "17ab53b2-a94d-4898-b8e9-6dddd8747896",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {
+        "resource": "file",
+        "operation": "get",
+        "owner": {
+          "__rl": true,
+          "value": "Romanychlogin",
+          "mode": "name"
+        },
+        "repository": {
+          "__rl": true,
+          "value": "n8n_prompts",
+          "mode": "list",
+          "cachedResultName": "n8n_prompts",
+          "cachedResultUrl": "https://github.com/Romanychlogin/n8n_prompts"
+        },
+        "filePath": "competitor_variants.txt",
+        "additionalParameters": {}
+      },
+      "type": "n8n-nodes-base.github",
+      "typeVersion": 1.1,
+      "position": [
+        -1392,
+        -432
+      ],
+      "id": "c0de0325-39e7-47ac-bf57-6186fcbdb58d",
+      "name": "Get a file",
+      "webhookId": "c85ca956-c770-4ea7-9818-bcabc4ec78fa",
+      "credentials": {
+        "githubApi": {
+          "id": "JQAFAcMNS9Ylyb0V",
+          "name": "GitHub account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "text",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        -1216,
+        -432
+      ],
+      "id": "4ac2a44b-3b29-4a27-9a96-86af523b5887",
+      "name": "Extract from File1"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Function-Node (Run Once)\nconst workflowData = $getWorkflowStaticData('global');\nworkflowData.my_prompt = items[0].json;\nreturn items;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1072,
+        -400
+      ],
+      "id": "508160a7-c269-48a4-9b2b-250594acc352",
+      "name": "Code1"
+    },
+    {
+      "parameters": {
+        "jsCode": "\n\nreturn [{\n  json: \n {\n  \"model\": \"gpt-5.1-2025-11-13\",\n  \"input\": [\n    {\n      \"role\": \"developer\",\n      \"content\": [\n        {\n          \"type\": \"input_text\",\n          \"text\": \"Ты — парсер веб-страниц. На входе HTML целой страницы (с динамическим контентом).Верни только основной осмысленный текст страницы (статья / описание / контент), без меню, футера, рекламы, навигации, форм логина, cookie-баннеров и т.п.Формат ответа: чистый текст или markdown, без пояснений.\"\n        }\n      ]\n    },\n    {\n      \"role\": \"user\",\n      \"content\": [\n        {\n          \"type\": \"input_text\",\n          \"text\": $json.my_prompt\n        }\n      ]\n    }\n  ],\n  \"text\": {\n    \"format\": {\n      \"type\": \"json_schema\",\n      \"name\": \"text_answer\",\n      \"strict\": true,\n      \"schema\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"user_content\": {\n            \"type\": \"string\",\n            \"description\": \"The text answer provided by the user\"\n          }\n        },\n        \"required\": [\n          \"user_content\"\n        ],\n        \"additionalProperties\": false\n      }\n    },\n    \"verbosity\": \"medium\"\n  },\n  \"reasoning\": {\n    \"effort\": \"none\",\n    \"summary\": \"auto\"\n  },\n  \"tools\": [],\n  \"store\": false,\n  \"include\": [\n    \"reasoning.encrypted_content\",\n    \"web_search_call.action.sources\"\n  ]\n}\n\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1264,
+        528
+      ],
+      "id": "8a07181d-3808-4e3a-9940-c00c9481ac3d",
+      "name": "Set API JSON"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.openai.com/v1/responses",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "openAiApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{$json}}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1472,
+        512
+      ],
+      "id": "61d487de-e01e-4b74-aa8a-0779df7713a0",
+      "name": "HTTP Request",
+      "retryOnFail": true,
+      "credentials": {
+        "openAiApi": {
+          "id": "m4NScyhZzV3hBcTr",
+          "name": "OpenAi Yads"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const workflowData = $getWorkflowStaticData('global');\nlet my_prompt = workflowData.my_prompt.data;\n\nfor (const item of $input.all()) {\n  item.json.my_prompt = my_prompt.replaceAll(\"{{user_content}}\",$input.first().json.data.title + $input.first().json.data.description + $input.first().json.data.content);\n}\n\nreturn $input.all();"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1072,
+        544
+      ],
+      "id": "e6b693d8-b9c6-4609-8552-0f235cf4391f",
+      "name": "Set prompt"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "select cs.service_name,c.company_name,cs.service_description,service_description_with_url,cs.service_url,cs.service_id from companies c, company_services cs where c.company_id=cs.company_id and c.company_id=$1",
+        "options": {
+          "queryReplacement": "={{ $('When Executed by Another Workflow').item.json.company_id }}"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -672,
+        320
+      ],
+      "id": "fea4c957-4153-4b89-b691-8a6a749ac90c",
+      "name": "Services list",
+      "credentials": {
+        "postgres": {
+          "id": "Hx2VFmUi5WO2K4QX",
+          "name": "Postgres account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        496,
+        -224
+      ],
+      "id": "299170b3-62f9-42cd-9d0e-e4dac4e30014",
+      "name": "Loop Over Items1"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "ebafa31d-edf7-41c0-a06e-e884ad9595ea",
+              "name": "is_first",
+              "value": "=true",
+              "type": "boolean"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1440,
+        -80
+      ],
+      "id": "a8363f95-86bf-4040-8223-c18bab1a2d33",
+      "name": "set first_item1"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "ebafa31d-edf7-41c0-a06e-e884ad9595ea",
+              "name": "is_first",
+              "value": "=false",
+              "type": "boolean"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        496,
+        512
+      ],
+      "id": "65f342f8-bab7-4136-803f-01211b388ca6",
+      "name": "reset first_item"
+    },
+    {
+      "parameters": {
+        "inputSource": "passthrough"
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -1328,
+        -736
+      ],
+      "id": "3db15860-6d80-46db-be07-4e68ff04cd0b",
+      "name": "When Executed by Another Workflow"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO business_processes_states (business_process_id, company_id,n8n_workflow_execution_id,n8n_workflow_root_execution_id, started)\nSELECT MAX(business_process_id), $2,$3,$4, NOW()\nFROM public.business_processes\nWHERE n8n_process_name = $1;",
+        "options": {
+          "queryReplacement": "=[{{$workflow.name}},{{$json.company_id}},{{$execution.id}},{{ $('When Executed by Another Workflow').item.json.root_execution_id }}]"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -1088,
+        -736
+      ],
+      "id": "ceb2f93a-5b75-442a-a5b2-920e4e26b1a6",
+      "name": "Mark_workwlow_started",
+      "credentials": {
+        "postgres": {
+          "id": "4YkdFJcdTgzo9hkz",
+          "name": "PGvector"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "update business_processes_states set finished=NOW() where  n8n_workflow_execution_id=$1",
+        "options": {
+          "queryReplacement": "={{$execution.id}}"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        1136,
+        -768
+      ],
+      "id": "7a108b2e-729f-4bd8-a505-a52b9f9308a9",
+      "name": "Mark_workflow_completed",
+      "executeOnce": true,
+      "credentials": {
+        "postgres": {
+          "id": "4YkdFJcdTgzo9hkz",
+          "name": "PGvector"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "обновить все запоосы, добавить report id"
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -576,
+        464
+      ],
+      "id": "e17f966b-4fd2-47ad-a0ce-5df5a45e7385",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "select * from service_urls where service_id=$1",
+        "options": {
+          "queryReplacement": "={{ $json.service_id }}"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        912,
+        -144
+      ],
+      "id": "d8390783-7e3c-435c-89ff-c8fc94994029",
+      "name": "get service urls",
+      "executeOnce": true,
+      "credentials": {
+        "postgres": {
+          "id": "Hx2VFmUi5WO2K4QX",
+          "name": "Postgres account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// 1) Собираем и чистим массив URL'ов\nlet urls = [];\nfor (const { json } of $input.all()) {\n  const v = json?.service_url;\n  if (v == null) continue;\n  const s = String(v).trim();\n  if (s) urls.push(s);\n}\n\n// 2) Превращаем каждый URL в отдельный выходной item\n// при необходимости можно добавить index\nreturn urls.map((url, index) => ({\n  json: {\n    service_url: url,\n    index,          // можно удалить, если не нужен\n  },\n}));"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1104,
+        -96
+      ],
+      "id": "230ee813-f963-4631-ae46-b465a3375d08",
+      "name": "string for service urls"
+    },
+    {
+      "parameters": {
+        "jsCode": "const workflowData = $getWorkflowStaticData('global');\n\nfunction toNumber(x, def = 0) {\n  const n = Number(x);\n  return Number.isFinite(n) ? n : def;\n}\n\nworkflowData.ai_calls = toNumber(workflowData.ai_calls, 0) +1;\n\nlet step_tokens_used = toNumber($('HTTP Request').first().json.usage.total_tokens);\n\n //set used tokens here!!!!\nworkflowData.tokens_used += step_tokens_used;\nfor (const item of $input.all()) {\n  item.json.tokens_used = workflowData.tokens_used;\n  item.json.key_word=JSON.parse(item.json.output[0].content[0].text).user_content;\n}\n\n\n\nreturn $input.all();\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1744,
+        512
+      ],
+      "id": "2e6e5666-1fb3-41fe-b4c8-842fc8fa643d",
+      "name": "update calls counters2"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "update business_processes_states set tokens_used=$2,tokens_used_type=$3 where  n8n_workflow_execution_id=$1",
+        "options": {
+          "queryReplacement": "=[{{$execution.id}},{{$json.tokens_used}},{{ 'gpt-5' }}]"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        2192,
+        688
+      ],
+      "id": "0d6659b5-55f8-4b12-84ce-1e0dd9c3898d",
+      "name": "Save_tokens_usage",
+      "executeOnce": true,
+      "credentials": {
+        "postgres": {
+          "id": "4YkdFJcdTgzo9hkz",
+          "name": "PGvector"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "chooseBranch"
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        2624,
+        672
+      ],
+      "id": "8b4661a5-ffbc-42d8-b12c-6c75e5cd57b7",
+      "name": "Merge1"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "update business_processes_states set steps_total=$3 where business_process_id=(select MAX(business_process_id) from business_processes where n8n_process_name=$1) and n8n_workflow_execution_id=$2",
+        "options": {
+          "queryReplacement": "=[{{$workflow.name}},{{$execution.id}},{{$json.total}}]"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -144,
+        320
+      ],
+      "id": "79055ed1-5b50-47dc-8515-2f49e620844e",
+      "name": "Mark_workflow_total_steps1",
+      "executeOnce": true,
+      "credentials": {
+        "postgres": {
+          "id": "4YkdFJcdTgzo9hkz",
+          "name": "PGvector"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Function-Node (Run Once)\nconst workflowData = $getWorkflowStaticData('global');\nworkflowData.steps_passed = 0;\nworkflowData.tokens_used = 0;\nreturn $input.all();\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        48,
+        160
+      ],
+      "id": "1c352f5a-5d95-4955-ae4f-c34261adc28e",
+      "name": "Init total counter1"
+    },
+    {
+      "parameters": {
+        "mode": "chooseBranch"
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        160,
+        -224
+      ],
+      "id": "1b600baf-365b-427a-8381-84e34b75f194",
+      "name": "Merge2"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "cMcY26oqQV5mNCvI",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/cMcY26oqQV5mNCvI",
+          "cachedResultName": "create content records for the  key word"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {}
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.3,
+      "position": [
+        944,
+        1008
+      ],
+      "id": "7ecc135b-d495-4307-86d0-0b57549445ac",
+      "name": "Call 'create content records for the  key word'"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "ab5decf6-1908-4ae2-a486-c4a264e19e22",
+              "name": "company_id",
+              "value": "={{ $('When Executed by Another Workflow').item.json.company_id }}",
+              "type": "string"
+            },
+            {
+              "id": "e27fa9f4-010b-44e7-a7a4-5f2ce8835da4",
+              "name": "key_word",
+              "value": "={{ $json.key_word }}",
+              "type": "string"
+            },
+            {
+              "id": "294cf1a4-7a28-4a54-99d7-e1eb31373655",
+              "name": "report_id",
+              "value": "0",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        464,
+        1008
+      ],
+      "id": "4ef42ac9-f935-4213-98ea-1cc1444258df",
+      "name": "set input"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "select * from companies where company_id=$1",
+        "options": {
+          "queryReplacement": "={{ $('When Executed by Another Workflow').item.json.company_id }}"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -848,
+        -112
+      ],
+      "id": "dfedb369-90e3-4422-ac85-f5ade77617e3",
+      "name": "Company data",
+      "credentials": {
+        "postgres": {
+          "id": "Hx2VFmUi5WO2K4QX",
+          "name": "Postgres account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "1984c976-e70c-4c3c-9659-f0301941d186",
+              "leftValue": "={{ $now.company_type }}",
+              "rightValue": "franchise",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -1360,
+        176
+      ],
+      "id": "99f664e7-643e-4285-8e98-af5f34f9a494",
+      "name": "If franchise"
+    },
+    {
+      "parameters": {
+        "jsCode": "const workflowData = $getWorkflowStaticData('global');\n\nfor (const item of $input.all()) {\n  workflowData.my_prompt.data =workflowData.my_prompt.data +'\\n'+ workflowData.my_prompt_addon.data.replaceAll(\"{{franchise_location}}\", $input.first().json.company_location);\n}\n\nreturn $input.all();"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1024,
+        144
+      ],
+      "id": "5e928e06-822f-451e-a092-c63780057185",
+      "name": "Set addon"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "select count(service_url_id) as total from service_urls sr, company_services cs \nwhere sr.service_id=cs.service_id \nand cs.is_active=true\nand cs.company_id=$1",
+        "options": {
+          "queryReplacement": "={{ $('When Executed by Another Workflow').item.json.company_id }}"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -368,
+        368
+      ],
+      "id": "a3cb2f7a-9cbf-4a24-b934-001955c98282",
+      "name": "Get total steps",
+      "credentials": {
+        "postgres": {
+          "id": "Hx2VFmUi5WO2K4QX",
+          "name": "Postgres account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "fa13510a-3a56-4cd5-8b80-3e4fe626ce0b",
+              "leftValue": "={{ $json.to_terminate }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1888,
+        992
+      ],
+      "id": "8546fd9e-715a-4ca7-afd8-6bd5270e579c",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "errorMessage": "Process terminated by user"
+      },
+      "type": "n8n-nodes-base.stopAndError",
+      "typeVersion": 1,
+      "position": [
+        2080,
+        992
+      ],
+      "id": "285f8e92-2495-407e-a140-21f6a9975145",
+      "name": "Stop and Error"
+    },
+    {
+      "parameters": {
+        "operation": "select",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "business_processes_states",
+          "mode": "list",
+          "cachedResultName": "business_processes_states"
+        },
+        "returnAll": true,
+        "where": {
+          "values": [
+            {
+              "column": "n8n_workflow_execution_id",
+              "value": "={{ $execution.id }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        1664,
+        1008
+      ],
+      "id": "81e9a374-b608-4cd3-8f5d-30795104fbd1",
+      "name": "check if termination is requested",
+      "credentials": {
+        "postgres": {
+          "id": "4YkdFJcdTgzo9hkz",
+          "name": "PGvector"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nconst workflowData = $getWorkflowStaticData('global');\nworkflowData.steps_passed++; // update steps counter\nfor (const item of $input.all()) {\n  item.json.steps_passed = workflowData.steps_passed;\n}\n\n\nreturn $input.all();"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1200,
+        1024
+      ],
+      "id": "4f3611dd-b350-4590-a18d-cae3a1e48165",
+      "name": "Get current step saved"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "update business_processes_states set steps_passed=$2 where n8n_workflow_execution_id=$1",
+        "options": {
+          "queryReplacement": "=[{{$execution.id}},{{$json.steps_passed}}]"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        1456,
+        1008
+      ],
+      "id": "5d6580c5-a35b-4192-a6be-60eee37b168d",
+      "name": "Mark_workflow_passed_steps1",
+      "executeOnce": true,
+      "credentials": {
+        "postgres": {
+          "id": "4YkdFJcdTgzo9hkz",
+          "name": "PGvector"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "20f8b170-2400-407c-a2c2-dea53fa2069c",
+              "leftValue": "={{ $json.error.name }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "exists",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        832,
+        272
+      ],
+      "id": "9e63502a-7b39-4488-a6db-1122f33dd95b",
+      "name": "If1"
+    },
+    {
+      "parameters": {
+        "url": "=https://r.jina.ai/{{ $json.service_url }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBearerAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Accept",
+              "value": "application/json"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 30000
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        656,
+        528
+      ],
+      "id": "d274676b-ed5b-4831-b0b3-f20338f8ee13",
+      "name": "Call jina",
+      "executeOnce": false,
+      "retryOnFail": true,
+      "credentials": {
+        "httpBearerAuth": {
+          "id": "ZwzkfrwpmTuGhirJ",
+          "name": "Jina API"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "content": "Тех долг\nДобавить fallback https://chatgpt.com/s/t_691efb28a59c8191bbda9061ecd272cf\n"
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1280,
+        256
+      ],
+      "id": "e7fb050f-b67f-4106-9e13-b857be91cf08",
+      "name": "Sticky Note1"
+    }
+  ],
+  "connections": {
+    "Loop Over Items": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "reset first_item",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get a file": {
+      "main": [
+        [
+          {
+            "node": "Extract from File1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File1": {
+      "main": [
+        [
+          {
+            "node": "Code1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code1": {
+      "main": [
+        [
+          {
+            "node": "Company data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set API JSON": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set prompt": {
+      "main": [
+        [
+          {
+            "node": "Set API JSON",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "update calls counters2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Services list": {
+      "main": [
+        [
+          {
+            "node": "Merge2",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Get total steps",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items1": {
+      "main": [
+        [
+          {
+            "node": "Mark_workflow_completed",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "get service urls",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "reset first_item": {
+      "main": [
+        [
+          {
+            "node": "Call jina",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "set first_item1": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "Mark_workwlow_started",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mark_workwlow_started": {
+      "main": [
+        [
+          {
+            "node": "Get a file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "get service urls": {
+      "main": [
+        [
+          {
+            "node": "string for service urls",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "string for service urls": {
+      "main": [
+        [
+          {
+            "node": "set first_item1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "update calls counters2": {
+      "main": [
+        [
+          {
+            "node": "Save_tokens_usage",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Save_tokens_usage": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge1": {
+      "main": [
+        [
+          {
+            "node": "set input",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mark_workflow_total_steps1": {
+      "main": [
+        [
+          {
+            "node": "Init total counter1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Init total counter1": {
+      "main": [
+        [
+          {
+            "node": "Merge2",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge2": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Call 'create content records for the  key word'": {
+      "main": [
+        [
+          {
+            "node": "Get current step saved",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "set input": {
+      "main": [
+        [
+          {
+            "node": "Call 'create content records for the  key word'",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Company data": {
+      "main": [
+        [
+          {
+            "node": "If franchise",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If franchise": {
+      "main": [
+        [
+          {
+            "node": "Set addon",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Services list",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set addon": {
+      "main": [
+        [
+          {
+            "node": "Services list",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get total steps": {
+      "main": [
+        [
+          {
+            "node": "Mark_workflow_total_steps1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Stop and Error",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "check if termination is requested": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get current step saved": {
+      "main": [
+        [
+          {
+            "node": "Mark_workflow_passed_steps1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mark_workflow_passed_steps1": {
+      "main": [
+        [
+          {
+            "node": "check if termination is requested",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Set prompt",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Call jina": {
+      "main": [
+        [
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "callerPolicy": "workflowsFromSameOwner",
+    "errorWorkflow": "v2Z32ISEUzsFYnZw"
+  },
+  "staticData": {
+    "global": {
+      "my_prompt": {
+        "data": "SYSTEM\n- Твоя задача — по каждому поисковому запросу пользователя: \"{{key_words}}\" создать один заголовок обьявления, строго соблюдая правила.\n- В ответе выводи только готовые заголовки в требуемом формате.\n\nCONSTRAINTS\n- Язык вывода — всегда только русский.\n- Максимум 56 символов (считай Unicode-символы, а не байты).\n- Разрешены только буквы русского и латинского алфавита и цифры.\n- Никаких кавычек, знаков препинания (кроме пробелов), эмодзи, тегов, разметки, пояснений.\n- Не предлагай никаких других услуг, кроме связанных с \"{{company_description}}\".\n- Не раскрывай рассуждения.\n\nOUTPUT FORMAT (строго)\n- Выводи по одному заголовку на запись\n- Не добавляй пустых строк до или после.\n- Не добавляй пояснений, слов вроде “Заголовок” и т.п.\n\nRULES FOR GENERATION\n1.\tСохранение слов:\nВсе логические связанные слова из исходной фразы должны присутствовать в ответе.  Переставь их в осмысленном порядке, чтобы объявление читалось понятно. Если там есть никак не связанное по смыслу слово - можешь его отбросить.\n2.\tКорректность и ясность:\n- Исправь орфографию, грамматику, порядок слов.\n- Замени жаргон (если встречается) на более корректный вариант.\n- Начни с заглавной буквы.\n- Все географические названия (города, страны, области, регионы, районы, улицы и т.п.) всегда пиши с Заглавной буквы. Делать заглавными другие слова не надо. \n- Если ты добавляешь в заголовок название компании - не забывай предлог \"в\".\n3.\tРелевантность и уточнение:\nЗаголовок должен оставаться максимально близким к исходной фразе, но при этом предлагать услуги компании, добавляя к исходной фразе больше релевантной информации о компании из \"{{company_description}}\" — например, “курсы”, “обучение”, \"услуги\", \"оффлайн\", \"предложение\" и тд, чтобы привлечь пользователя\nЕсли необходимо, заголовок может отвечать на вопрос, например, давать утвердительный ответ про нашу компанию.\n4. Ограничение длины:\n- Старайся использовать всю возможную длину, но с сохранением смысла и ограничением в 56 символов.\n- Никогда не обрывай слова.\n- Если нужно сократить - убирай дополнительные уточнения, но сохраняй смысл и исходные слова.\n5.\tЗапрещено:\n- Использовать спецсимволы (например, #, –, “, +, .)\n- Выдавать комментарии или пояснения.\n- Не используй нецензурную лексику, оскорбления или неприемлемые выражения. \nЕсли такие слова встречаются в исходном тексте, замени их на культурные аналоги без потери смысла.\n\nPOST-CHECK (всегда перед выводом)\n- Ключевые слова исходной фразы сохранены.\n- Исправлена орфография и порядок слов.\n- Длина ≤ 56 символов.\n- Начинается с заглавной буквы.\n- Текст осмысленный и предлагает услуги компании.\n- Верни для каждого ID фразы соответствующий заголовок\n"
+      },
+      "my_prompt_text": {
+        "data": "Есть следующие фразы, заданные пользователем при поиске и подготовленные заголовки объявлений к ним \"{{key_words_ad_headers}}\". Подбери к ним Тексты рекламных объявлений, соблюдая ограничения.\n\nCONSTRAINTS\n- Язык вывода: всегда только русский.\n- Максимум 81 символ (считай Unicode-символы, а не байты).\n- Никаких кавычек, эмодзи, тегов, пояснений, маркировок, спецсимволов.\n- Используй слова из исходной фразы (желательно сохранить все слова),  добавляя пояснения или призыв к действию.\n- Спецсимволы из фразы уже удалены, не добавляй новые. Если необходимо для соблюдения правил пунктуации - можешь ставить точки, запятые или восклицательный знак.\n- Текст должен быть связным и осмысленным.\n- Текст должен расширять заголовок объявления и давать дополнительную информацию об услуге или предложении. \n- Если помещается - добавь призыв к действию (CTA), через глагол в повелительной форме (например, запишись, узнай, попробуй, позвони и тд), выбери любой наиболее подходящий к предлагаемым услугам. Можешь закончить восклицательным знаком, если это уместно.\n- Поставь в предложении точку перед тем как добавлять CTA\n- Если длина >81 символа, сокращай по приоритету: (1) убери/сократи вторичные уточнения, (2) минимизируй CTA, (3) убери прилагательные, (4) оставь только нормализованную фразу (все её слова обязаны сохраниться). Не обрывай слова.\n- Учитывай только услуги компании \"{{company_description}}\" при выборе формулировок, не добавляй никаких новых услуг или вымышленных фактов.\n\nOUTPUT FORMAT (строго)\n- Для каждого полученного ID верни соответствующий текст.\n- Выводи по одной строке на запись: <Текст объявления>.\n- Никаких пустых строк до/после, никаких дополнительных блоков.\n\nNORMALIZATION RULES\n- Сохрани все слова исходной фразы  (включая предлоги/союзы).\n- Исправь опечатки и жаргон, используй литературную форму.\n- Приведи к естественному порядку слов, чтобы читать было легко и понятно.\n- Регистр — по нормам языка (первая буква заглавная необязательна).\n\nSAFETY / EDGE CASES\n- Однословные запросы: нормализованная часть = это слово; добавляй краткий CTA, если помещается.\n- Нормализуй орфографию, не усиливай смысл, соблюдай политику безопасности; при сомнении выдай только нормализованную фразу без CTA.\n- Если релевантность CTA к {{company_description}} сомнительна — опусти CTA, сохрани связность.\n- Никогда не допускай грубой лексики, некорректных/агрессивных/взрослых терминов.\n\nPOST-CHECK (всегда перед выводом)\n- Все слова исходной фразы сохранены и стоят в естественном порядке.\n- Длина ≤ 81 символ (Unicode).\n- Нет оборванных слов и лишних символов.\n- Каждый текст осмысленный, начинается с нормализованной фразы, нет оборванных фраз.\n- Каждый текст связан по смыслу с соответствующим заголовком объявления.\n"
+      },
+      "my_prompt_url": {
+        "data": "Есть следующая фразы, заданные пользователями при поиске, подобранные к ней заголовки и тексты рекламных объявлений \"{{key_word_header_ad_text}}\". \nПодбери к каждому набору ссылку на страницу сайта, максимально соответствующую запросу пользователя и тексту. Ответ должен содержать только ссылку. Учитывай то что в исходных фразах удалены все дополнительные символы, такие как #,- и пр. \nВ ответе необходимо вернуть только запрошенную информацию, запрещено добавлять уточнения типа заголовок, ссылка, текст и любые рассуждения. \nВ ответе запрещается использовать ссылки отсутствующие в описании компании или изменять ссылки приведенные в описании.  \nДля каждого полученного ID верни соответствующую ссылку. \nОписание компании:{{company_description}}\n"
+      },
+      "steps_passed": 4,
+      "tokens_used": 14422,
+      "company_description": "KIBERone Саратов Октябрьский IT школа KIBERone KIBERone – международная КиберШкола программирования и цифровых технологий для детей от 6 до 14 лет.  Позиционирование бренда: KIBERone — первая международная КиберШкола будущего для IT-поколения 6–14 лет, признана ЮНЕСКО лучшей детской образовательной IT-школой в мире. Бренд является партнером Microsoft, Roblox и Samsung. Бесплатные пробные уроки  Основные услуги и программы:  Полный перечень модулей:  Вводный модуль (основы цифровой грамотности)  Основы программирования Scratch Jr  Создание игр на Scratch  ПиктоМир (алгоритмическое мышление)  CodeMonkey (логика и программирование)  Устройство компьютера  Эффектные презентации (PowerPoint, Desygner)  QR-коды  Деловые люди (предпринимательство)  Google Blockly (визуальное программирование)  Roblox Studio (создание игр)  Kodu Game Lab (3D-программирование)  Разработка мобильных приложений в Thunkable  Blender (3D-моделирование)  Компьютерная грамотность  Minecraft Education  Нейросети (основы ИИ)  Alice 3D (3D-программирование)  Run Marco (основы алгоритмов)  Исполнители: Чертёжник и Черепашка  GIF-анимация  Tinkercad (3D-проектирование)  Кибербезопасность  Construct 2 (создание 2D-игр)  Компас-3D (САПР)  Основы HTML (веб-разработка)  Голосовой помощник Алиса  Создание лендинга (Tilda)  Python (создание игр)  Чат-бот на Python  Web-дизайн (Figma)  Web-мастер (HTML+CSS)  Motion Design  Unreal Engine 4 (игровой движок)  JavaScript (игры)  C# (создание 2D-игр)  C++  Java (создание приложений)  Unity 3D (игры)  Олимпиадное программирование  Облачные технологии, Блокчейн, Data Science  PHP+SQL  Photoshop  Подготовка к олимпиадам  Приложения Google  Летние программы:  Летние IT-интенсивы (краткосрочные программы по направлениям Roblox, Minecraft, Python и др.)  Летние КИБЕРканикулы (городской лагерь с IT-обучением и развлекательной программой)  Дополнительные механики:  Кибервалюта («кибероны») для мотивации учеников, обмен на мерч на КиберМаркете  Тьюторы и преподаватели:  Опытные специалисты с практическим опытом и педагогической подготовкой  Другие важные разделы:  Новости (новости школы и сети)  СМИ о нас (публикации о школе)  Фотогалерея (фото с мероприятий и уроков)  Видео (видеоматериалы о школе)  Расписание занятий (время занятий для групп и пробных уроков)  Локации (адрес школы в Октябрьском районе Саратова, ул. Тараса Шевченко, 8)  Оплата (способы оплаты и договор-оферта)  Сертификаты (активация промокодов партнеров)  Контакты (телефон +7 963 112-49-11, email saratov@kiber-one.com",
+      "company_description_with_url": "KIBERone Саратов Октябрьский IT школа KIBERone KIBERone – международная Школа программирования и цифровых технологий для детей от 6 до 14 лет. Официальный сайт филиала в Саратове (Октябрьский район): https://saratov-okt.kiber-one.com/ Позиционирование бренда: KIBERone — первая международная КиберШкола будущего для IT-поколения 6–14 лет, признана ЮНЕСКО лучшей детской образовательной IT-школой в мире. Бренд является партнером Microsoft, Roblox и Samsung. Бесплатные пробные уроки Основные услуги и программы: Полный перечень модулей (https://saratov-okt.kiber-one.com/moduli/): - Вводный модуль (основы цифровой грамотности) — https://saratov-okt.kiber-one.com/moduli/vvodnyy-modul/ - Основы программирования Scratch Jr — https://saratov-okt.kiber-one.com/moduli/scratch-jr/ - Создание игр на Scratch — https://saratov-okt.kiber-one.com/moduli/modul-2-znakomstvo-so-scratch-sozdanie-igr-na-scratch-osnovy/ - ПиктоМир (алгоритмическое мышление) — https://saratov-okt.kiber-one.com/moduli/piktomir/ - CodeMonkey (логика и программирование) — https://saratov-okt.kiber-one.com/moduli/codemonkey/ - Устройство компьютера — https://saratov-okt.kiber-one.com/moduli/ustroystvo-kompyutera-my-na-ty/ - Эффектные презентации (PowerPoint, Desygner) — https://saratov-okt.kiber-one.com/moduli/magiya-powerpoint--canva-sozdanie-effektivnyh-prezentaciy/ - QR‑коды — https://saratov-okt.kiber-one.com/moduli/qr-kod-kak-instrument/ - Деловые люди (предпринимательство) — https://saratov-okt.kiber-one.com/moduli/delovye-lyudi/ - Google Blockly (визуальное программирование) — https://saratov-okt.kiber-one.com/moduli/google-blockly-apofeoz-vizualnogo-programmirovaniya/ - Roblox Studio (создание игр) — https://saratov-okt.kiber-one.com/moduli/roblox-studio-sdelat-vse-chto-vy-mozhete-sebe-predstavit/ - Kodu Game Lab (3D‑программирование) — https://saratov-okt.kiber-one.com/moduli/kodu-game-lab-vizualnoe-programmirovanie-v-3d/ - Разработка мобильных приложений в Thunkable — https://saratov-okt.kiber-one.com/moduli/thunkable/ - (fix)Blender (3D‑моделирование) — https://saratov-okt.kiber-one.com/moduli/blender/ - Компьютерная грамотность — https://saratov-okt.kiber-one.com/moduli/kompyuternaya-gramotnost/ - Minecraft Education — https://saratov-okt.kiber-one.com/moduli/minecraft-educate/ - Нейросети (основы ИИ) — https://saratov-okt.kiber-one.com/moduli/neyroseti/ - Alice 3D (3D‑программирование) — https://saratov-okt.kiber-one.com/moduli/alice-3d/ - Run Marco (основы алгоритмов) — https://saratov-okt.kiber-one.com/moduli/run-marco-1/ - Исполнители: Чертёжник и Черепашка — https://saratov-okt.kiber-one.com/moduli/ispolniteli-chertezhnik-i-cherepashka/ - GIF‑анимация — https://saratov-okt.kiber-one.com/moduli/gif-animaciya/ - Tinkercad (3D‑проектирование) — https://saratov-okt.kiber-one.com/moduli/tinkercad/ - Кибербезопасность — https://saratov-okt.kiber-one.com/moduli/osnovy-kiberbezopasnosti/ - Construct 2 (создание 2D‑игр) — https://saratov-okt.kiber-one.com/moduli/construct-2---sozday-svoy-pervyy-platformer/ - Компас‑3D (САПР) — https://saratov-okt.kiber-one.com/moduli/kompas-3d/ - Основы HTML (веб‑разработка) — https://saratov-okt.kiber-one.com/moduli/osnovy-html-izuchenie-web-razrabotki/ - Голосовой помощник Алиса — https://saratov-okt.kiber-one.com/moduli/golosovoy-pomoschnik-alisa/ - Создание лендинга (Tilda) — https://saratov-okt.kiber-one.com/moduli/lendingi-lp-i-tilda-verstka-odnostranichnikov/ - Python (создание игр) — https://saratov-okt.kiber-one.com/moduli/programmirovanie-v-python-sozday-svoyu-pervuyu-igru/ - Чат‑бот на Python — https://saratov-okt.kiber-one.com/moduli/umnyy-chat-bot-na-python/ - Web‑дизайн (Figma) — https://saratov-okt.kiber-one.com/moduli/web-dizayn-dlya-saytov-ili-prilozheniy/ - Web-дизайн для сайтов или приложений - https://saratov-okt.kiber-one.com/moduli/web-dizayn-dlya-saytov-ili-prilozheniy/ - Web‑мастер (HTML+CSS) — https://saratov-okt.kiber-one.com/moduli/web-master-html--css/ - Motion Design — https://saratov-okt.kiber-one.com/moduli/motion-design/ - Unreal Engine 4 (игровой движок) — https://saratov-okt.kiber-one.com/moduli/unreal-engine-4-igrovoy-dvizhok/ - JavaScript (игры) — https://saratov-okt.kiber-one.com/moduli/programmirovanie-na-javascript-uchimsya-sozdavat-igry/ - C# (создание 2D‑игр) — https://saratov-okt.kiber-one.com/moduli/programmirovanie-na-c-udivitelnyy-mir-2d-igr/ - C++ — https://saratov-okt.kiber-one.com/moduli/programmirovanie-na-s-smozhet-kazhdyy/ - Java (создание приложений) — https://saratov-okt.kiber-one.com/moduli/programmirovanie-na-java-tvoe-pervoe-prilozhenie/ - Unity 3D (игры) — https://saratov-okt.kiber-one.com/moduli/mir-trehmernyh-igr-na-unity-3d/ - Олимпиадное программирование — https://saratov-okt.kiber-one.com/moduli/olimpiadnoe-programmirovanie/ - Облачные технологии, Блокчейн, Data Science — https://saratov-okt.kiber-one.com/moduli/blokcheyn-tehnologichnoe-buduschee/ - PHP+SQL — https://saratov-okt.kiber-one.com/moduli/phpsql-2-mesyaca/ - Photoshop — https://saratov-okt.kiber-one.com/moduli/volshebnyy-photoshop/ - Подготовка к олимпиадам — https://saratov-okt.kiber-one.com/moduli/podgotovka-k-olimpiadam/ - Приложения Google — https://saratov-okt.kiber-one.com/moduli/prilozheniya-google-primenyat-dlya-zhizni-35-prilozheniy-ot-g/ - Web‑дизайн (Figma) — https://saratov-okt.kiber-one.com/moduli/web-dizayn-figma/ - https://saratov-okt.kiber-one.com/moduli/web-dizayn-figma/ -  -  Летние программы: - Летние IT-интенсивы (краткосрочные программы по направлениям Roblox, Minecraft, Python и др.) — https://saratov-okt.kiber-one.com/vybirayte-format-svoego-leta-s-kiberone/letnie-moduli-kiberone/ - Летние КИБЕРканикулы (городской лагерь с IT-обучением и развлекательной программой) — https://saratov-okt.kiber-one.com/vybirayte-format-svoego-leta-s-kiberone/kiber-kanikuly/ Дополнительные механики: - Кибервалюта («кибероны») для мотивации учеников, обмен на мерч на КиберМаркете — https://saratov-okt.kiber-one.com/o-kibershkole/kibervaluta/ Тьюторы и преподаватели: - Опытные специалисты с практическим опытом и педагогической подготовкой — https://saratov-okt.kiber-one.com/o-kibershkole/prepodavateli/ Другие важные разделы: - Новости (новости школы и сети) — https://saratov-okt.kiber-one.com/o-kibershkole/news/ - СМИ о нас (публикации о школе) — https://saratov-okt.kiber-one.com/o-kibershkole/smi-o-nas/ - Фотогалерея (фото с мероприятий и уроков) — https://saratov-okt.kiber-one.com/o-kibershkole/fotogalereya/ - Видео (видеоматериалы о школе) — https://saratov-okt.kiber-one.com/o-kibershkole/video/ - Расписание занятий (время занятий для групп и пробных уроков) — https://saratov-okt.kiber-one.com/o-kibershkole/raspisanie/ - Локации (адрес школы в Октябрьском районе Саратова, ул. Тараса Шевченко, 8) — https://saratov-okt.kiber-one.com/o-kibershkole/lokacii/ - Оплата (способы оплаты и договор-оферта) — https://saratov-okt.kiber-one.com/oplata/ - Сертификаты (активация промокодов партнеров) — https://saratov-okt.kiber-one.com/sertifikaty/ - Контакты (email saratov@kiber-one.com) — https://saratov-okt.kiber-one.com/feedback/",
+      "ai_calls": 18
+    }
+  },
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {
+    "When Executed by Another Workflow": [
+      {
+        "json": {
+          "id": "lBAh8kjoXRX0aGUF",
+          "root_execution_id": 228462,
+          "company_id": 1,
+          "threshhold": "0.79",
+          "import_id": "22"
+        }
+      }
+    ]
+  },
+  "versionId": "30bcf94e-f9ae-4c5c-b3d9-dd0e3ab538a4",
+  "triggerCount": 0,
+  "shared": [
+    {
+      "updatedAt": "2025-11-20T11:41:31.353Z",
+      "createdAt": "2025-11-20T11:41:31.353Z",
+      "role": "workflow:owner",
+      "workflowId": "9SR6e3tSCmL7sWPt",
+      "projectId": "spKmbJLU4mvACXIB"
+    }
+  ],
+  "tags": [
+    {
+      "updatedAt": "2025-10-17T09:03:18.269Z",
+      "createdAt": "2025-10-17T09:03:18.269Z",
+      "id": "S7zerj1h6Ro25pTA",
+      "name": "client creation"
+    }
+  ],
+  "file_name": "company_content_from_description.json"
+}
