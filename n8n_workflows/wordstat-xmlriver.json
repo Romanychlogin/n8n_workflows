@@ -1,6 +1,6 @@
 {
+  "updatedAt": "2025-11-20T05:57:46.348Z",
   "createdAt": "2025-09-03T13:10:38.957Z",
-  "updatedAt": "2025-09-17T15:30:16.843Z",
   "id": "t4Ep016fMXc6Cyhm",
   "name": "Wordstat xmlriver",
   "active": false,
@@ -638,8 +638,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        1072,
-        -256
+        1120,
+        272
       ],
       "id": "0e4cdda1-314b-4676-b4d0-4bfc5605f90d",
       "name": "Mark parsed",
@@ -883,12 +883,12 @@
     "templateCredsSetupCompleted": true
   },
   "pinData": {},
-  "versionId": "c1ca5b56-81ee-4c33-90af-af6af2ecee84",
+  "versionId": "d3e25011-5dd2-473c-b549-ddf0a310a110",
   "triggerCount": 0,
   "shared": [
     {
-      "createdAt": "2025-09-03T13:10:38.957Z",
       "updatedAt": "2025-09-03T13:10:38.957Z",
+      "createdAt": "2025-09-03T13:10:38.957Z",
       "role": "workflow:owner",
       "workflowId": "t4Ep016fMXc6Cyhm",
       "projectId": "spKmbJLU4mvACXIB"
