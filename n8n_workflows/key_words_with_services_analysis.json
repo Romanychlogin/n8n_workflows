@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-20T14:14:46.865Z",
+  "updatedAt": "2025-11-21T16:05:57.719Z",
   "createdAt": "2025-09-15T10:20:29.723Z",
   "id": "AEZDBlqe199xBn5u",
   "name": "key_words_with_services_analysis",
@@ -8,15 +8,13 @@
   "nodes": [
     {
       "parameters": {
-        "options": {
-          "reset": "={{ $json.is_first }}"
-        }
+        "options": {}
       },
       "type": "n8n-nodes-base.splitInBatches",
       "typeVersion": 3,
       "position": [
-        976,
-        -48
+        944,
+        288
       ],
       "id": "2c5ad17c-0cd1-493e-98e1-3a09ec97c9b5",
       "name": "Loop Over Items"
@@ -258,8 +256,8 @@
       "type": "n8n-nodes-base.extractFromFile",
       "typeVersion": 1,
       "position": [
-        -624,
-        16
+        -848,
+        -112
       ],
       "id": "9d8263a5-839a-4aa9-b995-2ab07ebfb009",
       "name": "Extract from File1"
@@ -271,24 +269,11 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -416,
-        16
+        -640,
+        -112
       ],
       "id": "ed57f512-0ea6-4629-9610-65367a8314d5",
       "name": "Code1"
-    },
-    {
-      "parameters": {
-        "jsCode": "// Function-Node (Run for Each Item)\n\nreturn items.map(item => ({\n  json: { ...$('Loop Over Items').first().json,company_name:$('set variables').item.json.company_name,threshhold:$('set variables').item.json.threshhold }\n}));"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        1744,
-        -112
-      ],
-      "id": "a27a95ad-a760-42f9-8779-f307e32568d3",
-      "name": "Code2"
     },
     {
       "parameters": {
@@ -351,49 +336,11 @@
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1.2,
       "position": [
-        2464,
-        -48
+        2032,
+        272
       ],
       "id": "164f64e6-2677-4461-bcfb-934df3bc2f3b",
       "name": "Find competitors mentions"
-    },
-    {
-      "parameters": {
-        "operation": "executeQuery",
-        "query": "select cs.service_name,cs.service_description,cs.service_id from companies c, company_services cs where c.company_id=cs.company_id and c.company_id=$1",
-        "options": {
-          "queryReplacement": "={{$('When Executed by Another Workflow').last().json.company_id}}"
-        }
-      },
-      "type": "n8n-nodes-base.postgres",
-      "typeVersion": 2.6,
-      "position": [
-        -128,
-        -48
-      ],
-      "id": "1d2328c0-62b2-4b7c-a8d5-0b6c2617ac50",
-      "name": "Services list",
-      "credentials": {
-        "postgres": {
-          "id": "Hx2VFmUi5WO2K4QX",
-          "name": "Postgres account 2"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "options": {
-          "reset": "={{ $json.is_first }}"
-        }
-      },
-      "type": "n8n-nodes-base.splitInBatches",
-      "typeVersion": 3,
-      "position": [
-        240,
-        -176
-      ],
-      "id": "7bc94ac0-69f3-4c05-8ebe-fdd7ddefae00",
-      "name": "Loop Over services"
     },
     {
       "parameters": {
@@ -423,8 +370,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        3040,
-        336
+        2240,
+        352
       ],
       "id": "42f52d0b-a87b-4280-9c94-13857eac4171",
       "name": "If competitors not found"
@@ -459,8 +406,8 @@
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1.2,
       "position": [
-        1360,
-        -48
+        1280,
+        288
       ],
       "id": "db488fdf-bb67-461a-b89f-b61668ce355b",
       "name": "Call 'chech phrase VS minus words'"
@@ -493,8 +440,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        1536,
-        -48
+        1504,
+        288
       ],
       "id": "5785052d-33b3-4af1-be99-5d06f4eb17f7",
       "name": "If no matches"
@@ -622,67 +569,11 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        2496,
-        128
+        2464,
+        512
       ],
       "id": "6a9b1d3e-fefc-4c1b-9a5b-b14606db9057",
       "name": "Mark non relevant",
-      "credentials": {
-        "postgres": {
-          "id": "Hx2VFmUi5WO2K4QX",
-          "name": "Postgres account 2"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "operation": "select",
-        "schema": {
-          "__rl": true,
-          "mode": "list",
-          "value": "public"
-        },
-        "table": {
-          "__rl": true,
-          "value": "key_words",
-          "mode": "list",
-          "cachedResultName": "key_words"
-        },
-        "returnAll": true,
-        "where": {
-          "values": [
-            {
-              "column": "company_id",
-              "value": "={{$('When Executed by Another Workflow').last().json.company_id}}"
-            },
-            {
-              "column": "service_id",
-              "value": "={{ $json.service_id }}"
-            },
-            {
-              "column": "is_relevant",
-              "condition": "IS NULL"
-            }
-          ]
-        },
-        "sort": {
-          "values": [
-            {
-              "column": "key_word_id"
-            }
-          ]
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.postgres",
-      "typeVersion": 2.6,
-      "position": [
-        496,
-        -96
-      ],
-      "id": "f84080d7-02cd-4549-b12f-3b219a5f96b1",
-      "name": "Get not processes keys",
-      "alwaysOutputData": true,
       "credentials": {
         "postgres": {
           "id": "Hx2VFmUi5WO2K4QX",
@@ -712,8 +603,8 @@
       "type": "n8n-nodes-base.github",
       "typeVersion": 1.1,
       "position": [
-        -832,
-        16
+        -1056,
+        -112
       ],
       "id": "86f6ad29-3b2b-455b-8703-61e42d1a66c5",
       "name": "Non first run option",
@@ -733,8 +624,8 @@
       "type": "n8n-nodes-base.extractFromFile",
       "typeVersion": 1,
       "position": [
-        -624,
-        -160
+        -848,
+        -288
       ],
       "id": "bd682dcd-cb27-432d-b066-39be4d8f6614",
       "name": "Extract from File"
@@ -746,8 +637,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -416,
-        -160
+        -640,
+        -288
       ],
       "id": "ba50b723-ffc7-4989-b3e2-c05901dc6cc0",
       "name": "Code"
@@ -774,8 +665,8 @@
       "type": "n8n-nodes-base.github",
       "typeVersion": 1.1,
       "position": [
-        -832,
-        -160
+        -1056,
+        -288
       ],
       "id": "9f81dcd1-334c-4291-9c3f-0a341b508c06",
       "name": "First run option",
@@ -786,54 +677,6 @@
           "name": "GitHub account"
         }
       }
-    },
-    {
-      "parameters": {
-        "assignments": {
-          "assignments": [
-            {
-              "id": "ebafa31d-edf7-41c0-a06e-e884ad9595ea",
-              "name": "is_first",
-              "value": "=false",
-              "type": "boolean"
-            }
-          ]
-        },
-        "includeOtherFields": true,
-        "options": {}
-      },
-      "type": "n8n-nodes-base.set",
-      "typeVersion": 3.4,
-      "position": [
-        1168,
-        -16
-      ],
-      "id": "3ddc9ed9-9c3b-4a79-a59e-05ec5821c26d",
-      "name": "reset first_item1"
-    },
-    {
-      "parameters": {
-        "assignments": {
-          "assignments": [
-            {
-              "id": "ebafa31d-edf7-41c0-a06e-e884ad9595ea",
-              "name": "is_first",
-              "value": "=true",
-              "type": "boolean"
-            }
-          ]
-        },
-        "includeOtherFields": true,
-        "options": {}
-      },
-      "type": "n8n-nodes-base.set",
-      "typeVersion": 3.4,
-      "position": [
-        816,
-        -112
-      ],
-      "id": "882fb72c-f697-47f0-9799-8c9d2a4c47c7",
-      "name": "set first_item"
     },
     {
       "parameters": {
@@ -863,8 +706,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        656,
-        -64
+        416,
+        -272
       ],
       "id": "11832d88-21d7-4d4b-b240-2b5c43bacd7a",
       "name": "If no records"
@@ -876,8 +719,8 @@
       "type": "n8n-nodes-base.executeWorkflowTrigger",
       "typeVersion": 1.1,
       "position": [
-        -1536,
-        -64
+        -1760,
+        -192
       ],
       "id": "8ee8db45-28f8-49e2-bf5c-c62d2857581e",
       "name": "When Executed by Another Workflow"
@@ -893,8 +736,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        -1264,
-        -48
+        -1488,
+        -176
       ],
       "id": "d79c64c4-b28b-4ebb-9fd8-003bc6c8c14c",
       "name": "Mark_workwlow_started",
@@ -903,8 +746,7 @@
           "id": "4YkdFJcdTgzo9hkz",
           "name": "PGvector"
         }
-      },
-      "disabled": true
+      }
     },
     {
       "parameters": {
@@ -935,8 +777,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        -1056,
-        -48
+        -1280,
+        -176
       ],
       "id": "c66fc86b-a640-46b5-a25e-8a0f229ad5d1",
       "name": "If initial"
@@ -952,8 +794,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        1104,
-        -848
+        1152,
+        -992
       ],
       "id": "59789248-57ad-4eaa-91e4-f77777ad2b02",
       "name": "Mark_workflow_completed",
@@ -976,11 +818,12 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        592,
-        -320
+        464,
+        -512
       ],
       "id": "826ac64e-6915-4750-9957-f3e180e46638",
       "name": "Services list1",
+      "executeOnce": true,
       "credentials": {
         "postgres": {
           "id": "Hx2VFmUi5WO2K4QX",
@@ -997,7 +840,7 @@
       "type": "n8n-nodes-base.splitInBatches",
       "typeVersion": 3,
       "position": [
-        864,
+        912,
         -640
       ],
       "id": "e4e1d55d-3d39-4434-a30a-0b6a728a597e",
@@ -1302,11 +1145,499 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        416,
-        208
+        160,
+        528
       ],
       "id": "ab7a9be0-a042-4dce-892c-4111df748b45",
       "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "operation": "select",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "key_words",
+          "mode": "list",
+          "cachedResultName": "key_words"
+        },
+        "returnAll": true,
+        "where": {
+          "values": [
+            {
+              "column": "company_id",
+              "value": "={{$('When Executed by Another Workflow').last().json.company_id}}"
+            },
+            {
+              "column": "is_relevant",
+              "condition": "IS NULL"
+            }
+          ]
+        },
+        "sort": {
+          "values": [
+            {
+              "column": "key_word_id"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -448,
+        -176
+      ],
+      "id": "6a2b09dc-d064-40f5-a61a-5c1cf54b5305",
+      "name": "Get not processes keys2",
+      "alwaysOutputData": true,
+      "credentials": {
+        "postgres": {
+          "id": "Hx2VFmUi5WO2K4QX",
+          "name": "Postgres account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "update business_processes_states set steps_total=$2 where  n8n_workflow_execution_id=$1",
+        "options": {
+          "queryReplacement": "=[{{$execution.id}},{{$input.all().length}}]"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -352,
+        16
+      ],
+      "id": "67fb5f66-465d-4074-b47b-b66177b37ee7",
+      "name": "Mark_workflow_total_steps",
+      "executeOnce": true,
+      "alwaysOutputData": false,
+      "credentials": {
+        "postgres": {
+          "id": "4YkdFJcdTgzo9hkz",
+          "name": "PGvector"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Function-Node (Run Once)\nconst workflowData = $getWorkflowStaticData('global');\nworkflowData.steps_passed = 0;\nworkflowData.tokens_used = 0;\nreturn $input.all();\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -176,
+        48
+      ],
+      "id": "1cec7c10-4799-426f-ade2-6f7da4f170fc",
+      "name": "Init total counter"
+    },
+    {
+      "parameters": {
+        "errorMessage": "Process terminated by user"
+      },
+      "type": "n8n-nodes-base.stopAndError",
+      "typeVersion": 1,
+      "position": [
+        2800,
+        688
+      ],
+      "id": "1d119557-0d0e-4032-b65a-087acdaf8ada",
+      "name": "Stop and Error"
+    },
+    {
+      "parameters": {
+        "operation": "select",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "business_processes_states",
+          "mode": "list",
+          "cachedResultName": "business_processes_states"
+        },
+        "returnAll": true,
+        "where": {
+          "values": [
+            {
+              "column": "n8n_workflow_execution_id",
+              "value": "={{ $execution.id }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        1632,
+        832
+      ],
+      "id": "b0381642-9785-4944-8202-9a0603afc61e",
+      "name": "check if termination is requested",
+      "credentials": {
+        "postgres": {
+          "id": "4YkdFJcdTgzo9hkz",
+          "name": "PGvector"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nconst workflowData = $getWorkflowStaticData('global');\nworkflowData.steps_passed++; // update steps counter\nfor (const item of $input.all()) {\n  item.json.steps_passed = workflowData.steps_passed;\n}\n\n\nreturn $input.all();"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1152,
+        832
+      ],
+      "id": "0b2affed-7a2f-4fd1-9699-ddb9f81ef0f7",
+      "name": "Get current step saved"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "update business_processes_states set steps_passed=$2, tokens_used=0 where n8n_workflow_execution_id=$1",
+        "options": {
+          "queryReplacement": "=[{{$execution.id}},{{$json.steps_passed}}]"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        1408,
+        832
+      ],
+      "id": "520b18f8-6d91-4f12-a5a4-8fda315269fb",
+      "name": "Mark_workflow_passed_steps1",
+      "executeOnce": true,
+      "credentials": {
+        "postgres": {
+          "id": "4YkdFJcdTgzo9hkz",
+          "name": "PGvector"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "fa13510a-3a56-4cd5-8b80-3e4fe626ce0b",
+              "leftValue": "={{ $json.to_terminate }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1872,
+        832
+      ],
+      "id": "63a40a26-a133-48d5-8a6d-ca6a69fc4e66",
+      "name": "If1"
+    },
+    {
+      "parameters": {
+        "mode": "chooseBranch"
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        -32,
+        -160
+      ],
+      "id": "db2dba06-6bfa-4eb7-8ee9-a2717bf0282b",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "4db35a49-e130-4ff8-9ccb-7b452205f80a",
+              "name": "threshold",
+              "value": "=0.88",
+              "type": "number"
+            },
+            {
+              "id": "f1fa4446-3055-4621-85ac-42b2110d1c9f",
+              "name": "key_word",
+              "value": "={{ $('Loop Over Items').last().json.key_word }}",
+              "type": "string"
+            },
+            {
+              "id": "6242a98d-b3e5-43cd-aac4-380d32972d20",
+              "name": "company_id",
+              "value": "={{ $('Loop Over Items').last().json.company_id }}",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1824,
+        224
+      ],
+      "id": "a9e28806-6280-455e-82b5-8e2a7a7299f6",
+      "name": "set input"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "update business_processes_states set steps_total=steps_total+$2 where  n8n_workflow_execution_id=$1",
+        "options": {
+          "queryReplacement": "=[{{$execution.id}},{{$input.all().length}}]"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        320,
+        -736
+      ],
+      "id": "558fd2f4-e8b1-4874-a55d-35941681e57a",
+      "name": "Mark_workflow_total_steps1",
+      "executeOnce": true,
+      "alwaysOutputData": false,
+      "credentials": {
+        "postgres": {
+          "id": "4YkdFJcdTgzo9hkz",
+          "name": "PGvector"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Function-Node (Run Once)\nconst workflowData = $getWorkflowStaticData('global');\nworkflowData.steps_passed = 0;\nworkflowData.tokens_used = 0;\nreturn $input.all();\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        464,
+        -720
+      ],
+      "id": "9ca46d01-8ed7-4f99-94b1-51d06dc6ecb0",
+      "name": "Init total counter1"
+    },
+    {
+      "parameters": {
+        "mode": "chooseBranch"
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        656,
+        -752
+      ],
+      "id": "551e6585-c030-41e7-b85a-c3f30d887eda",
+      "name": "Merge2"
+    },
+    {
+      "parameters": {
+        "operation": "select",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "key_words",
+          "mode": "list",
+          "cachedResultName": "key_words"
+        },
+        "returnAll": true,
+        "where": {
+          "values": [
+            {
+              "column": "company_id",
+              "value": "={{$('When Executed by Another Workflow').last().json.company_id}}"
+            },
+            {
+              "column": "is_relevant",
+              "condition": "IS NULL"
+            }
+          ]
+        },
+        "sort": {
+          "values": [
+            {
+              "column": "key_word_id"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        192,
+        -912
+      ],
+      "id": "ee9361e9-9e9e-4aa3-a2df-5da14fc475d5",
+      "name": "Get not processes keys",
+      "alwaysOutputData": true,
+      "credentials": {
+        "postgres": {
+          "id": "Hx2VFmUi5WO2K4QX",
+          "name": "Postgres account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "errorMessage": "Process terminated by user"
+      },
+      "type": "n8n-nodes-base.stopAndError",
+      "typeVersion": 1,
+      "position": [
+        4608,
+        -144
+      ],
+      "id": "55c3b3ce-0c90-40fa-812c-3df09b7a5c7b",
+      "name": "Stop and Error1"
+    },
+    {
+      "parameters": {
+        "operation": "select",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "business_processes_states",
+          "mode": "list",
+          "cachedResultName": "business_processes_states"
+        },
+        "returnAll": true,
+        "where": {
+          "values": [
+            {
+              "column": "n8n_workflow_execution_id",
+              "value": "={{ $execution.id }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        3440,
+        -80
+      ],
+      "id": "eac623a1-27bd-483c-9a17-4f402bbe9e6e",
+      "name": "check if termination is requested1",
+      "credentials": {
+        "postgres": {
+          "id": "4YkdFJcdTgzo9hkz",
+          "name": "PGvector"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nconst workflowData = $getWorkflowStaticData('global');\nworkflowData.steps_passed+=$input.all().length; // update steps counter\nfor (const item of $input.all()) {\n  item.json.steps_passed = workflowData.steps_passed;\n}\n\n\nreturn $input.all();"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2960,
+        -80
+      ],
+      "id": "02cf8a83-5cae-4e02-ba87-ff153720b22b",
+      "name": "Get current step saved1"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "update business_processes_states set steps_passed=$2, tokens_used=0 where n8n_workflow_execution_id=$1",
+        "options": {
+          "queryReplacement": "=[{{$execution.id}},{{$json.steps_passed}}]"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        3216,
+        -80
+      ],
+      "id": "b32f4c46-c6c2-4c28-aa20-4b3c9c2fa891",
+      "name": "Mark_workflow_passed_steps",
+      "executeOnce": true,
+      "credentials": {
+        "postgres": {
+          "id": "4YkdFJcdTgzo9hkz",
+          "name": "PGvector"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "fa13510a-3a56-4cd5-8b80-3e4fe626ce0b",
+              "leftValue": "={{ $json.to_terminate }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        3680,
+        -80
+      ],
+      "id": "9a01ca66-cf55-4bac-bbc0-937576b24bd0",
+      "name": "If"
     }
   ],
   "connections": {
@@ -1314,14 +1645,14 @@
       "main": [
         [
           {
-            "node": "Loop Over services",
+            "node": "Get not processes keys",
             "type": "main",
             "index": 0
           }
         ],
         [
           {
-            "node": "reset first_item1",
+            "node": "Call 'chech phrase VS minus words'",
             "type": "main",
             "index": 0
           }
@@ -1394,18 +1725,7 @@
       "main": [
         [
           {
-            "node": "Services list",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Code2": {
-      "main": [
-        [
-          {
-            "node": "Find competitors mentions",
+            "node": "Get not processes keys2",
             "type": "main",
             "index": 0
           }
@@ -1445,40 +1765,11 @@
         ]
       ]
     },
-    "Services list": {
-      "main": [
-        [
-          {
-            "node": "Loop Over services",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Loop Over services": {
-      "main": [
-        [
-          {
-            "node": "Services list1",
-            "type": "main",
-            "index": 0
-          }
-        ],
-        [
-          {
-            "node": "Get not processes keys",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "If competitors not found": {
       "main": [
         [
           {
-            "node": "Loop Over Items",
+            "node": "Get current step saved",
             "type": "main",
             "index": 0
           }
@@ -1518,7 +1809,7 @@
       "main": [
         [
           {
-            "node": "Code2",
+            "node": "set input",
             "type": "main",
             "index": 0
           }
@@ -1536,18 +1827,7 @@
       "main": [
         [
           {
-            "node": "Loop Over Items",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Get not processes keys": {
-      "main": [
-        [
-          {
-            "node": "If no records",
+            "node": "Get current step saved",
             "type": "main",
             "index": 0
           }
@@ -1587,40 +1867,18 @@
         ]
       ]
     },
-    "reset first_item1": {
-      "main": [
-        [
-          {
-            "node": "Call 'chech phrase VS minus words'",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "set first_item": {
-      "main": [
-        [
-          {
-            "node": "Loop Over Items",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "If no records": {
       "main": [
         [
           {
-            "node": "Loop Over services",
+            "node": "Mark_workflow_completed",
             "type": "main",
             "index": 0
           }
         ],
         [
           {
-            "node": "set first_item",
+            "node": "Loop Over Items",
             "type": "main",
             "index": 0
           }
@@ -1671,7 +1929,7 @@
       "main": [
         [
           {
-            "node": "Services list",
+            "node": "Get not processes keys2",
             "type": "main",
             "index": 0
           }
@@ -1851,7 +2109,7 @@
       "main": [
         [
           {
-            "node": "Loop Over Items1",
+            "node": "Get current step saved1",
             "type": "main",
             "index": 0
           }
@@ -1870,6 +2128,217 @@
         [
           {
             "node": "Обработка ответа AI",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mark_workflow_total_steps": {
+      "main": [
+        [
+          {
+            "node": "Init total counter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get not processes keys2": {
+      "main": [
+        [
+          {
+            "node": "Mark_workflow_total_steps",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Init total counter": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "check if termination is requested": {
+      "main": [
+        [
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get current step saved": {
+      "main": [
+        [
+          {
+            "node": "Mark_workflow_passed_steps1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mark_workflow_passed_steps1": {
+      "main": [
+        [
+          {
+            "node": "check if termination is requested",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "Stop and Error",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "If no records",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "set input": {
+      "main": [
+        [
+          {
+            "node": "Find competitors mentions",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mark_workflow_total_steps1": {
+      "main": [
+        [
+          {
+            "node": "Init total counter1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Init total counter1": {
+      "main": [
+        [
+          {
+            "node": "Merge2",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Get not processes keys": {
+      "main": [
+        [
+          {
+            "node": "Mark_workflow_total_steps1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge2": {
+      "main": [
+        [
+          {
+            "node": "Services list1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "check if termination is requested1": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get current step saved1": {
+      "main": [
+        [
+          {
+            "node": "Mark_workflow_passed_steps",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mark_workflow_passed_steps": {
+      "main": [
+        [
+          {
+            "node": "check if termination is requested1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Stop and Error1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Loop Over Items1",
             "type": "main",
             "index": 0
           }
@@ -1896,13 +2365,13 @@
         "json": {
           "id": "ezK8ihYnfxZNTIAc",
           "root_execution_id": 20076,
-          "company_id": 2,
+          "company_id": 1,
           "is_initial": "false"
         }
       }
     ]
   },
-  "versionId": "48a34788-d57f-479f-81d0-1d7934b2ac23",
+  "versionId": "683a4048-c4e9-4721-8a09-2ebb56aafa01",
   "triggerCount": 0,
   "shared": [
     {
