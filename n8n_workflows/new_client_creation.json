@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-21T08:42:27.513Z",
+  "updatedAt": "2025-11-21T11:33:18.535Z",
   "createdAt": "2025-10-22T11:42:51.794Z",
   "id": "EgFFe1spvxMBXwgw",
   "name": "New_client_creation",
@@ -3761,8 +3761,8 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        2832,
-        7200
+        2784,
+        8288
       ],
       "id": "e19f5531-38ea-4d66-a81d-b29672195d46",
       "name": "Sticky Note4"
@@ -6454,7 +6454,7 @@
       }
     ]
   },
-  "versionId": "77134d54-4c26-4beb-bbaf-952f887fe3ed",
+  "versionId": "5e5a6099-60b1-4e57-aebe-dbf561b0d162",
   "triggerCount": 0,
   "shared": [
     {
