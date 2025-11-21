@@ -1,22 +1,11 @@
 {
-  "updatedAt": "2025-11-20T16:18:09.282Z",
+  "updatedAt": "2025-11-21T09:20:54.068Z",
   "createdAt": "2025-09-03T13:10:38.957Z",
   "id": "t4Ep016fMXc6Cyhm",
   "name": "Wordstat xmlriver",
   "active": false,
   "isArchived": false,
   "nodes": [
-    {
-      "parameters": {},
-      "type": "n8n-nodes-base.manualTrigger",
-      "typeVersion": 1,
-      "position": [
-        -880,
-        -32
-      ],
-      "id": "3da8439f-3211-4fec-9487-a3ffd7dcca18",
-      "name": "When clicking ‘Execute workflow’"
-    },
     {
       "parameters": {
         "assignments": {
@@ -35,8 +24,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        -64,
-        -16
+        -32,
+        -48
       ],
       "id": "397ccd43-b5ed-49d1-a77b-06ef3ce84e10",
       "name": "Edit Fields"
@@ -71,35 +60,6 @@
       ],
       "id": "9a8fd90d-e01f-4989-8ea1-e6d6f2a1070e",
       "name": "Sticky Note"
-    },
-    {
-      "parameters": {
-        "assignments": {
-          "assignments": [
-            {
-              "id": "5b3485a2-cb50-486a-932c-fc27de0a25da",
-              "name": "company_name",
-              "value": "Первый визовый центр Курган",
-              "type": "string"
-            },
-            {
-              "id": "f74ac992-90a4-4403-a75e-17656de76902",
-              "name": "company_id",
-              "value": 2,
-              "type": "number"
-            }
-          ]
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.set",
-      "typeVersion": 3.4,
-      "position": [
-        -688,
-        -32
-      ],
-      "id": "2775a407-4f21-42bc-ab66-40d671ecc7f1",
-      "name": "set company name"
     },
     {
       "parameters": {
@@ -163,8 +123,8 @@
       "type": "n8n-nodes-base.splitInBatches",
       "typeVersion": 3,
       "position": [
-        -288,
-        -64
+        -272,
+        -80
       ],
       "id": "d7194125-517d-44ed-8709-bff4fc87a597",
       "name": "Loop Over Items"
@@ -307,8 +267,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        576,
-        0
+        592,
+        -16
       ],
       "id": "567393cc-4834-456a-8f5d-16686e2afba2",
       "name": "Развернуть список"
@@ -324,8 +284,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        1168,
-        -16
+        1184,
+        -64
       ],
       "id": "62dad88d-14a5-468b-afad-3301ceb8c72b",
       "name": "Check if exists",
@@ -490,8 +450,8 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        -384,
-        144
+        -752,
+        208
       ],
       "id": "bb34c364-4a65-4167-958d-7d34cdfda0ec",
       "name": "Sticky Note1"
@@ -514,8 +474,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        992,
-        -16
+        1040,
+        -96
       ],
       "id": "bf719b2e-ac50-4b8e-bc9d-fc3ddf820717",
       "name": "reset first_item"
@@ -529,8 +489,8 @@
       "type": "n8n-nodes-base.splitInBatches",
       "typeVersion": 3,
       "position": [
-        768,
-        -32
+        816,
+        -80
       ],
       "id": "added0dc-06b8-4edb-9fe4-2ec0e6698181",
       "name": "Loop Over Items1"
@@ -684,36 +644,27 @@
       ],
       "id": "453422a5-5a66-4232-acea-059571d0b845",
       "name": "If empty return"
+    },
+    {
+      "parameters": {
+        "inputSource": "passthrough"
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -752,
+        -32
+      ],
+      "id": "ad792355-8f2d-4a8d-9bbd-c3a4934b6f37",
+      "name": "When Executed by Another Workflow"
     }
   ],
   "connections": {
-    "When clicking ‘Execute workflow’": {
-      "main": [
-        [
-          {
-            "node": "set company name",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Edit Fields": {
       "main": [
         [
           {
             "node": "HTTP Request",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "set company name": {
-      "main": [
-        [
-          {
-            "node": "Select rows from a table",
             "type": "main",
             "index": 0
           }
@@ -873,6 +824,17 @@
           }
         ]
       ]
+    },
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "Select rows from a table",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
@@ -882,8 +844,17 @@
   "meta": {
     "templateCredsSetupCompleted": true
   },
-  "pinData": {},
-  "versionId": "6692e1cd-63f3-4866-ad5c-9a9da6ee210d",
+  "pinData": {
+    "When Executed by Another Workflow": [
+      {
+        "json": {
+          "company_id": 1,
+          "code": 1
+        }
+      }
+    ]
+  },
+  "versionId": "ea0dad82-d199-4ab2-b038-d181184469d2",
   "triggerCount": 0,
   "shared": [
     {
