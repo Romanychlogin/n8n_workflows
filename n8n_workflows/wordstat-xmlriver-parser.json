@@ -1,0 +1,1724 @@
+{
+  "updatedAt": "2025-11-21T13:00:25.451Z",
+  "createdAt": "2025-11-21T09:29:57.841Z",
+  "id": "GD3d8tGXTFsfQ0bs",
+  "name": "wordstat xmlriver parser",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "operation": "select",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "key_words",
+          "mode": "list",
+          "cachedResultName": "key_words"
+        },
+        "returnAll": true,
+        "where": {
+          "values": [
+            {
+              "column": "wordstat_parsed",
+              "value": "false"
+            },
+            {
+              "column": "company_id",
+              "value": "={{ $('When Executed by Another Workflow').item.json.company_id }}"
+            },
+            {
+              "column": "is_relevant",
+              "value": "true"
+            }
+          ]
+        },
+        "sort": {
+          "values": [
+            {
+              "column": "key_word_id"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -1408,
+        528
+      ],
+      "id": "1721e6fe-83be-466d-8798-423c96fe78f8",
+      "name": "Select Unparsed Keywords",
+      "credentials": {
+        "postgres": {
+          "id": "Hx2VFmUi5WO2K4QX",
+          "name": "Postgres account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Подготовка элементов для HTTP Request с очередью и ограничением параллелизма 53\nconst items = $input.all();\nconst yandexRegionId = '225';\nconst companyId = $('When Executed by Another Workflow').first().json.company_id;\n\n// XMLRiver API credentials\nconst user = '18041';\nconst key = '326fc7615c355f1f5ad41ac8f707e22aa022d07a';\n\n// Создаем элементы для каждого запроса\n// HTTP Request будет обрабатывать их с правильной очередью:\n// - Отправляет первые 10 запросов\n// - Как только получает ответ от одного, сразу отправляет следующий\n// - Всегда активно ровно 10 запросов (если есть что отправлять)\nreturn items.map(item => ({\n  json: {\n    ...item.json,\n    url: `http://xmlriver.com/wordstat/new/json?user=${user}&key=${key}&regions=${yandexRegionId}&query=${encodeURIComponent(item.json.key_word.replace(/\"/g, ''))}`,\n    yandex_region_id: yandexRegionId,\n    company_id: companyId,\n    key_word_id: item.json.key_word_id\n  }\n}));"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -640,
+        512
+      ],
+      "id": "b3a2961d-514a-4c49-8e39-dd36a1eaf6ed",
+      "name": "Prepare HTTP Requests"
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.url }}",
+        "options": {
+          "timeout": 30000
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        16,
+        608
+      ],
+      "id": "ab8d2eff-88b0-4b10-9e43-1d7c5a245458",
+      "name": "HTTP Request to XMLRiver (Queue)",
+      "alwaysOutputData": true,
+      "retryOnFail": true,
+      "notesInFlow": true,
+      "notes": "ВАЖНО: Настроить батчевую обработку через UI в Options → Batching:\n- Items per Batch: 10 (максимум одновременных запросов)\n- Batch Interval (ms): 0 или минимальное значение\n\nАлгоритм работы:\n1. Отправляет первые 10 запросов\n2. Ждет ответа от любого из них\n3. Как только получил ответ - сразу отправляет следующий (11-й)\n4. Всегда активно ровно 10 запросов (если есть что отправлять)\n\nЭто предотвращает ошибку 'Заняты все доступные каналы'"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "check-popular",
+              "leftValue": "={{ $json.popular }}",
+              "rightValue": "",
+              "operator": {
+                "type": "array",
+                "operation": "empty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        560,
+        352
+      ],
+      "id": "77b7a99a-63e3-41e6-a392-c0df025228ac",
+      "name": "If Empty Response"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Разворачиваем список популярных фраз из ответа\nconst item = $json;\nconst popular = item.popular || [];\n\nif (!popular || popular.length === 0) {\n  return [{\n    json: {\n      ...item,\n      processed: false,\n      has_data: false\n    }\n  }];\n}\n\n// Разворачиваем список\nreturn popular.map((p, index) => ({\n  json: {\n    original_key_word: item.key_word,\n    original_key_word_id: item.key_word_id,\n    original_service_id: item.service_id,\n    company_id: item.company_id,\n    wordstat_count: p.value,\n    key_word: p.text,\n    is_first: index === 0,\n    from_wordstat: true\n  }\n}));"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        928,
+        560
+      ],
+      "id": "7bb757e8-4155-4bb9-ae8a-cc7aeb47127b",
+      "name": "Expand Popular List"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "key_words",
+          "mode": "list",
+          "cachedResultName": "key_words"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "key_word_id": "={{ $json.key_word_id }}",
+            "wordstat_parsed": "={{ true }}",
+            "is_relevant": "={{ false }}"
+          },
+          "matchingColumns": [
+            "key_word_id"
+          ],
+          "schema": [
+            {
+              "id": "key_word_id",
+              "displayName": "key_word_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "company_id",
+              "displayName": "company_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "key_word",
+              "displayName": "key_word",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "wordstat_count",
+              "displayName": "wordstat_count",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "service_id",
+              "displayName": "service_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "wordstat_parsed",
+              "displayName": "wordstat_parsed",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "boolean",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "from_wordstat",
+              "displayName": "from_wordstat",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "boolean",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "is_relevant",
+              "displayName": "is_relevant",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "boolean",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "ai_response_tokens",
+              "displayName": "ai_response_tokens",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "minus_words_processed",
+              "displayName": "minus_words_processed",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "boolean",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "is_adv_processed",
+              "displayName": "is_adv_processed",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "boolean",
+              "canBeUsedToMatch": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        1984,
+        240
+      ],
+      "id": "bfb63360-ca9e-48e4-a7d8-56f9bd26c39b",
+      "name": "Mark Keywords as Parsed",
+      "executeOnce": false,
+      "credentials": {
+        "postgres": {
+          "id": "Hx2VFmUi5WO2K4QX",
+          "name": "Postgres account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "batchSize": 9,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        -432,
+        512
+      ],
+      "id": "2e72e2da-beb7-4a19-868b-32c3a5660892",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -64,
+        352
+      ],
+      "id": "4e1c46ea-b3b6-45b9-823f-f7598afef370",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -192,
+        592
+      ],
+      "id": "9a9f56d5-ccbc-432f-972e-7243308b065a",
+      "name": "init values"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "c94f64d8-4882-489f-801c-325f96f0c343",
+              "name": "key_word_id",
+              "value": "={{$('init values').item.json.key_word_id}}",
+              "type": "string"
+            },
+            {
+              "id": "ddf7a64f-69e9-4255-8354-c430d672cf4c",
+              "name": "key_word",
+              "value": "={{$('init values').item.json.key_word}}",
+              "type": "string"
+            },
+            {
+              "id": "83ebb611-62fd-4d57-aeee-205ca2093abd",
+              "name": "service_id",
+              "value": "={{$('init values').item.json.service_id}}",
+              "type": "string"
+            },
+            {
+              "id": "ca9eb644-706d-4367-86b7-936bb19641ea",
+              "name": "company_id",
+              "value": "={{$('init values').item.json.company_id}}",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        192,
+        736
+      ],
+      "id": "cce9c551-666d-4815-91ee-22e8850ee4f9",
+      "name": "refresh values"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO public.key_words (\n    key_word,\n    company_id,\n    service_id,\n    wordstat_parsed,\n    from_wordstat,\n    is_relevant,\n    is_adv_processed\n)\nVALUES ($1, $2, $3, false, true, null, false)\nON CONFLICT (key_word_clean) DO UPDATE\nSET wordstat_parsed = true, is_relevant = null\nRETURNING key_word,key_word_id;",
+        "options": {
+          "queryReplacement": "={{$json.key_word}},{{$json.company_id}},{{ $json.original_service_id }}"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        1136,
+        656
+      ],
+      "id": "bcfd1112-39f4-4dc5-9253-f1758b5975db",
+      "name": "Execute a SQL query",
+      "credentials": {
+        "postgres": {
+          "id": "Hx2VFmUi5WO2K4QX",
+          "name": "Postgres account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Подготовка элементов для HTTP Request с очередью и ограничением параллелизма 53\nconst items = $input.all();\nconst yandexRegionId = $('When Executed by Another Workflow').first().json.yandex_region_id ;\nconst companyId = $('When Executed by Another Workflow').first().json.company_id;\n\n// XMLRiver API credentials\nconst user = '18041';\nconst key = '326fc7615c355f1f5ad41ac8f707e22aa022d07a';\n\n// Создаем элементы для каждого запроса\n// HTTP Request будет обрабатывать их с правильной очередью:\n// - Отправляет первые 10 запросов\n// - Как только получает ответ от одного, сразу отправляет следующий\n// - Всегда активно ровно 10 запросов (если есть что отправлять)\nreturn items.map(item => ({\n  json: {\n    ...item.json,\n    url: `http://xmlriver.com/wordstat/new/json?user=${user}&key=${key}&regions=${yandexRegionId}&query=${encodeURIComponent(item.json.key_word.replace(/\"/g, ''))}`,\n    yandex_region_id: yandexRegionId,\n    company_id: companyId,\n    key_word_id: item.json.key_word_id\n  }\n}));"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1424,
+        512
+      ],
+      "id": "edd6e49d-0085-44e2-a89a-826d0f334bf4",
+      "name": "Prepare HTTP Requests1"
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.url }}",
+        "options": {
+          "timeout": 30000
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2288,
+        608
+      ],
+      "id": "a2fa6db8-4020-4ce2-aece-ca891930ece0",
+      "name": "HTTP Request to XMLRiver (Queue)1",
+      "alwaysOutputData": true,
+      "retryOnFail": true,
+      "notesInFlow": true,
+      "notes": "ВАЖНО: Настроить батчевую обработку через UI в Options → Batching:\n- Items per Batch: 10 (максимум одновременных запросов)\n- Batch Interval (ms): 0 или минимальное значение\n\nАлгоритм работы:\n1. Отправляет первые 10 запросов\n2. Ждет ответа от любого из них\n3. Как только получил ответ - сразу отправляет следующий (11-й)\n4. Всегда активно ровно 10 запросов (если есть что отправлять)\n\nЭто предотвращает ошибку 'Заняты все доступные каналы'"
+    },
+    {
+      "parameters": {
+        "batchSize": 9,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        1856,
+        496
+      ],
+      "id": "40fd507f-b143-4381-834b-0f659e5e50e8",
+      "name": "Loop Over Items1"
+    },
+    {
+      "parameters": {
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2080,
+        592
+      ],
+      "id": "30ad4c2b-e511-43ef-a083-0c2d4376d505",
+      "name": "init values1"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "c94f64d8-4882-489f-801c-325f96f0c343",
+              "name": "key_word_id",
+              "value": "={{$('init values1').item.json.key_word_id}}",
+              "type": "string"
+            },
+            {
+              "id": "ddf7a64f-69e9-4255-8354-c430d672cf4c",
+              "name": "key_word",
+              "value": "={{$('init values1').item.json.key_word}}",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2864,
+        752
+      ],
+      "id": "18f8f707-d40f-47b8-acee-bf1937ba844d",
+      "name": "refresh values1"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "dc1485f1-ba0a-4eee-908b-78ff886205a0",
+              "leftValue": "={{ $json.is_first }}",
+              "rightValue": "true",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1616,
+        512
+      ],
+      "id": "4fcf25b8-51cf-411c-bf2e-3f5a72c749ce",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "check-popular",
+              "leftValue": "={{ $json.popular }}",
+              "rightValue": "",
+              "operator": {
+                "type": "array",
+                "operation": "empty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        2192,
+        464
+      ],
+      "id": "3dc790fe-3ece-4c8a-aa9f-224e421abafa",
+      "name": "If Empty Response1"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Разворачиваем список популярных фраз из ответа\nconst item = $json;\nconst popular = item.popular || [];\n\nif (!popular || popular.length === 0) {\n  return [{\n    json: {\n      ...item,\n      processed: false,\n      has_data: false\n    }\n  }];\n}\n\n// Разворачиваем список\nreturn popular.map((p, index) => ({\n  json: {\n    original_key_word: item.key_word,\n    original_key_word_id: item.key_word_id,\n    original_service_id: item.service_id,\n    company_id: item.company_id,\n    wordstat_count: p.value,\n    key_word: p.text,\n    is_first: index === 0,\n    from_wordstat: true\n  }\n}));"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2912,
+        528
+      ],
+      "id": "04a24100-5e47-4965-bef2-0853833cc599",
+      "name": "Expand Popular List1"
+    },
+    {
+      "parameters": {
+        "mode": "chooseBranch"
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        3440,
+        352
+      ],
+      "id": "bb5ea741-0b27-4c4c-bee3-20f14cc79220",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "update public.key_words  set wordstat_count=$2\nwhere key_word=$1",
+        "options": {
+          "queryReplacement": "={{ $json.key_word }},{{$json.wordstat_count}}"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        3120,
+        528
+      ],
+      "id": "5ce57f83-96d4-4b30-aedd-9155e530d6ea",
+      "name": "Update local count data",
+      "credentials": {
+        "postgres": {
+          "id": "Hx2VFmUi5WO2K4QX",
+          "name": "Postgres account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "78fd8ed3-0c04-4485-9959-e3fc0e03f0c7",
+              "leftValue": "={{ $('When Executed by Another Workflow').last().json.yandex_region_id }}",
+              "rightValue": "225",
+              "operator": {
+                "type": "string",
+                "operation": "notEquals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1232,
+        400
+      ],
+      "id": "924699c5-a154-471f-a3c8-f716d9b26026",
+      "name": "If local region"
+    },
+    {
+      "parameters": {
+        "inputSource": "passthrough"
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -1888,
+        544
+      ],
+      "id": "ba18ee26-4bde-42c8-98cb-d16ae0b637bd",
+      "name": "When Executed by Another Workflow"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO business_processes_states (business_process_id, company_id,n8n_workflow_execution_id,n8n_workflow_root_execution_id, started)\nSELECT MAX(business_process_id), $2,$3,$4, NOW()\nFROM public.business_processes\nWHERE n8n_process_name = $1;",
+        "options": {
+          "queryReplacement": "=[{{$workflow.name}},{{$json.company_id}},{{$execution.id}},{{ $('When Executed by Another Workflow').item.json.root_execution_id }}]"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -1664,
+        544
+      ],
+      "id": "9387ba3e-cf55-428c-94c3-ade054a460b8",
+      "name": "Mark_workwlow_started",
+      "credentials": {
+        "postgres": {
+          "id": "4YkdFJcdTgzo9hkz",
+          "name": "PGvector"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "update business_processes_states set finished=NOW() where  n8n_workflow_execution_id=$1",
+        "options": {
+          "queryReplacement": "={{$execution.id}}"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        3840,
+        336
+      ],
+      "id": "b7656971-5c58-4fc2-90d5-369d42acf657",
+      "name": "Mark_workflow_completed",
+      "executeOnce": true,
+      "credentials": {
+        "postgres": {
+          "id": "4YkdFJcdTgzo9hkz",
+          "name": "PGvector"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "errorMessage": "Process terminated by user"
+      },
+      "type": "n8n-nodes-base.stopAndError",
+      "typeVersion": 1,
+      "position": [
+        592,
+        928
+      ],
+      "id": "d83a9865-c9df-473a-970e-baaf4ea5adc2",
+      "name": "Stop and Error"
+    },
+    {
+      "parameters": {
+        "operation": "select",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "business_processes_states",
+          "mode": "list",
+          "cachedResultName": "business_processes_states"
+        },
+        "returnAll": true,
+        "where": {
+          "values": [
+            {
+              "column": "n8n_workflow_execution_id",
+              "value": "={{ $execution.id }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        208,
+        1072
+      ],
+      "id": "48728486-3677-41ed-9af1-b46ce2e41f79",
+      "name": "check if termination is requested",
+      "credentials": {
+        "postgres": {
+          "id": "4YkdFJcdTgzo9hkz",
+          "name": "PGvector"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nconst workflowData = $getWorkflowStaticData('global');\nworkflowData.steps_passed+=$input.all().length; // update steps counter\nfor (const item of $input.all()) {\n  item.json.steps_passed = workflowData.steps_passed;\n}\n\n\nreturn $input.all();"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -256,
+        1072
+      ],
+      "id": "e50a82ce-2468-4b6b-a40d-0377c5ac4032",
+      "name": "Get current step saved"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "update business_processes_states set steps_passed=$2, tokens_used=0 where n8n_workflow_execution_id=$1",
+        "options": {
+          "queryReplacement": "=[{{$execution.id}},{{$json.steps_passed}}]"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        0,
+        1072
+      ],
+      "id": "2c423805-8b39-47b6-be78-b7aae13d1062",
+      "name": "Mark_workflow_passed_steps1",
+      "executeOnce": true,
+      "credentials": {
+        "postgres": {
+          "id": "4YkdFJcdTgzo9hkz",
+          "name": "PGvector"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "fa13510a-3a56-4cd5-8b80-3e4fe626ce0b",
+              "leftValue": "={{ $json.to_terminate }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        432,
+        1056
+      ],
+      "id": "a88dc97b-7626-4c80-a955-709229477ab4",
+      "name": "If1"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "update business_processes_states set steps_total=$2 where  n8n_workflow_execution_id=$1",
+        "options": {
+          "queryReplacement": "=[{{$execution.id}},{{$input.all().length*2}}]"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -1264,
+        704
+      ],
+      "id": "69ed7a37-ad2b-48eb-92d4-a794d8038ae7",
+      "name": "Mark_workflow_total_steps",
+      "executeOnce": true,
+      "alwaysOutputData": false,
+      "credentials": {
+        "postgres": {
+          "id": "4YkdFJcdTgzo9hkz",
+          "name": "PGvector"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Function-Node (Run Once)\nconst workflowData = $getWorkflowStaticData('global');\nworkflowData.steps_passed = 0;\nworkflowData.tokens_used = 0;\nreturn $input.all();\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1088,
+        704
+      ],
+      "id": "107e48c5-0f3e-46dc-a7d6-72cba9bfdee7",
+      "name": "Init total counter"
+    },
+    {
+      "parameters": {
+        "mode": "chooseBranch"
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        1376,
+        1088
+      ],
+      "id": "1460c575-e8bc-4681-af91-3205ddc69e78",
+      "name": "Merge1"
+    },
+    {
+      "parameters": {
+        "mode": "chooseBranch"
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        3456,
+        1088
+      ],
+      "id": "132329fb-6014-481d-b246-29ed9550f85c",
+      "name": "Merge2"
+    },
+    {
+      "parameters": {
+        "errorMessage": "Process terminated by user"
+      },
+      "type": "n8n-nodes-base.stopAndError",
+      "typeVersion": 1,
+      "position": [
+        3040,
+        960
+      ],
+      "id": "e82e46f0-c706-4a27-812a-eb6d185ec84e",
+      "name": "Stop and Error1"
+    },
+    {
+      "parameters": {
+        "operation": "select",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "business_processes_states",
+          "mode": "list",
+          "cachedResultName": "business_processes_states"
+        },
+        "returnAll": true,
+        "where": {
+          "values": [
+            {
+              "column": "n8n_workflow_execution_id",
+              "value": "={{ $execution.id }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        2544,
+        1056
+      ],
+      "id": "260c623c-6251-4198-b6b1-2ffbc3dc4af7",
+      "name": "check if termination is requested1",
+      "credentials": {
+        "postgres": {
+          "id": "4YkdFJcdTgzo9hkz",
+          "name": "PGvector"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nconst workflowData = $getWorkflowStaticData('global');\nworkflowData.steps_passed+=$input.all().length; // update steps counter\nfor (const item of $input.all()) {\n  item.json.steps_passed = workflowData.steps_passed;\n}\n\n\nreturn $input.all();"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2080,
+        1056
+      ],
+      "id": "dd9e574e-316c-4f95-9918-31e51f05eaac",
+      "name": "Get current step saved1"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "update business_processes_states set steps_passed=$2, tokens_used=0 where n8n_workflow_execution_id=$1",
+        "options": {
+          "queryReplacement": "=[{{$execution.id}},{{$json.steps_passed}}]"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        2336,
+        1056
+      ],
+      "id": "bcb3a238-9bd0-43b6-9868-3f4cae5b35d9",
+      "name": "Mark_workflow_passed_steps",
+      "executeOnce": true,
+      "credentials": {
+        "postgres": {
+          "id": "4YkdFJcdTgzo9hkz",
+          "name": "PGvector"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "fa13510a-3a56-4cd5-8b80-3e4fe626ce0b",
+              "leftValue": "={{ $json.to_terminate }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        2768,
+        1040
+      ],
+      "id": "208730d9-16de-47a9-aff8-e6ac49e1dd64",
+      "name": "If2"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nconst workflowData = $getWorkflowStaticData('global');\nworkflowData.steps_passed+=$input.all().length; // update steps counter\nfor (const item of $input.all()) {\n  item.json.steps_passed = workflowData.steps_passed;\n}\n\n\nreturn $input.all();"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2272,
+        224
+      ],
+      "id": "8c569f9a-dc1a-4c4d-9086-2f3e830394de",
+      "name": "Get current step saved2"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "update business_processes_states set steps_passed=$2, tokens_used=0 where n8n_workflow_execution_id=$1",
+        "options": {
+          "queryReplacement": "=[{{$execution.id}},{{$json.steps_passed}}]"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        2528,
+        224
+      ],
+      "id": "a66272f1-42f2-41de-8e26-2c3259856208",
+      "name": "Mark_workflow_passed_steps2",
+      "executeOnce": true,
+      "credentials": {
+        "postgres": {
+          "id": "4YkdFJcdTgzo9hkz",
+          "name": "PGvector"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "chooseBranch"
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        -864,
+        544
+      ],
+      "id": "3ba5dda8-222f-41f6-afba-b07f54a4cfdc",
+      "name": "Merge3"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        736,
+        480
+      ],
+      "id": "f836cb5f-69cc-4fa6-9eee-f4b75b8490c8",
+      "name": "Loop Over Items2"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "e3189cd1-94fe-400a-b97e-73cdb2e4e016",
+              "name": "is_first",
+              "value": "={{ $('Expand Popular List').item.json.is_first }}",
+              "type": "boolean"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1344,
+        688
+      ],
+      "id": "ac696d60-82c2-42b6-bc8b-140d6f0f1b9b",
+      "name": "refresh"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        2720,
+        448
+      ],
+      "id": "291377f3-1883-455a-a8ee-acc2db9a4df7",
+      "name": "Loop Over Items3"
+    },
+    {
+      "parameters": {
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2480,
+        496
+      ],
+      "id": "beb7a3d8-94ee-476a-94ac-fd23ae4fd6ec",
+      "name": "checkpoint"
+    }
+  ],
+  "connections": {
+    "Select Unparsed Keywords": {
+      "main": [
+        [
+          {
+            "node": "Mark_workflow_total_steps",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If Empty Response": {
+      "main": [
+        [
+          {
+            "node": "Mark Keywords as Parsed",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Loop Over Items2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Expand Popular List": {
+      "main": [
+        [
+          {
+            "node": "Execute a SQL query",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request to XMLRiver (Queue)": {
+      "main": [
+        [
+          {
+            "node": "refresh values",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare HTTP Requests": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "init values",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "init values": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request to XMLRiver (Queue)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "refresh values": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Get current step saved",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "If Empty Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute a SQL query": {
+      "main": [
+        [
+          {
+            "node": "refresh",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare HTTP Requests1": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request to XMLRiver (Queue)1": {
+      "main": [
+        [
+          {
+            "node": "refresh values1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items1": {
+      "main": [
+        [
+          {
+            "node": "If Empty Response1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "init values1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "init values1": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request to XMLRiver (Queue)1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "refresh values1": {
+      "main": [
+        [
+          {
+            "node": "Merge2",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Get current step saved1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If Empty Response1": {
+      "main": [
+        [],
+        [
+          {
+            "node": "checkpoint",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Expand Popular List1": {
+      "main": [
+        [
+          {
+            "node": "Update local count data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mark Keywords as Parsed": {
+      "main": [
+        [
+          {
+            "node": "Get current step saved2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update local count data": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If local region": {
+      "main": [
+        [
+          {
+            "node": "Prepare HTTP Requests1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "Mark_workwlow_started",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "check if termination is requested": {
+      "main": [
+        [
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get current step saved": {
+      "main": [
+        [
+          {
+            "node": "Mark_workflow_passed_steps1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mark_workflow_passed_steps1": {
+      "main": [
+        [
+          {
+            "node": "check if termination is requested",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "Stop and Error",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Mark_workflow_total_steps": {
+      "main": [
+        [
+          {
+            "node": "Init total counter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mark_workwlow_started": {
+      "main": [
+        [
+          {
+            "node": "Select Unparsed Keywords",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Mark_workflow_completed",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge1": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Init total counter": {
+      "main": [
+        [
+          {
+            "node": "Merge3",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge2": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "check if termination is requested1": {
+      "main": [
+        [
+          {
+            "node": "If2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get current step saved1": {
+      "main": [
+        [
+          {
+            "node": "Mark_workflow_passed_steps",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mark_workflow_passed_steps": {
+      "main": [
+        [
+          {
+            "node": "check if termination is requested1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If2": {
+      "main": [
+        [
+          {
+            "node": "Stop and Error1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Merge2",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Get current step saved2": {
+      "main": [
+        [
+          {
+            "node": "Mark_workflow_passed_steps2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mark_workflow_passed_steps2": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge3": {
+      "main": [
+        [
+          {
+            "node": "Prepare HTTP Requests",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items2": {
+      "main": [
+        [
+          {
+            "node": "If local region",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Expand Popular List",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "refresh": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items3": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ],
+        [
+          {
+            "node": "Expand Popular List1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "checkpoint": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false,
+    "errorWorkflow": "v2Z32ISEUzsFYnZw"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {
+    "When Executed by Another Workflow": [
+      {
+        "json": {
+          "id": "lBAh8kjoXRX0aGUF",
+          "root_execution_id": 228462,
+          "company_id": 1,
+          "yandex_region_id": "53"
+        }
+      }
+    ]
+  },
+  "versionId": "9fc4b311-ecb3-49a1-bddb-9bd840c0c23d",
+  "triggerCount": 0,
+  "shared": [
+    {
+      "updatedAt": "2025-11-21T09:29:57.841Z",
+      "createdAt": "2025-11-21T09:29:57.841Z",
+      "role": "workflow:owner",
+      "workflowId": "GD3d8tGXTFsfQ0bs",
+      "projectId": "spKmbJLU4mvACXIB"
+    }
+  ],
+  "tags": [
+    {
+      "updatedAt": "2025-10-17T09:03:18.269Z",
+      "createdAt": "2025-10-17T09:03:18.269Z",
+      "id": "S7zerj1h6Ro25pTA",
+      "name": "client creation"
+    }
+  ],
+  "file_name": "wordstat-xmlriver-parser.json"
+}
