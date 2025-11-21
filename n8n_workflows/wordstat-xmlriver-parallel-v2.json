@@ -1,0 +1,510 @@
+{
+  "name": "Wordstat xmlriver (Parallel v2)",
+  "active": false,
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [-880, -32],
+      "id": "trigger",
+      "name": "When clicking 'Execute workflow'"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "company-name",
+              "name": "company_name",
+              "value": "Первый визовый центр Курган",
+              "type": "string"
+            },
+            {
+              "id": "company-id",
+              "name": "company_id",
+              "value": 2,
+              "type": "number"
+            },
+            {
+              "id": "region-id",
+              "name": "yandex_region_id",
+              "value": "53",
+              "type": "string"
+            },
+            {
+              "id": "parallel-limit",
+              "name": "parallel_limit",
+              "value": 10,
+              "type": "number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [-688, -32],
+      "id": "set-vars",
+      "name": "Set Variables"
+    },
+    {
+      "parameters": {
+        "operation": "select",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "key_words",
+          "mode": "list",
+          "cachedResultName": "key_words"
+        },
+        "returnAll": true,
+        "where": {
+          "values": [
+            {
+              "column": "wordstat_parsed",
+              "value": "false"
+            },
+            {
+              "column": "company_id",
+              "value": "={{$json.company_id}}"
+            },
+            {
+              "column": "is_relevant",
+              "value": "true"
+            }
+          ]
+        },
+        "sort": {
+          "values": [
+            {
+              "column": "key_word_id"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [-512, -32],
+      "id": "select-keywords",
+      "name": "Select Unparsed Keywords",
+      "credentials": {
+        "postgres": {
+          "id": "Hx2VFmUi5WO2K4QX",
+          "name": "Postgres account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Подготовка элементов для HTTP Request с встроенной батчевой обработкой\nconst items = $input.all();\nconst yandexRegionId = $('Set Variables').first().json.yandex_region_id || '53';\nconst companyId = $('Set Variables').first().json.company_id;\n\n// XMLRiver API credentials\nconst user = '18041';\nconst key = '326fc7615c355f1f5ad41ac8f707e22aa022d07a';\n\n// Создаем элементы для каждого запроса\n// HTTP Request узел будет обрабатывать их батчами по 10 с использованием встроенной функции батчинга\nreturn items.map(item => ({\n  json: {\n    ...item.json,\n    url: `http://xmlriver.com/wordstat/new/json?user=${user}&key=${key}&regions=${yandexRegionId}&query=${encodeURIComponent(item.json.key_word)}`,\n    yandex_region_id: yandexRegionId,\n    company_id: companyId\n  }\n}));"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [-288, -32],
+      "id": "prepare-requests",
+      "name": "Prepare HTTP Requests"
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.url }}",
+        "options": {
+          "timeout": 30000
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [352, -32],
+      "id": "http-request",
+      "name": "HTTP Request to XMLRiver (Batched)",
+      "alwaysOutputData": true,
+      "retryOnFail": true,
+      "notes": "ВАЖНО: Настроить батчевую обработку через UI в Options → Batching:\n- Items per Batch: 10\n- Batch Interval (ms): 100\nЭто обеспечит параллельную обработку до 10 запросов одновременно"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "check-popular",
+              "leftValue": "={{ $json.popular }}",
+              "rightValue": "",
+              "operator": {
+                "type": "array",
+                "operation": "empty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [576, -32],
+      "id": "if-empty",
+      "name": "If Empty Response"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Разворачиваем список популярных фраз из ответа\nconst item = $json;\nconst popular = item.popular || [];\n\nif (!popular || popular.length === 0) {\n  return [{\n    json: {\n      ...item,\n      processed: false,\n      has_data: false\n    }\n  }];\n}\n\n// Разворачиваем список\nreturn popular.map((p, index) => ({\n  json: {\n    original_key_word: item.key_word,\n    original_key_word_id: item.key_word_id,\n    original_service_id: item.service_id,\n    company_id: item.company_id,\n    wordstat_count: p.value,\n    key_word: p.text,\n    is_first: index === 0,\n    from_wordstat: true\n  }\n}));"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [768, -32],
+      "id": "expand-list",
+      "name": "Expand Popular List"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT\n  v.key_word,\n  v.wordstat_count,\n  COALESCE(COUNT(k.key_word_id), 0) AS count_key_words,\n  COALESCE(MIN(k.key_word_id), 0) AS key_word_id\nFROM (VALUES ($1::text, $2::int)) AS v(key_word, wordstat_count)\nLEFT JOIN key_words k\n  ON k.key_word = v.key_word\n  AND k.company_id = $3\nGROUP BY v.key_word, v.wordstat_count;",
+        "options": {
+          "queryReplacement": "={{ $json.key_word }}, {{ $json.wordstat_count }}, {{ $json.company_id }}"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [992, -32],
+      "id": "check-exists",
+      "name": "Check if Keyword Exists",
+      "credentials": {
+        "postgres": {
+          "id": "Hx2VFmUi5WO2K4QX",
+          "name": "Postgres account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "check-count",
+              "leftValue": "={{ $json.count_key_words.toNumber() }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "number",
+                "operation": "notEquals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [1184, -32],
+      "id": "if-exists",
+      "name": "If Keyword Exists"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "key_words",
+          "mode": "list",
+          "cachedResultName": "key_words"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "key_word_id": "={{ $json.key_word_id }}",
+            "wordstat_count": "={{ $json.wordstat_count }}"
+          },
+          "matchingColumns": ["key_word_id"],
+          "schema": [
+            {
+              "id": "key_word_id",
+              "displayName": "key_word_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "wordstat_count",
+              "displayName": "wordstat_count",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [1376, -32],
+      "id": "update-keyword",
+      "name": "Update Keyword",
+      "credentials": {
+        "postgres": {
+          "id": "Hx2VFmUi5WO2K4QX",
+          "name": "Postgres account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "insert",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "key_words",
+          "mode": "list",
+          "cachedResultName": "key_words"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "key_word": "={{ $json.key_word }}",
+            "wordstat_count": "={{ $json.wordstat_count }}",
+            "company_id": "={{ $('Set Variables').first().json.company_id }}",
+            "service_id": "={{ $json.original_service_id }}",
+            "from_wordstat": "={{ true }}",
+            "is_relevant": true,
+            "wordstat_parsed": false
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "key_word",
+              "displayName": "key_word",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "wordstat_count",
+              "displayName": "wordstat_count",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "company_id",
+              "displayName": "company_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "service_id",
+              "displayName": "service_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "from_wordstat",
+              "displayName": "from_wordstat",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "boolean",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "is_relevant",
+              "displayName": "is_relevant",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "boolean",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "wordstat_parsed",
+              "displayName": "wordstat_parsed",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "boolean",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [1568, -32],
+      "id": "insert-keyword",
+      "name": "Insert New Keyword",
+      "credentials": {
+        "postgres": {
+          "id": "Hx2VFmUi5WO2K4QX",
+          "name": "Postgres account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Собираем все обработанные ключевые слова для обновления статуса\nconst items = $input.all();\nconst processedKeywords = new Set();\n\n// Собираем уникальные key_word_id из всех обработанных запросов\nitems.forEach(item => {\n  if (item.json.original_key_word_id) {\n    processedKeywords.add(item.json.original_key_word_id);\n  }\n});\n\n// Возвращаем массив для обновления статуса\nreturn Array.from(processedKeywords).map(keyWordId => ({\n  json: {\n    key_word_id: keyWordId\n  }\n}));"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1760, -32],
+      "id": "collect-processed",
+      "name": "Collect Processed Keywords"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "key_words",
+          "mode": "list",
+          "cachedResultName": "key_words"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "key_word_id": "={{ $json.key_word_id }}",
+            "wordstat_parsed": "={{ true }}"
+          },
+          "matchingColumns": ["key_word_id"],
+          "schema": [
+            {
+              "id": "key_word_id",
+              "displayName": "key_word_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "wordstat_parsed",
+              "displayName": "wordstat_parsed",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "boolean",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [1952, -32],
+      "id": "mark-parsed",
+      "name": "Mark Keywords as Parsed",
+      "executeOnce": false,
+      "credentials": {
+        "postgres": {
+          "id": "Hx2VFmUi5WO2K4QX",
+          "name": "Postgres account 2"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "When clicking 'Execute workflow'": {
+      "main": [[{"node": "Set Variables", "type": "main", "index": 0}]]
+    },
+    "Set Variables": {
+      "main": [[{"node": "Select Unparsed Keywords", "type": "main", "index": 0}]]
+    },
+    "Select Unparsed Keywords": {
+      "main": [[{"node": "Prepare HTTP Requests", "type": "main", "index": 0}]]
+    },
+    "Prepare HTTP Requests": {
+      "main": [[{"node": "HTTP Request to XMLRiver (Batched)", "type": "main", "index": 0}]]
+    },
+    "HTTP Request to XMLRiver (Batched)": {
+      "main": [[{"node": "If Empty Response", "type": "main", "index": 0}]]
+    },
+    "If Empty Response": {
+      "main": [
+        [{"node": "Mark Keywords as Parsed", "type": "main", "index": 0}],
+        [{"node": "Expand Popular List", "type": "main", "index": 0}]
+      ]
+    },
+    "Expand Popular List": {
+      "main": [[{"node": "Check if Keyword Exists", "type": "main", "index": 0}]]
+    },
+    "Check if Keyword Exists": {
+      "main": [[{"node": "If Keyword Exists", "type": "main", "index": 0}]]
+    },
+    "If Keyword Exists": {
+      "main": [
+        [{"node": "Update Keyword", "type": "main", "index": 0}],
+        [{"node": "Insert New Keyword", "type": "main", "index": 0}]
+      ]
+    },
+    "Update Keyword": {
+      "main": [[{"node": "Collect Processed Keywords", "type": "main", "index": 0}]]
+    },
+    "Insert New Keyword": {
+      "main": [[{"node": "Collect Processed Keywords", "type": "main", "index": 0}]]
+    },
+    "Collect Processed Keywords": {
+      "main": [[{"node": "Mark Keywords as Parsed", "type": "main", "index": 0}]]
+    },
+    "Mark Keywords as Parsed": {
+      "main": []
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "pinData": {}
+}
