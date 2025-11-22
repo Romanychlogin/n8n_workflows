@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-21T16:05:57.719Z",
+  "updatedAt": "2025-11-22T18:46:47.510Z",
   "createdAt": "2025-09-15T10:20:29.723Z",
   "id": "AEZDBlqe199xBn5u",
   "name": "key_words_with_services_analysis",
@@ -378,7 +378,7 @@
     },
     {
       "parameters": {
-        "jsCode": "const workflowData = $getWorkflowStaticData('global');\nlet my_prompt = workflowData.my_prompt.data;\n\n\n $json.my_prompt = my_prompt.replaceAll(\"{{company_name}}\", $('set variables').first().json.company_name).replaceAll(\"{{service_description}}\", $('Loop Over services1').first().json.service_name +' ' + $('Loop Over services1').first().json.service_description).replaceAll(\"{{key_words}}\",JSON.stringify($json.items));\n\n\nreturn $input.all();"
+        "jsCode": "const workflowData = $getWorkflowStaticData('global');\nlet my_prompt = workflowData.my_prompt.data;\n\n\n $json.my_prompt = my_prompt.replaceAll(\"{{company_name}}\", $('Services list1').first().json.company_name).replaceAll(\"{{service_description}}\", $('Loop Over services1').first().json.service_name +' ' + $('Loop Over services1').first().json.service_description).replaceAll(\"{{key_words}}\",JSON.stringify($json.items));\n\n\nreturn $input.all();"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -1190,8 +1190,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        -448,
-        -176
+        -352,
+        -192
       ],
       "id": "6a2b09dc-d064-40f5-a61a-5c1cf54b5305",
       "name": "Get not processes keys2",
@@ -1214,7 +1214,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        -352,
+        -192,
         16
       ],
       "id": "67fb5f66-465d-4074-b47b-b66177b37ee7",
@@ -1235,7 +1235,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -176,
+        -48,
         48
       ],
       "id": "1cec7c10-4799-426f-ade2-6f7da4f170fc",
@@ -1371,8 +1371,8 @@
       "type": "n8n-nodes-base.merge",
       "typeVersion": 3.2,
       "position": [
-        -32,
-        -160
+        208,
+        -176
       ],
       "id": "db2dba06-6bfa-4eb7-8ee9-a2717bf0282b",
       "name": "Merge"
@@ -1643,13 +1643,7 @@
   "connections": {
     "Loop Over Items": {
       "main": [
-        [
-          {
-            "node": "Get not processes keys",
-            "type": "main",
-            "index": 0
-          }
-        ],
+        [],
         [
           {
             "node": "Call 'chech phrase VS minus words'",
@@ -1725,7 +1719,7 @@
       "main": [
         [
           {
-            "node": "Get not processes keys2",
+            "node": "Get not processes keys",
             "type": "main",
             "index": 0
           }
@@ -1929,7 +1923,7 @@
       "main": [
         [
           {
-            "node": "Get not processes keys2",
+            "node": "Get not processes keys",
             "type": "main",
             "index": 0
           }
@@ -2371,7 +2365,7 @@
       }
     ]
   },
-  "versionId": "683a4048-c4e9-4721-8a09-2ebb56aafa01",
+  "versionId": "a20f2426-5933-48ee-acb1-6eebf15c6171",
   "triggerCount": 0,
   "shared": [
     {
