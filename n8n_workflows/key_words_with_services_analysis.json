@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-22T18:46:47.510Z",
+  "updatedAt": "2025-11-22T21:09:40.680Z",
   "createdAt": "2025-09-15T10:20:29.723Z",
   "id": "AEZDBlqe199xBn5u",
   "name": "key_words_with_services_analysis",
@@ -36,7 +36,7 @@
         "columns": {
           "mappingMode": "defineBelow",
           "value": {
-            "key_word_id": "={{ $('Loop Over Items').item.json.key_word_id }}",
+            "key_word_id": "={{ $('reset first_item2').item.json.key_word_id }}",
             "is_relevant": "={{ $json.is_relevant }}"
           },
           "matchingColumns": [
@@ -212,7 +212,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        3712,
+        3792,
         -480
       ],
       "id": "34f06163-bb73-4f48-9e83-e622c8ef9e54",
@@ -2365,7 +2365,7 @@
       }
     ]
   },
-  "versionId": "a20f2426-5933-48ee-acb1-6eebf15c6171",
+  "versionId": "334cab2f-0c2b-4841-87ad-02a2b213db0d",
   "triggerCount": 0,
   "shared": [
     {
