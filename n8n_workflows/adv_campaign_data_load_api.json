@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-19T09:07:05.265Z",
+  "updatedAt": "2025-11-23T16:35:16.382Z",
   "createdAt": "2025-10-22T11:44:28.248Z",
   "id": "4Fw159fAoZfSn72v",
   "name": "ADV_campaign_data_load_API",
@@ -726,7 +726,8 @@
           "id": "ubucXalWOKT3hILu",
           "name": "Amazon API"
         }
-      }
+      },
+      "onError": "continueErrorOutput"
     },
     {
       "parameters": {
@@ -761,6 +762,46 @@
       ],
       "id": "0c6642b7-5392-4feb-8801-25f012395a2b",
       "name": "If"
+    },
+    {
+      "parameters": {
+        "jsCode": "\nfunction escapeMarkdownV2(s) {\n  // список из оф. доки Telegram для MarkdownV2:\n  // _ * [ ] ( ) ~ ` > # + - = | { } . !\n  return String(s).replace(/([_*\\[\\]()~`>#+\\-=|{}.!])/g, '\\\\$1');\n}\nlet incident_text = 'Report API incident: ' + escapeMarkdownV2($input.first().json.error.message);\nreturn [{ json: { text: incident_text } }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        608,
+        -416
+      ],
+      "id": "462117a7-2e2e-479b-87e0-d1097143a317",
+      "name": "Code in JavaScript2",
+      "executeOnce": false
+    },
+    {
+      "parameters": {
+        "chatId": "-1003196763261",
+        "text": "={{ $json.text }}",
+        "additionalFields": {
+          "appendAttribution": true,
+          "parse_mode": "MarkdownV2",
+          "message_thread_id": 3245
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        880,
+        -416
+      ],
+      "id": "ce4925ce-6360-40d4-a64e-9c9ef2f34c05",
+      "name": "Send a status message1",
+      "webhookId": "a18d9a87-250a-437a-9193-952ef1cc833c",
+      "credentials": {
+        "telegramApi": {
+          "id": "ttGHKrzQMaymkKXW",
+          "name": "Telegram account"
+        }
+      }
     }
   ],
   "connections": {
@@ -928,6 +969,13 @@
             "type": "main",
             "index": 0
           }
+        ],
+        [
+          {
+            "node": "Code in JavaScript2",
+            "type": "main",
+            "index": 0
+          }
         ]
       ]
     },
@@ -954,6 +1002,17 @@
         [
           {
             "node": "Get current step  saved",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript2": {
+      "main": [
+        [
+          {
+            "node": "Send a status message1",
             "type": "main",
             "index": 0
           }
@@ -992,7 +1051,7 @@
       }
     ]
   },
-  "versionId": "f9b74622-6f7f-424b-9ca7-f2922111a40a",
+  "versionId": "72c7a5d9-6f2e-4629-aea7-d36165c1b46f",
   "triggerCount": 0,
   "shared": [
     {
@@ -1005,16 +1064,16 @@
   ],
   "tags": [
     {
-      "updatedAt": "2025-10-06T13:06:54.644Z",
-      "createdAt": "2025-10-06T13:06:54.644Z",
-      "id": "DBEf57wUDunVJUG6",
-      "name": "campaign update"
-    },
-    {
       "updatedAt": "2025-10-22T11:44:26.850Z",
       "createdAt": "2025-10-22T11:44:26.850Z",
       "id": "TAPLdpwV5vPQJtDW",
       "name": "API"
+    },
+    {
+      "updatedAt": "2025-10-06T13:06:54.644Z",
+      "createdAt": "2025-10-06T13:06:54.644Z",
+      "id": "DBEf57wUDunVJUG6",
+      "name": "campaign update"
     }
   ]
 }
