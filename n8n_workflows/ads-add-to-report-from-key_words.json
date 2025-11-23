@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-21T18:29:17.683Z",
+  "updatedAt": "2025-11-23T07:17:21.702Z",
   "createdAt": "2025-11-21T18:26:17.407Z",
   "id": "0heHeXbf7rcBN9WT",
   "name": "ADS add to report from key_words",
@@ -106,9 +106,9 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "update current_list set is_adv_processed=true where  list_id=$1",
+        "query": "update key_words set is_adv_processed=true where  key_word_id=$1",
         "options": {
-          "queryReplacement": "={{ $('Loop Over Items').last().json.list_id }}"
+          "queryReplacement": "={{ $('Loop Over Items').last().json.key_word_id }}"
         }
       },
       "type": "n8n-nodes-base.postgres",
@@ -291,29 +291,6 @@
     },
     {
       "parameters": {
-        "operation": "executeQuery",
-        "query": "INSERT INTO public.ads_list (\n  key_word, company_id, service_id, report_id, campaign_id, list_id,\n  is_own_brand, count_views, count_clics, count_convetions, cost\n)\nVALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11)\nON CONFLICT (company_id, replace(key_word, '\"', '')) DO UPDATE\nSET\n  count_views      = ads_list.count_views      + EXCLUDED.count_views,\n  count_clics      = ads_list.count_clics      + EXCLUDED.count_clics,\n  count_convetions = ads_list.count_convetions + EXCLUDED.count_convetions,\n  cost = ads_list.cost + EXCLUDED.cost\nRETURNING key_word;",
-        "options": {
-          "queryReplacement": "={{ $json.key_word }},{{ $json.company_id }},{{ $json.service_id }},{{ $json.report_id }},{{ $json.campaign_id }},{{ $json.list_id }},{{ $json.is_own_brand }},{{ $json.count_views }},{{ $json.count_clics }},{{ $json.count_convetions }},{{ $json.cost}}"
-        }
-      },
-      "type": "n8n-nodes-base.postgres",
-      "typeVersion": 2.6,
-      "position": [
-        784,
-        -672
-      ],
-      "id": "4ca6fd47-1f15-4d02-9794-d9e762b23254",
-      "name": "insert ads",
-      "credentials": {
-        "postgres": {
-          "id": "Hx2VFmUi5WO2K4QX",
-          "name": "Postgres account 2"
-        }
-      }
-    },
-    {
-      "parameters": {
         "conditions": {
           "options": {
             "caseSensitive": true,
@@ -363,6 +340,290 @@
       "id": "9cb0607e-96fc-46c2-b12b-07ceea874964",
       "name": "Get key_words to add",
       "alwaysOutputData": true,
+      "credentials": {
+        "postgres": {
+          "id": "Hx2VFmUi5WO2K4QX",
+          "name": "Postgres account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "current_list",
+          "mode": "list",
+          "cachedResultName": "current_list"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "key_word": "={{ $json.key_word }}",
+            "count_views": "={{ $json.wordstat_count }}",
+            "company_id": "={{ $json.company_id }}",
+            "report_id": "=0"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "list_id",
+              "displayName": "list_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "key_word",
+              "displayName": "key_word",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "campaign_id",
+              "displayName": "campaign_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "used_keyword",
+              "displayName": "used_keyword",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "condition_type",
+              "displayName": "condition_type",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "category",
+              "displayName": "category",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "ads_header",
+              "displayName": "ads_header",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "resolution",
+              "displayName": "resolution",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "count_views",
+              "displayName": "count_views",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "count_clics",
+              "displayName": "count_clics",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "count_convetions",
+              "displayName": "count_convetions",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "ai_response_tokens",
+              "displayName": "ai_response_tokens",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "company_id",
+              "displayName": "company_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "report_id",
+              "displayName": "report_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "service_id",
+              "displayName": "service_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "is_adv_processed",
+              "displayName": "is_adv_processed",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "boolean",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "ai_calls",
+              "displayName": "ai_calls",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "embedding_calls",
+              "displayName": "embedding_calls",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "service_recognition_error",
+              "displayName": "service_recognition_error",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "boolean",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "is_own_brand",
+              "displayName": "is_own_brand",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "boolean",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "branded_queries",
+              "displayName": "branded_queries",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "group_yandex_id",
+              "displayName": "group_yandex_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "ads_yandex_id",
+              "displayName": "ads_yandex_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "cost",
+              "displayName": "cost",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        784,
+        -688
+      ],
+      "id": "5be6f964-4e28-4035-a8e9-0663cbd60af2",
+      "name": "Insert rows in a table",
       "credentials": {
         "postgres": {
           "id": "Hx2VFmUi5WO2K4QX",
@@ -500,18 +761,7 @@
         ],
         [
           {
-            "node": "insert ads",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "insert ads": {
-      "main": [
-        [
-          {
-            "node": "mark key_word processed",
+            "node": "Insert rows in a table",
             "type": "main",
             "index": 0
           }
@@ -546,6 +796,17 @@
           },
           {
             "node": "Merge2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Insert rows in a table": {
+      "main": [
+        [
+          {
+            "node": "mark key_word processed",
             "type": "main",
             "index": 0
           }
@@ -591,7 +852,7 @@
       }
     ]
   },
-  "versionId": "9b814f2b-9863-44de-8a4b-f713308a633d",
+  "versionId": "db6b416b-c14d-4eef-8081-fb311ae378b1",
   "triggerCount": 0,
   "shared": [
     {
