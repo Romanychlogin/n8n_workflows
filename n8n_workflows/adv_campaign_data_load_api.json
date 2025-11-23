@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-23T16:35:16.382Z",
+  "updatedAt": "2025-11-23T17:01:37.757Z",
   "createdAt": "2025-10-22T11:44:28.248Z",
   "id": "4Fw159fAoZfSn72v",
   "name": "ADV_campaign_data_load_API",
@@ -13,7 +13,7 @@
       "type": "n8n-nodes-base.splitInBatches",
       "typeVersion": 3,
       "position": [
-        2320,
+        2528,
         -112
       ],
       "id": "c6308bd7-a292-44a8-8a7f-aea3a7a148de",
@@ -321,7 +321,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        2784,
+        2992,
         -128
       ],
       "id": "2329abc0-babf-427a-a82b-71da9c5a8301",
@@ -370,7 +370,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        512,
+        720,
         0
       ],
       "id": "9faca6b8-e537-47e5-ae43-d4c5a43253f0",
@@ -394,7 +394,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        2848,
+        3056,
         -304
       ],
       "id": "91d61733-2fe6-4ff2-8ab9-85d54a50aafe",
@@ -416,7 +416,7 @@
       "type": "n8n-nodes-base.merge",
       "typeVersion": 3.2,
       "position": [
-        2096,
+        2304,
         -112
       ],
       "id": "8ac3dcbf-c301-49da-9d9b-fa808f1ef3ef",
@@ -440,7 +440,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        1328,
+        1536,
         80
       ],
       "id": "a200f920-bb73-4b3f-95a9-e845ec4c4672",
@@ -453,7 +453,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1360,
+        1568,
         -128
       ],
       "id": "23d4b964-4d3d-4344-b675-9c93fdc68929",
@@ -466,7 +466,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        3344,
+        3552,
         -112
       ],
       "id": "3aae6a07-5064-498c-a1cd-f5cf62351ddc",
@@ -483,7 +483,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        4368,
+        4576,
         -128
       ],
       "id": "d44be565-a25c-436b-8f4c-99cda0928008",
@@ -523,7 +523,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        3872,
+        4080,
         -80
       ],
       "id": "1be010dd-b3ba-4dde-b1b4-b370732262e1",
@@ -628,7 +628,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        896,
+        1104,
         80
       ],
       "id": "17847b5f-689d-4e71-bb40-07fc2f386ad1",
@@ -651,7 +651,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        1616,
+        1824,
         -304
       ],
       "id": "65695767-59f0-426e-95b7-bfddb5e253fc",
@@ -671,7 +671,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        4112,
+        4320,
         -96
       ],
       "id": "91f2e5db-64e0-429a-85b8-100efe0034bd",
@@ -700,7 +700,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        3040,
+        3248,
         -304
       ],
       "id": "eab48bbe-f6ab-4e3c-8136-76002255784c",
@@ -708,7 +708,7 @@
     },
     {
       "parameters": {
-        "url": "=https://eak5kk6vhl.execute-api.us-east-1.amazonaws.com/development/reports/daily?type=SEARCH_QUERY_PERFORMANCE_REPORT&date={{$json.report_date}}&campaign_id={{$json.campaign_yandex_id}}&download=false",
+        "url": "={{ $json.api_call }}",
         "authentication": "genericCredentialType",
         "genericAuthType": "httpBearerAuth",
         "options": {}
@@ -716,7 +716,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.3,
       "position": [
-        272,
+        480,
         -128
       ],
       "id": "0c18113d-bab4-4b7d-9d57-4630e6406537",
@@ -757,7 +757,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        2560,
+        2768,
         -80
       ],
       "id": "0c6642b7-5392-4feb-8801-25f012395a2b",
@@ -765,12 +765,12 @@
     },
     {
       "parameters": {
-        "jsCode": "\nfunction escapeMarkdownV2(s) {\n  // список из оф. доки Telegram для MarkdownV2:\n  // _ * [ ] ( ) ~ ` > # + - = | { } . !\n  return String(s).replace(/([_*\\[\\]()~`>#+\\-=|{}.!])/g, '\\\\$1');\n}\nlet incident_text = 'Report API incident: ' + escapeMarkdownV2($input.first().json.error.message);\nreturn [{ json: { text: incident_text } }];"
+        "jsCode": "\nfunction escapeMarkdownV2(s) {\n  // список из оф. доки Telegram для MarkdownV2:\n  // _ * [ ] ( ) ~ ` > # + - = | { } . !\n  return String(s).replace(/([_*\\[\\]()~`>#+\\-=|{}.!])/g, '\\\\$1');\n}\nlet incident_text = 'Report API incident: ' + escapeMarkdownV2($input.first().json.error.message)+'\\n';\nincident_text +='API call: ' +  escapeMarkdownV2($('Set API Call').last().json.api_call);\nreturn [{ json: { text: incident_text } }];"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        608,
+        816,
         -416
       ],
       "id": "462117a7-2e2e-479b-87e0-d1097143a317",
@@ -790,7 +790,7 @@
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
       "position": [
-        880,
+        1088,
         -416
       ],
       "id": "ce4925ce-6360-40d4-a64e-9c9ef2f34c05",
@@ -802,6 +802,29 @@
           "name": "Telegram account"
         }
       }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "147fc7ef-c240-4bef-bd14-d7f9b93f19bc",
+              "name": "api_call",
+              "value": "=https://eak5kk6vhl.execute-api.us-east-1.amazonaws.com/development/reports/daily?type=SEARCH_QUERY_PERFORMANCE_REPORT&date={{$json.report_date}}&campaign_id={{$json.campaign_yandex_id}}&download=false",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -160,
+        -144
+      ],
+      "id": "41858f50-f045-42a7-8f1a-eef0cb8a326d",
+      "name": "Set API Call"
     }
   ],
   "connections": {
@@ -838,7 +861,7 @@
       "main": [
         [
           {
-            "node": "HTTP Request",
+            "node": "Set API Call",
             "type": "main",
             "index": 0
           }
@@ -1018,6 +1041,17 @@
           }
         ]
       ]
+    },
+    "Set API Call": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
@@ -1045,13 +1079,13 @@
           "id": "4Fw159fAoZfSn72v",
           "root_execution_id": 238481,
           "company_id": 1,
-          "report_date": "2025-11-17",
+          "report_date": "2025-11-20",
           "campaign_yandex_id": 704708210
         }
       }
     ]
   },
-  "versionId": "72c7a5d9-6f2e-4629-aea7-d36165c1b46f",
+  "versionId": "367152d9-ecc0-484f-8d57-acbe0b2a8e0d",
   "triggerCount": 0,
   "shared": [
     {
