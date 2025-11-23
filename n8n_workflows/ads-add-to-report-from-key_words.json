@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-23T07:17:21.702Z",
+  "updatedAt": "2025-11-23T08:30:26.572Z",
   "createdAt": "2025-11-21T18:26:17.407Z",
   "id": "0heHeXbf7rcBN9WT",
   "name": "ADS add to report from key_words",
@@ -366,7 +366,12 @@
             "key_word": "={{ $json.key_word }}",
             "count_views": "={{ $json.wordstat_count }}",
             "company_id": "={{ $json.company_id }}",
-            "report_id": "=0"
+            "report_id": "=0",
+            "resolution": "to add",
+            "count_clics": 0,
+            "count_convetions": 0,
+            "service_id": "={{ $json.service_id }}",
+            "campaign_id": 0
           },
           "matchingColumns": [
             "id"
@@ -399,7 +404,7 @@
               "display": true,
               "type": "number",
               "canBeUsedToMatch": true,
-              "removed": true
+              "removed": false
             },
             {
               "id": "used_keyword",
@@ -449,7 +454,7 @@
               "display": true,
               "type": "string",
               "canBeUsedToMatch": true,
-              "removed": true
+              "removed": false
             },
             {
               "id": "count_views",
@@ -468,7 +473,7 @@
               "display": true,
               "type": "number",
               "canBeUsedToMatch": true,
-              "removed": true
+              "removed": false
             },
             {
               "id": "count_convetions",
@@ -478,7 +483,7 @@
               "display": true,
               "type": "number",
               "canBeUsedToMatch": true,
-              "removed": true
+              "removed": false
             },
             {
               "id": "ai_response_tokens",
@@ -518,7 +523,7 @@
               "display": true,
               "type": "number",
               "canBeUsedToMatch": true,
-              "removed": true
+              "removed": false
             },
             {
               "id": "is_adv_processed",
@@ -852,7 +857,7 @@
       }
     ]
   },
-  "versionId": "db6b416b-c14d-4eef-8081-fb311ae378b1",
+  "versionId": "9986beea-b32b-4944-92e9-5a57a1db9cf5",
   "triggerCount": 0,
   "shared": [
     {
