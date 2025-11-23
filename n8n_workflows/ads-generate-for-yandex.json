@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-17T17:04:15.913Z",
+  "updatedAt": "2025-11-23T08:52:50.559Z",
   "createdAt": "2025-11-05T16:49:07.256Z",
   "id": "GE66xiztgKP0D3Za",
   "name": "ADS generate for yandex",
@@ -1187,12 +1187,12 @@
           "root_execution_id": 236238,
           "company_id": 1,
           "threshhold": "0.79",
-          "import_id": 28
+          "import_id": 0
         }
       }
     ]
   },
-  "versionId": "f1eb1acb-d6e0-4cce-bdb8-6c71ef49ed1f",
+  "versionId": "75592f36-e2b1-4773-845f-372f4e3b8559",
   "triggerCount": 0,
   "shared": [
     {
