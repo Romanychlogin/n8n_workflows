@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-23T15:57:38.661Z",
+  "updatedAt": "2025-11-23T16:07:23.039Z",
   "createdAt": "2025-11-23T15:57:38.661Z",
   "id": "mDy1dJ7P7ecy7gDT",
   "name": "test notifications",
@@ -28,28 +28,7 @@
     },
     {
       "parameters": {
-        "operation": "executeQuery",
-        "query": "SELECT\n  bt.business_process_state_id,\n  c.company_name,\n  bp.business_process_name,\n  bp.n8n_process_name,\n  bt.business_process_state_id,\n  bt.started,\n  bt.steps_total,\n  bt.steps_passed,\n  COALESCE(bt2.started - bt.started, now()- bt.started)                 AS execution_time,\n  now() - bt2.started               AS execution_time_nf,\n  bt2.steps_total                   AS steps_total_nf,\n  bt2.steps_passed                  AS steps_passed_nf,\n  CASE WHEN bt2.business_process_state_id IS NOT NULL THEN 1 ELSE 0 END AS nf_exists\nFROM business_processes_states AS bt\nJOIN business_processes       AS bp ON bt.business_process_id = bp.business_process_id\nJOIN companies                AS c  ON bt.company_id = c.company_id\nLEFT JOIN business_processes_states AS bt2\n       ON bt.n8n_workflow_execution_id = bt2.n8n_workflow_root_execution_id\nWHERE bt.finished IS NULL\n  AND bt2.finished is null \n  AND bt.error_happened IS NULL\n  AND now() - bt.started > interval '5 minutes'\nORDER BY c.company_name, bt.started;",
-        "options": {}
-      },
-      "type": "n8n-nodes-base.postgres",
-      "typeVersion": 2.6,
-      "position": [
-        224,
-        0
-      ],
-      "id": "518ffb0a-79f6-4c07-89ff-88e114de1482",
-      "name": "Execute a SQL query1",
-      "credentials": {
-        "postgres": {
-          "id": "4YkdFJcdTgzo9hkz",
-          "name": "PGvector"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "jsCode": "let incident_text = 'Для клиента: ';\nlet client_name = $input.first().json.company_name;\n// Экранирование под Telegram MarkdownV2\nfunction escapeMarkdownV2(s) {\n  // список из оф. доки Telegram для MarkdownV2:\n  // _ * [ ] ( ) ~ ` > # + - = | { } . !\n  return String(s).replace(/([_*\\[\\]()~`>#+\\-=|{}.!])/g, '\\\\$1');\n}\n// ФУНКЦИИ для «оставшегося времени»\nfunction remainingSecondsNF(i) {\n  // если NF нет — 0\n  if (!i.nf_exists || i.execution_time_nf == null || i.steps_total_nf == null) return 0;\n\n  const done = Number(i.steps_passed_nf || 0);\n  const total = Number(i.steps_total_nf || 0);\n  if (done <= 0 || total <= 0 || done >= total) return 0;\n\n  const elapsedSec = toSeconds(i.execution_time_nf); // сколько уже отработал NF\n  const avgPerStep = elapsedSec / done;\n  const leftSteps = total - done;\n  return Math.max(0, Math.round(avgPerStep * leftSteps));\n}\n\nfunction remainingSecondsBase(i) {\n  // считаем ТОЛЬКО базовые шаги, исключая NF-шаг\n  const nf = Number(i.nf_exists || 0);\n  const passedBase = Math.max(0, Number(i.steps_passed || 0) - nf);\n  const totalBase  = Math.max(0, Number(i.steps_total  || 0) - nf);\n  const leftBase   = Math.max(0, totalBase - passedBase);\n\n  if (leftBase === 0) return 0;                // нечего оставлять\n  if (passedBase <= 0) return 0;               // нет базы для оценивания средней скорости\n\n  const elapsedSec = toSeconds(i.execution_time || 0);\n  const avgPerStep = elapsedSec / passedBase;  // средняя по БАЗЕ\n  return Math.max(0, Math.round(avgPerStep * leftBase));\n}\nfunction formatSeconds(sec) {\n  const totalMinutes = Math.floor(sec / 60);\n\n  if (totalMinutes < 60) {\n    return `${totalMinutes} мин`;\n  } else {\n    const h = Math.floor(totalMinutes / 60);\n    const m = totalMinutes % 60;\n    return m ? `${h} ч ${m} мин` : `${h} ч`;\n  }\n}\nfunction toSeconds(exec) {\n  const days = Number(exec.days || 0);\n  const hours = Number(exec.hours || 0);\n  const minutes = Number(exec.minutes || 0);\n  const seconds = Number(exec.seconds || 0);\n  const ms = Number(exec.milliseconds || 0);\n\n  const totalMs =\n    (((days * 24 + hours) * 60 + minutes) * 60 + seconds) * 1000 + ms;\n\n  return Math.round(totalMs / 1000);\n}\n\n// Универсальный форматтер: \"до часа — X мин\", \"больше часа — H ч M мин\"\nfunction formatDurationToHM(input) {\n  const ms = toMilliseconds(input);\n  const totalMinutes = Math.round(ms / 60000);\n\n  if (totalMinutes < 60) {\n    return `${totalMinutes} мин`;\n  } else {\n    const h = Math.floor(totalMinutes / 60);\n    const m = totalMinutes % 60;\n    return m ? `${h} ч ${m} мин` : `${h} ч`;\n  }\n}\n\n// ---- Парсеры ----\nfunction toMilliseconds(v) {\n  if (v == null) throw new Error('No duration provided');\n\n  // 1) Объект со свойствами\n  if (typeof v === 'object' && !Array.isArray(v)) {\n    const h = num(v.hours);\n    const m = num(v.minutes);\n    const s = num(v.seconds);\n    const ms = num(v.milliseconds);\n    return ((h*3600 + m*60 + s) * 1000) + ms;\n  }\n\n  // 2) Число: миллисекунды (если маленькое целое — трактуем как секунды)\n  if (typeof v === 'number') {\n    if (Number.isInteger(v) && Math.abs(v) < 1e6) return v * 1000; // секундные значения\n    return v; // миллисекунды\n  }\n\n  // 3) Строки\n  if (typeof v === 'string') {\n    const s = v.trim();\n\n    // 3.1 ISO 8601: PT#H#M#S\n    const iso = /^P(T(?:(\\d+)H)?(?:(\\d+)M)?(?:(\\d+(?:\\.\\d+)?)S)?)$/i.exec(s);\n    if (iso) {\n      const h = num(iso[1]); // в этой группе вся \"T...\", нам нужны 2..4 — поправим:\n    }\n    const iso2 = /^PT(?:(\\d+)H)?(?:(\\d+)M)?(?:(\\d+(?:\\.\\d+)?)S)?$/i.exec(s);\n    if (iso2) {\n      const h = num(iso2[1]);\n      const m = num(iso2[2]);\n      const sec = num(iso2[3]);\n      return ((h*3600 + m*60 + sec) * 1000);\n    }\n\n    // 3.2 HH:MM:SS(.sss) или MM:SS(.sss)\n    const hms = /^(\\d{1,2}):([0-5]?\\d)(?::([0-5]?\\d(?:\\.\\d+)?))?$/.exec(s);\n    if (hms) {\n      const a = hms[1], b = hms[2], c = hms[3];\n      let h = 0, m = 0, sec = 0;\n      if (c != null) { // HH:MM:SS\n        h = num(a); m = num(b); sec = num(c);\n      } else {         // MM:SS\n        m = num(a); sec = num(b);\n      }\n      return ((h*3600 + m*60 + sec) * 1000);\n    }\n\n    // 3.3 Человеческие: \"1h 3m 44.6s\", \"3m44s\", \"90s\"\n    const human = /^\\s*(?:(\\d+)\\s*h)?\\s*(?:(\\d+)\\s*m)?\\s*(?:(\\d+(?:\\.\\d+)?)\\s*s)?\\s*$/i.exec(s.replace(/,/g,'.'));\n    if (human && (human[1] || human[2] || human[3])) {\n      const h = num(human[1]);\n      const m = num(human[2]);\n      const sec = num(human[3]);\n      return ((h*3600 + m*60 + sec) * 1000);\n    }\n\n    // 3.4 Чистое число в строке → сек/мс\n    if (/^\\d+(\\.\\d+)?$/.test(s)) {\n      const val = Number(s);\n      return (Number.isInteger(val) && val < 1e6) ? val * 1000 : val;\n    }\n\n    throw new Error('Unsupported duration format: ' + s);\n  }\n\n  throw new Error('Unsupported input type: ' + typeof v);\n}\n\nfunction num(x) { return x ? Number(x) : 0; }\nincident_text += '*'+client_name+'*';\n\nfor (const { json: i } of $input.all()) {\n  let started= Date(i.started);\n  if (i.company_name === client_name) {\n    incident_text += '\\nПроцесс:' +'*'+ i.business_process_name +'*'+ escapeMarkdownV2( '(' + i.n8n_process_name +')\\n');\n    incident_text +=escapeMarkdownV2('выполнение:'+formatDurationToHM(i.execution_time)+' ' + (i.steps_passed ?? 0) +'/'+ (i.steps_total ?? 0) )  + ' *' +\n      escapeMarkdownV2( \n        Math.round(((i.steps_passed ?? 0)/(i.steps_total ?? 1))*100) +\n        Math.round(((i.steps_passed_nf ?? 0)/(i.steps_total_nf ?? 1))*100/i.steps_total) +'%') + '*' + ' осталось:'+\n      formatSeconds(remainingSecondsNF(i) + remainingSecondsBase(i));\n  } else {\n    client_name = i.company_name;\n    incident_text += `\\n\\nДля клиента: *${client_name}*`;\n    incident_text += '\\nПроцесс:' +'*'+ i.business_process_name +'*'+ escapeMarkdownV2( '(' + i.n8n_process_name +')\\n');\n    incident_text +=escapeMarkdownV2('выполнение:'+formatDurationToHM(i.execution_time)+' ' + (i.steps_passed ?? 0) +'/'+ (i.steps_total ?? 0) ) + ' *' + escapeMarkdownV2( \n        Math.round(((i.steps_passed ?? 0)/(i.steps_total ?? 1))*100) +\n        Math.round(((i.steps_passed_nf ?? 0)/(i.steps_total_nf ?? 1))*100/i.steps_total) +'%') + '*'+ ' осталось:'+ formatSeconds(remainingSecondsNF(i) + remainingSecondsBase(i));\n  }\n}\n\nreturn [{ json: { text: incident_text } }];"
+        "jsCode": "let incident_text = 'Для клиента: ';\nlet client_name = $input.first().json.company_name;\n// Экранирование под Telegram MarkdownV2\nfunction escapeMarkdownV2(s) {\n  // список из оф. доки Telegram для MarkdownV2:\n  // _ * [ ] ( ) ~ ` > # + - = | { } . !\n  return String(s).replace(/([_*\\[\\]()~`>#+\\-=|{}.!])/g, '\\\\$1');\n}\n// ФУНКЦИИ для «оставшегося времени»\nfunction remainingSecondsNF(i) {\n  // если NF нет — 0\n  if (!i.nf_exists || i.execution_time_nf == null || i.steps_total_nf == null) return 0;\n\n  const done = Number(i.steps_passed_nf || 0);\n  const total = Number(i.steps_total_nf || 0);\n  if (done <= 0 || total <= 0 || done >= total) return 0;\n\n  const elapsedSec = toSeconds(i.execution_time_nf); // сколько уже отработал NF\n  const avgPerStep = elapsedSec / done;\n  const leftSteps = total - done;\n  return Math.max(0, Math.round(avgPerStep * leftSteps));\n}\n\nfunction remainingSecondsBase(i) {\n  // считаем ТОЛЬКО базовые шаги, исключая NF-шаг\n  const nf = Number(i.nf_exists || 0);\n  const passedBase = Math.max(0, Number(i.steps_passed || 0) - nf);\n  const totalBase  = Math.max(0, Number(i.steps_total  || 0) - nf);\n  const leftBase   = Math.max(0, totalBase - passedBase);\n\n  if (leftBase === 0) return 0;                // нечего оставлять\n  if (passedBase <= 0) return 0;               // нет базы для оценивания средней скорости\n\n  const elapsedSec = toSeconds(i.execution_time || 0);\n  const avgPerStep = elapsedSec / passedBase;  // средняя по БАЗЕ\n  return Math.max(0, Math.round(avgPerStep * leftBase));\n}\nfunction formatSeconds(sec) {\n  const totalMinutes = Math.floor(sec / 60);\n\n  if (totalMinutes < 60) {\n    return `${totalMinutes} мин`;\n  } else {\n    const h = Math.floor(totalMinutes / 60);\n    const m = totalMinutes % 60;\n    return m ? `${h} ч ${m} мин` : `${h} ч`;\n  }\n}\nfunction toSeconds(exec) {\n  const days = Number(exec.days || 0);\n  const hours = Number(exec.hours || 0);\n  const minutes = Number(exec.minutes || 0);\n  const seconds = Number(exec.seconds || 0);\n  const ms = Number(exec.milliseconds || 0);\n\n  const totalMs =\n    (((days * 24 + hours) * 60 + minutes) * 60 + seconds) * 1000 + ms;\n\n  return Math.round(totalMs / 1000);\n}\n\n// Универсальный форматтер: \"до часа — X мин\", \"больше часа — H ч M мин\"\nfunction formatDurationToHM(input) {\n  const ms = toMilliseconds(input);\n  const totalMinutes = Math.round(ms / 60000);\n\n  if (totalMinutes < 60) {\n    return `${totalMinutes} мин`;\n  } else {\n    const h = Math.floor(totalMinutes / 60);\n    const m = totalMinutes % 60;\n    return m ? `${h} ч ${m} мин` : `${h} ч`;\n  }\n}\n\n// ---- Парсеры ----\nfunction toMilliseconds(v) {\n  if (v == null) throw new Error('No duration provided');\n\n  // 1) Объект со свойствами\n  if (typeof v === 'object' && !Array.isArray(v)) {\n    const h = num(v.hours);\n    const m = num(v.minutes);\n    const s = num(v.seconds);\n    const ms = num(v.milliseconds);\n    return ((h*3600 + m*60 + s) * 1000) + ms;\n  }\n\n  // 2) Число: миллисекунды (если маленькое целое — трактуем как секунды)\n  if (typeof v === 'number') {\n    if (Number.isInteger(v) && Math.abs(v) < 1e6) return v * 1000; // секундные значения\n    return v; // миллисекунды\n  }\n\n  // 3) Строки\n  if (typeof v === 'string') {\n    const s = v.trim();\n\n    // 3.1 ISO 8601: PT#H#M#S\n    const iso = /^P(T(?:(\\d+)H)?(?:(\\d+)M)?(?:(\\d+(?:\\.\\d+)?)S)?)$/i.exec(s);\n    if (iso) {\n      const h = num(iso[1]); // в этой группе вся \"T...\", нам нужны 2..4 — поправим:\n    }\n    const iso2 = /^PT(?:(\\d+)H)?(?:(\\d+)M)?(?:(\\d+(?:\\.\\d+)?)S)?$/i.exec(s);\n    if (iso2) {\n      const h = num(iso2[1]);\n      const m = num(iso2[2]);\n      const sec = num(iso2[3]);\n      return ((h*3600 + m*60 + sec) * 1000);\n    }\n\n    // 3.2 HH:MM:SS(.sss) или MM:SS(.sss)\n    const hms = /^(\\d{1,2}):([0-5]?\\d)(?::([0-5]?\\d(?:\\.\\d+)?))?$/.exec(s);\n    if (hms) {\n      const a = hms[1], b = hms[2], c = hms[3];\n      let h = 0, m = 0, sec = 0;\n      if (c != null) { // HH:MM:SS\n        h = num(a); m = num(b); sec = num(c);\n      } else {         // MM:SS\n        m = num(a); sec = num(b);\n      }\n      return ((h*3600 + m*60 + sec) * 1000);\n    }\n\n    // 3.3 Человеческие: \"1h 3m 44.6s\", \"3m44s\", \"90s\"\n    const human = /^\\s*(?:(\\d+)\\s*h)?\\s*(?:(\\d+)\\s*m)?\\s*(?:(\\d+(?:\\.\\d+)?)\\s*s)?\\s*$/i.exec(s.replace(/,/g,'.'));\n    if (human && (human[1] || human[2] || human[3])) {\n      const h = num(human[1]);\n      const m = num(human[2]);\n      const sec = num(human[3]);\n      return ((h*3600 + m*60 + sec) * 1000);\n    }\n\n    // 3.4 Чистое число в строке → сек/мс\n    if (/^\\d+(\\.\\d+)?$/.test(s)) {\n      const val = Number(s);\n      return (Number.isInteger(val) && val < 1e6) ? val * 1000 : val;\n    }\n\n    throw new Error('Unsupported duration format: ' + s);\n  }\n\n  throw new Error('Unsupported input type: ' + typeof v);\n}\n\nfunction num(x) { return x ? Number(x) : 0; }\nincident_text += '*'+client_name+'*';\n\nfor (const { json: i } of $input.all()) {\n  \n    incident_text = `\\n\\nОшибка загрузки;\n    \n}\n\nreturn [{ json: { text: incident_text } }];"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -63,7 +42,7 @@
     },
     {
       "parameters": {
-        "chatId": "-1003196763261",
+        "chatId": "515316042",
         "text": "={{ $json.text }}",
         "additionalFields": {
           "appendAttribution": true,
@@ -74,7 +53,7 @@
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
       "position": [
-        864,
+        832,
         0
       ],
       "id": "6ee5fefc-0286-484f-8ec7-409ac98fd7e0",
@@ -86,41 +65,10 @@
           "name": "Telegram account"
         }
       }
-    },
-    {
-      "parameters": {
-        "resource": "chat"
-      },
-      "type": "n8n-nodes-base.telegram",
-      "typeVersion": 1.2,
-      "position": [
-        1072,
-        0
-      ],
-      "id": "6f18b3d7-216e-460b-8e5f-044937d08c5f",
-      "name": "Get a chat",
-      "webhookId": "146e0357-8d68-4408-89bd-c6775dfef8e8",
-      "credentials": {
-        "telegramApi": {
-          "id": "ttGHKrzQMaymkKXW",
-          "name": "Telegram account"
-        }
-      }
     }
   ],
   "connections": {
     "Schedule Trigger for statuses": {
-      "main": [
-        [
-          {
-            "node": "Execute a SQL query1",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Execute a SQL query1": {
       "main": [
         [
           {
@@ -144,13 +92,7 @@
     },
     "Send a status message": {
       "main": [
-        [
-          {
-            "node": "Get a chat",
-            "type": "main",
-            "index": 0
-          }
-        ]
+        []
       ]
     }
   },
@@ -180,7 +122,7 @@
       }
     ]
   },
-  "versionId": "5b78fed7-2120-4de2-b5d8-07039233571f",
+  "versionId": "79f8e18f-0f63-4366-8a9e-c39270d72d09",
   "triggerCount": 0,
   "shared": [
     {
@@ -191,6 +133,5 @@
       "projectId": "spKmbJLU4mvACXIB"
     }
   ],
-  "tags": [],
-  "file_name": "test-notifications.json"
+  "tags": []
 }
