@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-23T08:52:50.559Z",
+  "updatedAt": "2025-11-24T14:28:32.101Z",
   "createdAt": "2025-11-05T16:49:07.256Z",
   "id": "GE66xiztgKP0D3Za",
   "name": "ADS generate for yandex",
@@ -13,8 +13,8 @@
       "type": "n8n-nodes-base.executeWorkflowTrigger",
       "typeVersion": 1.1,
       "position": [
-        -3104,
-        -624
+        -3712,
+        -640
       ],
       "id": "61e64565-0f00-4c98-86ff-ee1389281142",
       "name": "When Executed by Another Workflow"
@@ -30,8 +30,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        -2816,
-        -624
+        -3424,
+        -640
       ],
       "id": "f723aa35-b9f6-4301-9a8d-50364c07102b",
       "name": "Mark_workwlow_started",
@@ -101,8 +101,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        -2608,
-        -624
+        -3216,
+        -640
       ],
       "id": "3b2902e4-f860-410f-81aa-f60e9a4ddb23",
       "name": "Set variables"
@@ -118,8 +118,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        -2400,
-        -624
+        -3008,
+        -640
       ],
       "id": "e8026fa8-7e06-46f2-8cb8-89247ef5778e",
       "name": "get min limit",
@@ -141,8 +141,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        -2256,
-        -624
+        -2864,
+        -640
       ],
       "id": "a7caaef8-535a-427d-af0c-e345c5390782",
       "name": "get brand limit",
@@ -164,8 +164,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        -2048,
-        -624
+        -2656,
+        -640
       ],
       "id": "7fcc1086-215d-442d-854c-f357b2f63ebc",
       "name": "Mark to move to high demand",
@@ -188,8 +188,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        -1824,
-        -624
+        -2432,
+        -640
       ],
       "id": "3adfeff7-cae1-4aaf-8bd3-8a5f301811bb",
       "name": "Mark to remove from high demand",
@@ -212,8 +212,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        -2048,
-        -128
+        -2656,
+        -144
       ],
       "id": "ecdaeece-cfb3-4b3a-b278-6eaf22de700a",
       "name": "get to remove",
@@ -465,8 +465,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        -2064,
-        -384
+        -2672,
+        -400
       ],
       "id": "996b10c9-1997-4fd0-a758-4f1b623cabe4",
       "name": "Mark to move to high demand brand",
@@ -489,8 +489,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        -1840,
-        -384
+        -2448,
+        -400
       ],
       "id": "19f9fcab-bd62-4789-848c-4689749ecadf",
       "name": "Mark to remove from high demand brand",
@@ -711,8 +711,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        -1840,
-        -144
+        -2448,
+        -160
       ],
       "id": "b9962ed8-a1cb-4098-85c4-dd7ac48f520c",
       "name": "If nothing to remove"
@@ -784,6 +784,88 @@
       ],
       "id": "e69c4ed4-8345-4e76-aeb7-c40be8b5879a",
       "name": "If nothing to add1"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "select ads_group_id from ads_list where company_id=$1 and add_to_hi_demand=true and ads_group_id is not null",
+        "options": {
+          "queryReplacement": "={{ $('When Executed by Another Workflow').item.json.company_id }}"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -2176,
+        -400
+      ],
+      "id": "fa703396-b76b-4b95-a732-a94a1604e790",
+      "name": "to_update_groups",
+      "executeOnce": true,
+      "credentials": {
+        "postgres": {
+          "id": "Hx2VFmUi5WO2K4QX",
+          "name": "Postgres account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "2695d6f1-5c0e-414c-aa90-049fa9a2b691",
+              "leftValue": "={{ $input.first().json }}",
+              "rightValue": "",
+              "operator": {
+                "type": "object",
+                "operation": "empty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -1984,
+        -400
+      ],
+      "id": "63747ebe-7de5-4251-9b13-45b87ce128cd",
+      "name": "If nothing to update"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "update ads_groups set key_words_count=key_words_count-1 where ads_group_id=$1",
+        "options": {
+          "queryReplacement": "={{ $json.ads_group_id }}"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -1776,
+        -384
+      ],
+      "id": "a7db90ef-171f-4798-9bd4-94bbf63fb364",
+      "name": "to_update_groups1",
+      "executeOnce": true,
+      "credentials": {
+        "postgres": {
+          "id": "Hx2VFmUi5WO2K4QX",
+          "name": "Postgres account 2"
+        }
+      }
     }
   ],
   "connections": {
@@ -1010,7 +1092,7 @@
       "main": [
         [
           {
-            "node": "get to remove",
+            "node": "to_update_groups",
             "type": "main",
             "index": 0
           }
@@ -1099,13 +1181,7 @@
     },
     "If nothing to remove": {
       "main": [
-        [
-          {
-            "node": "get low demand to add",
-            "type": "main",
-            "index": 0
-          }
-        ],
+        [],
         [
           {
             "node": "Loop Over Items1",
@@ -1150,6 +1226,46 @@
           }
         ]
       ]
+    },
+    "to_update_groups": {
+      "main": [
+        [
+          {
+            "node": "If nothing to update",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If nothing to update": {
+      "main": [
+        [
+          {
+            "node": "get to remove",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "to_update_groups1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "to_update_groups1": {
+      "main": [
+        [
+          {
+            "node": "get to remove",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
@@ -1184,15 +1300,15 @@
       {
         "json": {
           "id": "GE66xiztgKP0D3Za",
-          "root_execution_id": 236238,
+          "root_execution_id": 320299,
           "company_id": 1,
           "threshhold": "0.79",
-          "import_id": 0
+          "import_id": 66
         }
       }
     ]
   },
-  "versionId": "75592f36-e2b1-4773-845f-372f4e3b8559",
+  "versionId": "9f59397a-03be-4fdb-b0a4-44b3855debbc",
   "triggerCount": 0,
   "shared": [
     {
