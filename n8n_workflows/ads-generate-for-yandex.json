@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-24T14:48:34.678Z",
+  "updatedAt": "2025-11-24T18:33:35.702Z",
   "createdAt": "2025-11-05T16:49:07.256Z",
   "id": "GE66xiztgKP0D3Za",
   "name": "ADS generate for yandex",
@@ -400,7 +400,7 @@
         "operation": "executeQuery",
         "query": "update ads_list set ads_group_id=$2,to_upload_ad=true  where ad_id=$1",
         "options": {
-          "queryReplacement": "={{ $('Loop Over Items3').item.json.ad_id }},{{ $('get group').item.json.ads_group_id }}"
+          "queryReplacement": "={{ $('Loop Over Items3').item.json.ad_id }},{{ $('group id').item.json.ads_group_id }}"
         }
       },
       "type": "n8n-nodes-base.postgres",
@@ -591,14 +591,14 @@
         "operation": "executeQuery",
         "query": "update ads_list set ads_group_id=$2,to_upload_ad=true  where ad_id=$1",
         "options": {
-          "queryReplacement": "={{ $('Loop Over Items').last().json.ad_id }},{{ $('get group1').item.json.ads_group_id }}"
+          "queryReplacement": "={{ $('Loop Over Items').last().json.ad_id }},{{ $('group id1').item.json.ads_group_id }}"
         }
       },
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        1088,
-        -976
+        1168,
+        -944
       ],
       "id": "3d4a2f43-7eab-4bbb-aed3-8c21921e1bbf",
       "name": "update ads data1",
@@ -620,8 +620,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        816,
-        -992
+        1008,
+        -960
       ],
       "id": "b2a2f439-c94e-49b4-b68c-a909a4a5f444",
       "name": "update group1",
@@ -886,6 +886,34 @@
           "name": "Postgres account 2"
         }
       }
+    },
+    {
+      "parameters": {
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -128,
+        -304
+      ],
+      "id": "edba640f-cd5d-4f08-ab32-bd49eb9d7efc",
+      "name": "group id"
+    },
+    {
+      "parameters": {
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        816,
+        -960
+      ],
+      "id": "3b649e97-e9cc-402d-beec-880140fdb27f",
+      "name": "group id1"
     }
   ],
   "connections": {
@@ -1068,7 +1096,7 @@
         ],
         [
           {
-            "node": "update group",
+            "node": "group id",
             "type": "main",
             "index": 0
           }
@@ -1159,7 +1187,7 @@
         ],
         [
           {
-            "node": "update group1",
+            "node": "group id1",
             "type": "main",
             "index": 0
           }
@@ -1291,7 +1319,7 @@
       "main": [
         [
           {
-            "node": "update group",
+            "node": "group id",
             "type": "main",
             "index": 0
           }
@@ -1299,6 +1327,28 @@
       ]
     },
     "Execute a SQL query1": {
+      "main": [
+        [
+          {
+            "node": "group id1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "group id": {
+      "main": [
+        [
+          {
+            "node": "update group",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "group id1": {
       "main": [
         [
           {
@@ -1342,15 +1392,15 @@
       {
         "json": {
           "id": "GE66xiztgKP0D3Za",
-          "root_execution_id": 320299,
+          "root_execution_id": 322237,
           "company_id": 1,
           "threshhold": "0.79",
-          "import_id": 66
+          "import_id": 67
         }
       }
     ]
   },
-  "versionId": "041bc808-f665-4e1c-b944-e4ad0f49ebdd",
+  "versionId": "bd6cae4a-45c0-4d55-8df0-626b350c11ae",
   "triggerCount": 0,
   "shared": [
     {
