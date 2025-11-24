@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-17T13:10:18.535Z",
+  "updatedAt": "2025-11-24T13:12:08.825Z",
   "createdAt": "2025-10-20T11:13:50.516Z",
   "id": "xNiuEqQOSNCSLvW5",
   "name": "ADV_campaign_analysis_AI",
@@ -508,7 +508,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        4800,
+        4832,
         -432
       ],
       "id": "92a0598e-ca10-4f32-83b7-934fa603611d",
@@ -1196,8 +1196,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        4656,
-        -432
+        4672,
+        -368
       ],
       "id": "eac938a0-0564-4643-82c7-0195086b9e1b",
       "name": "update calls counters3"
@@ -1258,8 +1258,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        4496,
-        -1072
+        4432,
+        -1040
       ],
       "id": "87e84447-8f55-4401-a4aa-64d1d39165d7",
       "name": "set input1"
@@ -1286,7 +1286,7 @@
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1.2,
       "position": [
-        4688,
+        4640,
         -1072
       ],
       "id": "a25e1961-b734-43d9-a915-169f111c2068",
@@ -1475,8 +1475,8 @@
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1.3,
       "position": [
-        5024,
-        -1072
+        4976,
+        -1088
       ],
       "id": "98f2dbc6-935c-429b-9df7-277a55ed322e",
       "name": "Check VS own company name"
@@ -1558,7 +1558,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        4848,
+        4800,
         -1072
       ],
       "id": "051a4c27-b912-4aa2-b426-0c4558f9f846",
@@ -2327,7 +2327,7 @@
       }
     ]
   },
-  "versionId": "187815e1-2462-4eeb-ad14-4d82b83e7de6",
+  "versionId": "e2a86d4b-f9ba-460f-ad37-fd1d60ea4121",
   "triggerCount": 0,
   "shared": [
     {
