@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-18T17:42:37.490Z",
+  "updatedAt": "2025-11-24T15:35:26.539Z",
   "createdAt": "2025-11-10T13:35:24.421Z",
   "id": "Wnsw79fmux6MqiZq",
   "name": "ADV_campaign_IDs load",
@@ -259,7 +259,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        4048,
+        4256,
         -96
       ],
       "id": "4648c3cf-eed1-4859-9beb-3470ce284e33",
@@ -276,7 +276,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        4992,
+        5200,
         -128
       ],
       "id": "d8296d69-da8c-4e04-9ffe-459ba0e5e52b",
@@ -316,7 +316,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        4400,
+        4608,
         -80
       ],
       "id": "c492db07-b5df-493b-8229-6959ba687aa2",
@@ -454,7 +454,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        4736,
+        4944,
         -96
       ],
       "id": "5ecfd689-1b3b-45de-9202-4401deeeacaf",
@@ -483,7 +483,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        3536,
+        3744,
         -544
       ],
       "id": "9898c20f-ffd6-4550-9b1e-c5014ec7fc30",
@@ -501,29 +501,6 @@
       ],
       "id": "ed771a97-a0f8-45b9-880b-9eef10c17ab2",
       "name": "get campaign ID"
-    },
-    {
-      "parameters": {
-        "operation": "executeQuery",
-        "query": "UPDATE public.ads_list\n\tSET group_yandex_id=$3, ads_yandex_id=$4, key_word_yandex_id=$5\n\tWHERE company_id=$1 and lower(replace(key_word, '\"', ''))=lower(replace($2, '\"', '')) returning *;",
-        "options": {
-          "queryReplacement": "={{ $json.company_id }},{{ $json['Фраза (с минус-словами)'] }},{{ $json['ID группы'] }},{{ $json['ID объявления'] }},{{ $json['ID фразы'] }}"
-        }
-      },
-      "type": "n8n-nodes-base.postgres",
-      "typeVersion": 2.6,
-      "position": [
-        3232,
-        -96
-      ],
-      "id": "6a738735-2db5-4d16-b68f-30371cf09b7c",
-      "name": "Execute a SQL query",
-      "credentials": {
-        "postgres": {
-          "id": "Hx2VFmUi5WO2K4QX",
-          "name": "Postgres account 2"
-        }
-      }
     },
     {
       "parameters": {
@@ -566,8 +543,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        3440,
-        -96
+        3776,
+        -192
       ],
       "id": "aed603b5-ddfc-460e-80a6-0d28ddf9bdd5",
       "name": "If"
@@ -583,8 +560,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        3792,
-        -176
+        4080,
+        -272
       ],
       "id": "29d66b92-a44f-4d55-af31-0a4a738754ae",
       "name": "Execute a SQL query1",
@@ -689,6 +666,96 @@
       ],
       "id": "41944b4a-77da-4c33-aea4-3d5204cbfca2",
       "name": "Merge1"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "6ef76e54-ccb1-49f2-bd6a-99e459aa793a",
+              "leftValue": "={{ $('sanitizeKey').item.json['Статус объявления'] }}",
+              "rightValue": "Остановлено",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            },
+            {
+              "id": "bcfd2931-6780-446f-8573-5580fa9b5e48",
+              "leftValue": "={{ $('sanitizeKey').item.json['Статус фразы'] }}",
+              "rightValue": "Приостановлена",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        3376,
+        -192
+      ],
+      "id": "c015b5e3-012d-4b2f-b4d4-790edae20da4",
+      "name": "If stopped"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "UPDATE public.ads_list\n\tSET group_yandex_id=$3, ads_yandex_id=$4, key_word_yandex_id=$5\n\tWHERE company_id=$1 and lower(replace(key_word, '\"', ''))=lower(replace($2, '\"', '')) returning *;",
+        "options": {
+          "queryReplacement": "={{ $json.company_id }},{{ $json['Фраза (с минус-словами)'] }},{{ $json['ID группы'] }},{{ $json['ID объявления'] }},{{ $json['ID фразы'] }}"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        3168,
+        -96
+      ],
+      "id": "6a738735-2db5-4d16-b68f-30371cf09b7c",
+      "name": "update ads",
+      "credentials": {
+        "postgres": {
+          "id": "Hx2VFmUi5WO2K4QX",
+          "name": "Postgres account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "update ads_list set is_active=false returning *",
+        "options": {
+          "queryReplacement": "={{ $json.ad_id }}"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        3568,
+        -112
+      ],
+      "id": "7eb101a5-a54a-4cf3-97bb-2641c760f668",
+      "name": "Execute a SQL query",
+      "credentials": {
+        "postgres": {
+          "id": "Hx2VFmUi5WO2K4QX",
+          "name": "Postgres account 2"
+        }
+      }
     }
   ],
   "connections": {
@@ -902,17 +969,6 @@
         ]
       ]
     },
-    "Execute a SQL query": {
-      "main": [
-        [
-          {
-            "node": "If",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Code in JavaScript": {
       "main": [
         [
@@ -957,7 +1013,7 @@
       "main": [
         [
           {
-            "node": "Execute a SQL query",
+            "node": "update ads",
             "type": "main",
             "index": 0
           }
@@ -1018,6 +1074,46 @@
           }
         ]
       ]
+    },
+    "If stopped": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Execute a SQL query",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "update ads": {
+      "main": [
+        [
+          {
+            "node": "If stopped",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute a SQL query": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
@@ -1050,7 +1146,7 @@
       }
     ]
   },
-  "versionId": "5b0bd96a-f3d5-4563-9cf0-956be8a3657b",
+  "versionId": "07713c2b-ff5a-4c4f-83cf-3e72378cfc47",
   "triggerCount": 0,
   "shared": [
     {
