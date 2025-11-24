@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-23T17:01:37.757Z",
+  "updatedAt": "2025-11-24T13:22:01.616Z",
   "createdAt": "2025-10-22T11:44:28.248Z",
   "id": "4Fw159fAoZfSn72v",
   "name": "ADV_campaign_data_load_API",
@@ -1077,7 +1077,7 @@
       {
         "json": {
           "id": "4Fw159fAoZfSn72v",
-          "root_execution_id": 238481,
+          "root_execution_id": 319479,
           "company_id": 1,
           "report_date": "2025-11-20",
           "campaign_yandex_id": 704708210
@@ -1085,7 +1085,7 @@
       }
     ]
   },
-  "versionId": "367152d9-ecc0-484f-8d57-acbe0b2a8e0d",
+  "versionId": "34541f6b-1270-4eb7-948e-00437d6ec7b4",
   "triggerCount": 0,
   "shared": [
     {
@@ -1098,16 +1098,16 @@
   ],
   "tags": [
     {
-      "updatedAt": "2025-10-22T11:44:26.850Z",
-      "createdAt": "2025-10-22T11:44:26.850Z",
-      "id": "TAPLdpwV5vPQJtDW",
-      "name": "API"
-    },
-    {
       "updatedAt": "2025-10-06T13:06:54.644Z",
       "createdAt": "2025-10-06T13:06:54.644Z",
       "id": "DBEf57wUDunVJUG6",
       "name": "campaign update"
+    },
+    {
+      "updatedAt": "2025-10-22T11:44:26.850Z",
+      "createdAt": "2025-10-22T11:44:26.850Z",
+      "id": "TAPLdpwV5vPQJtDW",
+      "name": "API"
     }
   ]
 }
