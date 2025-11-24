@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-24T13:12:08.825Z",
+  "updatedAt": "2025-11-24T14:10:55.947Z",
   "createdAt": "2025-10-20T11:13:50.516Z",
   "id": "xNiuEqQOSNCSLvW5",
   "name": "ADV_campaign_analysis_AI",
@@ -1295,7 +1295,7 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "UPDATE public.minus_words mw\nSET is_verified = true\nFROM (\n  SELECT org.minus_word_id\n  FROM public.minus_words_origin org\n  GROUP BY org.minus_word_id\n  HAVING COUNT(*) >= 2\n) v\nWHERE mw.id = v.minus_word_id\n  AND COALESCE(mw.is_verified, false) = false;",
+        "query": "WITH to_update AS (\n    SELECT mw.id\n    FROM public.minus_words mw\n    JOIN (\n        SELECT org.minus_word_id\n        FROM public.minus_words_origin org\n        GROUP BY org.minus_word_id\n        HAVING COUNT(*) >= 2\n    ) v ON v.minus_word_id = mw.id\n    WHERE COALESCE(mw.is_verified, false) = false\n    FOR UPDATE SKIP LOCKED\n    LIMIT 1000\n)\nUPDATE public.minus_words mw\nSET is_verified = true\nWHERE mw.id IN (SELECT id FROM to_update);",
         "options": {}
       },
       "type": "n8n-nodes-base.postgres",
@@ -2319,15 +2319,15 @@
       {
         "json": {
           "id": "xNiuEqQOSNCSLvW5",
-          "root_execution_id": 231936,
+          "root_execution_id": 320416,
           "company_id": 1,
           "threshhold": "0.79",
-          "import_id": 27
+          "import_id": 66
         }
       }
     ]
   },
-  "versionId": "e2a86d4b-f9ba-460f-ad37-fd1d60ea4121",
+  "versionId": "76b87627-5f76-42e9-8234-2fb2dcd3f0e1",
   "triggerCount": 0,
   "shared": [
     {
