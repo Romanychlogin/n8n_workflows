@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-24T14:10:55.947Z",
+  "updatedAt": "2025-11-24T17:35:09.653Z",
   "createdAt": "2025-10-20T11:13:50.516Z",
   "id": "xNiuEqQOSNCSLvW5",
   "name": "ADV_campaign_analysis_AI",
@@ -1295,7 +1295,7 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "WITH to_update AS (\n    SELECT mw.id\n    FROM public.minus_words mw\n    JOIN (\n        SELECT org.minus_word_id\n        FROM public.minus_words_origin org\n        GROUP BY org.minus_word_id\n        HAVING COUNT(*) >= 2\n    ) v ON v.minus_word_id = mw.id\n    WHERE COALESCE(mw.is_verified, false) = false\n    FOR UPDATE SKIP LOCKED\n    LIMIT 1000\n)\nUPDATE public.minus_words mw\nSET is_verified = true\nWHERE mw.id IN (SELECT id FROM to_update);",
+        "query": "WITH candidates AS (\n    -- 1. Считаем, у каких minus_word_id есть >= 2 в origin\n    SELECT org.minus_word_id\n    FROM public.minus_words_origin org\n    GROUP BY org.minus_word_id\n    HAVING COUNT(*) >= 2\n),\nto_update AS (\n    -- 2. Выбираем из minus_words те строки, которые ещё не is_verified\n    --    и блокируем их батчами по 1000\n    SELECT mw.id\n    FROM public.minus_words mw\n    JOIN candidates v\n      ON v.minus_word_id = mw.id\n    WHERE COALESCE(mw.is_verified, false) = false\n    FOR UPDATE SKIP LOCKED\n    LIMIT 1000\n)\n-- 3. Обновляем только выбранные id\nUPDATE public.minus_words mw\nSET is_verified = true\nWHERE mw.id IN (SELECT id FROM to_update);",
         "options": {}
       },
       "type": "n8n-nodes-base.postgres",
@@ -2319,15 +2319,15 @@
       {
         "json": {
           "id": "xNiuEqQOSNCSLvW5",
-          "root_execution_id": 320416,
+          "root_execution_id": 321576,
           "company_id": 1,
           "threshhold": "0.79",
-          "import_id": 66
+          "import_id": 67
         }
       }
     ]
   },
-  "versionId": "76b87627-5f76-42e9-8234-2fb2dcd3f0e1",
+  "versionId": "46e93df3-1a70-4ed8-b792-2522aa774c87",
   "triggerCount": 0,
   "shared": [
     {
