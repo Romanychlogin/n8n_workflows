@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-18T17:33:16.199Z",
+  "updatedAt": "2025-11-24T15:25:23.756Z",
   "createdAt": "2025-09-01T13:14:53.645Z",
   "id": "bhBscYglbFhVyIcL",
   "name": "Check minuses API tool",
@@ -257,16 +257,16 @@
           "call_id": "call_uxM0v9lrgoN4bd7Ti1r65BdW",
           "name": "get_non_matching_ngrams",
           "args": {
-            "phrase": "55 школа саратов",
+            "phrase": "Алгоритмика",
             "company_id": "1",
-            "threshold": "0.8"
+            "threshold": "0.9"
           },
           "out_index": 1
         }
       }
     ]
   },
-  "versionId": "b6f4d96d-65f1-4726-af86-e0626715ff08",
+  "versionId": "1dcaa906-cbf3-4da6-80a6-125b5fd6f301",
   "triggerCount": 1,
   "shared": [
     {
