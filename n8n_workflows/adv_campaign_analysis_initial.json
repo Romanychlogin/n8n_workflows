@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-17T13:10:54.106Z",
+  "updatedAt": "2025-11-24T13:11:05.808Z",
   "createdAt": "2025-10-20T11:13:37.232Z",
   "id": "b9eGU4g5DID0kq2E",
   "name": "ADV_campaign_analysis_initial",
@@ -317,7 +317,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        7664,
+        8288,
         -1648
       ],
       "id": "f97102c4-6dd5-4d6c-bad8-453e7f990135",
@@ -348,9 +348,6 @@
           "value": {
             "resolution": "={{ $json.resolution}}",
             "list_id": "={{ $('Init calls counters').last().json.list_id }}",
-            "ai_response_tokens": "={{ $json.total_tokens }}",
-            "ai_calls": "={{ $json.ai_calls }}",
-            "embedding_calls": "={{ $json.embedding_calls }}",
             "is_own_brand": "={{ $json.is_own_brand }}"
           },
           "matchingColumns": [
@@ -485,7 +482,7 @@
               "display": true,
               "type": "number",
               "canBeUsedToMatch": true,
-              "removed": false
+              "removed": true
             },
             {
               "id": "company_id",
@@ -535,7 +532,7 @@
               "display": true,
               "type": "number",
               "canBeUsedToMatch": true,
-              "removed": false
+              "removed": true
             },
             {
               "id": "embedding_calls",
@@ -545,7 +542,7 @@
               "display": true,
               "type": "number",
               "canBeUsedToMatch": true,
-              "removed": false
+              "removed": true
             },
             {
               "id": "service_recognition_error",
@@ -586,195 +583,11 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        7664,
-        -624
+        8288,
+        -384
       ],
       "id": "430a7a95-765e-4ba1-98f1-0a7d434760bc",
       "name": "update",
-      "credentials": {
-        "postgres": {
-          "id": "Hx2VFmUi5WO2K4QX",
-          "name": "Postgres account 2"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "operation": "update",
-        "schema": {
-          "__rl": true,
-          "mode": "list",
-          "value": "public"
-        },
-        "table": {
-          "__rl": true,
-          "value": "current_list",
-          "mode": "list",
-          "cachedResultName": "current_list"
-        },
-        "columns": {
-          "mappingMode": "defineBelow",
-          "value": {
-            "list_id": "={{ $('Loop Over Items').last().json.list_id }}",
-            "resolution": "={{ \"найден конкурент: \"+ $('If competitors not found').last().json.hits[0].matched+\", название: \"+$('If competitors not found').last().json.hits[0].canonical }}"
-          },
-          "matchingColumns": [
-            "list_id"
-          ],
-          "schema": [
-            {
-              "id": "list_id",
-              "displayName": "list_id",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "number",
-              "canBeUsedToMatch": true,
-              "removed": false
-            },
-            {
-              "id": "key_word",
-              "displayName": "key_word",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true,
-              "removed": true
-            },
-            {
-              "id": "campaign_id",
-              "displayName": "campaign_id",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "number",
-              "canBeUsedToMatch": true,
-              "removed": true
-            },
-            {
-              "id": "used_keyword",
-              "displayName": "used_keyword",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true,
-              "removed": true
-            },
-            {
-              "id": "group_id",
-              "displayName": "group_id",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "number",
-              "canBeUsedToMatch": true,
-              "removed": true
-            },
-            {
-              "id": "condition_type",
-              "displayName": "condition_type",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true,
-              "removed": true
-            },
-            {
-              "id": "category",
-              "displayName": "category",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true,
-              "removed": true
-            },
-            {
-              "id": "ads_header",
-              "displayName": "ads_header",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true,
-              "removed": true
-            },
-            {
-              "id": "date",
-              "displayName": "date",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "dateTime",
-              "canBeUsedToMatch": true,
-              "removed": true
-            },
-            {
-              "id": "ai_responce",
-              "displayName": "ai_responce",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true,
-              "removed": true
-            },
-            {
-              "id": "resolution",
-              "displayName": "resolution",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true
-            },
-            {
-              "id": "count_views",
-              "displayName": "count_views",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "number",
-              "canBeUsedToMatch": true,
-              "removed": true
-            },
-            {
-              "id": "count_clics",
-              "displayName": "count_clics",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "number",
-              "canBeUsedToMatch": true,
-              "removed": true
-            },
-            {
-              "id": "count_convetions",
-              "displayName": "count_convetions",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "number",
-              "canBeUsedToMatch": true,
-              "removed": true
-            }
-          ],
-          "attemptToConvertTypes": false,
-          "convertFieldsToString": false
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.postgres",
-      "typeVersion": 2.6,
-      "position": [
-        7808,
-        -1040
-      ],
-      "id": "0e8ffc1d-a08e-44b0-8809-2c0ae50fd4ff",
-      "name": "Помечаем что найден конкурент",
       "credentials": {
         "postgres": {
           "id": "Hx2VFmUi5WO2K4QX",
@@ -804,7 +617,7 @@
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1.2,
       "position": [
-        5312,
+        5520,
         -176
       ],
       "id": "dd1b637f-6820-452c-8feb-f65667bd34f8",
@@ -832,8 +645,8 @@
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1.2,
       "position": [
-        4112,
-        -128
+        4064,
+        64
       ],
       "id": "6f3eaa26-7d88-49c1-bfba-332397cfddbd",
       "name": "Find competitors mentions"
@@ -866,7 +679,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        5712,
+        5920,
         -192
       ],
       "id": "92e325e7-8985-4b88-8470-3cb0f5572b0b",
@@ -1015,7 +828,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        9072,
+        9696,
         320
       ],
       "id": "f519e37d-8239-413b-b929-6f3357625eb3",
@@ -1035,7 +848,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        8832,
+        9456,
         336
       ],
       "id": "9f9db35e-7c8d-4e95-8668-ddcb51a362e3",
@@ -1068,7 +881,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        9456,
+        10080,
         352
       ],
       "id": "bb8594f0-0177-426e-8f86-112a6c552b57",
@@ -1081,7 +894,7 @@
       "type": "n8n-nodes-base.stopAndError",
       "typeVersion": 1,
       "position": [
-        9696,
+        10320,
         224
       ],
       "id": "6f0a0a09-b56a-4f0b-b280-f61f063732be",
@@ -1115,7 +928,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        9280,
+        9904,
         320
       ],
       "id": "e805448e-e73c-46e1-b856-c6b1870be3ad",
@@ -1154,8 +967,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        2560,
-        -288
+        2640,
+        -544
       ],
       "id": "1fbe39e1-cf11-494a-b01c-8c399ed78e3a",
       "name": "If we have conversions for the key word"
@@ -1188,8 +1001,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        4416,
-        -176
+        4528,
+        64
       ],
       "id": "4c642176-95e9-48e9-910e-b685c92e2e1e",
       "name": "If competitors not found"
@@ -1224,8 +1037,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        6592,
-        -240
+        7344,
+        -288
       ],
       "id": "7da2dff4-77a9-4e3c-a17a-dc2dda9d3ca4",
       "name": "no relevant",
@@ -1255,7 +1068,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        7184,
+        7600,
         -800
       ],
       "id": "0b64609f-741a-4e59-bc1e-e9e218abba39",
@@ -1328,7 +1141,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        5056,
+        5264,
         -176
       ],
       "id": "31d1f3be-14a0-4342-8556-12912e26bf36",
@@ -1432,7 +1245,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        5968,
+        6176,
         112
       ],
       "id": "a99209dc-fc67-4db8-af23-ca0d67ef0aa5",
@@ -1478,8 +1291,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        5792,
-        -1056
+        3792,
+        -320
       ],
       "id": "99d703b8-2977-4a04-b674-17f0506e7df9",
       "name": "if not exact competitor match"
@@ -1498,7 +1311,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        7296,
+        7712,
         96
       ],
       "id": "28ec1340-bfa6-4a0b-883f-94bcf45c2074",
@@ -1522,7 +1335,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        7664,
+        8288,
         96
       ],
       "id": "129c22d0-6263-4e30-9b09-af14cfec59ee",
@@ -1541,7 +1354,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        7104,
+        7520,
         96
       ],
       "id": "15291823-1e2d-42c4-96fe-98a6710aedc4",
@@ -1556,7 +1369,7 @@
       "type": "n8n-nodes-base.splitInBatches",
       "typeVersion": 3,
       "position": [
-        6400,
+        6608,
         16
       ],
       "id": "bffa76e7-51e3-452e-b7d7-2703867bcd19",
@@ -1580,7 +1393,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        6208,
+        6416,
         0
       ],
       "id": "02b64f47-d4ce-491c-bb30-bd98c2b66c21",
@@ -1604,7 +1417,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        6592,
+        7008,
         96
       ],
       "id": "3e3b1022-a9e9-445d-83d9-6aa292f0b833",
@@ -1705,8 +1518,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        3616,
-        -160
+        3536,
+        96
       ],
       "id": "a95735ea-c6b3-4783-962c-1fb9a63ca041",
       "name": "If minus words not found"
@@ -1741,8 +1554,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        3968,
-        -128
+        3920,
+        64
       ],
       "id": "7458b9ab-63c1-4814-ad73-8cdb0be48baf",
       "name": "set input"
@@ -1756,8 +1569,8 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        3920,
-        -256
+        3872,
+        -64
       ],
       "id": "d1727336-30be-4744-9d96-9162890829bc",
       "name": "Sticky Note8"
@@ -1786,7 +1599,7 @@
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
       "position": [
-        4880,
+        5088,
         -256
       ],
       "id": "4b3982dd-01ae-4d95-870a-1955fa3a9c15",
@@ -1855,8 +1668,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        6176,
-        -1232
+        5040,
+        -608
       ],
       "id": "0ca3ad0d-5495-4af1-8dc9-671510f93e3c",
       "name": "Get embedding1",
@@ -1870,13 +1683,13 @@
     },
     {
       "parameters": {
-        "jsCode": "return [{\n  json: {\n  \"model\": \"text-embedding-3-small\",\n  \"input\": $('If competitors not found').last().json.hits[0].candidate \n}\n}];"
+        "jsCode": "return [{\n  json: {\n  \"model\": \"text-embedding-3-small\",\n  \"input\": $json.non_matches[0] \n}\n}];"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        5984,
-        -1232
+        4848,
+        -608
       ],
       "id": "073075d2-fdf4-40e6-bea9-74b336975d42",
       "name": "Set API JSON3"
@@ -1884,29 +1697,6 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "INSERT INTO public.minus_words\n  (minus_word_embedding, minus_word,  company_id, comment, weight)\nVALUES\n  ($1::vector, $2, $3,$4 , $5)\nON CONFLICT (company_id, minus_word) DO UPDATE\nSET weight = COALESCE(minus_words.weight, 0) + COALESCE(EXCLUDED.weight, 0)\nRETURNING id;",
-        "options": {
-          "queryReplacement": "=[\n  { \"value\": \"={{'[' + $json.data[0].embedding.map(e => Number(e)).join(',') + ']'}}\" },\n  { \"value\": \"={{ $('If competitors not found').last().json.hits[0].candidate }}\" },\n  { \"value\": \"={{ $('Loop Over Items').item.json.company_id }}\" },\n  { \"value\": \"={{ 'added from the core update (competitors) from the report:'+$('Loop Over Items').item.json.list_id }}\" }, \n  { \"value\": \"={{ $('Loop Over Items').item.json.count_views }}\" }\n]"
-        }
-      },
-      "type": "n8n-nodes-base.postgres",
-      "typeVersion": 2.6,
-      "position": [
-        6640,
-        -1232
-      ],
-      "id": "7e8c0360-8a9b-46cb-af84-5f5305712880",
-      "name": "Insert minus words from competitors",
-      "credentials": {
-        "postgres": {
-          "id": "4YkdFJcdTgzo9hkz",
-          "name": "PGvector"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "operation": "executeQuery",
         "query": "INSERT INTO minus_words_origin(\n\tminus_word_id, list_id, origin_weight)\n\tVALUES ($1, $2, $3);",
         "options": {
           "queryReplacement": "=[{{ $json.id }},{{ $('Loop Over Items').item.json.list_id }},{{ $('Loop Over Items').item.json.count_views }}]"
@@ -1915,30 +1705,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        6944,
-        -1216
-      ],
-      "id": "16f27083-1abc-43cc-af4e-a63a1c6ae2b9",
-      "name": "add link",
-      "credentials": {
-        "postgres": {
-          "id": "Hx2VFmUi5WO2K4QX",
-          "name": "Postgres account 2"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "operation": "executeQuery",
-        "query": "INSERT INTO minus_words_origin(\n\tminus_word_id, list_id, origin_weight)\n\tVALUES ($1, $2, $3);",
-        "options": {
-          "queryReplacement": "=[{{ $json.id }},{{ $('Loop Over Items').item.json.list_id }},{{ $('Loop Over Items').item.json.count_views }}]"
-        }
-      },
-      "type": "n8n-nodes-base.postgres",
-      "typeVersion": 2.6,
-      "position": [
-        7888,
+        8512,
         96
       ],
       "id": "c068c4c0-e4fb-4528-8a0a-eea1c1dc9527",
@@ -1961,8 +1728,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        7120,
-        -1216
+        5456,
+        -608
       ],
       "id": "69981893-03ec-4c27-961b-fc5bfd5c1020",
       "name": "add competitor name variant",
@@ -2001,13 +1768,13 @@
     },
     {
       "parameters": {
-        "jsCode": "const workflowData = $getWorkflowStaticData('global');\nworkflowData.embedding_calls++;\nreturn $input.all();\n"
+        "jsCode": "const workflowData = $getWorkflowStaticData('global');\nworkflowData.embedding_calls++;\n$input.first().json.from_competitors=true;\nreturn $input.all();\n"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        4272,
-        -112
+        4320,
+        64
       ],
       "id": "fd01f0c3-3ec5-46c8-ac94-3787e2ad32de",
       "name": "update calls counters1"
@@ -2019,7 +1786,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        5504,
+        5712,
         -176
       ],
       "id": "861ef920-74af-4697-87dd-446188423172",
@@ -2032,8 +1799,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        6384,
-        -1232
+        5248,
+        -608
       ],
       "id": "48ed2060-e66f-418e-bfd4-6d643948d78a",
       "name": "update calls counters4"
@@ -2045,7 +1812,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        7488,
+        7904,
         96
       ],
       "id": "582c6fd8-a58f-43ed-b106-ff221530d7fa",
@@ -2058,24 +1825,11 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        7472,
+        7888,
         -624
       ],
       "id": "0f9e0677-043b-472a-afbe-5eb6d4e90f2c",
       "name": "read call counters"
-    },
-    {
-      "parameters": {
-        "jsCode": "const workflowData = $getWorkflowStaticData('global');\nfor (const item of $input.all()) {\n  item.json.embedding_calls = workflowData.embedding_calls;\n  item.json.ai_calls = workflowData.ai_calls;\n  \n}\n\nreturn $input.all();\n"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        7632,
-        -1056
-      ],
-      "id": "e9a2be3d-1798-47b9-87ab-fd11f0ab9870",
-      "name": "read call counters1"
     },
     {
       "parameters": {
@@ -2107,7 +1861,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        5744,
+        5952,
         -832
       ],
       "id": "f95e760e-5c51-4bfc-b6d2-4974c19e9448",
@@ -2135,7 +1889,7 @@
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1.2,
       "position": [
-        5936,
+        6144,
         -832
       ],
       "id": "5e52a2f8-b977-4f77-9269-e1e4f10b301d",
@@ -2153,7 +1907,7 @@
       "typeVersion": 2.6,
       "position": [
         4160,
-        304
+        384
       ],
       "id": "08e8b3e6-dac3-4c5c-89a5-bb94997c6f5d",
       "name": "Execute a SQL query",
@@ -2172,7 +1926,7 @@
       "typeVersion": 2,
       "position": [
         3968,
-        304
+        384
       ],
       "id": "9e6b02df-1355-4834-86bc-ce20303a4d40",
       "name": "Code in JavaScript"
@@ -2230,7 +1984,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        5856,
+        6064,
         -576
       ],
       "id": "6530ae7f-8af1-44c2-96ad-5b5dfbaaefd0",
@@ -2258,7 +2012,7 @@
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1.3,
       "position": [
-        6352,
+        6560,
         -816
       ],
       "id": "a0ce8fee-228e-4775-a250-0004b48953f2",
@@ -2271,7 +2025,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        6576,
+        6784,
         -816
       ],
       "id": "d343e201-c51a-49e7-8d8f-b5fbcc894d24",
@@ -2305,7 +2059,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        6784,
+        7200,
         -832
       ],
       "id": "c57c9fb4-8565-42bb-b2d3-474921877d82",
@@ -2341,7 +2095,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        6144,
+        6352,
         -832
       ],
       "id": "3a54eeaf-4704-4c23-9486-5caf29102b01",
@@ -2365,7 +2119,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        6960,
+        7376,
         -928
       ],
       "id": "6bb80a75-c1de-4d38-bf04-989cae060f1c",
@@ -2389,11 +2143,209 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        6960,
+        7376,
         -736
       ],
       "id": "e85b1409-04ad-4518-b891-1b2ba53941bd",
       "name": "Set is_own_brand true"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "fd745d02-87aa-493f-999c-7229ca9c95ce",
+              "name": "resolution",
+              "value": "={{ \"найден конкурент: \"+ $('If competitors not found').last().json.hits[0].matched+\", название: \"+$('If competitors not found').last().json.hits[0].canonical }}",
+              "type": "string"
+            },
+            {
+              "id": "1ca5a6d4-4127-4577-a5df-17804b4ba53d",
+              "name": "is_own_brand ",
+              "value": false,
+              "type": "boolean"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        7328,
+        -448
+      ],
+      "id": "cc19cb80-b21e-4c44-ad8e-bfeeade41109",
+      "name": "Set data"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "87bce450-60db-48a5-85f2-b7705c2fb04d",
+              "name": "from_competitors",
+              "value": false,
+              "type": "boolean"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        4512,
+        352
+      ],
+      "id": "cdbf8a0f-f2bf-410c-80f6-ab05bca9154e",
+      "name": "set not from competitors"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "f1e9b8c3-aefa-474a-8400-45d446f904dc",
+              "leftValue": "={{ $('set input params').item.json.from_competitors }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        6976,
+        -320
+      ],
+      "id": "f8431228-ab62-4f15-b171-bbafc6be3b4c",
+      "name": "If from competitors"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "bhBscYglbFhVyIcL",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/bhBscYglbFhVyIcL",
+          "cachedResultName": "Check minuses API tool"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        4176,
+        -464
+      ],
+      "id": "92f6918d-a5ee-4a83-9fad-b1e3728d5b46",
+      "name": "Execute Workflow1"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "0b8b9cb2-368a-4ef4-b4b4-560b030f71f4",
+              "leftValue": "={{ $json.non_matches }}",
+              "rightValue": "",
+              "operator": {
+                "type": "array",
+                "operation": "empty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        4576,
+        -528
+      ],
+      "id": "bbdff125-09b9-441a-814d-cc77f47d87b8",
+      "name": "If minuses array is empty1"
+    },
+    {
+      "parameters": {
+        "jsCode": "const workflowData = $getWorkflowStaticData('global');\nfunction toNumber(x, def = 0) {\n  const n = Number(x);\n  return Number.isFinite(n) ? n : def;\n}\n\nworkflowData.embedding_calls = toNumber(workflowData.embedding_calls,0) + toNumber($input.first().json.meta.candidates_total,0);\n\nreturn $input.all();\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        4384,
+        -480
+      ],
+      "id": "71b78c8c-3081-4a62-8927-768c8913da5e",
+      "name": "update calls counters7"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "26a3b4cf-c374-4833-8b03-55dcf4df1097",
+              "name": "args.company_id",
+              "value": "={{ $('Init calls counters').last().json.company_id }}",
+              "type": "number"
+            },
+            {
+              "id": "ec583710-a44c-47de-ba3f-ebbfaa229fb1",
+              "name": "args.phrase",
+              "value": "={{ $('If competitors not found').last().json.hits[0].candidate }}",
+              "type": "string"
+            },
+            {
+              "id": "bf431c92-c6e4-41ab-b8b1-ee33acf9e25f",
+              "name": "args.threshold",
+              "value": "={{ $('set input').item.json.threshold }}",
+              "type": "number"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        4016,
+        -448
+      ],
+      "id": "24c0705e-adf7-4d70-860b-404c95f914a9",
+      "name": "set input params1"
     }
   ],
   "connections": {
@@ -2484,17 +2436,6 @@
         ]
       ]
     },
-    "Помечаем что найден конкурент": {
-      "main": [
-        [
-          {
-            "node": "Get current step and tokens saved",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Execute Workflow": {
       "main": [
         [
@@ -2521,7 +2462,7 @@
       "main": [
         [
           {
-            "node": "no relevant",
+            "node": "If from competitors",
             "type": "main",
             "index": 0
           }
@@ -2675,7 +2616,7 @@
       "main": [
         [
           {
-            "node": "read call counters",
+            "node": "update",
             "type": "main",
             "index": 0
           }
@@ -2800,14 +2741,14 @@
       "main": [
         [
           {
-            "node": "Set API JSON3",
+            "node": "set input params1",
             "type": "main",
             "index": 0
           }
         ],
         [
           {
-            "node": "read call counters1",
+            "node": "set input params",
             "type": "main",
             "index": 0
           }
@@ -2851,7 +2792,7 @@
       "main": [
         [
           {
-            "node": "no relevant",
+            "node": "If from competitors",
             "type": "main",
             "index": 0
           }
@@ -2978,28 +2919,6 @@
         ]
       ]
     },
-    "Insert minus words from competitors": {
-      "main": [
-        [
-          {
-            "node": "add link",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "add link": {
-      "main": [
-        [
-          {
-            "node": "add competitor name variant",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "add link1": {
       "main": [
         [
@@ -3015,7 +2934,7 @@
       "main": [
         [
           {
-            "node": "read call counters1",
+            "node": "set input params",
             "type": "main",
             "index": 0
           }
@@ -3037,7 +2956,7 @@
       "main": [
         [
           {
-            "node": "Insert minus words from competitors",
+            "node": "add competitor name variant",
             "type": "main",
             "index": 0
           }
@@ -3099,17 +3018,6 @@
         ]
       ]
     },
-    "read call counters1": {
-      "main": [
-        [
-          {
-            "node": "Помечаем что найден конкурент",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "set input1": {
       "main": [
         [
@@ -3136,7 +3044,7 @@
       "main": [
         [
           {
-            "node": "set input params",
+            "node": "set not from competitors",
             "type": "main",
             "index": 0
           }
@@ -3248,6 +3156,97 @@
           }
         ]
       ]
+    },
+    "Set data": {
+      "main": [
+        [
+          {
+            "node": "update",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "set not from competitors": {
+      "main": [
+        [
+          {
+            "node": "set input params",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If from competitors": {
+      "main": [
+        [
+          {
+            "node": "Set data",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "no relevant",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute Workflow1": {
+      "main": [
+        [
+          {
+            "node": "update calls counters7",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "update calls counters7": {
+      "main": [
+        [
+          {
+            "node": "If minuses array is empty1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "set input params1": {
+      "main": [
+        [
+          {
+            "node": "Execute Workflow1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If minuses array is empty1": {
+      "main": [
+        [
+          {
+            "node": "set input params",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Set API JSON3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
@@ -3284,15 +3283,15 @@
       {
         "json": {
           "id": "b9eGU4g5DID0kq2E",
-          "root_execution_id": 231494,
+          "root_execution_id": 319479,
           "company_id": 1,
           "threshhold": "0.79",
-          "import_id": 26
+          "import_id": 64
         }
       }
     ]
   },
-  "versionId": "ea8fa213-cc79-4063-8450-11bf122b56c7",
+  "versionId": "8ddd1777-5691-4fbd-8341-ff6952bf058c",
   "triggerCount": 0,
   "shared": [
     {
