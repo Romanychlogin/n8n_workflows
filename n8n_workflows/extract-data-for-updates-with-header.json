@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-23T16:02:52.820Z",
+  "updatedAt": "2025-11-24T15:30:19.139Z",
   "createdAt": "2025-09-30T17:56:19.098Z",
   "id": "UUlsZU9GOCmdvDHg",
   "name": "extract data for updates with header",
@@ -580,7 +580,7 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "SELECT\n  '-' AS add_adv,\n  /* key_word с заглавной первой буквой */\n  CASE\n    WHEN al.key_word IS NULL OR al.key_word = '' THEN al.key_word\n    ELSE UPPER(SUBSTR(al.key_word, 1, 1)) || SUBSTR(al.key_word, 2)\n  END AS key_word,\n  al.company_id,\n  al.service_id,\n  al.report_id,\n  al.campaign_id,\n  ag.group_name,\n  ag.group_yandex_id,\n\n  /* ad_header: замена #...# на max_kw + заглавная первая буква */\n  CASE\n    WHEN rep.hdr IS NULL OR rep.hdr = '' THEN rep.hdr\n    ELSE UPPER(SUBSTR(rep.hdr, 1, 1)) || SUBSTR(rep.hdr, 2)\n  END AS ad_header,\n\n  /* ad_text: замена #...# на max_kw + заглавная первая буква */\n  CASE\n    WHEN rep.txt IS NULL OR rep.txt = '' THEN rep.txt\n    ELSE UPPER(SUBSTR(rep.txt, 1, 1)) || SUBSTR(rep.txt, 2)\n  END AS ad_text,\n\n  ads.ad_url,\n  cs.service_bid\nFROM ads_list         al\nJOIN ads_groups       ag  ON ag.ads_group_id  = al.ads_group_id\nJOIN ads_for_groups   ads ON ads.ads_group_id = ag.ads_group_id\nJOIN company_services cs  ON cs.service_id    = al.service_id\n\n/* берём key_word с максимальным count_views в рамках группы и компании */\nCROSS JOIN LATERAL (\n  SELECT replace(al2.key_word, '\"', '') AS max_kw\n  FROM ads_list al2\n  WHERE al2.ads_group_id = ag.ads_group_id\n    AND al2.company_id   = al.company_id\n  ORDER BY COALESCE(al2.count_views, 0) DESC, al2.key_word\n  LIMIT 1\n) kw\n\n/* предварительно формируем строки после замены #...# */\nCROSS JOIN LATERAL (\n  SELECT\n    regexp_replace(ads.ad_header, '#[^#]*#', '#' || kw.max_kw || '#', 'g') AS hdr,\n    regexp_replace(ads.ad_text,   '#[^#]*#', '#' || kw.max_kw || '#', 'g') AS txt\n) rep\n\nWHERE\n  al.is_own_brand   = FALSE\n  AND al.to_upload_ad = TRUE\n  AND al.is_hi_demand = FALSE\n  AND al.company_id  = $1;",
+        "query": "SELECT\n  '-' AS add_adv,\n  /* key_word с заглавной первой буквой */\n  CASE\n    WHEN al.key_word IS NULL OR al.key_word = '' THEN al.key_word\n    ELSE UPPER(SUBSTR(al.key_word, 1, 1)) || SUBSTR(al.key_word, 2)\n  END AS key_word,\n  al.company_id,\n  al.service_id,\n  al.report_id,\n  al.campaign_id,\n  ag.group_name,\n  ag.group_yandex_id,\n\n  /* ad_header: замена #...# на max_kw + заглавная первая буква */\n  CASE\n    WHEN rep.hdr IS NULL OR rep.hdr = '' THEN rep.hdr\n    ELSE UPPER(SUBSTR(rep.hdr, 1, 1)) || SUBSTR(rep.hdr, 2)\n  END AS ad_header,\n\n  /* ad_text: замена #...# на max_kw + заглавная первая буква */\n  CASE\n    WHEN rep.txt IS NULL OR rep.txt = '' THEN rep.txt\n    ELSE UPPER(SUBSTR(rep.txt, 1, 1)) || SUBSTR(rep.txt, 2)\n  END AS ad_text,\n\n  ads.ad_url,\n  cs.service_bid\nFROM ads_list         al\nJOIN ads_groups       ag  ON ag.ads_group_id  = al.ads_group_id\nJOIN ads_for_groups   ads ON ads.ads_group_id = ag.ads_group_id\nJOIN company_services cs  ON cs.service_id    = al.service_id\n\n/* берём key_word с максимальным count_views в рамках группы и компании */\nCROSS JOIN LATERAL (\n  SELECT replace(al2.key_word, '\"', '') AS max_kw\n  FROM ads_list al2\n  WHERE al2.ads_group_id = ag.ads_group_id\n    AND al2.company_id   = al.company_id\n  ORDER BY COALESCE(al2.count_views, 0) DESC, al2.key_word\n  LIMIT 1\n) kw\n\n/* предварительно формируем строки после замены #...# */\nCROSS JOIN LATERAL (\n  SELECT\n    regexp_replace(ads.ad_header, '#[^#]*#', '#' || kw.max_kw || '#', 'g') AS hdr,\n    regexp_replace(ads.ad_text,   '#[^#]*#', '#' || kw.max_kw || '#', 'g') AS txt\n) rep\n\nWHERE\n  al.is_own_brand   = FALSE\n  AND al.to_upload_ad = TRUE\n  AND al.is_hi_demand = FALSE\n  AND al.is_active=true\n  AND al.company_id  = $1;",
         "options": {
           "queryReplacement": "={{ $('When Executed by Another Workflow').item.json.company_id }}"
         }
@@ -604,7 +604,7 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "SELECT\n  '-' AS add_adv,\n  ad.*,\n  cs.service_bid,\n  regexp_replace(\n    cs.service_name,\n    '[^a-zA-Zа-яА-ЯёЁ ]',\n    '',\n    'g'\n  ) AS cleaned_service_name,\n  gm.group_minus_words\nFROM ads_list ad\nJOIN company_services cs\n  ON cs.service_id = ad.service_id\n\n-- минус-слова по группе (может не найтись → NULL)\nLEFT JOIN LATERAL (\n  SELECT\n    string_agg(\n      mw.minus_word,\n      ', ' ORDER BY mw.weight desc\n    ) AS group_minus_words\n  FROM ads_list al\n  JOIN current_list cl\n    ON replace(al.key_word, '\"', '') = lower(\n         regexp_replace(\n           cl.used_keyword,\n           E'\\\\+|-.+$',   -- убрать все '+' и всё после первого '-'\n           '',\n           'g'\n         )\n       )\n  JOIN minus_words_origin org\n    ON org.list_id = cl.list_id\n  JOIN minus_words mw\n    ON org.minus_word_id = mw.id\n  WHERE al.company_id = ad.company_id\n    AND al.key_word   = ad.key_word\n    AND al.report_id  = ad.report_id\n) gm ON TRUE\n\nWHERE ad.is_hi_demand = TRUE\n  AND ad.company_id   = $1\n  AND ad.to_upload_ad = TRUE\nORDER BY cs.service_name, ad.count_clics DESC;",
+        "query": "SELECT\n  '-' AS add_adv,\n  ad.*,\n  cs.service_bid,\n  regexp_replace(\n    cs.service_name,\n    '[^a-zA-Zа-яА-ЯёЁ ]',\n    '',\n    'g'\n  ) AS cleaned_service_name,\n  gm.group_minus_words\nFROM ads_list ad\nJOIN company_services cs\n  ON cs.service_id = ad.service_id\n\n-- минус-слова по группе (может не найтись → NULL)\nLEFT JOIN LATERAL (\n  SELECT\n    string_agg(\n      mw.minus_word,\n      ', ' ORDER BY mw.weight desc\n    ) AS group_minus_words\n  FROM ads_list al\n  JOIN current_list cl\n    ON replace(al.key_word, '\"', '') = lower(\n         regexp_replace(\n           cl.used_keyword,\n           E'\\\\+|-.+$',   -- убрать все '+' и всё после первого '-'\n           '',\n           'g'\n         )\n       )\n  JOIN minus_words_origin org\n    ON org.list_id = cl.list_id\n  JOIN minus_words mw\n    ON org.minus_word_id = mw.id\n  WHERE al.company_id = ad.company_id\n    AND al.key_word   = ad.key_word\n    AND al.report_id  = ad.report_id\n) gm ON TRUE\n\nWHERE ad.is_hi_demand = TRUE\n  AND ad.company_id   = $1\n  AND ad.to_upload_ad = TRUE\n  AND ad.is_active=true\nORDER BY cs.service_name, ad.count_clics DESC;",
         "options": {
           "queryReplacement": "={{ $json.company_id }}"
         }
@@ -1091,7 +1091,7 @@
       }
     ]
   },
-  "versionId": "bbcfb3bd-2516-405b-9d91-72079f271691",
+  "versionId": "6ed36758-a03d-4739-b48f-fdc53439690d",
   "triggerCount": 0,
   "shared": [
     {
