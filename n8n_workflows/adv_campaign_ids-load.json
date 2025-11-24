@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-24T15:35:26.539Z",
+  "updatedAt": "2025-11-24T15:45:48.166Z",
   "createdAt": "2025-11-10T13:35:24.421Z",
   "id": "Wnsw79fmux6MqiZq",
   "name": "ADV_campaign_IDs load",
@@ -543,8 +543,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        3776,
-        -192
+        3792,
+        -112
       ],
       "id": "aed603b5-ddfc-460e-80a6-0d28ddf9bdd5",
       "name": "If"
@@ -705,8 +705,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        3376,
-        -192
+        3360,
+        -128
       ],
       "id": "c015b5e3-012d-4b2f-b4d4-790edae20da4",
       "name": "If stopped"
@@ -737,7 +737,7 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "update ads_list set is_active=false returning *",
+        "query": "update ads_list set is_active=false where ad_id=$1 returning *",
         "options": {
           "queryReplacement": "={{ $json.ad_id }}"
         }
@@ -745,8 +745,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        3568,
-        -112
+        3600,
+        -272
       ],
       "id": "7eb101a5-a54a-4cf3-97bb-2641c760f668",
       "name": "Execute a SQL query",
@@ -1079,14 +1079,14 @@
       "main": [
         [
           {
-            "node": "If",
+            "node": "Execute a SQL query",
             "type": "main",
             "index": 0
           }
         ],
         [
           {
-            "node": "Execute a SQL query",
+            "node": "If",
             "type": "main",
             "index": 0
           }
@@ -1146,7 +1146,7 @@
       }
     ]
   },
-  "versionId": "07713c2b-ff5a-4c4f-83cf-3e72378cfc47",
+  "versionId": "a79fd379-d6a2-4357-99b7-62272251fc49",
   "triggerCount": 0,
   "shared": [
     {
