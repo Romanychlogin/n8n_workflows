@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-24T14:28:32.101Z",
+  "updatedAt": "2025-11-24T14:48:34.678Z",
   "createdAt": "2025-11-05T16:49:07.256Z",
   "id": "GE66xiztgKP0D3Za",
   "name": "ADS generate for yandex",
@@ -53,7 +53,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        224,
+        432,
         -1648
       ],
       "id": "4627ef16-c1a6-4a24-ab26-0cd5419ae583",
@@ -327,7 +327,7 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "select * from ads_groups where company_id=$1 and key_words_length=$2 and key_words_count<200",
+        "query": "select * from ads_groups where company_id=$1 and key_words_length=$2 and key_words_count<200 order by ads_group_id DESC limit 1",
         "options": {
           "queryReplacement": "={{ $json.company_id }},{{ $json.key_word_length }}"
         }
@@ -406,7 +406,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        112,
+        320,
         -272
       ],
       "id": "df9f23e0-4ffd-48a3-b696-bfa637d129f1",
@@ -420,19 +420,6 @@
     },
     {
       "parameters": {
-        "errorMessage": "too many ads"
-      },
-      "type": "n8n-nodes-base.stopAndError",
-      "typeVersion": 1,
-      "position": [
-        -144,
-        -544
-      ],
-      "id": "e9d3214f-cb55-4ed8-9802-c4d36e5da873",
-      "name": "Stop and Error2"
-    },
-    {
-      "parameters": {
         "operation": "executeQuery",
         "query": "update ads_groups set key_words_count=key_words_count+1 where ads_group_id=$1",
         "options": {
@@ -442,7 +429,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        -160,
+        48,
         -288
       ],
       "id": "70d7b4c3-c5e6-432f-ad3d-32d0709f4a5a",
@@ -509,7 +496,7 @@
       "type": "n8n-nodes-base.splitInBatches",
       "typeVersion": 3,
       "position": [
-        -112,
+        96,
         -1216
       ],
       "id": "3ee504d4-2c45-4f95-aa03-4631be97a850",
@@ -531,7 +518,7 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "select * from ads_groups where company_id=$1 and is_own_brand=true and key_words_count<200",
+        "query": "select * from ads_groups where company_id=$1 and is_own_brand=true and key_words_count<200 order by ads_group_id DESC limit 1",
         "options": {
           "queryReplacement": "={{ $json.company_id }}"
         }
@@ -539,7 +526,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        80,
+        288,
         -1136
       ],
       "id": "35ade92d-51f5-440b-b072-1f4aea7779a8",
@@ -593,7 +580,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        272,
+        480,
         -1104
       ],
       "id": "9f29826c-694e-4fee-addb-338b61fb4a42",
@@ -610,7 +597,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        880,
+        1088,
         -976
       ],
       "id": "3d4a2f43-7eab-4bbb-aed3-8c21921e1bbf",
@@ -624,19 +611,6 @@
     },
     {
       "parameters": {
-        "errorMessage": "too many ads"
-      },
-      "type": "n8n-nodes-base.stopAndError",
-      "typeVersion": 1,
-      "position": [
-        624,
-        -1248
-      ],
-      "id": "fc1cd747-d4e1-44c7-b20a-7ae896455367",
-      "name": "Stop and Error"
-    },
-    {
-      "parameters": {
         "operation": "executeQuery",
         "query": "update ads_groups set key_words_count=key_words_count+1 where ads_group_id=$1",
         "options": {
@@ -646,7 +620,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        608,
+        816,
         -992
       ],
       "id": "b2a2f439-c94e-49b4-b68c-a909a4a5f444",
@@ -779,7 +753,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        -448,
+        -240,
         -1248
       ],
       "id": "e69c4ed4-8345-4e76-aeb7-c40be8b5879a",
@@ -860,6 +834,52 @@
       "id": "a7db90ef-171f-4798-9bd4-94bbf63fb364",
       "name": "to_update_groups1",
       "executeOnce": true,
+      "credentials": {
+        "postgres": {
+          "id": "Hx2VFmUi5WO2K4QX",
+          "name": "Postgres account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "WITH src_group AS (\n    -- 1. Берём исходную группу\n    SELECT *\n    FROM public.ads_groups\n    WHERE key_words_length = $1\n    AND company_id=$2\n\tAND is_own_brand=false\n    ORDER BY ads_group_id DESC\n    LIMIT 1\n),\nins_group AS (\n    -- 2. Вставляем новую группу, копируя нужные поля\n    INSERT INTO public.ads_groups (\n        company_id,\n        group_name,\n        group_yandex_id,\n        key_words_length,\n        is_own_brand,\n        key_words_count,\n        service_id\n    )\n    SELECT\n        company_id,\n        group_name,\n        group_yandex_id,\n        key_words_length,\n        is_own_brand,\n        0 as key_words_count,\n        service_id\n    FROM src_group\n    RETURNING ads_group_id AS new_ads_group_id, company_id\n)\n-- 3. Дублируем объявления для новой группы\nINSERT INTO public.ads_for_groups (\n    ads_group_id,\n    ad_header,\n    ad_text,\n    ad_url,\n    is_active\n)\nSELECT\n    ig.new_ads_group_id,\n    afg.ad_header,\n    afg.ad_text,\n    afg.ad_url,\n    afg.is_active\nFROM src_group sg\nJOIN ins_group ig ON TRUE\nJOIN public.ads_for_groups afg\n    ON afg.ads_group_id = sg.ads_group_id returning ads_group_id; ",
+        "options": {
+          "queryReplacement": "={{ $('Loop Over Items3').item.json.key_word_length }},{{ $('Loop Over Items3').item.json.company_id }}"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -288,
+        -496
+      ],
+      "id": "5acefb16-a708-45da-bac1-90f3da7edd55",
+      "name": "Execute a SQL query",
+      "credentials": {
+        "postgres": {
+          "id": "Hx2VFmUi5WO2K4QX",
+          "name": "Postgres account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "WITH src_group AS (\n    -- 1. Берём исходную группу\n    SELECT *\n    FROM public.ads_groups\n    WHERE company_id = $1\n\tAND is_own_brand=true\n    ORDER BY ads_group_id DESC\n    LIMIT 1\n),\nins_group AS (\n    -- 2. Вставляем новую группу, копируя нужные поля\n    INSERT INTO public.ads_groups (\n        company_id,\n        group_name,\n        group_yandex_id,\n        key_words_length,\n        is_own_brand,\n        key_words_count,\n        service_id\n    )\n    SELECT\n        company_id,\n        group_name,\n        group_yandex_id,\n        key_words_length,\n        is_own_brand,\n        0 as key_words_count,\n        service_id\n    FROM src_group\n    RETURNING ads_group_id AS new_ads_group_id, company_id\n)\n-- 3. Дублируем объявления для новой группы\nINSERT INTO public.ads_for_groups (\n    ads_group_id,\n    ad_header,\n    ad_text,\n    ad_url,\n    is_active\n)\nSELECT\n    ig.new_ads_group_id,\n    afg.ad_header,\n    afg.ad_text,\n    afg.ad_url,\n    afg.is_active\nFROM src_group sg\nJOIN ins_group ig ON TRUE\nJOIN public.ads_for_groups afg\n    ON afg.ads_group_id = sg.ads_group_id returning ads_group_id; ",
+        "options": {
+          "queryReplacement": "={{ $('Loop Over Items').item.json.company_id }}"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        704,
+        -1168
+      ],
+      "id": "a8ba8ad7-2634-4195-956d-e90d65737e60",
+      "name": "Execute a SQL query1",
       "credentials": {
         "postgres": {
           "id": "Hx2VFmUi5WO2K4QX",
@@ -1041,7 +1061,7 @@
       "main": [
         [
           {
-            "node": "Stop and Error2",
+            "node": "Execute a SQL query",
             "type": "main",
             "index": 0
           }
@@ -1132,7 +1152,7 @@
       "main": [
         [
           {
-            "node": "Stop and Error",
+            "node": "Execute a SQL query1",
             "type": "main",
             "index": 0
           }
@@ -1266,6 +1286,28 @@
           }
         ]
       ]
+    },
+    "Execute a SQL query": {
+      "main": [
+        [
+          {
+            "node": "update group",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute a SQL query1": {
+      "main": [
+        [
+          {
+            "node": "update group1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
@@ -1308,7 +1350,7 @@
       }
     ]
   },
-  "versionId": "9f59397a-03be-4fdb-b0a4-44b3855debbc",
+  "versionId": "041bc808-f665-4e1c-b944-e4ad0f49ebdd",
   "triggerCount": 0,
   "shared": [
     {
