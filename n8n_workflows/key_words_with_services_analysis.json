@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-25T09:31:34.102Z",
+  "updatedAt": "2025-11-25T12:13:17.037Z",
   "createdAt": "2025-09-15T10:20:29.723Z",
   "id": "AEZDBlqe199xBn5u",
   "name": "key_words_with_services_analysis",
@@ -788,8 +788,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        416,
-        -272
+        448,
+        -384
       ],
       "id": "11832d88-21d7-4d4b-b240-2b5c43bacd7a",
       "name": "If no records"
@@ -901,7 +901,7 @@
       "typeVersion": 2.6,
       "position": [
         464,
-        -512
+        -624
       ],
       "id": "826ac64e-6915-4750-9957-f3e180e46638",
       "name": "Services list1",
@@ -1507,7 +1507,7 @@
       "typeVersion": 2.6,
       "position": [
         320,
-        -736
+        -848
       ],
       "id": "558fd2f4-e8b1-4874-a55d-35941681e57a",
       "name": "Mark_workflow_total_steps1",
@@ -1528,7 +1528,7 @@
       "typeVersion": 2,
       "position": [
         464,
-        -720
+        -832
       ],
       "id": "9ca46d01-8ed7-4f99-94b1-51d06dc6ecb0",
       "name": "Init total counter1"
@@ -1541,7 +1541,7 @@
       "typeVersion": 3.2,
       "position": [
         656,
-        -752
+        -864
       ],
       "id": "551e6585-c030-41e7-b85a-c3f30d887eda",
       "name": "Merge2"
@@ -1585,8 +1585,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        192,
-        -912
+        144,
+        -1040
       ],
       "id": "ee9361e9-9e9e-4aa3-a2df-5da14fc475d5",
       "name": "Get not processes keys",
@@ -1993,7 +1993,7 @@
       "main": [
         [
           {
-            "node": "Mark_workflow_completed",
+            "node": "Get not processes keys",
             "type": "main",
             "index": 0
           }
@@ -2515,7 +2515,7 @@
       }
     ]
   },
-  "versionId": "75326bc9-7ff4-4dd4-9bda-1c0aaa929434",
+  "versionId": "49fad4b2-07a9-4a2c-a63d-1f1d4ba56618",
   "triggerCount": 0,
   "shared": [
     {
