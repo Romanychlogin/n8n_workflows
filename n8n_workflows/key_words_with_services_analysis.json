@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-25T13:46:48.611Z",
+  "updatedAt": "2025-11-25T13:52:23.267Z",
   "createdAt": "2025-09-15T10:20:29.723Z",
   "id": "AEZDBlqe199xBn5u",
   "name": "key_words_with_services_analysis",
@@ -838,7 +838,7 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "WITH next_batch AS (\n    SELECT key_word_id\n    FROM key_words\n    WHERE company_id=$1 \n\tand is_relevant is null \n\tand resolution_type <> 'in_progress'\n    ORDER BY key_word_id asc\n    FOR UPDATE SKIP LOCKED\n    LIMIT $2\n)\nUPDATE key_words t\nSET resolution_type = 'in_progress'\nFROM next_batch nb\nWHERE t.key_word_id = nb.key_word_id\nRETURNING t.*",
+        "query": "WITH next_batch AS (\n    SELECT key_word_id\n    FROM key_words\n    WHERE company_id=$1 \n\tand is_relevant is null \n\tand resolution_type is null\n    ORDER BY key_word_id asc\n    FOR UPDATE SKIP LOCKED\n    LIMIT $2\n)\nUPDATE key_words t\nSET resolution_type = 'in_progress'\nFROM next_batch nb\nWHERE t.key_word_id = nb.key_word_id\nRETURNING t.*",
         "options": {
           "queryReplacement": "={{ $('When Executed by Another Workflow').item.json.company_id }},{{ $('When Executed by Another Workflow').item.json.batch_size }}"
         }
@@ -1226,7 +1226,7 @@
       }
     ]
   },
-  "versionId": "48b0df1d-fa7d-46cf-895c-26983eaf3c22",
+  "versionId": "6bc68ba5-6f56-49ae-a71e-6ea8f1780562",
   "triggerCount": 0,
   "shared": [
     {
