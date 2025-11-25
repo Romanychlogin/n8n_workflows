@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-25T17:31:12.514Z",
+  "updatedAt": "2025-11-25T18:29:17.231Z",
   "createdAt": "2025-09-10T14:56:27.610Z",
   "id": "5Se0CY4jTtS5g7n3",
   "name": "company services",
@@ -248,7 +248,7 @@
     },
     {
       "parameters": {
-        "jsCode": "// Берём первый item из входных данных\nconst input = JSON.parse($json.output[1].content[0].text);\nconst company_id=$('When Executed by Another Workflow').first().json.company_id\n// Достаём массив competitors\nconst variants = input.service_listing;\n\n// Разворачиваем каждый объект в отдельный item\nreturn variants.map((c, index) => ({\n  json: {\n    index,\n    service_name: c.service_name,\n    service_url: c.service_url,\n    company_id:company_id\n    \n  }\n}));"
+        "jsCode": "// Берём первый item из входных данных\nconst input = JSON.parse($json.output[1].content[0].text);\nconst company_id=$('When Executed by Another Workflow').first().json.company_id\n// Достаём массив competitors\nconst variants = input.service_listing;\n\n// Разворачиваем каждый объект в отдельный item\nreturn variants.map((c, index) => ({\n  json: {\n    service_name: c.service_name,\n    service_url: c.service_url    \n  }\n}));"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -787,7 +787,7 @@
     },
     {
       "parameters": {
-        "jsCode": "return [{\n  json: \n {\n  \"model\": \"gpt-5\",\n  \"input\": [\n    {\n      \"role\": \"developer\",\n      \"content\": [\n        {\n          \"type\": \"input_text\",\n          \"text\": \"Отвечай только валидным JSON\"\n        }\n      ]\n    },\n    {\n      \"role\": \"user\",\n      \"content\": [\n        {\n          \"type\": \"input_text\",\n          \"text\": $json.my_prompt\n        }\n      ]\n    }\n  ],\n  \"text\": {\n    \"format\": {\n      \"type\": \"json_schema\",\n      \"name\": \"service_listings\",\n      \"strict\": true,\n      \"schema\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"service_listing\": {\n            \"type\": \"array\",\n            \"description\": \"service_listing, each as a name, URL and description row.\",\n            \"items\": {\n              \"type\": \"object\",\n              \"properties\": {\n                \"service_name\": {\n                  \"type\": \"string\",\n                  \"description\": \"The name of the service\",\n                  \"minLength\": 1\n                },\n                \"service_url\": {\n                  \"type\": \"string\",\n                  \"description\": \"The root URL where the service is available\",\n                  \"minLength\": 1\n                }\n              },\n              \"required\": [\n                \"service_name\",\n                \"service_url\"\n              ],\n              \"additionalProperties\": false\n            }\n          }\n        },\n        \"required\": [\n          \"service_listing\"\n        ],\n        \"additionalProperties\": false\n      }\n    },\n    \"verbosity\": \"medium\"\n  },\n  \"reasoning\": {\n    \"effort\": \"low\",\n    \"summary\": \"auto\"\n  },\n  \"tools\": [],\n  \"store\": false,\n  \"include\": [\n    \"reasoning.encrypted_content\",\n    \"web_search_call.action.sources\"\n  ]\n}\n\n}];"
+        "jsCode": "return [{\n  json: \n {\n  \"model\": \"gpt-5\",\n  \"input\": [\n    {\n      \"role\": \"developer\",\n      \"content\": [\n        {\n          \"type\": \"input_text\",\n          \"text\": \"Выводи только валидный JSON-массив объектов в формате: [{\\\"service_name\\\": string, \\\"service_url\\\": string, \\\"service_description\\\": string, \\\"service_description_with_url\\\": string}]. Не добавляй комментариев или форматирования вне этого массива.\\n\\n'''\\nФормат вывода:\\n- Массив объектов JSON.\\n- Каждый объект должен содержать поля:\\n  - \\\"service_name\\\": (обязательно, string) — название сервиса.\\n  - \\\"service_url\\\": (опционально, string) — адрес сервиса. \\n  - \\\"service_description\\\": (string) —полное описание сервиса. Если если описание не идентифицированино  - передай null\\n  - \\\"service_description_with_url\\\": (string) —полное описание сервиса включая ссылки на весь контент сервиса и услуги. Если если описание не идентифицированино  - передай null\"\n        }\n      ]\n    },\n    {\n      \"role\": \"user\",\n      \"content\": [\n        {\n          \"type\": \"input_text\",\n          \"text\": $json.my_prompt\n        }\n      ]\n    }\n  ],\n  \"text\": {\n    \"format\": {\n      \"type\": \"json_schema\",\n      \"name\": \"service_listing\",\n      \"strict\": true,\n      \"schema\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"service\": {\n            \"type\": \"array\",\n            \"description\": \"service_listing, each as a name, URL and description row.\",\n            \"items\": {\n              \"type\": \"object\",\n              \"properties\": {\n                \"service_name\": {\n                  \"type\": \"string\",\n                  \"description\": \"The name of the service\",\n                  \"minLength\": 1\n                },\n                \"service_url\": {\n                  \"type\": \"string\",\n                  \"description\": \"The root URL where the service is available\",\n                  \"minLength\": 1\n                },\n                \"service_description\": {\n                  \"type\": \"string\",\n                  \"description\": \"Detailed description of the service\",\n                  \"minLength\": 1\n                },\n                \"service_description_with_url\": {\n                  \"type\": \"string\",\n                  \"description\": \"Detailed description of the service including urls\",\n                  \"minLength\": 1\n                }\n              },\n              \"required\": [\n                \"service_name\",\n                \"service_url\",\n                \"service_description\",\n                \"service_description_with_url\"\n              ],\n              \"additionalProperties\": false\n            }\n          }\n        },\n        \"required\": [\n          \"service\"\n        ],\n        \"additionalProperties\": false\n      }\n    },\n    \"verbosity\": \"medium\"\n  },\n  \"reasoning\": {\n    \"effort\": \"high\",\n    \"summary\": \"auto\"\n  },\n  \"tools\": [\n    {\n      \"type\": \"web_search\",\n      \"user_location\": {\n        \"type\": \"approximate\"\n      },\n      \"search_context_size\": \"medium\",\n      \"filters\": {\n        \"allowed_domains\": [\n          JSON.stringify($('Call Get sitemap').last().json.urls)\n        ]\n      }\n    }\n  ],\n  \"store\": false,\n  \"include\": [\n    \"reasoning.encrypted_content\",\n    \"web_search_call.action.sources\"\n  ]\n}\n\n}];"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -800,7 +800,7 @@
     },
     {
       "parameters": {
-        "jsCode": "const workflowData = $getWorkflowStaticData('global');\nlet my_prompt = workflowData.my_prompt.data;\n\n\n// Собираем my_prompt\nitem.json.my_prompt = String(my_prompt)\n  .replaceAll('{{ccompany_name}}', $('When Executed by Another Workflow').first().json.company_name)\n  .replaceAll('{{services_list}}', $('When Executed by Another Workflow').first().json.services_description);\n\nreturn item;"
+        "jsCode": "const workflowData = $getWorkflowStaticData('global');\nlet my_prompt = workflowData.my_prompt.data;\n\nfor (const item of $input.all()) {\n  item.json.my_prompt = String(my_prompt)\n  .replaceAll('{{ccompany_name}}', $('When Executed by Another Workflow').first().json.company_name)\n  .replaceAll('{{service_description}}', JSON.stringify($('Loop Over Items').last().json))\n  .replaceAll('{{company_content}}', workflowData.UserContent);\n}\n\nreturn $input.all();"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -810,30 +810,6 @@
       ],
       "id": "eedec487-dca0-40b7-8d70-3b1b8e3cd2e8",
       "name": "Set prompt1"
-    },
-    {
-      "parameters": {
-        "workflowId": {
-          "__rl": true,
-          "value": "7FoU9Spu4KwNDAMk",
-          "mode": "list",
-          "cachedResultUrl": "/workflow/7FoU9Spu4KwNDAMk",
-          "cachedResultName": "Get sitemap"
-        },
-        "workflowInputs": {
-          "mappingMode": "defineBelow",
-          "value": {}
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.executeWorkflow",
-      "typeVersion": 1.3,
-      "position": [
-        3456,
-        176
-      ],
-      "id": "9a249ccf-9df4-401c-9c35-a96ea9237c8c",
-      "name": "Call 'Get sitemap'"
     },
     {
       "parameters": {
@@ -969,6 +945,30 @@
       ],
       "id": "33d60465-75de-4acf-831b-3e05b23fba0c",
       "name": "Code in JavaScript1"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "7FoU9Spu4KwNDAMk",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/7FoU9Spu4KwNDAMk",
+          "cachedResultName": "Get sitemap"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {}
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.3,
+      "position": [
+        3456,
+        176
+      ],
+      "id": "9a249ccf-9df4-401c-9c35-a96ea9237c8c",
+      "name": "Call Get sitemap"
     }
   ],
   "connections": {
@@ -1303,18 +1303,7 @@
       "main": [
         [
           {
-            "node": "Call 'Get sitemap'",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Call 'Get sitemap'": {
-      "main": [
-        [
-          {
-            "node": "Set prompt1",
+            "node": "Call Get sitemap",
             "type": "main",
             "index": 0
           }
@@ -1392,6 +1381,17 @@
         [
           {
             "node": "Call 'create content records for the  key word'",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Call Get sitemap": {
+      "main": [
+        [
+          {
+            "node": "Set prompt1",
             "type": "main",
             "index": 0
           }
@@ -1538,7 +1538,7 @@
       }
     ]
   },
-  "versionId": "1e71fead-870e-4490-8667-4bcfa5366afd",
+  "versionId": "8547d63d-9763-434f-9259-bd177c5adfda",
   "triggerCount": 0,
   "shared": [
     {
