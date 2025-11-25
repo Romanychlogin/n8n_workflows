@@ -1,24 +1,11 @@
 {
-  "updatedAt": "2025-11-25T13:44:02.058Z",
+  "updatedAt": "2025-11-25T14:44:32.194Z",
   "createdAt": "2025-11-25T13:44:02.058Z",
   "id": "7v6i6SZ28ZZg9u2D",
   "name": "key_words_with_services_analysis_AI",
   "active": false,
   "isArchived": false,
   "nodes": [
-    {
-      "parameters": {
-        "options": {}
-      },
-      "type": "n8n-nodes-base.splitInBatches",
-      "typeVersion": 3,
-      "position": [
-        944,
-        288
-      ],
-      "id": "8f6a5618-fc11-41ce-8334-ca98e3f3e286",
-      "name": "Loop Over Items"
-    },
     {
       "parameters": {
         "operation": "update",
@@ -358,67 +345,6 @@
     },
     {
       "parameters": {
-        "workflowId": {
-          "__rl": true,
-          "value": "xKP6S9XsCeVSgebo",
-          "mode": "list",
-          "cachedResultName": "Check VS company name SUB"
-        },
-        "workflowInputs": {
-          "mappingMode": "defineBelow",
-          "value": {},
-          "matchingColumns": [],
-          "schema": [],
-          "attemptToConvertTypes": false,
-          "convertFieldsToString": true
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.executeWorkflow",
-      "typeVersion": 1.2,
-      "position": [
-        2240,
-        272
-      ],
-      "id": "5d004451-d646-4c93-88dc-687146201662",
-      "name": "Find competitors mentions"
-    },
-    {
-      "parameters": {
-        "conditions": {
-          "options": {
-            "caseSensitive": true,
-            "leftValue": "",
-            "typeValidation": "strict",
-            "version": 2
-          },
-          "conditions": [
-            {
-              "id": "ca56d76f-8158-451b-95b0-48adbef68027",
-              "leftValue": "={{ $json.hits}}",
-              "rightValue": "",
-              "operator": {
-                "type": "array",
-                "operation": "empty",
-                "singleValue": true
-              }
-            }
-          ],
-          "combinator": "and"
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.if",
-      "typeVersion": 2.2,
-      "position": [
-        2432,
-        336
-      ],
-      "id": "eee3fac9-c47a-411f-a97b-7d1babfb8f54",
-      "name": "If competitors not found"
-    },
-    {
-      "parameters": {
         "jsCode": "const workflowData = $getWorkflowStaticData('global');\nlet my_prompt = workflowData.my_prompt.data;\n\n\n $json.my_prompt = my_prompt.replaceAll(\"{{company_name}}\", $('Services list1').first().json.company_name).replaceAll(\"{{service_description}}\", $('Loop Over services1').first().json.service_name +' ' + $('Loop Over services1').first().json.service_description).replaceAll(\"{{key_words}}\",JSON.stringify($json.items));\n\n\nreturn $input.all();"
       },
       "type": "n8n-nodes-base.code",
@@ -429,239 +355,6 @@
       ],
       "id": "b08bdde2-db5b-4ae4-8518-2ddfbfb4ce1f",
       "name": "create prompt"
-    },
-    {
-      "parameters": {
-        "workflowId": {
-          "__rl": true,
-          "value": "rmq06a0YRFizRgV1",
-          "mode": "list",
-          "cachedResultName": "chech phrase VS minus words"
-        },
-        "workflowInputs": {
-          "mappingMode": "defineBelow",
-          "value": {}
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.executeWorkflow",
-      "typeVersion": 1.2,
-      "position": [
-        1280,
-        288
-      ],
-      "id": "3ca97071-b98c-4b06-a115-3bf0c4c0225a",
-      "name": "Call 'chech phrase VS minus words'"
-    },
-    {
-      "parameters": {
-        "conditions": {
-          "options": {
-            "caseSensitive": true,
-            "leftValue": "",
-            "typeValidation": "strict",
-            "version": 2
-          },
-          "conditions": [
-            {
-              "id": "15c79f0c-cbc6-4639-81c6-a2f3dc3455aa",
-              "leftValue": "={{ $json.matches }}",
-              "rightValue": "",
-              "operator": {
-                "type": "array",
-                "operation": "empty",
-                "singleValue": true
-              }
-            }
-          ],
-          "combinator": "and"
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.if",
-      "typeVersion": 2.2,
-      "position": [
-        1504,
-        288
-      ],
-      "id": "6f7adbf0-9cfe-4e57-94bc-ce55eb482e8f",
-      "name": "If no matches"
-    },
-    {
-      "parameters": {
-        "operation": "update",
-        "schema": {
-          "__rl": true,
-          "mode": "list",
-          "value": "public"
-        },
-        "table": {
-          "__rl": true,
-          "value": "key_words",
-          "mode": "list",
-          "cachedResultName": "key_words"
-        },
-        "columns": {
-          "mappingMode": "defineBelow",
-          "value": {
-            "key_word_id": "={{ $('Loop Over Items').item.json.key_word_id }}",
-            "is_relevant": "={{ false }}",
-            "resolution_type": "={{ $json.resolution_type }}"
-          },
-          "matchingColumns": [
-            "key_word_id"
-          ],
-          "schema": [
-            {
-              "id": "key_word_id",
-              "displayName": "key_word_id",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "number",
-              "canBeUsedToMatch": true,
-              "removed": false
-            },
-            {
-              "id": "company_id",
-              "displayName": "company_id",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "number",
-              "canBeUsedToMatch": true,
-              "removed": true
-            },
-            {
-              "id": "key_word",
-              "displayName": "key_word",
-              "required": true,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true,
-              "removed": true
-            },
-            {
-              "id": "wordstat_count",
-              "displayName": "wordstat_count",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "number",
-              "canBeUsedToMatch": true,
-              "removed": true
-            },
-            {
-              "id": "service_id",
-              "displayName": "service_id",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "number",
-              "canBeUsedToMatch": true,
-              "removed": true
-            },
-            {
-              "id": "wordstat_parsed",
-              "displayName": "wordstat_parsed",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "boolean",
-              "canBeUsedToMatch": true,
-              "removed": true
-            },
-            {
-              "id": "from_wordstat",
-              "displayName": "from_wordstat",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "boolean",
-              "canBeUsedToMatch": true,
-              "removed": true
-            },
-            {
-              "id": "is_relevant",
-              "displayName": "is_relevant",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "boolean",
-              "canBeUsedToMatch": true,
-              "removed": false
-            },
-            {
-              "id": "ai_response_tokens",
-              "displayName": "ai_response_tokens",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "number",
-              "canBeUsedToMatch": true,
-              "removed": true
-            },
-            {
-              "id": "minus_words_processed",
-              "displayName": "minus_words_processed",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "boolean",
-              "canBeUsedToMatch": true,
-              "removed": true
-            },
-            {
-              "id": "is_adv_processed",
-              "displayName": "is_adv_processed",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "boolean",
-              "canBeUsedToMatch": true,
-              "removed": true
-            },
-            {
-              "id": "key_word_clean",
-              "displayName": "key_word_clean",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true,
-              "removed": true
-            },
-            {
-              "id": "resolution_type",
-              "displayName": "resolution_type",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true,
-              "removed": false
-            }
-          ],
-          "attemptToConvertTypes": false,
-          "convertFieldsToString": false
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.postgres",
-      "typeVersion": 2.6,
-      "position": [
-        2880,
-        496
-      ],
-      "id": "493dd556-5e3c-49c9-a19a-f3edf60effa2",
-      "name": "Mark non relevant",
-      "credentials": {
-        "postgres": {
-          "id": "Hx2VFmUi5WO2K4QX",
-          "name": "Postgres account 2"
-        }
-      }
     },
     {
       "parameters": {
@@ -680,8 +373,7 @@
           "cachedResultUrl": "https://github.com/Romanychlogin/n8n_prompts"
         },
         "filePath": "keyword__with_services_analysis.txt",
-        "additionalParameters": {},
-        "path": "e68fb9db-0d18-4035-9133-a36810ad4cee"
+        "additionalParameters": {}
       },
       "type": "n8n-nodes-base.github",
       "typeVersion": 1.1,
@@ -743,8 +435,7 @@
           "cachedResultUrl": "https://github.com/Romanychlogin/n8n_prompts"
         },
         "filePath": "keyword__with_services_analysis_first.txt",
-        "additionalParameters": {},
-        "path": "399d5f0a-c1c5-4d26-b696-b75c63028f4c"
+        "additionalParameters": {}
       },
       "type": "n8n-nodes-base.github",
       "typeVersion": 1.1,
@@ -761,40 +452,6 @@
           "name": "GitHub account"
         }
       }
-    },
-    {
-      "parameters": {
-        "conditions": {
-          "options": {
-            "caseSensitive": true,
-            "leftValue": "",
-            "typeValidation": "strict",
-            "version": 2
-          },
-          "conditions": [
-            {
-              "id": "ad593e56-742a-4e5a-a72d-7c3410093a54",
-              "leftValue": "={{$json}}",
-              "rightValue": "",
-              "operator": {
-                "type": "object",
-                "operation": "empty",
-                "singleValue": true
-              }
-            }
-          ],
-          "combinator": "and"
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.if",
-      "typeVersion": 2.2,
-      "position": [
-        448,
-        -384
-      ],
-      "id": "c454a7e6-5d94-4eb6-9923-1981cb68ede2",
-      "name": "If no records"
     },
     {
       "parameters": {
@@ -1224,253 +881,6 @@
     },
     {
       "parameters": {
-        "content": "remove wordstat_processed"
-      },
-      "type": "n8n-nodes-base.stickyNote",
-      "typeVersion": 1,
-      "position": [
-        160,
-        528
-      ],
-      "id": "bb7a72dd-db30-476c-bd04-6124ea87ba86",
-      "name": "Sticky Note1"
-    },
-    {
-      "parameters": {
-        "operation": "executeQuery",
-        "query": "WITH next_batch AS (\n    SELECT key_word_id\n    FROM key_words\n    WHERE company_id=$1 \n\tand is_relevant is null \n\tand resolution_type <> 'in_progress'\n    ORDER BY key_word_id asc\n    FOR UPDATE SKIP LOCKED\n    LIMIT $2\n)\nUPDATE key_words t\nSET resolution_type = 'in_progress'\nFROM next_batch nb\nWHERE t.key_word_id = nb.key_word_id\nRETURNING t.*",
-        "options": {
-          "queryReplacement": ""
-        }
-      },
-      "type": "n8n-nodes-base.postgres",
-      "typeVersion": 2.6,
-      "position": [
-        -352,
-        -192
-      ],
-      "id": "49371e87-2322-4c48-84b3-fa96bc72ebd0",
-      "name": "Get not processes keys2",
-      "alwaysOutputData": true,
-      "credentials": {
-        "postgres": {
-          "id": "Hx2VFmUi5WO2K4QX",
-          "name": "Postgres account 2"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "operation": "executeQuery",
-        "query": "update business_processes_states set steps_total=$2 where  n8n_workflow_execution_id=$1",
-        "options": {
-          "queryReplacement": "=[{{$execution.id}},{{$input.all().length}}]"
-        }
-      },
-      "type": "n8n-nodes-base.postgres",
-      "typeVersion": 2.6,
-      "position": [
-        -192,
-        16
-      ],
-      "id": "00d276f5-707a-44bf-b56d-d8f6fc84ebe4",
-      "name": "Mark_workflow_total_steps",
-      "executeOnce": true,
-      "alwaysOutputData": false,
-      "credentials": {
-        "postgres": {
-          "id": "4YkdFJcdTgzo9hkz",
-          "name": "PGvector"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "jsCode": "// Function-Node (Run Once)\nconst workflowData = $getWorkflowStaticData('global');\nworkflowData.steps_passed = 0;\nworkflowData.tokens_used = 0;\nreturn $input.all();\n"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        -48,
-        48
-      ],
-      "id": "02ffb508-3998-4ca0-883d-af1f62e8007c",
-      "name": "Init total counter"
-    },
-    {
-      "parameters": {
-        "errorMessage": "Process terminated by user"
-      },
-      "type": "n8n-nodes-base.stopAndError",
-      "typeVersion": 1,
-      "position": [
-        3008,
-        688
-      ],
-      "id": "a6e433fa-900c-4066-a940-bf63cf3581de",
-      "name": "Stop and Error"
-    },
-    {
-      "parameters": {
-        "operation": "select",
-        "schema": {
-          "__rl": true,
-          "mode": "list",
-          "value": "public"
-        },
-        "table": {
-          "__rl": true,
-          "value": "business_processes_states",
-          "mode": "list",
-          "cachedResultName": "business_processes_states"
-        },
-        "returnAll": true,
-        "where": {
-          "values": [
-            {
-              "column": "n8n_workflow_execution_id",
-              "value": "={{ $execution.id }}"
-            }
-          ]
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.postgres",
-      "typeVersion": 2.6,
-      "position": [
-        1840,
-        832
-      ],
-      "id": "f7b449b1-9a30-4071-89d3-6177e9db3b53",
-      "name": "check if termination is requested",
-      "credentials": {
-        "postgres": {
-          "id": "4YkdFJcdTgzo9hkz",
-          "name": "PGvector"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nconst workflowData = $getWorkflowStaticData('global');\nworkflowData.steps_passed++; // update steps counter\nfor (const item of $input.all()) {\n  item.json.steps_passed = workflowData.steps_passed;\n}\n\n\nreturn $input.all();"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        1152,
-        832
-      ],
-      "id": "584dabd8-5f5b-4aa7-aad8-7685e51005e2",
-      "name": "Get current step saved"
-    },
-    {
-      "parameters": {
-        "operation": "executeQuery",
-        "query": "update business_processes_states set steps_passed=$2, tokens_used=0 where n8n_workflow_execution_id=$1",
-        "options": {
-          "queryReplacement": "=[{{$execution.id}},{{$json.steps_passed}}]"
-        }
-      },
-      "type": "n8n-nodes-base.postgres",
-      "typeVersion": 2.6,
-      "position": [
-        1408,
-        832
-      ],
-      "id": "c3766eb7-c557-4a8c-b680-1ae03f696e9e",
-      "name": "Mark_workflow_passed_steps1",
-      "executeOnce": true,
-      "credentials": {
-        "postgres": {
-          "id": "4YkdFJcdTgzo9hkz",
-          "name": "PGvector"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "conditions": {
-          "options": {
-            "caseSensitive": true,
-            "leftValue": "",
-            "typeValidation": "strict",
-            "version": 2
-          },
-          "conditions": [
-            {
-              "id": "fa13510a-3a56-4cd5-8b80-3e4fe626ce0b",
-              "leftValue": "={{ $json.to_terminate }}",
-              "rightValue": true,
-              "operator": {
-                "type": "boolean",
-                "operation": "equals"
-              }
-            }
-          ],
-          "combinator": "and"
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.if",
-      "typeVersion": 2.2,
-      "position": [
-        2080,
-        832
-      ],
-      "id": "6f4da693-7852-4672-a680-4ae4aee4d2b2",
-      "name": "If1"
-    },
-    {
-      "parameters": {
-        "mode": "chooseBranch"
-      },
-      "type": "n8n-nodes-base.merge",
-      "typeVersion": 3.2,
-      "position": [
-        208,
-        -176
-      ],
-      "id": "e49f3f14-8b41-458f-a9ac-7fa9df830ca5",
-      "name": "Merge"
-    },
-    {
-      "parameters": {
-        "assignments": {
-          "assignments": [
-            {
-              "id": "4db35a49-e130-4ff8-9ccb-7b452205f80a",
-              "name": "threshold",
-              "value": "=0.88",
-              "type": "number"
-            },
-            {
-              "id": "f1fa4446-3055-4621-85ac-42b2110d1c9f",
-              "name": "key_word",
-              "value": "={{ $('Loop Over Items').last().json.key_word }}",
-              "type": "string"
-            },
-            {
-              "id": "6242a98d-b3e5-43cd-aac4-380d32972d20",
-              "name": "company_id",
-              "value": "={{ $('Loop Over Items').last().json.company_id }}",
-              "type": "string"
-            }
-          ]
-        },
-        "includeOtherFields": true,
-        "options": {}
-      },
-      "type": "n8n-nodes-base.set",
-      "typeVersion": 3.4,
-      "position": [
-        2032,
-        224
-      ],
-      "id": "90b4fcb2-c8f0-4add-ba26-1b6aa8e49dd0",
-      "name": "set input"
-    },
-    {
-      "parameters": {
         "operation": "executeQuery",
         "query": "update business_processes_states set steps_total=steps_total+$2 where  n8n_workflow_execution_id=$1",
         "options": {
@@ -1694,67 +1104,9 @@
       ],
       "id": "1f6faf12-60f2-49a8-9ac5-8e6f3a40ad7e",
       "name": "If"
-    },
-    {
-      "parameters": {
-        "assignments": {
-          "assignments": [
-            {
-              "id": "0cc3081f-8e41-43bc-b63b-e7d5f5cfa468",
-              "name": "resolution_type",
-              "value": "minus words",
-              "type": "string"
-            }
-          ]
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.set",
-      "typeVersion": 3.4,
-      "position": [
-        1776,
-        384
-      ],
-      "id": "d27a2a77-49df-452f-897d-bcfb17e0739c",
-      "name": "from minuses"
-    },
-    {
-      "parameters": {
-        "assignments": {
-          "assignments": [
-            {
-              "id": "0cc3081f-8e41-43bc-b63b-e7d5f5cfa468",
-              "name": "resolution_type",
-              "value": "competitors",
-              "type": "string"
-            }
-          ]
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.set",
-      "typeVersion": 3.4,
-      "position": [
-        2656,
-        336
-      ],
-      "id": "12404da4-e8ef-4286-af3c-dbbfead71011",
-      "name": "from competitors"
     }
   ],
   "connections": {
-    "Loop Over Items": {
-      "main": [
-        [],
-        [
-          {
-            "node": "Call 'chech phrase VS minus words'",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "update": {
       "main": [
         [
@@ -1821,7 +1173,7 @@
       "main": [
         [
           {
-            "node": "Get not processes keys2",
+            "node": "Get not processes keys",
             "type": "main",
             "index": 0
           }
@@ -1850,80 +1202,11 @@
         ]
       ]
     },
-    "Find competitors mentions": {
-      "main": [
-        [
-          {
-            "node": "If competitors not found",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "If competitors not found": {
-      "main": [
-        [
-          {
-            "node": "Get current step saved",
-            "type": "main",
-            "index": 0
-          }
-        ],
-        [
-          {
-            "node": "from competitors",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "create prompt": {
       "main": [
         [
           {
             "node": "Set API JSON",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Call 'chech phrase VS minus words'": {
-      "main": [
-        [
-          {
-            "node": "If no matches",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "If no matches": {
-      "main": [
-        [
-          {
-            "node": "set input",
-            "type": "main",
-            "index": 0
-          }
-        ],
-        [
-          {
-            "node": "from minuses",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Mark non relevant": {
-      "main": [
-        [
-          {
-            "node": "Get current step saved",
             "type": "main",
             "index": 0
           }
@@ -1957,24 +1240,6 @@
         [
           {
             "node": "Extract from File",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "If no records": {
-      "main": [
-        [
-          {
-            "node": "Get not processes keys",
-            "type": "main",
-            "index": 0
-          }
-        ],
-        [
-          {
-            "node": "Loop Over Items",
             "type": "main",
             "index": 0
           }
@@ -2025,7 +1290,7 @@
       "main": [
         [
           {
-            "node": "Get not processes keys2",
+            "node": "Get not processes keys",
             "type": "main",
             "index": 0
           }
@@ -2230,117 +1495,6 @@
         ]
       ]
     },
-    "Mark_workflow_total_steps": {
-      "main": [
-        [
-          {
-            "node": "Init total counter",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Get not processes keys2": {
-      "main": [
-        [
-          {
-            "node": "Mark_workflow_total_steps",
-            "type": "main",
-            "index": 0
-          },
-          {
-            "node": "Merge",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Init total counter": {
-      "main": [
-        [
-          {
-            "node": "Merge",
-            "type": "main",
-            "index": 1
-          }
-        ]
-      ]
-    },
-    "check if termination is requested": {
-      "main": [
-        [
-          {
-            "node": "If1",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Get current step saved": {
-      "main": [
-        [
-          {
-            "node": "Mark_workflow_passed_steps1",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Mark_workflow_passed_steps1": {
-      "main": [
-        [
-          {
-            "node": "check if termination is requested",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "If1": {
-      "main": [
-        [
-          {
-            "node": "Stop and Error",
-            "type": "main",
-            "index": 0
-          }
-        ],
-        [
-          {
-            "node": "Loop Over Items",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Merge": {
-      "main": [
-        [
-          {
-            "node": "If no records",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "set input": {
-      "main": [
-        [
-          {
-            "node": "Find competitors mentions",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Mark_workflow_total_steps1": {
       "main": [
         [
@@ -2440,28 +1594,6 @@
           }
         ]
       ]
-    },
-    "from minuses": {
-      "main": [
-        [
-          {
-            "node": "Mark non relevant",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "from competitors": {
-      "main": [
-        [
-          {
-            "node": "Mark non relevant",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
     }
   },
   "settings": {
@@ -2489,7 +1621,7 @@
       }
     ]
   },
-  "versionId": "0fc816a2-d787-48c8-a111-000d366fa95e",
+  "versionId": "db6a8933-e3f6-425e-ae5d-58a94b007635",
   "triggerCount": 0,
   "shared": [
     {
