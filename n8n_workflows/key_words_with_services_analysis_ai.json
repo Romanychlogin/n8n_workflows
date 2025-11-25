@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-25T14:44:32.194Z",
+  "updatedAt": "2025-11-25T17:26:14.260Z",
   "createdAt": "2025-11-25T13:44:02.058Z",
   "id": "7v6i6SZ28ZZg9u2D",
   "name": "key_words_with_services_analysis_AI",
@@ -338,8 +338,8 @@
       "retryOnFail": true,
       "credentials": {
         "openAiApi": {
-          "id": "V8R8KiZKXscJQ1sL",
-          "name": "OpenAi account"
+          "id": "m4NScyhZzV3hBcTr",
+          "name": "OpenAi Yads"
         }
       }
     },
@@ -1621,7 +1621,7 @@
       }
     ]
   },
-  "versionId": "db6a8933-e3f6-425e-ae5d-58a94b007635",
+  "versionId": "6ebf2368-3523-42dd-9b2d-3e96501ed7fc",
   "triggerCount": 0,
   "shared": [
     {
