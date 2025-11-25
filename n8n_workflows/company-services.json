@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-25T18:29:17.231Z",
+  "updatedAt": "2025-11-25T18:33:03.804Z",
   "createdAt": "2025-09-10T14:56:27.610Z",
   "id": "5Se0CY4jTtS5g7n3",
   "name": "company services",
@@ -800,7 +800,7 @@
     },
     {
       "parameters": {
-        "jsCode": "const workflowData = $getWorkflowStaticData('global');\nlet my_prompt = workflowData.my_prompt.data;\n\nfor (const item of $input.all()) {\n  item.json.my_prompt = String(my_prompt)\n  .replaceAll('{{ccompany_name}}', $('When Executed by Another Workflow').first().json.company_name)\n  .replaceAll('{{service_description}}', JSON.stringify($('Loop Over Items').last().json))\n  .replaceAll('{{company_content}}', workflowData.UserContent);\n}\n\nreturn $input.all();"
+        "jsCode": "const workflowData = $getWorkflowStaticData('global');\nlet my_prompt = workflowData.my_prompt_details.data;\n\nfor (const item of $input.all()) {\n  item.json.my_prompt = String(my_prompt)\n  .replaceAll('{{company_name}}', $('When Executed by Another Workflow').first().json.company_name)\n  .replaceAll('{{service_description}}', JSON.stringify($('Loop Over Items').last().json))\n  .replaceAll('{{company_content}}', workflowData.UserContent);\n}\n\nreturn $input.all();"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -1538,7 +1538,7 @@
       }
     ]
   },
-  "versionId": "8547d63d-9763-434f-9259-bd177c5adfda",
+  "versionId": "f38d6e7c-83c9-4508-8872-7af1a7ac3e7a",
   "triggerCount": 0,
   "shared": [
     {
