@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-25T13:52:23.267Z",
+  "updatedAt": "2025-11-25T14:12:51.858Z",
   "createdAt": "2025-09-15T10:20:29.723Z",
   "id": "AEZDBlqe199xBn5u",
   "name": "key_words_with_services_analysis",
@@ -13,8 +13,8 @@
       "type": "n8n-nodes-base.splitInBatches",
       "typeVersion": 3,
       "position": [
-        944,
-        288
+        816,
+        -192
       ],
       "id": "2c5ad17c-0cd1-493e-98e1-3a09ec97c9b5",
       "name": "Loop Over Items"
@@ -67,8 +67,8 @@
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1.2,
       "position": [
-        2240,
-        272
+        2320,
+        -208
       ],
       "id": "164f64e6-2677-4461-bcfb-934df3bc2f3b",
       "name": "Find competitors mentions"
@@ -101,8 +101,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        2432,
-        336
+        2512,
+        -144
       ],
       "id": "42f52d0b-a87b-4280-9c94-13857eac4171",
       "name": "If competitors not found"
@@ -124,8 +124,8 @@
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1.2,
       "position": [
-        1280,
-        288
+        1360,
+        -192
       ],
       "id": "db488fdf-bb67-461a-b89f-b61668ce355b",
       "name": "Call 'chech phrase VS minus words'"
@@ -158,8 +158,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        1504,
-        288
+        1584,
+        -192
       ],
       "id": "5785052d-33b3-4af1-be99-5d06f4eb17f7",
       "name": "If no matches"
@@ -328,8 +328,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        2880,
-        496
+        2960,
+        16
       ],
       "id": "6a9b1d3e-fefc-4c1b-9a5b-b14606db9057",
       "name": "Mark non relevant",
@@ -553,7 +553,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        1152,
+        1568,
         -992
       ],
       "id": "59789248-57ad-4eaa-91e4-f77777ad2b02",
@@ -565,19 +565,6 @@
           "name": "PGvector"
         }
       }
-    },
-    {
-      "parameters": {
-        "content": "remove wordstat_processed"
-      },
-      "type": "n8n-nodes-base.stickyNote",
-      "typeVersion": 1,
-      "position": [
-        160,
-        528
-      ],
-      "id": "ab7a9be0-a042-4dce-892c-4111df748b45",
-      "name": "Sticky Note1"
     },
     {
       "parameters": {
@@ -624,8 +611,8 @@
       "type": "n8n-nodes-base.stopAndError",
       "typeVersion": 1,
       "position": [
-        3008,
-        688
+        3088,
+        208
       ],
       "id": "1d119557-0d0e-4032-b65a-087acdaf8ada",
       "name": "Stop and Error"
@@ -658,8 +645,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        1840,
-        832
+        1920,
+        352
       ],
       "id": "b0381642-9785-4944-8202-9a0603afc61e",
       "name": "check if termination is requested",
@@ -677,8 +664,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1152,
-        832
+        1232,
+        352
       ],
       "id": "0b2affed-7a2f-4fd1-9699-ddb9f81ef0f7",
       "name": "Get current step saved"
@@ -694,8 +681,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        1408,
-        832
+        1488,
+        352
       ],
       "id": "520b18f8-6d91-4f12-a5a4-8fda315269fb",
       "name": "Mark_workflow_passed_steps1",
@@ -734,8 +721,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        2080,
-        832
+        2160,
+        352
       ],
       "id": "63a40a26-a133-48d5-8a6d-ca6a69fc4e66",
       "name": "If1"
@@ -783,8 +770,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        2032,
-        224
+        2112,
+        -256
       ],
       "id": "a9e28806-6280-455e-82b5-8e2a7a7299f6",
       "name": "set input"
@@ -806,8 +793,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        1776,
-        384
+        1856,
+        -96
       ],
       "id": "3b85a827-fa01-47c2-a5e3-56c90cdb9f38",
       "name": "from minuses"
@@ -829,8 +816,8 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        2656,
-        336
+        2736,
+        -144
       ],
       "id": "79f58a1e-afe6-424c-a14a-45091b4c0e4d",
       "name": "from competitors"
@@ -858,12 +845,102 @@
           "name": "Postgres account 2"
         }
       }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "3c2e638e-8745-4063-b7a6-d4c89d9be7a6",
+              "name": "steps",
+              "value": 0,
+              "type": "number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        768,
+        -544
+      ],
+      "id": "5756d74a-8428-40d6-95e6-8da07f84e758",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "ba69e980-9104-4f04-99e0-33f0f426b960",
+              "name": "steps",
+              "value": 1,
+              "type": "number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1024,
+        -288
+      ],
+      "id": "d6ef6875-b846-4aa2-9089-892fbe162679",
+      "name": "Edit Fields1",
+      "executeOnce": true
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "bddb986b-e89b-41eb-a40f-d5bb59370c5c",
+              "name": "steps",
+              "value": "={{ $('checkpoint').item.steps }}",
+              "type": "number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1776,
+        -992
+      ],
+      "id": "9e00fcd2-22a5-44a6-af72-9f45dfff9bce",
+      "name": "set output"
+    },
+    {
+      "parameters": {
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1216,
+        -768
+      ],
+      "id": "df2cd871-8ed9-4b1f-bc79-74719498bdc2",
+      "name": "checkpoint"
     }
   ],
   "connections": {
     "Loop Over Items": {
       "main": [
-        [],
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ],
         [
           {
             "node": "Call 'chech phrase VS minus words'",
@@ -1001,7 +1078,7 @@
       "main": [
         [
           {
-            "node": "Mark_workflow_completed",
+            "node": "Edit Fields",
             "type": "main",
             "index": 0
           }
@@ -1198,6 +1275,50 @@
           }
         ]
       ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "checkpoint",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "checkpoint",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mark_workflow_completed": {
+      "main": [
+        [
+          {
+            "node": "set output",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "checkpoint": {
+      "main": [
+        [
+          {
+            "node": "Mark_workflow_completed",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
@@ -1226,7 +1347,7 @@
       }
     ]
   },
-  "versionId": "6bc68ba5-6f56-49ae-a71e-6ea8f1780562",
+  "versionId": "815e8304-10a2-48f6-ac80-08eddadd99bf",
   "triggerCount": 0,
   "shared": [
     {
