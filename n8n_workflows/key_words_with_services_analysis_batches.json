@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-25T14:34:22.518Z",
+  "updatedAt": "2025-11-25T14:45:23.995Z",
   "createdAt": "2025-11-25T09:38:54.462Z",
   "id": "rqGW2HVOvVPX4TMA",
   "name": "key_words_with_services_analysis_batches",
@@ -53,7 +53,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        2608,
+        2816,
         -992
       ],
       "id": "d57b7f33-38f2-41dc-9b69-3897f5a245a5",
@@ -206,8 +206,8 @@
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1.3,
       "position": [
-        400,
-        96
+        848,
+        128
       ],
       "id": "20815957-d241-4c87-9b24-2f27d50f0795",
       "name": "Call 'key_words_with_services_analysis'"
@@ -232,8 +232,8 @@
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1.3,
       "position": [
-        480,
-        -64
+        864,
+        -32
       ],
       "id": "7b66f521-b8bc-4067-8369-18a0c07437c6",
       "name": "Call 'key_words_with_services_analysis'1"
@@ -258,7 +258,7 @@
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1.3,
       "position": [
-        688,
+        896,
         -176
       ],
       "id": "b7662424-4a27-4474-80cb-34ac3438ef66",
@@ -308,8 +308,8 @@
       "type": "n8n-nodes-base.stopAndError",
       "typeVersion": 1,
       "position": [
-        4064,
-        0
+        3536,
+        160
       ],
       "id": "2a7ffc44-062c-4edb-9d84-97291b9a9a3f",
       "name": "Stop and Error"
@@ -342,8 +342,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        2896,
-        144
+        3152,
+        384
       ],
       "id": "bb133169-f5a7-4be3-8f43-41550acf5aec",
       "name": "check if termination is requested",
@@ -365,8 +365,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        2656,
-        128
+        2912,
+        368
       ],
       "id": "767cb9d0-093f-46c3-8736-8ff9f38926be",
       "name": "Mark_workflow_passed_steps1",
@@ -405,8 +405,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        3168,
-        192
+        3504,
+        1168
       ],
       "id": "cfbe1c3e-097f-418d-9fc6-d1c7b071d55d",
       "name": "If1"
@@ -414,13 +414,13 @@
     {
       "parameters": {
         "mode": "chooseBranch",
-        "numberInputs": 3
+        "numberInputs": 8
       },
       "type": "n8n-nodes-base.merge",
       "typeVersion": 3.2,
       "position": [
-        944,
-        16
+        1264,
+        288
       ],
       "id": "577f5e48-7d34-483a-a6c5-cca2c6d3b523",
       "name": "Merge"
@@ -432,8 +432,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        2240,
-        80
+        2496,
+        320
       ],
       "id": "b6f8b8c6-c3fa-4348-a8ab-2854292aeb37",
       "name": "Get current step saved3"
@@ -473,7 +473,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        160,
+        368,
         -176
       ],
       "id": "775925ac-e662-4bf2-ac37-96554aad0ea2",
@@ -490,8 +490,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        1472,
-        64
+        1728,
+        304
       ],
       "id": "a6b1c301-9cf7-4396-ac74-82a3d78e9d9f",
       "name": "Execute a SQL query",
@@ -507,8 +507,8 @@
       "type": "n8n-nodes-base.wait",
       "typeVersion": 1.1,
       "position": [
-        1248,
-        48
+        1456,
+        384
       ],
       "id": "8976f521-05d9-4c7c-a9a6-c94f6594175f",
       "name": "Wait",
@@ -543,8 +543,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        1680,
-        64
+        1936,
+        304
       ],
       "id": "7733b7d2-7673-400d-9454-56017c6145cb",
       "name": "If2"
@@ -554,12 +554,201 @@
       "type": "n8n-nodes-base.wait",
       "typeVersion": 1.1,
       "position": [
-        1888,
-        160
+        2144,
+        400
       ],
       "id": "ed065d36-9595-408d-bf42-bb1c491e016c",
       "name": "Wait1",
       "webhookId": "0019e73b-7c98-4ee2-8cad-09bc91a4d478"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "AEZDBlqe199xBn5u",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/AEZDBlqe199xBn5u",
+          "cachedResultName": "key_words_with_services_analysis"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {}
+        },
+        "options": {
+          "waitForSubWorkflow": false
+        }
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.3,
+      "position": [
+        864,
+        304
+      ],
+      "id": "c3c15d23-c9c2-4128-80de-749ef3439fc3",
+      "name": "Call 'key_words_with_services_analysis'3"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "AEZDBlqe199xBn5u",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/AEZDBlqe199xBn5u",
+          "cachedResultName": "key_words_with_services_analysis"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {}
+        },
+        "options": {
+          "waitForSubWorkflow": false
+        }
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.3,
+      "position": [
+        864,
+        496
+      ],
+      "id": "082f146a-3ad6-4658-9311-408b55179598",
+      "name": "Call 'key_words_with_services_analysis'4"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "AEZDBlqe199xBn5u",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/AEZDBlqe199xBn5u",
+          "cachedResultName": "key_words_with_services_analysis"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {}
+        },
+        "options": {
+          "waitForSubWorkflow": false
+        }
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.3,
+      "position": [
+        864,
+        672
+      ],
+      "id": "413c52b2-28ee-43cd-a594-349776329b1c",
+      "name": "Call 'key_words_with_services_analysis'5"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "AEZDBlqe199xBn5u",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/AEZDBlqe199xBn5u",
+          "cachedResultName": "key_words_with_services_analysis"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {}
+        },
+        "options": {
+          "waitForSubWorkflow": false
+        }
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.3,
+      "position": [
+        864,
+        864
+      ],
+      "id": "c8150aca-9a32-4989-a359-75024d8f9ec2",
+      "name": "Call 'key_words_with_services_analysis'6"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "AEZDBlqe199xBn5u",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/AEZDBlqe199xBn5u",
+          "cachedResultName": "key_words_with_services_analysis"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {}
+        },
+        "options": {
+          "waitForSubWorkflow": false
+        }
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.3,
+      "position": [
+        864,
+        1072
+      ],
+      "id": "fa98d93a-77bc-4ad7-95b4-507bba600d95",
+      "name": "Call 'key_words_with_services_analysis'7"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "7v6i6SZ28ZZg9u2D",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/7v6i6SZ28ZZg9u2D",
+          "cachedResultName": "key_words_with_services_analysis_AI"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {}
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.3,
+      "position": [
+        1360,
+        -560
+      ],
+      "id": "7680b540-81b4-4052-afd8-c15a72c8f889",
+      "name": "Call 'key_words_with_services_analysis_AI'"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "bb81b51b-61c4-4492-9b76-83995759e824",
+              "name": "root_execution_id",
+              "value": "={{ $execution.id }}",
+              "type": "number"
+            },
+            {
+              "id": "321371a0-e2d9-4f50-a4e9-75f992b83751",
+              "name": "company_id",
+              "value": "={{ $('When Executed by Another Workflow').item.json.company_id }}",
+              "type": "number"
+            },
+            {
+              "id": "4dc56f45-8f0a-455e-ae90-1439f55d94ae",
+              "name": "is_initial",
+              "value": "={{ $('When Executed by Another Workflow').item.json.is_initial }}",
+              "type": "boolean"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        688,
+        -384
+      ],
+      "id": "c0a5abc6-f05e-414a-8346-9546f81778ee",
+      "name": "set input1"
     }
   ],
   "connections": {
@@ -638,7 +827,7 @@
       "main": [
         [
           {
-            "node": "Mark_workflow_completed",
+            "node": "set input1",
             "type": "main",
             "index": 0
           }
@@ -786,6 +975,31 @@
             "node": "Call 'key_words_with_services_analysis'",
             "type": "main",
             "index": 0
+          },
+          {
+            "node": "Call 'key_words_with_services_analysis'3",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Call 'key_words_with_services_analysis'4",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Call 'key_words_with_services_analysis'5",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Call 'key_words_with_services_analysis'6",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Call 'key_words_with_services_analysis'7",
+            "type": "main",
+            "index": 0
           }
         ]
       ]
@@ -840,6 +1054,83 @@
           }
         ]
       ]
+    },
+    "Call 'key_words_with_services_analysis'3": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 3
+          }
+        ]
+      ]
+    },
+    "Call 'key_words_with_services_analysis'4": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 4
+          }
+        ]
+      ]
+    },
+    "Call 'key_words_with_services_analysis'5": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 5
+          }
+        ]
+      ]
+    },
+    "Call 'key_words_with_services_analysis'6": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 6
+          }
+        ]
+      ]
+    },
+    "Call 'key_words_with_services_analysis'7": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 7
+          }
+        ]
+      ]
+    },
+    "Call 'key_words_with_services_analysis_AI'": {
+      "main": [
+        [
+          {
+            "node": "Mark_workflow_completed",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "set input1": {
+      "main": [
+        [
+          {
+            "node": "Call 'key_words_with_services_analysis_AI'",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
@@ -867,7 +1158,7 @@
       }
     ]
   },
-  "versionId": "fc760c2b-7073-41e7-bec5-9420cd8b766f",
+  "versionId": "8f0b3c01-0245-44d4-a0e3-83ac2b232d14",
   "triggerCount": 0,
   "shared": [
     {
