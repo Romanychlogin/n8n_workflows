@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-25T14:16:34.135Z",
+  "updatedAt": "2025-11-25T14:34:22.518Z",
   "createdAt": "2025-11-25T09:38:54.462Z",
   "id": "rqGW2HVOvVPX4TMA",
   "name": "key_words_with_services_analysis_batches",
@@ -45,7 +45,7 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "update business_processes_states set finished=NOW() where  n8n_workflow_execution_id=$1",
+        "query": "update business_processes_states set finished=NOW(),steps_passed=steps_total where  n8n_workflow_execution_id=$1",
         "options": {
           "queryReplacement": "={{$execution.id}}"
         }
@@ -53,7 +53,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        1776,
+        2608,
         -992
       ],
       "id": "d57b7f33-38f2-41dc-9b69-3897f5a245a5",
@@ -199,7 +199,9 @@
           "mappingMode": "defineBelow",
           "value": {}
         },
-        "options": {}
+        "options": {
+          "waitForSubWorkflow": false
+        }
       },
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1.3,
@@ -223,7 +225,9 @@
           "mappingMode": "defineBelow",
           "value": {}
         },
-        "options": {}
+        "options": {
+          "waitForSubWorkflow": false
+        }
       },
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1.3,
@@ -247,7 +251,9 @@
           "mappingMode": "defineBelow",
           "value": {}
         },
-        "options": {}
+        "options": {
+          "waitForSubWorkflow": false
+        }
       },
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1.3,
@@ -302,7 +308,7 @@
       "type": "n8n-nodes-base.stopAndError",
       "typeVersion": 1,
       "position": [
-        3232,
+        4064,
         0
       ],
       "id": "2a7ffc44-062c-4edb-9d84-97291b9a9a3f",
@@ -336,7 +342,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        2064,
+        2896,
         144
       ],
       "id": "bb133169-f5a7-4be3-8f43-41550acf5aec",
@@ -350,19 +356,6 @@
     },
     {
       "parameters": {
-        "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nconst workflowData = $getWorkflowStaticData('global');\nworkflowData.steps_passed+=$json.steps; // update steps counter\n\n\n\nreturn $input.all();"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        992,
-        -160
-      ],
-      "id": "36ac5136-1bc3-408b-9f8a-1d74f2d27a06",
-      "name": "Get current step saved"
-    },
-    {
-      "parameters": {
         "operation": "executeQuery",
         "query": "update business_processes_states set steps_passed=$2, tokens_used=0 where n8n_workflow_execution_id=$1",
         "options": {
@@ -372,7 +365,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        1824,
+        2656,
         128
       ],
       "id": "767cb9d0-093f-46c3-8736-8ff9f38926be",
@@ -412,8 +405,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        2304,
-        144
+        3168,
+        192
       ],
       "id": "cfbe1c3e-097f-418d-9fc6-d1c7b071d55d",
       "name": "If1"
@@ -426,47 +419,21 @@
       "type": "n8n-nodes-base.merge",
       "typeVersion": 3.2,
       "position": [
-        1216,
-        48
+        944,
+        16
       ],
       "id": "577f5e48-7d34-483a-a6c5-cca2c6d3b523",
       "name": "Merge"
     },
     {
       "parameters": {
-        "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nconst workflowData = $getWorkflowStaticData('global');\nworkflowData.steps_passed+=$json.steps; // update steps counter\n\n\nreturn $input.all();"
+        "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nconst workflowData = $getWorkflowStaticData('global');\nworkflowData.steps_passed+=3; \nfor (const item of $input.all()) {\n  item.json.steps_passed = workflowData.steps_passed;\n}\n\n\nreturn $input.all();"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        688,
-        0
-      ],
-      "id": "711ade41-1711-4aa0-88be-5950d94bc3fa",
-      "name": "Get current step saved1"
-    },
-    {
-      "parameters": {
-        "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nconst workflowData = $getWorkflowStaticData('global');\nworkflowData.steps_passed+=$json.steps; // update steps counter\n\n\n\nreturn $input.all();"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        656,
-        144
-      ],
-      "id": "7609a795-af5d-4656-b958-cc62fd1d9fe9",
-      "name": "Get current step saved2"
-    },
-    {
-      "parameters": {
-        "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nconst workflowData = $getWorkflowStaticData('global');\n\nfor (const item of $input.all()) {\n  item.json.steps_passed = workflowData.steps_passed;\n}\n\n\nreturn $input.all();"
-      },
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 2,
-      "position": [
-        1520,
-        96
+        2240,
+        80
       ],
       "id": "b6f8b8c6-c3fa-4348-a8ab-2854292aeb37",
       "name": "Get current step saved3"
@@ -511,6 +478,88 @@
       ],
       "id": "775925ac-e662-4bf2-ac37-96554aad0ea2",
       "name": "set input"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "select count(*) as total from key_words where company_id=$1 and resolution_type='in_progress'",
+        "options": {
+          "queryReplacement": "={{ $('When Executed by Another Workflow').item.json.company_id }}"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        1472,
+        64
+      ],
+      "id": "a6b1c301-9cf7-4396-ac74-82a3d78e9d9f",
+      "name": "Execute a SQL query",
+      "credentials": {
+        "postgres": {
+          "id": "Hx2VFmUi5WO2K4QX",
+          "name": "Postgres account 2"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        1248,
+        48
+      ],
+      "id": "8976f521-05d9-4c7c-a9a6-c94f6594175f",
+      "name": "Wait",
+      "webhookId": "3b083385-6805-46fb-9d12-56146db3a974"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "63159f28-11b1-47c5-b01d-7d6f999199e3",
+              "leftValue": "={{ $json.total}}",
+              "rightValue": "0",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1680,
+        64
+      ],
+      "id": "7733b7d2-7673-400d-9454-56017c6145cb",
+      "name": "If2"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        1888,
+        160
+      ],
+      "id": "ed065d36-9595-408d-bf42-bb1c491e016c",
+      "name": "Wait1",
+      "webhookId": "0019e73b-7c98-4ee2-8cad-09bc91a4d478"
     }
   ],
   "connections": {
@@ -607,9 +656,9 @@
       "main": [
         [
           {
-            "node": "Get current step saved2",
+            "node": "Merge",
             "type": "main",
-            "index": 0
+            "index": 2
           }
         ]
       ]
@@ -618,7 +667,7 @@
       "main": [
         [
           {
-            "node": "Get current step saved",
+            "node": "Merge",
             "type": "main",
             "index": 0
           }
@@ -629,9 +678,9 @@
       "main": [
         [
           {
-            "node": "Get current step saved1",
+            "node": "Merge",
             "type": "main",
-            "index": 0
+            "index": 1
           }
         ]
       ]
@@ -663,17 +712,6 @@
         [
           {
             "node": "If1",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Get current step saved": {
-      "main": [
-        [
-          {
-            "node": "Merge",
             "type": "main",
             "index": 0
           }
@@ -713,31 +751,9 @@
       "main": [
         [
           {
-            "node": "Get current step saved3",
+            "node": "Wait",
             "type": "main",
             "index": 0
-          }
-        ]
-      ]
-    },
-    "Get current step saved1": {
-      "main": [
-        [
-          {
-            "node": "Merge",
-            "type": "main",
-            "index": 1
-          }
-        ]
-      ]
-    },
-    "Get current step saved2": {
-      "main": [
-        [
-          {
-            "node": "Merge",
-            "type": "main",
-            "index": 2
           }
         ]
       ]
@@ -773,6 +789,57 @@
           }
         ]
       ]
+    },
+    "Execute a SQL query": {
+      "main": [
+        [
+          {
+            "node": "If2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "Execute a SQL query",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If2": {
+      "main": [
+        [
+          {
+            "node": "Get current step saved3",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Wait1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait1": {
+      "main": [
+        [
+          {
+            "node": "Execute a SQL query",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
@@ -800,7 +867,7 @@
       }
     ]
   },
-  "versionId": "e9c5daa5-9ad7-473b-9703-6aaa84fc6692",
+  "versionId": "fc760c2b-7073-41e7-bec5-9420cd8b766f",
   "triggerCount": 0,
   "shared": [
     {
