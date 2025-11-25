@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-25T19:10:09.077Z",
+  "updatedAt": "2025-11-25T19:12:55.875Z",
   "createdAt": "2025-09-10T14:56:27.610Z",
   "id": "5Se0CY4jTtS5g7n3",
   "name": "company services",
@@ -97,8 +97,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        1904,
-        -192
+        1872,
+        -208
       ],
       "id": "a2abd329-0d5f-4585-8e52-137fb63dc717",
       "name": "HTTP Request",
@@ -117,7 +117,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1712,
+        1632,
         -208
       ],
       "id": "8d9261b7-57f6-4d96-90ae-4ae6b72dba86",
@@ -349,7 +349,7 @@
       "typeVersion": 2,
       "position": [
         1392,
-        -128
+        -208
       ],
       "id": "9b692ab7-941a-414a-8127-93630973a8d0",
       "name": "Set prompt"
@@ -1762,7 +1762,7 @@
       }
     ]
   },
-  "versionId": "20580b14-858d-45cd-b618-37914b0c8a4b",
+  "versionId": "318d5807-a841-4f06-9c03-8ad394b86962",
   "triggerCount": 0,
   "shared": [
     {
