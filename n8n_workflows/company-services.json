@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-20T18:47:43.594Z",
+  "updatedAt": "2025-11-25T14:26:28.701Z",
   "createdAt": "2025-09-10T14:56:27.610Z",
   "id": "5Se0CY4jTtS5g7n3",
   "name": "company services",
@@ -343,7 +343,7 @@
     },
     {
       "parameters": {
-        "jsCode": "const workflowData = $getWorkflowStaticData('global');\nlet my_prompt = workflowData.my_prompt.data;\n\n\n// Собираем my_prompt\nitem.json.my_prompt = String(my_prompt)\n  .replaceAll('{{ccompany_name}}', $('When Executed by Another Workflow').first().json.company_name)\n  .replaceAll('{{services_list}}', $('When Executed by Another Workflow').first().json.services_description);\n\nreturn item;"
+        "jsCode": "// 1) Берём данные из глобального хранилища\nconst workflowData = $getWorkflowStaticData('global');\nconst my_prompt_raw = workflowData.my_prompt.data ;\n\n// 2) Берём данные из узла \"When Executed by Another Workflow\"\nconst src = $('When Executed by Another Workflow').first().json;\n\n// 3) Формируем my_prompt\nconst my_prompt = String(my_prompt_raw)\n  .replaceAll('{{ccompany_name}}', String(src.company_name ?? ''))\n  .replaceAll('{{services_list}}', String(src.services_description ?? ''));\n\n// 4) Берём первый входной item и дописываем поле\nconst item = $input.first();\nitem.json.my_prompt = my_prompt;\n\n// 5) Возвращаем массив элементов\nreturn [item];"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -1422,9 +1422,123 @@
           "user_content_dropbox_folder": "/Test_content_folder_for_Kurgan"
         }
       }
+    ],
+    "HTTP Request": [
+      {
+        "json": {
+          "id": "resp_092fd8c5b060003d016925bc39193881949d3506fe6fc43c54",
+          "object": "response",
+          "created_at": 1764080697,
+          "status": "completed",
+          "background": false,
+          "billing": {
+            "payer": "developer"
+          },
+          "error": null,
+          "incomplete_details": null,
+          "instructions": null,
+          "max_output_tokens": null,
+          "max_tool_calls": null,
+          "model": "gpt-5-2025-08-07",
+          "output": [
+            {
+              "id": "rs_092fd8c5b060003d016925bc39aca48194be949d4cab49ee87",
+              "type": "reasoning",
+              "encrypted_content": "gAAAAABpJbw_n72CL4xWWe_ALoDImgy5eLq7aW67zi2ambal1jOEMjtI-Y7Bq1qok2PZX8q53azWH1VIZXRWha-YJ9VTeEXwTb6xnixFVZ-kWXbOlPh_qk2w9iJpkE8WJLE7zPLYc5JIhSNSeNICMMywhuxp1LdL35BCCWX9zyi8PHpaWNEcrhoy1XUcJHKCSszFcHI-Pd2NQRhlXby6qA-vWqPb_ec-n6Cf2U3GlW9aQDNj4o6T49cH2KNVxpuQGS6hadY6K6L8hQq7SP1NlW-zLbfqdStcGvHGhtG68wfxowh6rtNpwemNaJctPCJiimH3Mp-ke-1f5sVmeQL1J2c4amKeGB2v9bmsD-pHrWbee_3ZwrVDTmcNjYr8xvi-aRuxckIEzZuPfmoKV0qO9G9J_CP1sC51zdOZFtSMntYS-o_w_oS84tz8apGHoObqq4RuC8sumOMOiiM9Y1F5jYKkOEqDFXCTAwPfEJPdJt0kSiPtBWupdSIfREtB2jIC45yEcTmtxtNl9x_HuEfBLwFNheSwYG95S-3TkQyj0cxBwCRpZ_21aDhRJYwDI-CwzGI_TyMaqrNj4T4V7VOZj20acX8tGIBw5ExcyrAyzqb99l5-2nYAGXSbReXeHAJuSfrUv_IuaZBb2vhppBXz_MjId5meldpYtcNfFP9YGjDG-Z-JKA6OWTIEVeqkfNXYhmRX6fgBBHD-wz_f7SBYq4z5QFdkPtHmzuspfo6N8N6r5zHPHGwX4zBrBx9Mnc4VSo2ewUOxpd2Ap4hZ_T5du9xxYxV_Nku6danktchiygXIT9M2foYBovr2z1Das5Myw18_8G05vD7QCVU0LUqYBUySggz30_KM3FM8hkPVvXWRixfufds085myFDSP2JCDxuhTHYr_fN0lH7fJJGu__lVoDPSu2phccPEeVwKQP86e-CezMvUtTZS5E0RuC9EwfKYeMH73so4ZHjzUODSHUZXlO2no9_rXyhQLMgs7rIxSXeT8AR9dfTH8Y2kp3DRceWid4hEjZ4uTkbXi50tQOAy1x6DE-l9MzIgVjw22BwAsyR7G-38vvf2f_PySPx3nGha-jorVX0ea_RHrk-9JrY8b1NaWmd0ekZAzG7o25JoUTPnz66KPl2VFtyNhCjlGSTTVNmpyshgGsjJPpysya_0hSMYgr_gNbQC3yd6gxjqcgnNSIm1ZlgxOae2tOVo6y0UkPYwcRGLWxVGddmmlLmbkAaSjr03uWTouMAp1zPXNSNVZx8hjlBmW6oV6CtIDQddXth6mHhKu0G7QUmDRbfm0IpDJg6b61yIZ7QUxTB3TT_zFnDxcY5xYagxdIKMsyfMHLMH2iMLdZL2nofMeJOjJxQ0dfbv9qJXALGRFdrLGy7tyS-z_Dq4UermcLwmP60Xyn0W7qI-LRcQbmgOBqf1Cw8CC9liCTMueb-Yqua905TgnoEejJ6E-yEHVFJM3Lw-EvbtC7YcOZkggLrehIPbgWRr36O3qiQyRVh__LoS8rSjBsMny0qnURgiKwRrG0ingsaUTsuehg-ZPOV6I8xziJrdNgy9JbS1R2YQR3cWivlZabU7C9x8TKSFDRdYzYHFLyH_a2Z5Il9znK_DOOfeMQPHicq0b15mf1Db2h_f1BOU4odpJ9hEoc3CR9QBQK7Zowl1U_O-_YZC43HMINKaqD599pZmBUP95lIwJ34aWKQWB8nSCj7YofTllSbSDnU95HHyvymyP6AXFjLsWLj4PQT3MWBAENhdg1cRD_wkfvhDgQGrhiVgbOqAaim9rvcJsYmCl-IrrI3IHDBjeK3ENPqek-KG0Hehln31EUnM0od-zGymiBJOZEvdz34eqg3whcmD5r4sfk-d6HGXKjvrsY-QQ7jHuzXIrStHlsqBUmq2yG_uMovIpX6t8KAifuebhZ5RUfDN9e8h1KFrkjEnrEEmQm_Ktaha_uePohASHk0TewWh5nOCvJqUkJjxuV9yoZXGDB6WgSG4ZSZHBpCRqZ_tCkIEccQrEka7_gPpJFmFUXqdSLDWf8pHMElCydg_vPctjqRLrMzKJwfjAJ5s68FWmk2Lu5hbBoD2o4GUwQDi1aT6cmjNd6ssWKi7r4WT9IunR-b48wQY2yhAw_zV5k_pMWHInzUB2EMpEfwbp7dOEJzfHz4JJi5vE7zMpImDXSDjJzGxZN1vVilMVOCGqWN8LHqm8c91JpRLDiiJPfJA3iI7JCE3Rt5L02A-f8aympJSBfyRvN6Q81Xvv-p9fVCQtUghHBKAGyi6InqNwE3KE73xmnM-6OnDpbG37wX3jM_QYStckjJB6m59wMBwQUJIcr9F9PQf4M2Cv-OToysilt13BV5IXYmb4SEqbKxMz-qDoXQDBdk-WZeLenAUMIDBWqx4DfxpvRI36NAjwXfbxoAsqAbf9EXhMQGmW5Z4pJVKsODDCKGq_jNktFx5wTYm8tcYTgJeD6O8euwr9YThenEgCB0HYjUq5a8hQRRw78Oqh2FJlwzVQYAuFinqIgz65tdOtMUFX-KmuCX0SupVgI5al5A7krxtg52XA-QvMv4sC2xmHq2ilIZTknonJJcb_5xjp_AZMcF3fOEVrM-OP4kkStjx5IVksHRR9MWaSuyAgPhLL-p1potLgxGx13pt4Ou7KY6izVbT4tQ-Ow7qf2X0019wSAdPvUi7jKd6F_SHM6VzyOCsjPg0CEPBab3irU4fXhID3uQKcCZHfU4b48gLcdNmeriVDV7UhFccN_qgGO1oLBFaLJux7FTvFNb_vtAouYai0Yu3w3Sf-jwiSFfrqcQg1BTCZL_SXxseOu_I1IomPrMnbln3rGzHwc7uqudhwsIYTSDU1BeV_UtkaTu1BWnq2Fo7shOM_IF1x8n3qb7cjsFOpmCDIyvFtkiM9aeBsSHkpAlmbKDuId1P4POgp8sGbhM78gqrwIXMESvb0KGdg5NMm4Q2oljAexUgOZD665_frxWIMNHQJRilWChPRCNnE7KfNBizFlRSFd6FYfeAjncspfrz2lPImNo-JHCdmDw==",
+              "summary": []
+            },
+            {
+              "id": "msg_092fd8c5b060003d016925bc3f4010819481e31f7d7aa5686b",
+              "type": "message",
+              "status": "completed",
+              "content": [
+                {
+                  "type": "output_text",
+                  "annotations": [],
+                  "logprobs": [],
+                  "text": "{\"service_listing\":[{\"service_name\":\"Визы\",\"service_url\":\"http://krg45.visa-rf.ru/\"},{\"service_name\":\"АТЭС\",\"service_url\":\"http://krg45.apec-first.ru/\"}]}"
+                }
+              ],
+              "role": "assistant"
+            }
+          ],
+          "parallel_tool_calls": true,
+          "previous_response_id": null,
+          "prompt_cache_key": null,
+          "prompt_cache_retention": null,
+          "reasoning": {
+            "effort": "low",
+            "summary": "detailed"
+          },
+          "safety_identifier": null,
+          "service_tier": "default",
+          "store": false,
+          "temperature": 1,
+          "text": {
+            "format": {
+              "type": "json_schema",
+              "description": null,
+              "name": "service_listings",
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "service_listing": {
+                    "type": "array",
+                    "description": "service_listing, each as a name, URL and description row.",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "service_name": {
+                          "type": "string",
+                          "description": "The name of the service",
+                          "minLength": 1
+                        },
+                        "service_url": {
+                          "type": "string",
+                          "description": "The root URL where the service is available",
+                          "minLength": 1
+                        }
+                      },
+                      "required": [
+                        "service_name",
+                        "service_url"
+                      ],
+                      "additionalProperties": false
+                    }
+                  }
+                },
+                "required": [
+                  "service_listing"
+                ],
+                "additionalProperties": false
+              },
+              "strict": true
+            },
+            "verbosity": "medium"
+          },
+          "tool_choice": "auto",
+          "tools": [],
+          "top_logprobs": 0,
+          "top_p": 1,
+          "truncation": "disabled",
+          "usage": {
+            "input_tokens": 253,
+            "input_tokens_details": {
+              "cached_tokens": 0
+            },
+            "output_tokens": 378,
+            "output_tokens_details": {
+              "reasoning_tokens": 320
+            },
+            "total_tokens": 631
+          },
+          "user": null,
+          "metadata": {}
+        }
+      }
     ]
   },
-  "versionId": "f8d9cacd-150c-409f-a8b6-aade29ed6da2",
+  "versionId": "1e1db821-4b78-4fd3-9f22-d669328a75ec",
   "triggerCount": 0,
   "shared": [
     {
