@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-25T18:44:11.708Z",
+  "updatedAt": "2025-11-25T18:59:15.797Z",
   "createdAt": "2025-09-10T14:56:27.610Z",
   "id": "5Se0CY4jTtS5g7n3",
   "name": "company services",
@@ -787,7 +787,7 @@
     },
     {
       "parameters": {
-        "jsCode": "return [{\n  json: \n {\n  \"model\": \"gpt-5\",\n  \"input\": [\n    {\n      \"role\": \"developer\",\n      \"content\": [\n        {\n          \"type\": \"input_text\",\n          \"text\": \"Выводи только валидный JSON-массив объектов в формате: [{\\\"service_name\\\": string, \\\"service_url\\\": string, \\\"service_description\\\": string, \\\"service_description_with_url\\\": string}]. Не добавляй комментариев или форматирования вне этого массива.\\n\\n'''\\nФормат вывода:\\n- Массив объектов JSON.\\n- Каждый объект должен содержать поля:\\n  - \\\"service_name\\\": (обязательно, string) — название сервиса.\\n  - \\\"service_url\\\": (опционально, string) — адрес сервиса. \\n  - \\\"service_description\\\": (string) —полное описание сервиса. Если если описание не идентифицированино  - передай null\\n  - \\\"service_description_with_url\\\": (string) —полное описание сервиса включая ссылки на весь контент сервиса и услуги. Если если описание не идентифицированино  - передай null\"\n        }\n      ]\n    },\n    {\n      \"role\": \"user\",\n      \"content\": [\n        {\n          \"type\": \"input_text\",\n          \"text\": $json.my_prompt\n        }\n      ]\n    }\n  ],\n  \"text\": {\n    \"format\": {\n      \"type\": \"json_schema\",\n      \"name\": \"service_listing\",\n      \"strict\": true,\n      \"schema\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"service\": {\n            \"type\": \"array\",\n            \"description\": \"service_listing, each as a name, URL and description row.\",\n            \"items\": {\n              \"type\": \"object\",\n              \"properties\": {\n                \"service_name\": {\n                  \"type\": \"string\",\n                  \"description\": \"The name of the service\",\n                  \"minLength\": 1\n                },\n                \"service_url\": {\n                  \"type\": \"string\",\n                  \"description\": \"The root URL where the service is available\",\n                  \"minLength\": 1\n                },\n                \"service_description\": {\n                  \"type\": \"string\",\n                  \"description\": \"Detailed description of the service\",\n                  \"minLength\": 1\n                },\n                \"service_description_with_url\": {\n                  \"type\": \"string\",\n                  \"description\": \"Detailed description of the service including urls\",\n                  \"minLength\": 1\n                }\n              },\n              \"required\": [\n                \"service_name\",\n                \"service_url\",\n                \"service_description\",\n                \"service_description_with_url\"\n              ],\n              \"additionalProperties\": false\n            }\n          }\n        },\n        \"required\": [\n          \"service\"\n        ],\n        \"additionalProperties\": false\n      }\n    },\n    \"verbosity\": \"medium\"\n  },\n  \"reasoning\": {\n    \"effort\": \"high\",\n    \"summary\": \"auto\"\n  },\n  \"tools\": [\n    {\n      \"type\": \"web_search\",\n      \"user_location\": {\n        \"type\": \"approximate\"\n      },\n      \"search_context_size\": \"medium\",\n      \"filters\": {\n        \"allowed_domains\": \n          $('Call Get sitemap').last().json.urls\n              }\n    }\n  ],\n  \"store\": false,\n  \"include\": [\n    \"reasoning.encrypted_content\",\n    \"web_search_call.action.sources\"\n  ]\n}\n\n}];"
+        "jsCode": "function getDomain(rawUrl) {\n  if (!rawUrl) return '';\n  return String(rawUrl)\n    .trim()\n    .replace(/^https?:\\/\\//, '')\n    .split('/')[0];\n}\nreturn [{\n  json: \n {\n  \"model\": \"gpt-5\",\n  \"input\": [\n    {\n      \"role\": \"developer\",\n      \"content\": [\n        {\n          \"type\": \"input_text\",\n          \"text\": \"Выводи только валидный JSON-массив объектов в формате: [{\\\"service_name\\\": string, \\\"service_url\\\": string, \\\"service_description\\\": string, \\\"service_description_with_url\\\": string}]. Не добавляй комментариев или форматирования вне этого массива.\\n\\n'''\\nФормат вывода:\\n- Массив объектов JSON.\\n- Каждый объект должен содержать поля:\\n  - \\\"service_name\\\": (обязательно, string) — название сервиса.\\n  - \\\"service_url\\\": (опционально, string) — адрес сервиса. \\n  - \\\"service_description\\\": (string) —полное описание сервиса. Если если описание не идентифицированино  - передай null\\n  - \\\"service_description_with_url\\\": (string) —полное описание сервиса включая ссылки на весь контент сервиса и услуги. Если если описание не идентифицированино  - передай null\"\n        }\n      ]\n    },\n    {\n      \"role\": \"user\",\n      \"content\": [\n        {\n          \"type\": \"input_text\",\n          \"text\": $json.my_prompt\n        }\n      ]\n    }\n  ],\n  \"text\": {\n    \"format\": {\n      \"type\": \"json_schema\",\n      \"name\": \"service_listing\",\n      \"strict\": true,\n      \"schema\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"service\": {\n            \"type\": \"array\",\n            \"description\": \"service_listing, each as a name, URL and description row.\",\n            \"items\": {\n              \"type\": \"object\",\n              \"properties\": {\n                \"service_name\": {\n                  \"type\": \"string\",\n                  \"description\": \"The name of the service\",\n                  \"minLength\": 1\n                },\n                \"service_url\": {\n                  \"type\": \"string\",\n                  \"description\": \"The root URL where the service is available\",\n                  \"minLength\": 1\n                },\n                \"service_description\": {\n                  \"type\": \"string\",\n                  \"description\": \"Detailed description of the service\",\n                  \"minLength\": 1\n                },\n                \"service_description_with_url\": {\n                  \"type\": \"string\",\n                  \"description\": \"Detailed description of the service including urls\",\n                  \"minLength\": 1\n                }\n              },\n              \"required\": [\n                \"service_name\",\n                \"service_url\",\n                \"service_description\",\n                \"service_description_with_url\"\n              ],\n              \"additionalProperties\": false\n            }\n          }\n        },\n        \"required\": [\n          \"service\"\n        ],\n        \"additionalProperties\": false\n      }\n    },\n    \"verbosity\": \"medium\"\n  },\n  \"reasoning\": {\n    \"effort\": \"high\",\n    \"summary\": \"auto\"\n  },\n  \"tools\": [\n    {\n      \"type\": \"web_search\",\n      \"user_location\": {\n        \"type\": \"approximate\"\n      },\n      \"search_context_size\": \"medium\",\n      \"filters\": {\n        \"allowed_domains\": \n          [getDomain($('Loop Over Items').last().json.service_url)]\n              }\n    }\n  ],\n  \"store\": false,\n  \"include\": [\n    \"reasoning.encrypted_content\",\n    \"web_search_call.action.sources\"\n  ]\n}\n\n}];"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -800,7 +800,7 @@
     },
     {
       "parameters": {
-        "jsCode": "const workflowData = $getWorkflowStaticData('global');\nlet my_prompt = workflowData.my_prompt_details.data;\n\nfor (const item of $input.all()) {\n  item.json.my_prompt = String(my_prompt)\n  .replaceAll('{{company_name}}', $('When Executed by Another Workflow').first().json.company_name)\n  .replaceAll('{{service_description}}', JSON.stringify($('Loop Over Items').last().json))\n  .replaceAll('{{company_content}}', workflowData.UserContent);\n}\n\nreturn $input.all();"
+        "jsCode": "const workflowData = $getWorkflowStaticData('global');\nlet my_prompt = workflowData.my_prompt_details.data;\n\nfor (const item of $input.all()) {\n  item.json.my_prompt = String(my_prompt)\n  .replaceAll('{{company_name}}', $('When Executed by Another Workflow').first().json.company_name)\n  .replaceAll('{{service_description}}', JSON.stringify($('Loop Over Items').last().json))\n  .replaceAll('{{company_content}}', workflowData.UserContent)\n    .replaceAll('{{urls_list}}', JSON.stringify($json.urls));\n  \n}\n\nreturn $input.all();"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -1169,7 +1169,13 @@
     },
     "If no content": {
       "main": [
-        [],
+        [
+          {
+            "node": "Set prompt",
+            "type": "main",
+            "index": 0
+          }
+        ],
         [
           {
             "node": "List a folder1",
@@ -1538,7 +1544,7 @@
       }
     ]
   },
-  "versionId": "31608b66-52d8-492b-978d-c8db8d4b2ea9",
+  "versionId": "2f79c790-0ad6-4354-bcb9-14a9ddbff909",
   "triggerCount": 0,
   "shared": [
     {
