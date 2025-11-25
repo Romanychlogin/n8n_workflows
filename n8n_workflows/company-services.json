@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-25T17:29:07.719Z",
+  "updatedAt": "2025-11-25T17:31:12.514Z",
   "createdAt": "2025-09-10T14:56:27.610Z",
   "id": "5Se0CY4jTtS5g7n3",
   "name": "company services",
@@ -248,7 +248,7 @@
     },
     {
       "parameters": {
-        "jsCode": "// Берём первый item из входных данных\nconst input = JSON.parse($json.output[1].content[0].text);\nconst company_id=$('When Executed by Another Workflow').first().json.company_id\n// Достаём массив competitors\nconst variants = JSON.parse(input.service_listings);\n\n// Разворачиваем каждый объект в отдельный item\nreturn variants.map((c, index) => ({\n  json: {\n    index,\n    service_name: c.service_name,\n    service_url: c.service_url,\n    company_id:company_id\n    \n  }\n}));"
+        "jsCode": "// Берём первый item из входных данных\nconst input = JSON.parse($json.output[1].content[0].text);\nconst company_id=$('When Executed by Another Workflow').first().json.company_id\n// Достаём массив competitors\nconst variants = input.service_listing;\n\n// Разворачиваем каждый объект в отдельный item\nreturn variants.map((c, index) => ({\n  json: {\n    index,\n    service_name: c.service_name,\n    service_url: c.service_url,\n    company_id:company_id\n    \n  }\n}));"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -495,7 +495,7 @@
         "operation": "executeQuery",
         "query": "update business_processes_states set steps_total=$3 where business_process_id=(select MAX(business_process_id) from business_processes where n8n_process_name=$1) and n8n_workflow_execution_id=$2",
         "options": {
-          "queryReplacement": "=[{{$workflow.name}},{{$execution.id}},{{$json.total}}]"
+          "queryReplacement": "=[{{$workflow.name}},{{$execution.id}},{{$input.all().length}}]"
         }
       },
       "type": "n8n-nodes-base.postgres",
@@ -1538,7 +1538,7 @@
       }
     ]
   },
-  "versionId": "23d64c3d-98fe-44e3-b71a-4dddfc20cfec",
+  "versionId": "1e71fead-870e-4490-8667-4bcfa5366afd",
   "triggerCount": 0,
   "shared": [
     {
