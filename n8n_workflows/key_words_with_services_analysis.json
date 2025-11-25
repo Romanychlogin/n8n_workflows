@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-11-22T21:09:40.680Z",
+  "updatedAt": "2025-11-25T09:31:34.102Z",
   "createdAt": "2025-09-15T10:20:29.723Z",
   "id": "AEZDBlqe199xBn5u",
   "name": "key_words_with_services_analysis",
@@ -37,7 +37,8 @@
           "mappingMode": "defineBelow",
           "value": {
             "key_word_id": "={{ $('reset first_item2').item.json.key_word_id }}",
-            "is_relevant": "={{ $json.is_relevant }}"
+            "is_relevant": "={{ $json.is_relevant }}",
+            "resolution_type": "AI"
           },
           "matchingColumns": [
             "key_word_id"
@@ -132,6 +133,46 @@
               "type": "number",
               "canBeUsedToMatch": true,
               "removed": true
+            },
+            {
+              "id": "minus_words_processed",
+              "displayName": "minus_words_processed",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "boolean",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "is_adv_processed",
+              "displayName": "is_adv_processed",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "boolean",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "key_word_clean",
+              "displayName": "key_word_clean",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "resolution_type",
+              "displayName": "resolution_type",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
             }
           ],
           "attemptToConvertTypes": false,
@@ -336,7 +377,7 @@
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1.2,
       "position": [
-        2032,
+        2240,
         272
       ],
       "id": "164f64e6-2677-4461-bcfb-934df3bc2f3b",
@@ -370,8 +411,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        2240,
-        352
+        2432,
+        336
       ],
       "id": "42f52d0b-a87b-4280-9c94-13857eac4171",
       "name": "If competitors not found"
@@ -464,7 +505,8 @@
           "mappingMode": "defineBelow",
           "value": {
             "key_word_id": "={{ $('Loop Over Items').item.json.key_word_id }}",
-            "is_relevant": "={{ false }}"
+            "is_relevant": "={{ false }}",
+            "resolution_type": "={{ $json.resolution_type }}"
           },
           "matchingColumns": [
             "key_word_id"
@@ -559,6 +601,46 @@
               "type": "number",
               "canBeUsedToMatch": true,
               "removed": true
+            },
+            {
+              "id": "minus_words_processed",
+              "displayName": "minus_words_processed",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "boolean",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "is_adv_processed",
+              "displayName": "is_adv_processed",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "boolean",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "key_word_clean",
+              "displayName": "key_word_clean",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "resolution_type",
+              "displayName": "resolution_type",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
             }
           ],
           "attemptToConvertTypes": false,
@@ -569,8 +651,8 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        2464,
-        512
+        2880,
+        496
       ],
       "id": "6a9b1d3e-fefc-4c1b-9a5b-b14606db9057",
       "name": "Mark non relevant",
@@ -1248,7 +1330,7 @@
       "type": "n8n-nodes-base.stopAndError",
       "typeVersion": 1,
       "position": [
-        2800,
+        3008,
         688
       ],
       "id": "1d119557-0d0e-4032-b65a-087acdaf8ada",
@@ -1282,7 +1364,7 @@
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.6,
       "position": [
-        1632,
+        1840,
         832
       ],
       "id": "b0381642-9785-4944-8202-9a0603afc61e",
@@ -1358,7 +1440,7 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        1872,
+        2080,
         832
       ],
       "id": "63a40a26-a133-48d5-8a6d-ca6a69fc4e66",
@@ -1407,7 +1489,7 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        1824,
+        2032,
         224
       ],
       "id": "a9e28806-6280-455e-82b5-8e2a7a7299f6",
@@ -1638,6 +1720,52 @@
       ],
       "id": "9a01ca66-cf55-4bac-bbc0-937576b24bd0",
       "name": "If"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "0cc3081f-8e41-43bc-b63b-e7d5f5cfa468",
+              "name": "resolution_type",
+              "value": "minus words",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1776,
+        384
+      ],
+      "id": "3b85a827-fa01-47c2-a5e3-56c90cdb9f38",
+      "name": "from minuses"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "0cc3081f-8e41-43bc-b63b-e7d5f5cfa468",
+              "name": "resolution_type",
+              "value": "competitors",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2656,
+        336
+      ],
+      "id": "79f58a1e-afe6-424c-a14a-45091b4c0e4d",
+      "name": "from competitors"
     }
   ],
   "connections": {
@@ -1770,7 +1898,7 @@
         ],
         [
           {
-            "node": "Mark non relevant",
+            "node": "from competitors",
             "type": "main",
             "index": 0
           }
@@ -1810,7 +1938,7 @@
         ],
         [
           {
-            "node": "Mark non relevant",
+            "node": "from minuses",
             "type": "main",
             "index": 0
           }
@@ -2338,6 +2466,28 @@
           }
         ]
       ]
+    },
+    "from minuses": {
+      "main": [
+        [
+          {
+            "node": "Mark non relevant",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "from competitors": {
+      "main": [
+        [
+          {
+            "node": "Mark non relevant",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
@@ -2365,7 +2515,7 @@
       }
     ]
   },
-  "versionId": "334cab2f-0c2b-4841-87ad-02a2b213db0d",
+  "versionId": "75326bc9-7ff4-4dd4-9bda-1c0aaa929434",
   "triggerCount": 0,
   "shared": [
     {
